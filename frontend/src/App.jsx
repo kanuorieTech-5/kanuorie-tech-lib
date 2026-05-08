@@ -53,23 +53,9 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         {/* PROTECTED ROUTES */}
         <Route path="/library" element={<Library />}/>
-        <Route
-          path="/courses"
-          element={
-            <ProtectedRoute>
-              <Courses />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/courses" element={<Courses />}/>
 
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/profile" element={<Profile />}/>
 
         {/* 🔐 ADMIN PROTECTED (FIXED) */}
         <Route

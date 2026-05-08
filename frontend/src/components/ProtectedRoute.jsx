@@ -6,19 +6,19 @@ export default function ProtectedRoute({
   children,
   adminOnly = false,
 }) {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, loading } = useContext(AuthContext);
 
-  // ⏳ WAIT FOR AUTH STATE TO HYDRATE
-  if (token === undefined || token === null) {
-    return null; // or a loader spinner
+  // ⏳ Wait for auth check
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  // ⛔ NOT LOGGED IN
+  // ⛔ Not logged in
   if (!user || !token) {
     return <Navigate to="/login" replace />;
   }
 
-  // 🔐 ADMIN CHECK
+  // 🔐 Admin only
   if (adminOnly && user?.role !== "admin") {
     return <Navigate to="/" replace />;
   }

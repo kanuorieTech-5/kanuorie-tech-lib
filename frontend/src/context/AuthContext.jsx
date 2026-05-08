@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(undefined); // 👈 undefined = loading
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   const [settings, setSettings] = useState({
@@ -20,41 +20,45 @@ export function AuthProvider({ children }) {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   /* ========================
-     HYDRATE AUTH (FIXED)
+     HYDRATE + VERIFY TOKEN
   ======================== */
   useEffect(() => {
-    const savedUser = localStorage.getItem("techlib-user");
-    const savedToken = localStorage.getItem("techlib-token");
-    const savedSettings = localStorage.getItem("techlib-settings");
+    const initAuth = async () => {
+      const savedToken = localStorage.getItem("techlib-token");
+      const savedSettings = localStorage.getItem("techlib-settings");
 
-    if (savedUser) setUser(JSON.parse(savedUser));
-    if (savedToken) setToken(savedToken);
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+      if (savedSettings) {
+        setSettings(JSON.parse(savedSettings));
+      }
 
-    setLoadingAuth(false);
+      if (!savedToken) {
+        setToken(null);
+        setLoadingAuth(false);
+        return;
+      }
+
+      try {
+        // 🔐 VERIFY TOKEN WITH BACKEND
+        const res = await API.get("/auth/me", {
+          headers: { Authorization: `Bearer ${savedToken}` },
+        });
+
+        setUser(res.data.user);
+        setToken(savedToken);
+      } catch (err) {
+        console.warn("Token invalid or expired");
+        localStorage.removeItem("techlib-token");
+        localStorage.removeItem("techlib-user");
+
+        setUser(null);
+        setToken(null);
+      } finally {
+        setLoadingAuth(false);
+      }
+    };
+
+    initAuth();
   }, []);
-
-  /* ========================
-     SAVE USER
-  ======================== */
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("techlib-user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("techlib-user");
-    }
-  }, [user]);
-
-  /* ========================
-     SAVE TOKEN
-  ======================== */
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("techlib-token", token);
-    } else {
-      localStorage.removeItem("techlib-token");
-    }
-  }, [token]);
 
   /* ========================
      SAVE SETTINGS
@@ -64,26 +68,28 @@ export function AuthProvider({ children }) {
   }, [settings]);
 
   /* ========================
-     SOCKET CONNECT (SAFE)
+     SOCKET CONNECT (AUTH SAFE)
   ======================== */
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || !token) return;
 
+    socket.auth = { token }; // 🔐 attach token
     socket.connect();
+
     socket.emit("join", user.id);
 
     return () => {
-      socket.off("notification");
+      socket.disconnect();
     };
-  }, [user?.id]);
+  }, [user?.id, token]);
 
   /* ========================
      FETCH NOTIFICATIONS
   ======================== */
   useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!user?.id) return;
+    if (!user?.id || !token) return;
 
+    const fetchNotifications = async () => {
       try {
         const res = await API.get(`/notifications/${user.id}`);
         setNotifications(res.data);
@@ -93,19 +99,20 @@ export function AuthProvider({ children }) {
     };
 
     fetchNotifications();
-  }, [user?.id]);
+  }, [user?.id, token]);
 
   /* ========================
      SOCKET LISTENER
   ======================== */
   useEffect(() => {
-    const handleNewNotification = (notification) => {
+    const handler = (notification) => {
       setNotifications((prev) => {
         const exists = prev.find((n) => n.id === notification.id);
         if (exists) return prev;
         return [notification, ...prev];
       });
 
+      // 🔔 Toast handling
       if (notification.type === "admin") {
         toast("📢 Admin Message", {
           description: notification.message,
@@ -119,11 +126,8 @@ export function AuthProvider({ children }) {
       }
     };
 
-    socket.on("notification", handleNewNotification);
-
-    return () => {
-      socket.off("notification", handleNewNotification);
-    };
+    socket.on("notification", handler);
+    return () => socket.off("notification", handler);
   }, []);
 
   /* ========================
@@ -156,7 +160,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         token,
-        loadingAuth, // ✅ IMPORTANT FIX
+        loadingAuth,
         login,
         logout,
         settings,
