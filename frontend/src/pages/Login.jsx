@@ -36,7 +36,7 @@ export default function Login() {
       // ✅ ONLY USE CONTEXT LOGIN (SINGLE SOURCE OF TRUTH)
       login(data);
 
-      navigate("/home");
+      navigate("/Home");
 
     } catch (err) {
       setError(

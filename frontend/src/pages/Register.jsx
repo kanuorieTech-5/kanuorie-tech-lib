@@ -65,7 +65,7 @@ export default function Register() {
       login(loginData);
 
       // 4️⃣ Redirect
-      navigate("/home");
+      navigate("/Home");
 
     } catch (err) {
       setError(
