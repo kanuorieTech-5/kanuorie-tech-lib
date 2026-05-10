@@ -159,7 +159,7 @@ export default function Navbar() {
 
               {user?.role === "admin" && (
                 <NavLink to="/admin" onClick={closeMenu} className={navItem}>
-                  ⚡ Admin Panel
+                  ⚡ Admin dashboard
                 </NavLink>
               )}
             </>

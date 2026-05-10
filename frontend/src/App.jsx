@@ -52,6 +52,7 @@ function App() {
         <Route path="/termsOfService" element={<TermsOfService />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/faq" element={<FAQ />} />
         {/* PROTECTED ROUTES */}
         <Route path="/library" element={<Library />}/>
         <Route path="/courses" element={<Courses />}/>
