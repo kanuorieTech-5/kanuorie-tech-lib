@@ -1,4 +1,4 @@
-const { User, Course, Progress } = require("../models");
+const { User, Course, Progress, Book } = require("../models");
 const { Op, fn, col, literal } = require("sequelize");
 
 /* =========================

@@ -10,7 +10,6 @@ export default function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    role: "",
     password: "",
   });
 
@@ -32,9 +31,6 @@ export default function Register() {
     }
     if (formData.password.length < 6) {
       return "Password must be at least 6 characters";
-    }
-    if (!formData.role) {
-      return "Role is required";
     }
     return null;
   };
@@ -102,16 +98,6 @@ export default function Register() {
           name="email"
           placeholder="Email"
           value={formData.email}
-          onChange={handleChange}
-          className="w-full p-3 rounded-xl bg-white/20 border border-white/30 mb-4"
-        />
-
-        {/* Role */}
-        <input
-          type="text"
-          name="role"
-          placeholder="Role (e.g. Developer)"
-          value={formData.role}
           onChange={handleChange}
           className="w-full p-3 rounded-xl bg-white/20 border border-white/30 mb-4"
         />

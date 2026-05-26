@@ -3,6 +3,15 @@ const router = express.Router();
 
 const { Book } = require("../models");
 const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminMiddleware");
+
+const bookFields = (body) => ({
+  title: body.title,
+  desc: body.desc,
+  category: body.category,
+  img: body.img,
+  link: body.link,
+});
 
 // 📥 GET ALL BOOKS (admin or authenticated users)
 router.get("/", protect, async (req, res) => {
@@ -15,9 +24,9 @@ router.get("/", protect, async (req, res) => {
 });
 
 // ➕ CREATE BOOK (admin only)
-router.post("/", protect, async (req, res) => {
+router.post("/", protect, adminOnly, async (req, res) => {
   try {
-    const book = await Book.create(req.body);
+    const book = await Book.create(bookFields(req.body));
     res.status(201).json(book);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -25,12 +34,12 @@ router.post("/", protect, async (req, res) => {
 });
 
 // ✏️ UPDATE BOOK
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", protect, adminOnly, async (req, res) => {
   try {
     const book = await Book.findByPk(req.params.id);
     if (!book) return res.status(404).json({ message: "Not found" });
 
-    await book.update(req.body);
+    await book.update(bookFields(req.body));
     res.json(book);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -38,7 +47,7 @@ router.put("/:id", protect, async (req, res) => {
 });
 
 // ❌ DELETE BOOK
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", protect, adminOnly, async (req, res) => {
   try {
     const book = await Book.findByPk(req.params.id);
     if (!book) return res.status(404).json({ message: "Not found" });
