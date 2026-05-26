@@ -7,6 +7,10 @@ const Course = sequelize.define("Course", {
   //   primaryKey: true,
   //   autoIncrement: true,
   // },
+  resourceId: {
+    type: String,
+    required: true,
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,

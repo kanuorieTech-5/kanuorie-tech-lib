@@ -32,29 +32,33 @@ export default function Library() {
     try {
       setLoading(true);
 
-      const res = await API.get("/books");
+  const res = await API.get("/books");
 
-      const combined = [...defaultResources, ...res.data];
+  const combined = [...defaultResources, ...res.data];
 
-      const unique = Array.from(
-        new Map(
-          combined.map((r, index) => [
-            r.id || `${r.title}-${index}`,
-            { ...r, id: r.id || `${r.title}-${index}` },
-          ])
-        ).values()
-      );
+  const normalized = combined.map((r, index) => ({
+    ...r,
+    resourceId: r._id || r.id || `${r.title}-${index}`,
+  }));
+
+  const unique = Array.from(
+    new Map(
+      normalized.map((r) => [r.resourceId, r])
+      ).values()
+    );
 
       setResources(unique);
     } catch (err) {
       console.error("Failed to fetch resources:", err);
 
-      const fallback = defaultResources.map((r, i) => ({
-        ...r,
-        id: r.id || `${r.title}-${i}`,
-      }));
+  const fallback = defaultResources.map((r, index) => ({
+      ...r,
+      resourceId:
+        r.resourceId || r._id || r.id || `${r.title}-${index}`,
+    }));
 
-      setResources(fallback);
+    setResources(fallback);
+
     } finally {
       setLoading(false);
     }
@@ -65,35 +69,43 @@ export default function Library() {
     try {
       const res = await API.get("/courses"); // ✅ correct
 
-      const ids = res.data.map((c) => c.id); // ✅ always use id
-      setSavedIds(ids);
-    } catch (err) {
-      console.error("Failed to fetch courses:", err);
-    }
-  };
+  const ids = res.data.map( (c) => c.resourceId || c._id);
+
+    setSavedIds(ids);
+
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+      }
+    };
 
   /* ================= FILTER ================= */
-  const filtered = resources.filter((res) => {
+  const filtered = resources.filter((resource) => {
     return (
-      (res.title || "").toLowerCase().includes(search.toLowerCase()) &&
-      (category === "All" || (res.category || "General") === category)
+      (resource.title || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) &&
+      (category === "All" ||
+        (resource.category || "General") === category)
     );
   });
 
   /* ================= TRENDING ================= */
   const trending = resources.slice(0, 6);
 
-  /* ================= RECOMMENDED ================= */
-  const savedResources = resources.filter((r) =>
-    savedIds.includes(r.id) // ✅ FIXED
+  /* ================= SAVED RESOURCES ================= */
+  const savedResources = resources.filter((resource) =>
+    savedIds.includes(resource.resourceId)
   );
 
-  const savedCategories = savedResources.map((r) => r.category);
+  /* ================= RECOMMENDED ================= */
+  const savedCategories = savedResources.map(
+    (resource) => resource.category
+  );
 
   const recommended = resources.filter(
-    (r) =>
-      savedCategories.includes(r.category) &&
-      !savedIds.includes(r.id) // ✅ FIXED
+    (resource) =>
+      savedCategories.includes(resource.category) &&
+      !savedIds.includes(resource.resourceId)
   );
 
   /* ================= TOAST ================= */
@@ -103,40 +115,49 @@ export default function Library() {
   };
 
   /* ================= SAVE COURSE ================= */
-  const handleSave = async (resource) => {
-    try {
-      setSavingId(resource.id);
+    const handleSave = async (resource) => {
+      try {
+        setSavingId(resource._id || resource.id);
 
-      await API.post("/courses", {
-        id: resource.id,
-        title: resource.title,
-        category: resource.category || "General",
-        image: resource.img || resource.image,
-        link: resource.link,
-        progress: 0, 
-        notes: "", 
-      });
+    const payload = {
+      resourceId: resource.resourceId,
+      title: resource.title,
+      category: resource.category || "General",
+      image: resource.img || resource.image,
+      link: resource.link,
+      progress: 0,
+      notes: "",
+    };
 
-      setSavedIds((prev) => [...new Set([...prev, resource.id])]);
-      
-       window.dispatchEvent(new Event("course-update"));
+    const { data } = await API.post("/courses", payload);
 
-      showToast("Added to Courses 🎓");
-    } catch (err) {
+    setSavedIds((prev) => [
+      ...new Set([
+        ...prev,
+        data.resourceId || resource.resourceId,
+      ])
+    ]);
+
+    window.dispatchEvent(new Event("course-update"));
+
+    showToast("Added to Courses 🎓");
+
+    } 
+    catch (err) {
       console.error(err.response?.data || err.message);
-
       showToast(
-        err.response?.data?.message || "Failed to save course",
-        "error"
+      err.response?.data?.message || "Failed to save course",
+      "error"
       );
-    } finally {
+    } 
+    finally {
       setSavingId(null);
     }
   };
 
   /* ================= CARD ================= */
   const ResourceCard = ({ resource }) => {
-    const isSaved = savedIds.includes(resource.id);
+  const isSaved = savedIds.includes(resource.resourceId);
 
     return (
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
