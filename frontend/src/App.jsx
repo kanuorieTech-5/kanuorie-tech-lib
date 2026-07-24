@@ -40,8 +40,8 @@ function App() {
       
       <Routes>
         {/* PUBLIC ROUTES */}
-        <Route path="/" element={<Register />} />
-        <Route path="/home" element={<Home />} />
+        {/* <Route path="/" element={<Register />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<Settings />} />
@@ -52,7 +52,7 @@ function App() {
         <Route path="/termsOfService" element={<TermsOfService />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/faq" element={<FAQ />} />
+        {/* <Route path="/faq" element={<FAQ />} /> */}
         {/* PROTECTED ROUTES */}
         <Route path="/library" element={<Library />}/>
         <Route path="/courses" element={<Courses />}/>

@@ -15,11 +15,11 @@ export default function LibraryCard({ title, desc, link }) {
 
       <a
         href={link}
-        target="_blank"
+        target=""
         rel="noopener noreferrer"
       >
         <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-xl text-sm w-full">
-          Open Lesson
+          Open
         </button>
       </a>
     </motion.div>

@@ -1,17 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import {
-  Menu,
-  X,
-  Home,
-  Book,
-  User,
-  Settings,
-  Bell,
-  HelpCircle,
-  Info,
-  Phone,
-  LogOut,
-} from "lucide-react";
+import { Menu, X, Home, Book, User, Settings, Bell, HelpCircle, Info, Phone, LogOut,} from "lucide-react";
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import logo from "../assets/Logo.png";
@@ -62,7 +50,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-black sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 h-16 flex justify-between items-center">
 
         {/* LOGO */}
         <Link
@@ -101,6 +89,9 @@ export default function Navbar() {
               </span>
             )}
           </Link>
+          <NavLink to="/profile" onClick={closeMenu} className="text-white hover:text-yellow-400 transition">
+              <User size={20} /> 
+          </NavLink>
 
           {/* MENU BUTTON */}
           <button
@@ -135,12 +126,8 @@ export default function Navbar() {
             <Home size={18} /> Home
           </NavLink>
 
-          {token && (
-            <>
-              <NavLink to="/profile" onClick={closeMenu} className={navItem}>
-                <User size={18} /> Profile
-              </NavLink>
-
+          {/* {token && (
+            <> */}
               <NavLink to="/library" onClick={closeMenu} className={navItem}>
                 <Book size={18} /> Library
               </NavLink>
@@ -162,8 +149,8 @@ export default function Navbar() {
                   ⚡ Admin dashboard
                 </NavLink>
               )}
-            </>
-          )}
+            {/* </> */}
+          {/* )} */}
 
           {/* PUBLIC */}
           <NavLink to="/about" onClick={closeMenu} className={navItem}>
@@ -178,7 +165,7 @@ export default function Navbar() {
             <Phone size={18} /> Contact
           </NavLink>
 
-          <NavLink to="/faq" onClick={closeMenu} className={navItem}>
+          <NavLink to="/Help" onClick={closeMenu} className={navItem}>
             <Info size={18} /> FAQ
           </NavLink>
 

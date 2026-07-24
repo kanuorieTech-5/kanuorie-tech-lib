@@ -1,3 +1,4 @@
+import {FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaGithub,} from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white mt-20">
@@ -60,58 +61,55 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h3 className="font-semibold mb-4">Contact</h3>
+          <h2 className="text-white font-bold text-xl mb-6">
+             Follow Us On Social Media
+          </h2>
+          <div className="flex gap-4">
+            <a
+              className="text-blue-600 flex gap-4"
+              href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaLinkedinIn />
+            </a>
 
-          <p className="text-gray-400"
+            <a
+              className="text-blue-600 flex gap-4"
+              href="https://www.instagram.com/stephaniekanu_/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaInstagram />
+            </a>
 
-          >
-            Email: support@KanuorieTechlib.com
-          </p>
+            <a
+              className="text-blue-600 flex gap-4"
+              href="https://twitter.com/kanustephanie22"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaTwitter />
+            </a>
 
-          <a
-            className="text-blue-600 flex gap-4"
-            href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn
-          </a>
+            <a
+              className="text-blue-600 flex gap-4"
+              href="https://web.facebook.com/stephgirlsplace/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaFacebookF />
+            </a>
 
-          <a
-            className="text-blue-600 flex gap-4"
-            href="https://www.instagram.com/stephaniekanu_/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Instagram
-          </a>
-
-          <a
-            className="text-blue-600 flex gap-4"
-            href="https://twitter.com/kanustephanie22"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Twitter
-          </a>
-
-          <a
-            className="text-blue-600 flex gap-4"
-            href="https://web.facebook.com/stephgirlsplace/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Facebook
-          </a>
-
-          <a
-            className="text-blue-600 flex gap-4"
-            href="https://github.com/stephaniekanu-5"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
+            <a
+              className="text-blue-600 flex gap-4"
+              href="https://github.com/stephaniekanu-5"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaGithub />
+            </a>
+          </div>
         </div>
 
       </div>

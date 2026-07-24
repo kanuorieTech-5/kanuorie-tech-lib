@@ -6,6 +6,24 @@ export default function Help() {
 
   const faqs = [
     {
+      question: "What is KanuorieTechLib?",
+      answer:
+        "A curated platform for developers to learn and grow.",
+    },
+    {
+      question: "Is it free?",
+      answer: "Yes, it's completely free.",
+    },
+    {
+      question: "Can I contribute?",
+      answer: "Yes, via your profile after login.",
+    },
+    {
+      question: "Do I need an account?",
+      answer:
+        "Not required for browsing, but needed for saving progress.",
+    },
+    {
       question: "How do I add a resource?",
       answer:
         "Go to your profile and click on 'Add Resource'. Fill in the details and save.",
@@ -37,7 +55,30 @@ export default function Help() {
       faq.question.toLowerCase().includes(search.toLowerCase()) ||
       faq.answer.toLowerCase().includes(search.toLowerCase())
   );
-
+  const testimonials = [
+    {
+      name: "David K.",
+      role: "Frontend Developer",
+      message:
+        "This platform helped me find the best resources to level up my React skills.",
+      avatar: "https://i.pravatar.cc/100?img=1",
+    },
+    {
+      name: "Sarah M.",
+      role: "UI/UX Designer",
+      message:
+        "I love how everything is organized. It saves me hours of searching!",
+      avatar: "https://i.pravatar.cc/100?img=5",
+    },
+    {
+      name: "James T.",
+      role: "Backend Developer",
+      message:
+        "Finally a focused learning platform for developers.",
+      avatar: "https://i.pravatar.cc/100?img=8",
+    },
+  ];
+    
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -113,6 +154,32 @@ export default function Help() {
             ))}
           </div>
         </div>
+        {/* TESTIMONIALS */}
+        <section className="bg-white p-6 rounded-2xl shadow-md mt-20">
+          <h2 className="text-3xl font-bold text-center">
+            What Our Users Say 💬
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6 mt-8">
+            {testimonials.map((t, i) => (
+              <div key={i} className="p-6 rounded-xl shadow">
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={t.avatar}
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{t.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      {t.role}
+                    </p>
+                  </div>
+                </div>
+                <p className="italic">"{t.message}"</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* CONTACT SUPPORT */}
         <div className="mt-16 text-center">

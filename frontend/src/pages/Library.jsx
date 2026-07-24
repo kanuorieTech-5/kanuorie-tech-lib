@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import API from "../api/axios";
 import defaultResources from "../data/resources";
+import { NavLink, useNavigate, Link } from "react-router-dom";
+import Footer from "../components/footer";
 
 export default function Library() {
   const categories = [
@@ -177,7 +179,7 @@ export default function Library() {
             {resource.category}
           </span>
 
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-15 mt-2 p-">
             <button
               onClick={() => handleSave(resource)}
               disabled={isSaved || savingId === resource.id}
@@ -197,11 +199,11 @@ export default function Library() {
             {resource.link && (
               <a
                 href={resource.link}
-                target="_blank"
+                target=""
                 rel="noopener noreferrer"
-                className="bg-gray-800 text-white px-2 py-1 rounded text-xs"
+                className="bg-gray-800 text-white px-4 py-4 rounded text-xs"
               >
-                Open
+                Read
               </a>
             )}
           </div>
@@ -210,91 +212,115 @@ export default function Library() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="text-center py-20 text-gray-500">
-        Loading resources...
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="text-center py-20 text-gray-500">
+  //       Loading resources...
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="min-h-screen bg-white pb-20">
-      <Navbar />
-
-      {/* HEADER */}
-      <div className="p-6 text-center text-white bg-purple-600"
-      style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60")',
-        }}>
-        <h1 className="text-3xl font-bold">Tech Library</h1>
-      </div>
-
-      {/* TOAST */}
-      {toast.message && (
-        <div className="fixed top-5 right-5 bg-black text-white px-4 py-2 rounded">
-          {toast.message}
-        </div>
-      )}
-
-      {/* TRENDING */}
-      <h2 className="text-xl font-bold px-6 mt-6">🔥 Trending</h2>
-      <div className="flex gap-4 overflow-x-auto px-6 pb-4">
-        {trending.map((r) => (
-          <div key={r.id} className="min-w-[200px]">
-            <ResourceCard resource={r} />
-          </div>
-        ))}
-      </div>
-
-      {/* RECOMMENDED */}
-      {recommended.length > 0 && (
-        <>
-          <h2 className="text-xl font-bold px-6 mt-6">🎯 Recommended</h2>
-          <div className="flex gap-4 overflow-x-auto px-6 pb-4">
-            {recommended.map((r) => (
-              <div key={r.id} className="min-w-[200px]">
-                <ResourceCard resource={r} />
+    <main className="bg-blue-50">
+      <div className="min-h-screen pb-20">
+        <Navbar />
+        {/* HERO */}
+          <section>
+            <div
+              className="relative h-64 w-full bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  'url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60")',
+              }}
+            >
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-10">
+                <h1 className="text-4xl font-bold text-white text-center">
+                  Curated knowledge for the <br />
+                  <span className="text-blue-500">modern developer.</span>
+                </h1>
               </div>
-            ))}
+            </div>
+            <div className="p-5">
+            <p className="text-lg text-gray-600 mt-6">
+              Unlock your tech potential with structured learning resources at your fingertips. Whether you're a beginner or a seasoned professional pushing toward mastery, explore powerful, 
+              handpicked resources designed to accelerate your growth. Learn smarter, build faster, and become the developer you’ve always aimed to be starting today.
+            </p>
+
+            <Link
+              to="/courses"
+              className="bg-blue-600 text-white px-6 py-3 rounded-full mt-6 inline-block"
+            >
+              Continue Learning →
+            </Link>
           </div>
-        </>
-      )}
+          </section>
 
-      {/* SEARCH */}
-      <div className="flex gap-4 px-6 mt-6">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 border p-3 rounded"
-        />
+        {/* TOAST */}
+        {toast.message && (
+          <div className="fixed top-5 right-5 bg-black text-white px-4 py-2 rounded">
+            {toast.message}
+          </div>
+        )}
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border p-3 rounded"
-        >
-          {categories.map((cat) => (
-            <option key={cat}>{cat}</option>
+        {/* TRENDING */}
+        <h2 className="text-xl font-bold px-6 mt-6">🔥 Trending</h2>
+        <div className="flex gap-4 overflow-x-auto px-6 pb-4">
+          {trending.map((r) => (
+            <div key={r.id} className="min-w-[200px]">
+              <ResourceCard resource={r} />
+            </div>
           ))}
-        </select>
-      </div>
-
-      {/* GRID */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6 mt-6">
-        {filtered.map((r) => (
-          <ResourceCard key={r.id} resource={r} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-20 text-gray-500">
-          No resources found.
         </div>
-      )}
-    </div>
+
+        {/* RECOMMENDED */}
+        {recommended.length > 0 && (
+          <>
+            <h2 className="text-xl font-bold px-6 mt-6">🎯 Recommended</h2>
+            <div className="flex gap-4 overflow-x-auto px-6 pb-4">
+              {recommended.map((r) => (
+                <div key={r.id} className="min-w-[200px]">
+                  <ResourceCard resource={r} />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* SEARCH */}
+        <div className="flex gap-4 px-6 mt-6">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border p-3 rounded"
+          />
+
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border p-3 rounded"
+          >
+            {categories.map((cat) => (
+              <option key={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* GRID */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6 mt-6">
+          {filtered.map((r) => (
+            <ResourceCard key={r.id} resource={r} />
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-20 text-gray-500">
+            No resources found.
+          </div>
+        )}
+      </div>
+      <Footer />
+    </main>
   );
 }

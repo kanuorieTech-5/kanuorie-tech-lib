@@ -24,49 +24,59 @@ export default function Register() {
     }));
   };
 
-  // 🔥 VALIDATION (PRODUCTION SAFE)
   const validateForm = () => {
     if (!formData.name || !formData.email || !formData.password) {
       return "All fields are required";
     }
+
     if (formData.password.length < 6) {
       return "Password must be at least 6 characters";
     }
+
     return null;
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    console.log("REGISTER CLICKED");
+
     setError("");
 
     const validationError = validateForm();
+
     if (validationError) {
       setError(validationError);
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      // 1️⃣ Register user
+    try {
+      console.log("Sending register request");
+
       await registerUser(formData);
 
-      // 2️⃣ Auto login
+      console.log("Registration successful");
+
       const loginData = await loginUser({
         email: formData.email,
         password: formData.password,
       });
 
-      // 3️⃣ Save session
       login(loginData);
 
-      // 4️⃣ Redirect
-      navigate("/Home");
+      navigate("/home");
 
     } catch (err) {
+      console.error(err);
+
       setError(
-        err.response?.data?.message || "Registration failed. Try again."
+        err?.response?.data?.message ||
+        err?.message ||
+        "Registration failed"
       );
+
     } finally {
       setLoading(false);
     }
@@ -82,27 +92,24 @@ export default function Register() {
           Create Account
         </h1>
 
-        {/* Name */}
         <input
           type="text"
           name="name"
           placeholder="Full Name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full p-3 rounded-xl bg-white/20 border border-white/30 mb-4"
+          className="w-full p-3 rounded-xl mb-4 text-black"
         />
 
-        {/* Email */}
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full p-3 rounded-xl bg-white/20 border border-white/30 mb-4"
+          className="w-full p-3 rounded-xl mb-4 text-black"
         />
 
-        {/* Password */}
         <div className="relative mb-4">
           <input
             type={showPassword ? "text" : "password"}
@@ -110,37 +117,42 @@ export default function Register() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-white/20 border border-white/30 pr-12"
+            className="w-full p-3 rounded-xl pr-14 text-black"
           />
 
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+            onClick={() =>
+              setShowPassword((v) => !v)
+            }
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-black"
           >
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
 
-        {/* Error */}
         {error && (
-          <p className="text-red-300 text-sm mb-4 text-center">
+          <p className="text-red-300 text-sm mb-3">
             {error}
           </p>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
-          className="bg-white text-purple-700 w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
+          disabled={loading}
+          className="bg-white text-purple-700 w-full py-3 rounded-xl"
         >
-          {loading ? "Creating account..." : "Sign Up"}
+          {loading
+            ? "Creating account..."
+            : "Sign Up"}
         </button>
 
-        {/* Login */}
-        <p className="text-sm text-center mt-4">
+        <p className="mt-4 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="underline font-medium">
+          <Link
+            to="/login"
+            className="underline"
+          >
             Login
           </Link>
         </p>

@@ -2,15 +2,7 @@ import { useState, useEffect } from "react";
 import API from "../api/axios";
 import Navbar from "../components/Navbar";
 import socket from "../socket";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import {LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,} from "recharts";
 
 export default function Admin() {
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -18,23 +10,11 @@ export default function Admin() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
   const [broadcastMsg, setBroadcastMsg] = useState("");
-
-  const [form, setForm] = useState({
-    title: "",
-    desc: "",
-    category: "",
-    img: "",
-    link: "",
-  });
-
-  const [charts, setCharts] = useState({
-    userGrowth: [],
-    bookTrend: [],
-  });
+  const [form, setForm] = useState({title: "", desc: "", category: "", img: "", link: "",});
+  const [charts, setCharts] = useState({userGrowth: [], bookTrend: [], });
 
   /* ================= SOCKET (REAL-TIME ADMIN) ================= */
   useEffect(() => {

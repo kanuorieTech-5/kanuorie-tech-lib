@@ -122,7 +122,12 @@ useEffect(() => {
         <h1 className="text-3xl font-bold mb-8">🎓 My Courses</h1>
 
         {courses.length === 0 ? (
-          <p className="text-gray-500">No courses available.</p>
+          <div className="space-y-4">
+            <p className="text-gray-500">No saved courses yet. choose and save courses from the library for a personalized learning experience.</p>
+            <button className="text-sm mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded" onClick={() => window.location.href = "/library"}>
+              Browse Library
+            </button>
+          </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
             {courses.map((course) => {

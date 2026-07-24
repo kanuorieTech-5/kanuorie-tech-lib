@@ -5,6 +5,7 @@ npm-debug.log*
 # Env files
 .env
 .env.*
+.env.example
 
 # Build folders
 dist/
