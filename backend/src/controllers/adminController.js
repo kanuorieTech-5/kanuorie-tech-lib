@@ -1,73 +1,132 @@
-const { User, Course, Progress, Book } = require("../models");
-const { Op, fn, col, literal } = require("sequelize");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
 
-/* =========================
-   🔐 ADMIN CHECK MIDDLEWARE
-========================= */
-const isAdmin = (req, res) => {
-  if (req.user.role !== "admin") {
-    res.status(403);
-    throw new Error("Admin access only");
-  }
-};
+const User = require("../models/User");
+const Course = require("../models/Course");
+const Book = require("../models/Book");
+const Progress = require("../models/Progress");
 
-/* =========================
-   📊 GET DASHBOARD STATS
-========================= */
-exports.getStats = async (req, res) => {
-  try {
-    /* =========================
-       📊 TOTALS
-    ========================= */
-    const totalUsers = await User.count();
-    const totalCourses = await Course.count();
-    const totalBooks = await Book.count();
-    const totalProgress = await Progress.count();
+/* ==========================================
+   GET ADMIN DASHBOARD
+========================================== */
+const getStats = asyncHandler(async (req, res) => {
+  const [
+    totalUsers,
+    totalCourses,
+    totalBooks,
+    totalProgress,
+    verifiedUsers,
+    blockedUsers,
+    featuredBooks,
+  ] = await Promise.all([
+    User.countDocuments(),
+    Course.countDocuments(),
+    Book.countDocuments(),
+    Progress.countDocuments(),
+    User.countDocuments({ isVerified: true }),
+    User.countDocuments({ isBlocked: true }),
+    Book.countDocuments({ featured: true }),
+  ]);
 
-    /* =========================
-       📈 USER GROWTH (LAST 7 DAYS)
-    ========================= */
-    const userGrowth = await User.findAll({
-      attributes: [
-        [fn("DATE", col("createdAt")), "date"],
-        [fn("COUNT", col("id")), "count"],
-      ],
-      where: {
+  /* ==========================================
+     USER GROWTH (LAST 7 DAYS)
+  ========================================== */
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const userGrowth = await User.aggregate([
+    {
+      $match: {
         createdAt: {
-          [Op.gte]: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          $gte: sevenDaysAgo,
         },
       },
-      group: [fn("DATE", col("createdAt"))],
-      order: [[fn("DATE", col("createdAt")), "ASC"]],
-      raw: true,
-    });
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$createdAt",
+          },
+        },
+        users: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: {
+        _id: 1,
+      },
+    },
+  ]);
 
-    /* =========================
-       📚 BOOK CREATION TREND
-    ========================= */
-    const bookTrend = await Book.findAll({
-      attributes: [
-        [fn("DATE", col("createdAt")), "date"],
-        [fn("COUNT", col("id")), "count"],
-      ],
-      group: [fn("DATE", col("createdAt"))],
-      order: [[fn("DATE", col("createdAt")), "ASC"]],
-      raw: true,
-    });
+  /* ==========================================
+     BOOK TREND
+  ========================================== */
 
-    /* =========================
-       📊 COURSE ENGAGEMENT
-    ========================= */
-    const courseEngagement = await Progress.findAll({
-      attributes: [
-        "courseId",
-        [fn("COUNT", col("id")), "count"],
-      ],
-      group: ["courseId"],
-      raw: true,
-    });
+  const bookTrend = await Book.aggregate([
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$createdAt",
+          },
+        },
+        books: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: {
+        _id: 1,
+      },
+    },
+  ]);
 
-    res.json({
+  /* ==========================================
+     COURSE ENGAGEMENT
+  ========================================== */
+
+  const courseEngagement = await Progress.aggregate([
+    {
+      $group: {
+        _id: "$course",
+        activity: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: {
+        activity: -1,
+      },
+    },
+  ]);
+
+  /* ==========================================
+     RECENT USERS & BOOKS
+  ========================================== */
+
+  const [latestUsers, latestBooks] = await Promise.all([
+    User.find()
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .limit(5),
+
+    Book.find()
+      .sort({ createdAt: -1 })
+      .limit(5),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    {
       totals: {
         users: totalUsers,
         courses: totalCourses,
@@ -75,73 +134,139 @@ exports.getStats = async (req, res) => {
         progress: totalProgress,
       },
 
-      charts: {
-        userGrowth: userGrowth.map((u) => ({
-          date: u.date,
-          users: parseInt(u.count),
-        })),
-
-        bookTrend: bookTrend.map((b) => ({
-          date: b.date,
-          books: parseInt(b.count),
-        })),
-
-        courseEngagement: courseEngagement.map((c) => ({
-          courseId: c.courseId,
-          activity: parseInt(c.count),
-        })),
+      summary: {
+        verifiedUsers,
+        blockedUsers,
+        featuredBooks,
       },
-    });
-  } catch (err) {
-    console.error("Stats Error:", err);
-    res.status(500).json({ message: err.message });
+
+      charts: {
+        userGrowth,
+        bookTrend,
+        courseEngagement,
+      },
+
+      latestUsers,
+      latestBooks,
+    },
+    "Dashboard statistics retrieved successfully."
+  );
+});
+
+/* ==========================================
+   GET ALL USERS
+========================================== */
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find()
+    .select("-password")
+    .sort({ createdAt: -1 });
+
+  return ApiResponse.success(
+    res,
+    users,
+    "Users retrieved successfully."
+  );
+});
+
+/* ==========================================
+   GET SINGLE USER
+========================================== */
+
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+    .select("-password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
   }
-};
 
-/* =========================
-   👥 GET ALL USERS
-========================= */
-exports.getUsers = async (req, res) => {
-  try {
-    isAdmin(req, res);
+  const [courses, progress] = await Promise.all([
+    Course.find({
+      createdBy: user._id,
+    }),
 
-    const users = await User.findAll({
-      attributes: { exclude: ["password"] },
-      include: [Course, Progress], // 🔥 include relations
-    });
+    Progress.find({
+      user: user._id,
+    }).populate("course"),
+  ]);
 
-    res.json(users);
-  } catch (err) {
-    console.error("Get Users Error:", err);
-    res.status(500).json({ message: err.message });
+  return ApiResponse.success(
+    res,
+    {
+      user,
+      courses,
+      progress,
+    },
+    "User retrieved successfully."
+  );
+});
+
+/* ==========================================
+   DELETE USER
+========================================== */
+
+const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user._id.toString() === req.params.id) {
+    throw new ApiError(
+      400,
+      "You cannot delete your own account."
+    );
   }
-};
 
-/* =========================
-   🗑 DELETE USER
-========================= */
-exports.deleteUser = async (req, res) => {
-  try {
-    isAdmin(req, res);
+  const user = await User.findById(req.params.id);
 
-    const userId = parseInt(req.params.id);
-
-    // 🚫 Prevent admin deleting themselves
-    if (req.user.id === userId) {
-      return res.status(400).json({ message: "You cannot delete yourself" });
-    }
-
-    const user = await User.findByPk(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    await user.destroy();
-
-    res.json({ message: "User deleted successfully" });
-  } catch (err) {
-    console.error("Delete User Error:", err);
-    res.status(500).json({ message: err.message });
+  if (!user) {
+    throw new ApiError(404, "User not found.");
   }
+
+  await Promise.all([
+    Course.deleteMany({
+      createdBy: user._id,
+    }),
+
+    Progress.deleteMany({
+      user: user._id,
+    }),
+
+    user.deleteOne(),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    null,
+    "User deleted successfully."
+  );
+});
+
+/* ==========================================
+   BLOCK / UNBLOCK USER
+========================================== */
+
+const toggleBlockUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  user.isBlocked = !user.isBlocked;
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    user,
+    user.isBlocked
+      ? "User blocked successfully."
+      : "User unblocked successfully."
+  );
+});
+
+module.exports = {
+  getStats,
+  getUsers,
+  getUser,
+  deleteUser,
+  toggleBlockUser,
 };

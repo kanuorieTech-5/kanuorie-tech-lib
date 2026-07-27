@@ -1,63 +1,198 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+const mongoose = require("mongoose");
+const slugify = require("../helpers/slugify");
 
-const Course = sequelize.define("Course", {
-  // id: {
-  //   type: DataTypes.INTEGER,
-  //   primaryKey: true,
-  //   autoIncrement: true,
-  // },
-  resourceId: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: true,  
-  },
-  image: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  link: {
-    type: DataTypes.STRING, 
-    allowNull: true,
+/* ==========================================
+   LESSON SCHEMA
+========================================== */
+const lessonSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
+    description: {
+      type: String,
+      default: "",
+    },
+
+    videoUrl: {
+      type: String,
+      default: "",
+    },
+
+    duration: {
+      type: Number,
+      default: 0,
+    },
+
+    order: {
+      type: Number,
+      default: 0,
+    },
+
+    resources: [
+      {
+        type: String,
+      },
+    ],
   },
-  progress: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0,
-    validate: {
-    min: 0,
-    max: 100,
+  {
+    _id: false,
+  }
+);
+
+/* ==========================================
+   COURSE SCHEMA
+========================================== */
+const courseSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    category: {
+      type: String,
+      default: "General",
+      index: true,
+    },
+
+    image: {
+      type: String,
+      default: "",
+    },
+
+    link: {
+      type: String,
+      default: "",
+    },
+
+    instructor: {
+      type: String,
+      default: "KanuorieTech",
+    },
+
+    level: {
+      type: String,
+      enum: [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+      ],
+      default: "Beginner",
+    },
+
+    language: {
+      type: String,
+      default: "English",
+    },
+
+    duration: {
+      type: Number,
+      default: 0,
+    },
+
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+
+    premium: {
+      type: Boolean,
+      default: false,
+    },
+
+    published: {
+      type: Boolean,
+      default: true,
+    },
+
+    enrollments: {
+      type: Number,
+      default: 0,
+    },
+
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+
+    totalRatings: {
+      type: Number,
+      default: 0,
+    },
+
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    prerequisites: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    outcomes: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    lessons: [lessonSchema],
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  },
-  lastProgressUpdate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  notes: {
-  type: DataTypes.TEXT,
-  defaultValue: "",
-},
+  {
+    timestamps: true,
+  }
+);
+
+/* ==========================================
+   GENERATE SLUG
+========================================== */
+courseSchema.pre("save", function (next) {
+  if (this.isModified("title")) {
+    this.slug = slugify(this.title);
+  }
+
+  next();
 });
 
-Course.associate = (models) => {
-  Course.belongsTo(models.User, { foreignKey: "userId" });
-  Course.hasMany(models.Progress, { foreignKey: "courseId" });
-  Course.hasOne(models.Progress, { foreignKey: "courseId" });
-};
+/* ==========================================
+   INDEXES
+========================================== */
+courseSchema.index({
+  title: "text",
+  description: "text",
+  category: "text",
+});
 
-module.exports = Course;
+module.exports = mongoose.model("Course", courseSchema);

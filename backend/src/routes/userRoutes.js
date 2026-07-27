@@ -1,21 +1,46 @@
 const express = require("express");
+
 const router = express.Router();
 
 const {
-  updateUser,
-  updateSettings,
-  getFullUserProfile,
+  getProfile,
+  updateProfile,
+  getUsers,
+  getUser,
+  updateUserRole,
+  deleteUser,
 } = require("../controllers/userController");
 
-const protect = require("../middleware/authMiddleware");
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
 
-// 👤 Get full profile (with relations)
-router.get("/:id/full", protect, getFullUserProfile);
+/* ==========================================
+   CURRENT USER
+========================================== */
 
-// 👤 Profile update
-router.put("/:id", protect, updateUser);
+router
+  .route("/profile")
+  .get(protect, getProfile)
+  .put(protect, updateProfile);
 
-// ⚙️ Settings update
-router.put("/:id/settings", protect, updateSettings);
+/* ==========================================
+   ADMIN USER MANAGEMENT
+========================================== */
+
+router
+  .route("/")
+  .get(protect, adminOnly, getUsers);
+
+router
+  .route("/:id")
+  .get(protect, adminOnly, getUser)
+  .delete(protect, adminOnly, deleteUser);
+
+router.put(
+  "/:id/role",
+  protect,
+  adminOnly,
+  updateUserRole
+);
 
 module.exports = router;

@@ -1,65 +1,217 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-const User = sequelize.define(
-  "User",
+const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+    firstName: {
+      type: String,
+      required: [true, "First name is required"],
+      trim: true,
+      minlength: 2,
+      maxlength: 50,
+    },
+
+    lastName: {
+      type: String,
+      required: [true, "Last name is required"],
+      trim: true,
+      minlength: 2,
+      maxlength: 50,
     },
 
     email: {
-      type: DataTypes.STRING,
+      type: String,
+      required: [true, "Email is required"],
       unique: true,
-      allowNull: false,
-      validate: {
-        isEmail: true,
-        notEmpty: true,
-      },
+      lowercase: true,
+      trim: true,
+      match: [
+        /^\S+@\S+\.\S+$/,
+        "Please provide a valid email address",
+      ],
+      index: true,
     },
 
     password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [6, 255],
-      },
+      type: String,
+      required: [true, "Password is required"],
+      minlength: 6,
+      select: false,
+    },
+
+    avatar: {
+      type: String,
+      default: null,
+    },
+
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    bio: {
+      type:String,
+      trim:true,
+      maxlength:500,
+      default:"",
     },
 
     role: {
-      type: DataTypes.ENUM("user", "admin"),
-      defaultValue: "user",
-      allowNull: false,
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+      index: true,
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationToken: {
+      type: String,
+      default: "",
+    },
+
+    passwordResetToken: {
+      type: String,
+      default: null,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null,
+    },
+    passwordChangedAt:{
+      type:Date,
+      default:null
+    },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+    lastSeen: {
+      type: Date,
+      default: Date.now,
+    },
+    settings: {
+      theme: {
+        type: String,
+        enum: ["light", "dark", "system"],
+        default: "system",
+      },
+      emailNotifications: {
+        type: Boolean,
+        default: true,
+      },
+      pushNotifications: {
+        type: Boolean,
+        default: true,
+      },
+      language: {
+        type: String,
+        default: "en",
+      },
     },
   },
-  { 
-    tableName: "Users",
-    freezeTableName: true,
-    timestamps: true, // ✅ IMPORTANT for Postgres apps
+  {
+    timestamps: true,
 
-    hooks: {
-      beforeCreate: (user) => {
-        if (user.email) {
-          user.email = user.email.toLowerCase().trim();
-        }
-      },
-      beforeUpdate: (user) => {
-        if (user.email) {
-          user.email = user.email.toLowerCase().trim();
-        }
-      },
+    toJSON: {
+      virtuals: true,
     },
-  }
+
+    toObject: {
+      virtuals: true,
+    },
+}
 );
-User.associate = (models) => {
-  User.hasMany(models.Book, { foreignKey: "userId" });
-  User.hasMany(models.Course, { foreignKey: "userId" });
-  User.hasMany(models.Notification, { foreignKey: "userId" });
-  User.hasMany(models.Progress, { foreignKey: "userId" });
+userSchema.pre("validate", function (next) {
+  if (this.email) {
+    this.email = this.email.toLowerCase().trim();
+  }
+
+  next();
+});
+/* =========================
+   HASH PASSWORD
+========================= */
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+  this.passwordChangedAt = new Date();
+
+  next();
+});
+/* =========================
+   COMPARE PASSWORD
+========================= */
+
+userSchema.methods.matchPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
 };
 
-module.exports = User;
+/* =========================
+   FULL NAME
+========================= */
+
+userSchema.virtual("fullName").get(function () {
+  return `${this.firstName} ${this.lastName}`;
+});
+
+/* =========================
+   REMOVE SENSITIVE DATA
+========================= */
+
+userSchema.methods.toJSON = function () {
+  const user = this.toObject({ virtuals: true });
+
+  delete user.password;
+  delete user.passwordResetToken;
+  delete user.passwordResetExpires;
+  delete user.emailVerificationToken;
+  delete user.emailVerificationExpires;
+
+  return user;
+};
+userSchema.methods.incrementLogin = async function () {
+  this.lastLogin = new Date();
+  this.loginCount += 1;
+
+  return this.save();
+};
+/* =========================
+   INDEXES
+========================= */
+userSchema.index({
+    createdAt: -1,
+});
+
+userSchema.index({
+  role: 1,
+  isVerified:1,
+  isBlocked:1
+});
+
+module.exports = mongoose.model("User", userSchema);

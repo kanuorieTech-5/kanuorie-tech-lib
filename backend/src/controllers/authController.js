@@ -1,102 +1,198 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const signToken = (user) => {
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not configured");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
+const generateToken = require("../utils/generateToken");
+
+/* ==========================================
+   REGISTER USER
+========================================== */
+const register = asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+
+  if (!firstName || !lastName || !email || !password) {
+    throw new ApiError(400, "Please provide all required fields.");
   }
 
-  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+  const existingUser = await User.findOne({
+    email: email.toLowerCase(),
   });
-};
 
-exports.register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "Name, email, and password are required",
-      });
-    }
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const userExists = await User.findOne({ where: { email: normalizedEmail } });
-
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({
-      name: name.trim(),
-      email: normalizedEmail,
-      password: hashedPassword,
-      role: "user",
-    });
-
-    res.status(201).json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Registration failed" });
+  if (existingUser) {
+    throw new ApiError(409, "Email already exists.");
   }
-};
 
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const user = await User.create({
+    firstName,
+    lastName,
+    email: email.toLowerCase(),
+    password,
+  });
 
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Email and password are required",
-      });
-    }
+  const token = generateToken(user._id);
 
-    const user = await User.findOne({
-      where: { email: email.toLowerCase().trim() },
-    });
-
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const token = signToken(user);
-
-    res.json({
+  return ApiResponse.success(
+    res,
+    {
       token,
       user: {
-        id: user.id,
-        name: user.name,
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         role: user.role,
       },
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Login failed" });
-  }
-};
-
-exports.me = async (req, res) => {
-  res.json({
-    user: {
-      id: req.user.id,
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
     },
-  });
+    "Account created successfully.",
+    201
+  );
+});
+
+/* ==========================================
+   LOGIN USER
+========================================== */
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({
+    email: email.toLowerCase(),
+  }).select("+password");
+
+  if (!user) {
+    throw new ApiError(401, "Invalid email or password.");
+  }
+
+  const isMatch = await user.matchPassword(password);
+
+  if (!isMatch) {
+    throw new ApiError(401, "Invalid email or password.");
+  }
+
+  user.lastLogin = new Date();
+  user.loginCount += 1;
+
+  await user.save();
+
+  const token = generateToken(user._id);
+
+  return ApiResponse.success(
+    res,
+    {
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    },
+    "Login successful."
+  );
+});
+
+/* ==========================================
+   GET CURRENT USER
+========================================== */
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  return ApiResponse.success(
+    res,
+    user,
+    "User retrieved successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE PROFILE
+========================================== */
+const updateProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  if (req.body.email) {
+    const existingEmail = await User.findOne({
+      email: req.body.email.toLowerCase(),
+      _id: { $ne: user._id },
+    });
+
+    if (existingEmail) {
+      throw new ApiError(409, "Email already exists.");
+    }
+
+    user.email = req.body.email.toLowerCase();
+  }
+
+  user.firstName = req.body.firstName || user.firstName;
+  user.lastName = req.body.lastName || user.lastName;
+  user.avatar = req.body.avatar || user.avatar;
+  user.phone = req.body.phone || user.phone;
+  user.bio = req.body.bio || user.bio;
+
+  if (req.body.password) {
+    user.password = req.body.password;
+  }
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      avatar: user.avatar,
+      phone: user.phone,
+      bio: user.bio,
+      role: user.role,
+    },
+    "Profile updated successfully."
+  );
+});
+
+/* ==========================================
+   CHANGE PASSWORD
+========================================== */
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  const isMatch = await user.matchPassword(currentPassword);
+
+  if (!isMatch) {
+    throw new ApiError(401, "Current password is incorrect.");
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Password changed successfully."
+  );
+});
+
+module.exports = {
+  register,
+  login,
+  getCurrentUser,
+  updateProfile,
+  changePassword,
 };

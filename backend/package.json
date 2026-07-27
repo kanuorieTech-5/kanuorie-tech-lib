@@ -1,36 +1,35 @@
 {
-  "name": "kanuorieTechlib-backend",
+  "name": "kanuorietech-backend",
   "version": "1.0.0",
-  "description": "A simple bookstore API",
-  "main": "server.js",
+  "description": "KanuorieTech Backend API",
+  "main": "src/server.js",
+  "private": true,
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "nodemon server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",
     "compression": "^1.8.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
     "express": "^4.22.1",
-    "express-rate-limit": "^8.5.2",
-    "express-validator": "^7.3.2",
-    "helmet": "^8.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongodb": "^7.1.1",
-    "mongoose": "^6.13.10",
-    "morgan": "^1.11.0",
-    "multer": "^2.2.0",
-    "socket.io": "^4.8.3"
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.5",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "socket.io": "^4.8.1",
+    "slugify": "^1.6.6"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "sequelize-cli": "^6.6.5"
+    "nodemon": "^3.1.14"
   }
 }

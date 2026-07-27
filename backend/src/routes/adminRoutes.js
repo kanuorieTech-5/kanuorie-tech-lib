@@ -1,39 +1,45 @@
 const express = require("express");
-const router = express.Router();
 
-/* =========================
-   CONTROLLERS
-========================= */
 const {
   getStats,
   getUsers,
+  getUser,
   deleteUser,
+  toggleBlockUser,
 } = require("../controllers/adminController");
 
-const {
-  createBook,
-  updateBook,
-  deleteBook,
-} = require("../controllers/bookController");
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
 
-/* =========================
-   MIDDLEWARE
-========================= */
-const protect = require("../middleware/authMiddleware");
-const adminOnly = require("../middleware/adminMiddleware");
+const router = express.Router();
 
-/* =========================
-   🔐 ADMIN ROUTES (USER MANAGEMENT)
-========================= */
-router.get("/admin/stats", protect, adminOnly, getStats);
-router.get("/admin/users", protect, adminOnly, getUsers);
-router.delete("/admin/users/:id", protect, adminOnly, deleteUser);
+/* ==========================================
+   APPLY ADMIN MIDDLEWARE
+========================================== */
 
-/* =========================
-   📚 BOOK ROUTES (ADMIN ONLY)
-========================= */
-router.post("/books", protect, adminOnly, createBook);
-router.put("/books/:id", protect, adminOnly, updateBook);
-router.delete("/books/:id", protect, adminOnly, deleteBook);
+router.use(protect);
+router.use(adminOnly);
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+router.get("/stats", getStats);
+
+/* ==========================================
+   USER MANAGEMENT
+========================================== */
+
+router.get("/users", getUsers);
+
+router.get("/users/:id", getUser);
+
+router.patch("/users/:id/block", toggleBlockUser);
+
+router.delete("/users/:id", deleteUser);
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
 
 module.exports = router;

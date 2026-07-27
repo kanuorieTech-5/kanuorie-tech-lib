@@ -1,144 +1,287 @@
-const { User, Notification } = require("../models");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 
-/* =========================
-   ➕ CREATE NOTIFICATION (SINGLE USER)
-========================= */
-const createNotification = async (req, res) => {
-  try {
-    const io = req.app.get("io");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
 
-    const { userId, title, message, type } = req.body;
+/* ==========================================
+   CREATE NOTIFICATION
+========================================== */
 
-    const notification = await Notification.create({
-      userId,
-      title,
-      message,
-      type: type || "user",
+const createNotification = asyncHandler(async (req, res) => {
+  const { recipient, title, message, type } = req.body;
+
+  const user = await User.findById(recipient);
+
+  if (!user) {
+    throw new ApiError(404, "Recipient not found.");
+  }
+
+  const notification = await Notification.create({
+    recipient,
+    sender: req.user._id,
+    title,
+    message,
+    type: type || "system",
+  });
+
+  const io = req.app.get("io");
+
+  if (io) {
+    io.to(`user_${recipient}`).emit(
+      "notification",
+      notification
+    );
+  }
+
+  return ApiResponse.success(
+    res,
+    notification,
+    "Notification created successfully.",
+    201
+  );
+});
+
+/* ==========================================
+   GET USER NOTIFICATIONS
+========================================== */
+
+const getNotifications = asyncHandler(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    recipient: req.user._id,
+  };
+
+  if (req.query.isRead !== undefined) {
+    filter.isRead = req.query.isRead === "true";
+  }
+
+  if (req.query.type) {
+    filter.type = req.query.type;
+  }
+
+  const [notifications, total] = await Promise.all([
+    Notification.find(filter)
+      .populate("sender", "name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Notification.countDocuments(filter),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    notifications,
+    "Notifications retrieved successfully.",
+    200,
+    {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    }
+  );
+});
+
+/* ==========================================
+   GET SINGLE NOTIFICATION
+========================================== */
+
+const getNotification = asyncHandler(async (req, res) => {
+  const notification = await Notification.findOne({
+    _id: req.params.id,
+    recipient: req.user._id,
+  }).populate("sender", "name email");
+
+  if (!notification) {
+    throw new ApiError(
+      404,
+      "Notification not found."
+    );
+  }
+
+  return ApiResponse.success(
+    res,
+    notification,
+    "Notification retrieved successfully."
+  );
+});
+
+/* ==========================================
+   MARK AS READ
+========================================== */
+
+const markAsRead = asyncHandler(async (req, res) => {
+  const notification =
+    await Notification.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        recipient: req.user._id,
+      },
+      {
+        isRead: true,
+      },
+      {
+        new: true,
+      }
+    );
+
+  if (!notification) {
+    throw new ApiError(
+      404,
+      "Notification not found."
+    );
+  }
+
+  return ApiResponse.success(
+    res,
+    notification,
+    "Notification marked as read."
+  );
+});
+
+/* ==========================================
+   MARK ALL AS READ
+========================================== */
+
+const markAllAsRead = asyncHandler(async (req, res) => {
+  await Notification.updateMany(
+    {
+      recipient: req.user._id,
+      isRead: false,
+    },
+    {
+      isRead: true,
+    }
+  );
+
+  return ApiResponse.success(
+    res,
+    null,
+    "All notifications marked as read."
+  );
+});
+
+/* ==========================================
+   DELETE NOTIFICATION
+========================================== */
+
+const deleteNotification = asyncHandler(async (req, res) => {
+  const notification =
+    await Notification.findOne({
+      _id: req.params.id,
+      recipient: req.user._id,
+    });
+
+  if (!notification) {
+    throw new ApiError(
+      404,
+      "Notification not found."
+    );
+  }
+
+  await notification.deleteOne();
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Notification deleted successfully."
+  );
+});
+
+/* ==========================================
+   CLEAR ALL NOTIFICATIONS
+========================================== */
+
+const clearNotifications = asyncHandler(async (req, res) => {
+  await Notification.deleteMany({
+    recipient: req.user._id,
+  });
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Notifications cleared successfully."
+  );
+});
+
+/* ==========================================
+   GET UNREAD COUNT
+========================================== */
+
+const getUnreadCount = asyncHandler(async (req, res) => {
+  const count =
+    await Notification.countDocuments({
+      recipient: req.user._id,
       isRead: false,
     });
 
-    // 🔥 REAL-TIME PUSH
-    io.to(`user_${userId}`).emit("notification", notification);
+  return ApiResponse.success(
+    res,
+    {
+      unread: count,
+    },
+    "Unread count retrieved successfully."
+  );
+});
 
-    res.status(201).json(notification);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+/* ==========================================
+   BROADCAST TO ALL USERS
+========================================== */
 
-/* =========================
-   📥 GET USER NOTIFICATIONS
-========================= */
-const getNotifications = async (req, res) => {
-  try {
-    const userId = req.params.id;
-      console.log("PARAM ID:", req.params.id);
-    const notifications = await Notification.findAll({
-      where: { userId },
-      order: [["createdAt", "DESC"]],
-    });
-
-    res.json(notifications);
-  } catch (err) {
-    console.error("NOTIFICATION ERROR:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
-
-/* =========================
-   ✅ MARK AS READ
-========================= */
-const markAsRead = async (req, res) => {
-  try {
-    const notification = await Notification.findByPk(req.params.id);
-
-    if (!notification) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    notification.isRead = true;
-    await notification.save();
-
-    res.json(notification);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-/* =========================
-   🗑 CLEAR ALL NOTIFICATIONS
-========================= */
-const clearNotifications = async (req, res) => {
-  try {
-    await Notification.destroy({
-      where: { userId: req.params.userId },
-    });
-
-    res.json({ message: "Cleared" });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-/* =========================
-   🔢 GET UNREAD COUNT
-========================= */
-const getUnreadCount = async (req, res) => {
-  try {
-    const count = await Notification.count({
-      where: {
-        userId: req.params.userId,
-        isRead: false,
-      },
-    });
-
-    res.json({ count });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-/* =========================
-   📢 BROADCAST TO ALL USERS
-========================= */
-const broadcastNotification = async (req, res) => {
-  try {
+const broadcastNotification =
+  asyncHandler(async (req, res) => {
     const { title, message, type } = req.body;
 
-    const users = await User.findAll();
+    const users = await User.find({}, "_id");
 
     const notifications = users.map((user) => ({
-      userId: user.id,
+      recipient: user._id,
+      sender: req.user._id,
       title,
       message,
-      type: type || "broadcast",
-      isRead: false,
+      type: type || "announcement",
     }));
 
-    // 💾 Save all
-    const createdNotifications = await Notification.bulkCreate(notifications);
+    const created =
+      await Notification.insertMany(
+        notifications
+      );
 
-    // ⚡ Emit real-time
     const io = req.app.get("io");
 
-    createdNotifications.forEach((note) => {
-      io.to(`user_${note.userId}`).emit("notification", note);
-    });
+    if (io) {
+      created.forEach((notification) => {
+        io.to(
+          `user_${notification.recipient}`
+        ).emit(
+          "notification",
+          notification
+        );
+      });
+    }
 
-    res.json({ message: "Broadcast sent to all users ✅" });
-  } catch (err) {
-    console.error("Broadcast Error:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+    return ApiResponse.success(
+      res,
+      {
+        sent: created.length,
+      },
+      "Broadcast notification sent successfully."
+    );
+  });
 
-/* =========================
-   EXPORTS
-========================= */
 module.exports = {
   createNotification,
   getNotifications,
+  getNotification,
   markAsRead,
+  markAllAsRead,
+  deleteNotification,
   clearNotifications,
   getUnreadCount,
   broadcastNotification,

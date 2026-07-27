@@ -1,62 +1,59 @@
 const express = require("express");
+
+const {
+  createBook,
+  getBooks,
+  getBook,
+  updateBook,
+  deleteBook,
+  getFeaturedBooks,
+  getCategories,
+} = require("../controllers/bookController");
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+const validate = require("../validators/validate");
+
+const {
+  createBookValidator,
+  updateBookValidator,
+} = require("../validators/bookValidator");
+
 const router = express.Router();
 
-const { Book } = require("../models");
-const protect = require("../middleware/authMiddleware");
-const adminOnly = require("../middleware/adminMiddleware");
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
 
-const bookFields = (body) => ({
-  title: body.title,
-  desc: body.desc,
-  category: body.category,
-  img: body.img,
-  link: body.link,
-});
+router.get("/featured", getFeaturedBooks);
 
-// 📥 GET ALL BOOKS (admin or authenticated users)
-router.get("/", protect, async (req, res) => {
-  try {
-    const books = await Book.findAll();
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.get("/categories", getCategories);
 
-// ➕ CREATE BOOK (admin only)
-router.post("/", protect, adminOnly, async (req, res) => {
-  try {
-    const book = await Book.create(bookFields(req.body));
-    res.status(201).json(book);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router
+  .route("/")
+  .get(getBooks)
+  .post(
+    protect,
+    admin,
+    createBookValidator,
+    validate,
+    createBook
+  );
 
-// ✏️ UPDATE BOOK
-router.put("/:id", protect, adminOnly, async (req, res) => {
-  try {
-    const book = await Book.findByPk(req.params.id);
-    if (!book) return res.status(404).json({ message: "Not found" });
-
-    await book.update(bookFields(req.body));
-    res.json(book);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// ❌ DELETE BOOK
-router.delete("/:id", protect, adminOnly, async (req, res) => {
-  try {
-    const book = await Book.findByPk(req.params.id);
-    if (!book) return res.status(404).json({ message: "Not found" });
-
-    await book.destroy();
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router
+  .route("/:id")
+  .get(getBook)
+  .put(
+    protect,
+    admin,
+    updateBookValidator,
+    validate,
+    updateBook
+  )
+  .delete(
+    protect,
+    admin,
+    deleteBook
+  );
 
 module.exports = router;

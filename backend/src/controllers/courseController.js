@@ -1,191 +1,271 @@
-const { Course, Progress } = require("../models");
+const Course = require("../models/Course");
+const Progress = require("../models/Progress");
 
-/* =========================
-   ➕ SAVE / ENROLL COURSE
-========================= */
-exports.saveCourse = async (req, res) => {
-  try {
-        console.log("BODY:", req.body);
-        console.log("USER:", req.user);
+const asyncHandler = require("../utils/asyncHandler");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
 
-    const { title, category, image, link, courseId } = req.body;
+/* ==========================================
+   CREATE COURSE
+========================================== */
 
-       if (courseId) {
-      const existing = await Progress.findOne({
-        where: {
-          userId: req.user.id,
-          courseId,
-        },
-      });
-
-      if (existing) {
-        return res.status(400).json({ message: "Already enrolled" });
-      }
-
-      const progress = await Progress.create({
-        userId: req.user.id,
-        courseId,
-        progress: 0,
-        completed: false,
-      });
-
-      return res.status(201).json(progress);
-    }
-
-    const course = await Course.create({
-      title,
-      category,
-      image,
-      link,
-      userId: req.user.id,
-    });
-    console.log("COURSE CREATED:", course);
-
-    // 🔥 create progress automatically
-   if (course?.id) {
-  await Progress.create({
-    userId: req.user.id,
-    courseId: course.id,
-    progress: 0,
-    completed: false,
+const saveCourse = asyncHandler(async (req, res) => {
+  const course = await Course.create({
+    ...req.body,
+    createdBy: req.user._id,
   });
-}
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
-/* =========================
-   📥 GET USER COURSES
-========================= */
-exports.getCourses = async (req, res) => {
-  try {
-    const courses = await Course.findAll({
-      where: { userId: req.user.id },
-      include: [
-        {
-          model: Progress,
-          attributes: ["progress", "completed"],
+  await Progress.findOneAndUpdate(
+    {
+      user: req.user._id,
+      course: course._id,
+    },
+    {
+      user: req.user._id,
+      course: course._id,
+      percentage: 0,
+      status: "not_started",
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  return ApiResponse.success(
+    res,
+    course,
+    "Course created successfully.",
+    201
+  );
+});
+
+/* ==========================================
+   GET ALL COURSES
+========================================== */
+
+const getCourses = asyncHandler(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 12;
+  const skip = (page - 1) * limit;
+
+  const filter = {};
+
+  if (req.query.category) {
+    filter.category = req.query.category;
+  }
+
+  if (req.query.featured) {
+    filter.featured = req.query.featured === "true";
+  }
+
+  if (req.query.premium) {
+    filter.premium = req.query.premium === "true";
+  }
+
+  if (req.query.level) {
+    filter.level = req.query.level;
+  }
+
+  if (req.query.search) {
+    filter.$or = [
+      {
+        title: {
+          $regex: req.query.search,
+          $options: "i",
         },
-      ],
-    });
-
-    res.json(courses);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-/* =========================
-   ❌ DELETE COURSE
-========================= */
-exports.deleteCourse = async (req, res) => {
-  try {
-    const deleted = await Course.destroy({
-      where: {
-        id: req.params.id,
-        userId: req.user.id,
       },
-    });
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    await Progress.destroy({
-      where: {
-        userId: req.user.id,
-        courseId: req.params.id,
+      {
+        description: {
+          $regex: req.query.search,
+          $options: "i",
+        },
       },
-    });
-
-    res.json({ message: "Deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-/* =========================
-   🔄 UPDATE PROGRESS
-========================= */
-exports.updateProgress = async (req, res) => {
-  try {
-    const { progress } = req.body;
-    const courseId = req.params.id;
-
-    const course = await Course.findOne({
-      where: {
-        id: courseId,
-        userId: req.user.id,
+      {
+        instructor: {
+          $regex: req.query.search,
+          $options: "i",
+        },
       },
-    });
-
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    const now = new Date();
-
-    if (record.lastProgressUpdate) {
-      const last = new Date(record.lastProgressUpdate);
-
-      const isSameDay =
-        last.getFullYear() === now.getFullYear() &&
-        last.getMonth() === now.getMonth() &&
-        last.getDate() === now.getDate();
-
-      if (isSameDay) {
-        const nextAvailable = new Date(last);
-        nextAvailable.setDate(nextAvailable.getDate() + 1);
-        nextAvailable.setHours(0, 0, 0, 0);
-
-        return res.status(400).json({
-          message: "Progress already updated today. Try tomorrow.",
-          nextAvailable,
-        });
-      }
-    }
-
-    course.progress = Math.min(progress, 100);
-    course.completed = progress >= 100;
-    course.lastProgressUpdate = new Date();
-
-    await course.save();
-
-    return res.json({
-      progress: course.progress,
-      completed: course.completed,
-    });
-  } catch (err) {
-    console.error("Progress error:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
-
-/* =========================
-   📝 UPDATE NOTES
-========================= */
-exports.updateNotes = async (req, res) => {
-  try {
-    const { notes } = req.body;
-
-    const course = await Course.findOne({
-      where: {
-        id: req.params.id,
-        userId: req.user.id,
+      {
+        tags: {
+          $regex: req.query.search,
+          $options: "i",
+        },
       },
-    });
-
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    course.notes = notes;
-    await course.save();
-
-    res.json(course);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    ];
   }
+
+  const [courses, total] = await Promise.all([
+    Course.find(filter)
+      .populate("createdBy", "name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Course.countDocuments(filter),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    courses,
+    "Courses retrieved successfully.",
+    200,
+    {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    }
+  );
+});
+
+/* ==========================================
+   GET SINGLE COURSE
+========================================== */
+
+const getCourse = asyncHandler(async (req, res) => {
+  const identifier = req.params.id;
+
+  const filter = identifier.match(/^[0-9a-fA-F]{24}$/)
+    ? { _id: identifier }
+    : { slug: identifier };
+
+  const course = await Course.findOne(filter).populate(
+    "createdBy",
+    "name email"
+  );
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  return ApiResponse.success(
+    res,
+    course,
+    "Course retrieved successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE COURSE
+========================================== */
+
+const updateCourse = asyncHandler(async (req, res) => {
+  const course = await Course.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  return ApiResponse.success(
+    res,
+    course,
+    "Course updated successfully."
+  );
+});
+
+/* ==========================================
+   DELETE COURSE
+========================================== */
+
+const deleteCourse = asyncHandler(async (req, res) => {
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  await Promise.all([
+    Progress.deleteMany({
+      course: course._id,
+    }),
+    course.deleteOne(),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Course deleted successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE COURSE PROGRESS
+========================================== */
+
+const updateProgress = asyncHandler(async (req, res) => {
+  const { percentage } = req.body;
+
+  const progress = await Progress.findOne({
+    user: req.user._id,
+    course: req.params.id,
+  });
+
+  if (!progress) {
+    throw new ApiError(
+      404,
+      "Progress record not found."
+    );
+  }
+
+  progress.percentage = percentage;
+  progress.completed = percentage >= 100;
+
+  if (percentage >= 100) {
+    progress.completedAt = new Date();
+  }
+
+  await progress.save();
+
+  return ApiResponse.success(
+    res,
+    progress,
+    "Progress updated successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE COURSE NOTES
+========================================== */
+
+const updateNotes = asyncHandler(async (req, res) => {
+  const progress = await Progress.findOne({
+    user: req.user._id,
+    course: req.params.id,
+  });
+
+  if (!progress) {
+    throw new ApiError(
+      404,
+      "Progress record not found."
+    );
+  }
+
+  progress.notes = req.body.notes || [];
+
+  await progress.save();
+
+  return ApiResponse.success(
+    res,
+    progress,
+    "Notes updated successfully."
+  );
+});
+
+module.exports = {
+  saveCourse,
+  getCourses,
+  getCourse,
+  updateCourse,
+  deleteCourse,
+  updateProgress,
+  updateNotes,
 };

@@ -1,29 +1,53 @@
 const express = require("express");
-const router = express.Router();
 
 const {
   saveCourse,
   getCourses,
+  getCourse,
+  updateCourse,
   deleteCourse,
   updateProgress,
   updateNotes,
 } = require("../controllers/courseController");
 
-const protect = require("../middleware/authMiddleware");
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
 
-// ➕ Save course
-router.post("/", protect, saveCourse);
+const router = express.Router();
 
-// 📥 Get user courses
-router.get("/", protect, getCourses);
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
 
-// ❌ Delete course
-router.delete("/:id", protect, deleteCourse);
+router
+  .route("/")
+  .get(getCourses)
+  .post(protect, adminOnly, saveCourse);
 
-// 🔄 Update progress
-router.put("/:id/progress", protect, updateProgress);
+router
+  .route("/:id")
+  .get(getCourse)
+  .put(protect, adminOnly, updateCourse)
+  .delete(protect, adminOnly, deleteCourse);
 
-// 📝 Update notes
-router.put("/:id/notes", protect, updateNotes);
+/* ==========================================
+   USER PROGRESS
+========================================== */
+
+router.put(
+  "/:id/progress",
+  protect,
+  updateProgress
+);
+
+router.put(
+  "/:id/notes",
+  protect,
+  updateNotes
+);
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
 
 module.exports = router;

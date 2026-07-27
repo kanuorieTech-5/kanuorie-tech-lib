@@ -1,31 +1,77 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+const mongoose = require("mongoose");
 
-const Notification = sequelize.define("Notification", {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const notificationSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    type: {
+      type: String,
+      enum: [
+        "system",
+        "course",
+        "book",
+        "product",
+        "announcement",
+        "success",
+        "warning",
+        "error",
+      ],
+      default: "system",
+    },
+
+    recipient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
+
+    actionUrl: {
+      type: String,
+      default: "",
+    },
+
+    icon: {
+      type: String,
+      default: "",
+    },
   },
-  message: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  type: {
-    type: DataTypes.ENUM("system", "alert", "order", "admin"),
-    defaultValue: "system",
-  },
-  read: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  {
+    timestamps: true,
+  }
+);
+
+/* =========================
+   INDEXES
+========================= */
+
+notificationSchema.index({
+  recipient: 1,
+  isRead: 1,
+  createdAt: -1,
 });
 
-Notification.associate = (models) => {
-  Notification.belongsTo(models.User, { foreignKey: "userId" });
-};
-
-module.exports = Notification;
+module.exports = mongoose.model(
+  "Notification",
+  notificationSchema
+);
