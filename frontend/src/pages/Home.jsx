@@ -102,7 +102,7 @@ export default function Home() {
       "Software, mobile apps, cloud infrastructure and digital transformation.",
       icon:<FaCode />,
       button:"Explore Services",
-      path:"/services",
+      path:"/Services",
     },
 
     {
@@ -170,7 +170,6 @@ export default function Home() {
         </Slider>
       </section>
       <main className="max-w-7xl mx-auto px-4">
-        {/* ================= HERO CAROUSEL ================= */}
         {/* =====================================
           KANUORIETECH COMPANY EXPERIENCE
         ===================================== */}
@@ -199,7 +198,7 @@ export default function Home() {
               </p>
               <div className="mt-10 flex flex-wrap gap-5">
                 <button
-                  onClick={() => navigate("/contact")}
+                  onClick={() => navigate("/projects")}
                   className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-purple-700 font-semibold transition">
                   Start a Project
                 </button>
@@ -522,7 +521,7 @@ export default function Home() {
             </p>
             <div className="mt-10 flex gap-5">
               <button
-                onClick={() => navigate("/contact")}
+                onClick={() => navigate("/projects")}
                 className="px-8 py-4 rounded-xl bg-white text-black font-bold">
                 Start Project
               </button>

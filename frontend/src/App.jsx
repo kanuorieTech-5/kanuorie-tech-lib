@@ -2,10 +2,12 @@ import { Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
-
 import Home from "./pages/Home";
 import Library from "./pages/Library";
 import Courses from "./pages/courses";
+import Products from "./pages/Products";
+import Services from "./pages/Services";
+import Projects from "./pages/Projects";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -52,6 +54,9 @@ function App() {
         <Route path="/termsOfService" element={<TermsOfService />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/services" element={<Services />} />
         {/* <Route path="/faq" element={<FAQ />} /> */}
         {/* PROTECTED ROUTES */}
         <Route path="/library" element={<Library />}/>
@@ -76,4 +81,3 @@ function App() {
   );
 }
 
-export default App;
