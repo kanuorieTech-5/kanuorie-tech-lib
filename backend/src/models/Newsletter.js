@@ -68,9 +68,9 @@ const newsletterSchema = new mongoose.Schema(
    INDEXES
 ========================= */
 
-newsletterSchema.index({
-  email: 1,
-});
+// newsletterSchema.index({
+//   email: 1,
+// });
 
 newsletterSchema.index({
   subscribed: 1,

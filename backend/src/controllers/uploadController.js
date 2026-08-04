@@ -7,7 +7,7 @@ const ApiError = require("../utils/ApiError");
    UPLOAD FILE
 ========================================== */
 
-const uploadFile = asyncHandler(async (req, res) => {
+const uploadImage = asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, "Please select a file to upload.");
   }
@@ -56,7 +56,7 @@ const uploadFile = asyncHandler(async (req, res) => {
    DELETE FILE
 ========================================== */
 
-const deleteFile = asyncHandler(async (req, res) => {
+const deleteImage = asyncHandler(async (req, res) => {
   const { publicId } = req.params;
 
   if (!publicId) {
@@ -79,6 +79,6 @@ const deleteFile = asyncHandler(async (req, res) => {
 ========================================== */
 
 module.exports = {
-  uploadFile,
-  deleteFile,
+   uploadImage,
+   deleteImage,
 };

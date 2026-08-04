@@ -63,14 +63,13 @@ const startServer = async () => {
 
     server.listen(PORT, () => {
       console.log(`
-==================================================
+/* ==================================================
 🚀 KanuorieTech API Started Successfully
-==================================================
+================================================== */
 Environment : ${process.env.NODE_ENV || "development"}
 Port        : ${PORT}
 MongoDB     : Connected
 Socket.IO   : Enabled
-==================================================
 `);
     });
 

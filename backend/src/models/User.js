@@ -19,18 +19,14 @@ const userSchema = new mongoose.Schema(
       maxlength: 50,
     },
 
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      lowercase: true,
-      trim: true,
-      match: [
-        /^\S+@\S+\.\S+$/,
-        "Please provide a valid email address",
-      ],
-      index: true,
-    },
+   email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
+  },
 
     password: {
       type: String,
@@ -61,7 +57,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["user", "admin"],
       default: "user",
-      index: true,
     },
 
     isVerified: {
@@ -86,10 +81,6 @@ const userSchema = new mongoose.Schema(
 
     passwordResetExpires: {
       type: Date,
-      default: null,
-    },
-    emailVerificationToken: {
-      type: String,
       default: null,
     },
     passwordChangedAt:{
@@ -191,8 +182,6 @@ userSchema.methods.toJSON = function () {
   delete user.passwordResetToken;
   delete user.passwordResetExpires;
   delete user.emailVerificationToken;
-  delete user.emailVerificationExpires;
-
   return user;
 };
 userSchema.methods.incrementLogin = async function () {
@@ -205,13 +194,10 @@ userSchema.methods.incrementLogin = async function () {
    INDEXES
 ========================= */
 userSchema.index({
-    createdAt: -1,
-});
-
-userSchema.index({
   role: 1,
   isVerified:1,
-  isBlocked:1
+  isBlocked:1,
+  createdAt: -1,
 });
 
 module.exports = mongoose.model("User", userSchema);
