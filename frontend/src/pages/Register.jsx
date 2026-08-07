@@ -1,162 +1,148 @@
-import { useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { registerUser, loginUser } from "../api/auth";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+import { useAuth } from "../contexts";
+import { Button, Card, Input } from "../components/ui";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = ({ target }) =>
+    setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
-  };
 
-  const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password) {
-      return "All fields are required";
-    }
-
-    if (formData.password.length < 6) {
-      return "Password must be at least 6 characters";
-    }
-
-    return null;
-  };
-
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("REGISTER CLICKED");
-
-    setError("");
-
-    const validationError = validateForm();
-
-    if (validationError) {
-      setError(validationError);
-      return;
+    if (form.password !== form.confirmPassword) {
+      return toast.error("Passwords do not match.");
     }
 
-    setLoading(true);
-
     try {
-      console.log("Sending register request");
+      setLoading(true);
 
-      await registerUser(formData);
+      await registerUser(form);
 
-      console.log("Registration successful");
-
-      const loginData = await loginUser({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      login(loginData);
-
-      navigate("/home");
-
-    } catch (err) {
-      console.error(err);
-
-      setError(
-        err?.response?.data?.message ||
-        err?.message ||
-        "Registration failed"
+      toast.success(
+        "Registration successful. Please verify your email."
       );
 
+      navigate("/login");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Registration failed."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-indigo-700">
-      <form
-        onSubmit={handleRegister}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-8 rounded-2xl shadow-xl w-96 text-white"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">
+    <section className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
+      <Card className="w-full max-w-lg p-8">
+
+        <h1 className="mb-8 text-center text-3xl font-bold">
           Create Account
         </h1>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full p-3 rounded-xl mb-4 text-black"
-        />
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-3 rounded-xl mb-4 text-black"
-        />
+          <div className="grid gap-4 md:grid-cols-2">
 
-        <div className="relative mb-4">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
+            <Input
+              label="First Name"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+              required
+            />
+
+            <Input
+              label="Last Name"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+              required
+            />
+
+          </div>
+
+          <Input
+            label="Username"
+            name="username"
+            value={form.username}
             onChange={handleChange}
-            className="w-full p-3 rounded-xl pr-14 text-black"
+            required
           />
 
-          <button
-            type="button"
-            onClick={() =>
-              setShowPassword((v) => !v)
-            }
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-black"
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+
+          <Input
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+
+          <Button
+            type="submit"
+            loading={loading}
+            fullWidth
           >
-            {showPassword ? "Hide" : "Show"}
-          </button>
-        </div>
+            Create Account
+          </Button>
 
-        {error && (
-          <p className="text-red-300 text-sm mb-3">
-            {error}
-          </p>
-        )}
+        </form>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-white text-purple-700 w-full py-3 rounded-xl"
-        >
-          {loading
-            ? "Creating account..."
-            : "Sign Up"}
-        </button>
+        <p className="mt-8 text-center">
 
-        <p className="mt-4 text-center">
-          Already have an account?{" "}
+          Already have an account?
+
           <Link
             to="/login"
-            className="underline"
+            className="ml-2 text-blue-600"
           >
             Login
           </Link>
+
         </p>
-      </form>
-    </div>
+
+      </Card>
+    </section>
   );
 }

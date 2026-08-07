@@ -1,14 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+
 import App from "./App";
+
+import {
+  AuthProvider,
+  ThemeProvider,
+  NotificationProvider,
+  SocketProvider,
+} from "./contexts";
+
 import "./index.css";
-import { AuthProvider } from "./context/AuthContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <NotificationProvider>
+            <App />
+          </NotificationProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );

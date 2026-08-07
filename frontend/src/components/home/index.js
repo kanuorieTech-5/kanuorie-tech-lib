@@ -1,0 +1,19 @@
+export { default as Hero } from "./Hero";
+export { default as Features } from "./Features";
+export { default as Stats } from "./Stats";
+export { default as Partners } from "./Partners";
+
+export { default as AboutPreview } from "./AboutPreview";
+export { default as CoursesPreview } from "./CoursesPreview";
+export { default as BooksPreview } from "./BooksPreview";
+export { default as ProductsPreview } from "./ProductsPreview";
+export { default as ProjectsPreview } from "./ProjectsPreview";
+export { default as ServicesPreview } from "./ServicesPreview";
+
+export { default as Testimonials } from "./Testimonials";
+export { default as TeamPreview } from "./TeamPreview";
+export { default as BlogPreview } from "./BlogPreview";
+export { default as Newsletter } from "./Newsletter";
+export { default as CTA } from "./CTA";
+export { default as imageSlider } from "./imageSlider";
+export { default as FeaturesSlider } from "./FeaturesSlider";

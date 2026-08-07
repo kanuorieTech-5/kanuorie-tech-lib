@@ -1,369 +1,177 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import Navbar from "../components/Navbar";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import API from "../api/axios";
-import defaultResources from "../data/resources";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Card,
+  Button,
+  Input,
+} from "../components/common";
+
+import {
+  useAuth,
+} from "../context";
+
+import {
+  updateProfile,
+  uploadAvatar,
+} from "../services";
 
 export default function Profile() {
-  const { user, setUser } = useContext(AuthContext);
-  const navigate = useNavigate();
 
-  const [savedCourses, setSavedCourses] = useState([]);
-  const [resourcesCount, setResourcesCount] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { user, setUser } = useAuth();
 
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const avatarInputRef = useRef();
-  const coverInputRef = useRef();
+  const [form, setForm] = useState({
 
-  // prevent memory leaks
-  const isMounted = useRef(true);
+    firstName: user?.firstName || "",
 
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+    lastName: user?.lastName || "",
 
-  // 🔐 Redirect if no user
-  useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
+    username: user?.username || "",
 
-  // 📦 FETCH DATA
-  useEffect(() => {
-    if (!user) return;
+    email: user?.email || "",
 
-    const init = async () => {
-      try {
-        setLoading(true);
-        await Promise.all([fetchCourses(), fetchResources()]);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        if (isMounted.current) setLoading(false);
-      }
-    };
+    bio: user?.bio || "",
 
-    init();
-  }, [user]);
+  });
 
-  const fetchCourses = async () => {
+  const change = ({ target }) =>
+
+    setForm(prev => ({
+      ...prev,
+      [target.name]: target.value,
+    }));
+
+  const saveProfile = async () => {
+
     try {
-      const res = await API.get("/courses");
-      if (isMounted.current) setSavedCourses(res.data || []);
+
+      setLoading(true);
+
+      const res = await updateProfile(form);
+
+      setUser(res.data);
+
+      toast.success("Profile updated successfully.");
+
     } catch (err) {
-      console.error("Courses error:", err);
-      if (isMounted.current) setSavedCourses([]);
-    }
-  };
 
-  const fetchResources = async () => {
-    try {
-      const res = await API.get("/books");
-
-      const combined = [...defaultResources, ...(res.data || [])];
-
-      const unique = Array.from(
-        new Map(combined.map((r, i) => [r.id || r.title || i, r])).values()
+      toast.error(
+        err.response?.data?.message ||
+        "Unable to update profile."
       );
 
-      if (isMounted.current) setResourcesCount(unique.length);
-    } catch (err) {
-      console.error(err);
-      if (isMounted.current) setResourcesCount(defaultResources.length);
-    }
-  };
-
-  // 📊 STATS
-  const totalCourses = savedCourses?.length || 0;
-
-  const completedCourses = savedCourses.filter(
-    (c) => c?.progress === 100
-  ).length;
-
-  const avgProgress =
-    totalCourses > 0
-      ? Math.round(
-          savedCourses.reduce(
-            (acc, c) => acc + (c?.progress || 0),
-            0
-          ) / totalCourses
-        )
-      : 0;
-
-  const streak = savedCourses.filter((c) => {
-    if (!c?.lastProgressUpdate) return false;
-
-    const last = new Date(c.lastProgressUpdate);
-    const today = new Date();
-
-    return (
-      last.getDate() === today.getDate() &&
-      last.getMonth() === today.getMonth()
-    );
-  }).length;
-
-  // 📈 CHART
-  const chartData = savedCourses.map((c, i) => ({
-    name: `Course ${i + 1}`,
-    progress: c?.progress || 0,
-  }));
-
-  // ✏️ INPUT
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // 💾 SAVE
-  const handleSave = async () => {
-    try {
-      setUploading(true);
-
-      const res = await API.put("/auth/update", user);
-
-      if (isMounted.current) {
-        setUser(res.data);
-        setIsEditing(false);
-      }
-    } catch (err) {
-      console.error(err?.response?.data || err.message);
     } finally {
-      if (isMounted.current) setUploading(false);
+
+      setLoading(false);
+
     }
+
   };
 
-  // 📦 UPLOAD FIXED
-  const handleUpload = async (file, type) => {
+  const changeAvatar = async (e) => {
+
+    const file = e.target.files[0];
+
     if (!file) return;
 
     try {
-      setUploading(true);
-      setProgress(0);
 
-      const formData = new FormData();
-      formData.append("image", file);
+      const res = await uploadAvatar(file);
 
-      const res = await API.post("/upload", formData, {
-        onUploadProgress: (e) => {
-          const percent = e.total
-            ? Math.round((e.loaded * 100) / e.total)
-            : 0;
-
-          setProgress(percent);
-        },
+      setUser({
+        ...user,
+        avatar: res.url,
       });
 
-      if (isMounted.current) {
-        setUser((prev) => ({
-          ...prev,
-          [type]: res.data.imageUrl,
-        }));
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Upload failed");
-    } finally {
-      if (isMounted.current) {
-        setUploading(false);
-        setProgress(0);
-      }
+      toast.success("Profile photo updated.");
+
+    } catch {
+
+      toast.error("Upload failed.");
+
     }
+
   };
-
-  const handleDragOver = (e) => e.preventDefault();
-
-  const handleDrop = (e, type) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    handleUpload(file, type);
-  };
-
-  const handleAvatarUpload = (file) => handleUpload(file, "avatar");
-  const handleCoverUpload = (file) => handleUpload(file, "cover");
-
-  if (loading) {
-    return <div className="text-center py-20">Loading...</div>;
-  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
 
-      <main className="max-w-4xl mx-auto px-6 mt-10 pb-20">
-        <h1 className="text-4xl font-bold mb-10">My Profile</h1>
+    <section className="mx-auto max-w-4xl px-6 py-20">
 
-        {/* COVER */}
-        <div
-          className="h-48 bg-gray-200 rounded-2xl mb-[-60px] relative overflow-hidden cursor-pointer"
-          onClick={() => isEditing && coverInputRef.current.click()}
-          onDrop={(e) => handleDrop(e, "cover")}
-          onDragOver={handleDragOver}
-        >
+      <Card className="p-8">
+
+        <div className="mb-10 flex flex-col items-center">
+
           <img
             src={
-              user?.cover ||
-              "https://via.placeholder.com/800x300?text=Upload+Cover"
+              user?.avatar ||
+              "/images/default-avatar.png"
             }
-            className="w-full h-full object-cover"
+            alt="Profile"
+            className="mb-5 h-36 w-36 rounded-full object-cover"
           />
-          {isEditing && ( <input type="file" ref={coverInputRef} className="hidden" onChange={(e) => handleCoverUpload(e.target.files[0])} /> )}
-        </div>
 
-        {/* CARD */}
-        <div className="bg-white rounded-2xl shadow-md p-8 pt-20 mb-10 relative">
-          {/* AVATAR */}
-          <div
-            className="absolute -top-12 left-8 cursor-pointer"
-            onClick={() => isEditing && avatarInputRef.current.click()}
-            onDrop={(e) => handleDrop(e, "avatar")}
-            onDragOver={handleDragOver}
-          >
-            <img
-              src={
-                user?.avatar ||
-                "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
-              }
-              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow"
-            />
-            {isEditing && ( <input type="file" ref={avatarInputRef} className="hidden" onChange={(e) => handleAvatarUpload(e.target.files[0])} /> )}
-          </div>
-          {/* PROGRESS BAR */} 
-          {uploading && (
-            <div className="mb-4">
-              <div className="h-2 bg-gray-200 rounded">
-                <div
-                  className="h-2 bg-blue-600 rounded"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                Uploading... {progress}%
-              </p>
-            </div>
-          )}
-          {/* NAME */}
-          <div className="mb-6 mt-4">
-            <label className="text-sm text-gray-500">Full Name</label>
-            {isEditing ? (
-              <input
-                name="name"
-                value={user?.name || ""}
-                onChange={handleChange}
-                className="w-full border p-3 rounded-xl mt-2"
-              />
-            ) : (
-              <p className="text-xl font-semibold mt-2">
-                {user?.name || "Your Name"}
-              </p>
-            )}
-          </div>
-
-          {/* EMAIL */}
-          <div className="mb-6">
-            <label className="text-sm text-gray-500">Email</label>
-            {isEditing ? (
-              <input
-                name="email"
-                value={user?.email || ""}
-                onChange={handleChange}
-                className="w-full border p-3 rounded-xl mt-2"
-              />
-            ) : (
-              <p className="text-gray-700 mt-2">{user?.email}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="text-sm text-gray-500">Role</label>
-            <p className="text-gray-700 mt-2">{user?.role}</p>
-          </div>
-
-          <div className="mb-6">
-            <label className="text-sm text-gray-500">Bio</label>
-            {isEditing ? (
-              <textarea
-                name="bio"
-                value={user?.bio || ""}
-                onChange={handleChange}
-                className="w-full border p-3 rounded-xl mt-2"
-              />
-            ) : (
-              <p className="text-gray-700 mt-2">{user?.bio || "Your bio..."}</p>
-            )}
-          </div>
-
-
-          {/* BUTTON */}
-          <button
-            onClick={() =>
-              isEditing ? handleSave() : setIsEditing(true)
-            }
-            className="bg-blue-600 text-white px-6 py-3 rounded-xl"
-          >
-            {isEditing ? "Save Changes" : "Edit Profile"}
-          </button>
-        </div>
-
-        {/* STATS */}
-        <div className="grid grid-cols-2 gap-6 my-10">
-          <StatCard 
-            title="Enrolled Courses" 
-            value={totalCourses} 
-            onClick={() => navigate("/courses")}
-            className="bg-white p-6 rounded-2xl shadow text-center cursor-pointer text-blue-600 hover:shadow-lg transition"
-            />
-          <StatCard title="Completed Courses" value={completedCourses} />
-          <StatCard title="Avg Progress" value={`${avgProgress}%`} />
-          <StatCard
-            title="Available Resources"
-            value={resourcesCount}
-            onClick={() => navigate("/library")}
-            className="bg-white p-6 rounded-2xl shadow text-center cursor-pointer text-blue-600 hover:shadow-lg transition"
+          <input
+            type="file"
+            onChange={changeAvatar}
           />
-          <StatCard title="Current Streak" value={`${streak} day(s)`} />
-        </div>
-        
-        {/* ANALYTICS */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="progress" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </main>
-    </div>
-  );
-}
 
-function StatCard({ title, value, onClick, className = "" }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`bg-white p-6 rounded-xl shadow text-center ${onClick ? "cursor-pointer hover:shadow-lg transition" : ""} ${className}`}
-    >
-      <p className="text-gray-500 text-sm">{title}</p>
-      <p className="text-2xl font-bold mt-2">{value}</p>
-    </div>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+
+          <Input
+            label="First Name"
+            name="firstName"
+            value={form.firstName}
+            onChange={change}
+          />
+
+          <Input
+            label="Last Name"
+            name="lastName"
+            value={form.lastName}
+            onChange={change}
+          />
+
+          <Input
+            label="Username"
+            name="username"
+            value={form.username}
+            onChange={change}
+          />
+
+          <Input
+            label="Email"
+            name="email"
+            value={form.email}
+            onChange={change}
+          />
+
+        </div>
+
+        <textarea
+          rows={5}
+          name="bio"
+          value={form.bio}
+          onChange={change}
+          placeholder="Bio"
+          className="mt-6 w-full rounded-lg border p-4"
+        />
+
+        <Button
+          loading={loading}
+          onClick={saveProfile}
+          className="mt-8"
+        >
+          Save Changes
+        </Button>
+
+      </Card>
+
+    </section>
+
   );
+
 }

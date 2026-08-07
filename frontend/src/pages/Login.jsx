@@ -1,46 +1,48 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../api/auth";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Card from "../components/ui/Card";
+
+import { useAuth } from "../contexts";
+// import { loginUser } from "../services";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
+  const handleChange = ({ target }) =>
+    setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
-  };
 
-  // 🔥 CLEAN LOGIN FLOW
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
       setLoading(true);
 
-      const data = await loginUser(formData);
+      const res = await loginUser(form);
 
-      // ✅ ONLY USE CONTEXT LOGIN (SINGLE SOURCE OF TRUTH)
-      login(data);
+      login(res.user, res.token);
 
-      navigate("/Home");
+      toast.success("Welcome back!");
+
+      navigate("/");
 
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Invalid email or password"
+      toast.error(
+        err.response?.data?.message || "Login failed"
       );
     } finally {
       setLoading(false);
@@ -48,66 +50,73 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-indigo-700">
-      <form
-        onSubmit={handleLogin}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-8 rounded-2xl shadow-xl w-96 text-white"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+    <section className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
 
-        {/* Email */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-3 rounded-xl bg-white/20 border border-white/30 mb-4"
-        />
+      <Card className="w-full max-w-md p-8">
 
-        {/* Password */}
-        <div className="relative mb-4">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
+        <h1 className="mb-8 text-center text-3xl font-bold">
+          Login
+        </h1>
+
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            value={form.email}
             onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-white/20 border border-white/30 pr-12"
+            required
           />
 
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+
+          <div className="text-right">
+
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600"
+            >
+              Forgot Password?
+            </Link>
+
+          </div>
+
+          <Button
+            type="submit"
+            fullWidth
+            loading={loading}
           >
-            {showPassword ? "Hide" : "Show"}
-          </button>
-        </div>
+            Login
+          </Button>
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-300 text-sm mb-4 text-center">
-            {error}
-          </p>
-        )}
+        </form>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="bg-white text-purple-700 w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+        <p className="mt-8 text-center">
 
-        {/* Register */}
-        <p className="text-sm text-center mt-4">
-          Don't have an account?{" "}
-          <Link to="/register" className="underline font-medium">
-            Sign Up
+          Don't have an account?
+
+          <Link
+            to="/register"
+            className="ml-2 text-blue-600"
+          >
+            Register
           </Link>
+
         </p>
-      </form>
-    </div>
+
+      </Card>
+
+    </section>
   );
 }
