@@ -9,7 +9,7 @@ import {
 
 import {
   useAuth,
-} from "../context";
+} from "../contexts/AuthContext";
 
 import {
   updateProfile,
