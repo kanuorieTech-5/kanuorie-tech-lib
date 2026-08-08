@@ -14,7 +14,6 @@ import BlogPreview from "../components/home/BlogPreview";
 import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
 
-
 export default function Home() {
 
   return (

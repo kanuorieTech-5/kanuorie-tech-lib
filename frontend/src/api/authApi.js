@@ -79,6 +79,21 @@ export const changePassword = async (passwords) => {
   return data;
 };
 
+export const updateProfile = async (profileData) => {
+  const { data } = await API.put("/users/profile", profileData);
+  return data;
+};
+
+export const uploadAvatar = async (formData) => {
+  const { data } = await API.post("/users/avatar", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return data;
+};
+
 export default {
   registerUser,
   loginUser,
@@ -90,4 +105,6 @@ export default {
   forgotPassword,
   resetPassword,
   changePassword,
+  updateProfile,
+  uploadAvatar,
 };

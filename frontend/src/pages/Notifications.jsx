@@ -1,15 +1,6 @@
-import {
+import { Card, Button,} from "../components/common";
 
-  Card,
-  Button,
-
-} from "../components/common";
-
-import {
-
-  useNotifications,
-
-} from "../context";
+import { useNotification, } from "../contexts";
 
 export default function Notifications() {
 

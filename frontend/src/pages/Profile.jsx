@@ -1,15 +1,9 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import {
-  Card,
-  Button,
-  Input,
-} from "../components/common";
-
-import {
-  useAuth,
-} from "../contexts/AuthContext";
+import { Card, Button,} from "../components/common";
+import { Input,} from "../components/ui";
+import { useAuth,} from "../contexts/AuthContext";
 
 import {
   updateProfile,

@@ -6,7 +6,7 @@ import {
 
 import {
   useTheme,
-} from "../context";
+} from "../contexts";
 
 export default function Settings() {
 
