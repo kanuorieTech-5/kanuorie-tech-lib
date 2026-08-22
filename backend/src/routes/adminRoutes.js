@@ -8,6 +8,12 @@ const {
   toggleBlockUser,
 } = require("../controllers/adminController");
 
+const {
+  getAdminNotifications,
+  deleteAdminNotification,
+  clearAdminNotifications,
+} = require("../controllers/notificationController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -37,6 +43,25 @@ router.get("/users/:id", getUser);
 router.patch("/users/:id/block", toggleBlockUser);
 
 router.delete("/users/:id", deleteUser);
+
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+router.get(
+  "/notifications",
+  getAdminNotifications
+);
+
+router.delete(
+  "/notifications/:id",
+  deleteAdminNotification
+);
+
+router.delete(
+  "/notifications",
+  clearAdminNotifications
+);
 
 /* ==========================================
    EXPORT ROUTER

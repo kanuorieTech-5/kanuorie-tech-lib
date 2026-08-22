@@ -275,6 +275,106 @@ const broadcastNotification =
     );
   });
 
+  /* ==========================================
+   GET ALL NOTIFICATIONS - ADMIN
+========================================== */
+const getAdminNotifications = asyncHandler(
+  async (req, res) => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    if (req.query.type) {
+      filter.type = req.query.type;
+    }
+
+    if (req.query.isRead !== undefined) {
+      filter.isRead =
+        req.query.isRead === "true";
+    }
+
+    const [notifications, total] =
+      await Promise.all([
+        Notification.find(filter)
+          .populate(
+            "recipient",
+            "name email"
+          )
+          .populate(
+            "sender",
+            "name email"
+          )
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit),
+
+        Notification.countDocuments(filter),
+      ]);
+
+    return ApiResponse.success(
+      res,
+      notifications,
+      "Admin notifications retrieved successfully.",
+      200,
+      {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      }
+    );
+  }
+);
+
+/* ==========================================
+   DELETE NOTIFICATION - ADMIN
+========================================== */
+
+const deleteAdminNotification = asyncHandler(
+  async (req, res) => {
+    const notification =
+      await Notification.findById(
+        req.params.id
+      );
+
+    if (!notification) {
+      throw new ApiError(
+        404,
+        "Notification not found."
+      );
+    }
+
+    await notification.deleteOne();
+
+    return ApiResponse.success(
+      res,
+      null,
+      "Notification deleted successfully."
+    );
+  }
+);
+
+/* ==========================================
+   CLEAR ALL NOTIFICATIONS - ADMIN
+========================================== */
+
+const clearAdminNotifications = asyncHandler(
+  async (req, res) => {
+    const result = await Notification.deleteMany({});
+
+    return ApiResponse.success(
+      res,
+      {
+        deleted: result.deletedCount,
+      },
+      "All notifications cleared successfully."
+    );
+  }
+);
+
 module.exports = {
   createNotification,
   getNotifications,
@@ -285,4 +385,9 @@ module.exports = {
   clearNotifications,
   getUnreadCount,
   broadcastNotification,
+
+  // Admin
+  getAdminNotifications,
+  deleteAdminNotification,
+  clearAdminNotifications,
 };
