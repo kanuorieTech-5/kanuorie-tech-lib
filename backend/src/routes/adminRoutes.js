@@ -14,6 +14,10 @@ const {
   clearAdminNotifications,
 } = require("../controllers/notificationController");
 
+const {
+  getBlogs,
+} = require("../controllers/blogController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -30,19 +34,34 @@ router.use(adminOnly);
    DASHBOARD
 ========================================== */
 
-router.get("/stats", getStats);
+router.get(
+  "/stats",
+  getStats
+);
 
 /* ==========================================
    USER MANAGEMENT
 ========================================== */
 
-router.get("/users", getUsers);
+router.get(
+  "/users",
+  getUsers
+);
 
-router.get("/users/:id", getUser);
+router.get(
+  "/users/:id",
+  getUser
+);
 
-router.patch("/users/:id/block", toggleBlockUser);
+router.patch(
+  "/users/:id/block",
+  toggleBlockUser
+);
 
-router.delete("/users/:id", deleteUser);
+router.delete(
+  "/users/:id",
+  deleteUser
+);
 
 /* ==========================================
    NOTIFICATIONS
@@ -61,6 +80,15 @@ router.delete(
 router.delete(
   "/notifications",
   clearAdminNotifications
+);
+
+/* ==========================================
+   BLOG MANAGEMENT
+========================================== */
+
+router.get(
+  "/blog",
+  getBlogs
 );
 
 /* ==========================================
