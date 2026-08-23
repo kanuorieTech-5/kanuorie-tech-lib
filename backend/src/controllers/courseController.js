@@ -15,23 +15,6 @@ const saveCourse = asyncHandler(async (req, res) => {
     createdBy: req.user._id,
   });
 
-  await Progress.findOneAndUpdate(
-    {
-      user: req.user._id,
-      course: course._id,
-    },
-    {
-      user: req.user._id,
-      course: course._id,
-      percentage: 0,
-      status: "not_started",
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
-
   return ApiResponse.success(
     res,
     course,

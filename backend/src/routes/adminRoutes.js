@@ -16,32 +16,35 @@ const {
 
 const {
   getBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog,
 } = require("../controllers/blogController");
+
+const {
+  createBook,
+  getBooks,
+  updateBook,
+  deleteBook,
+} = require("../controllers/bookController");
 
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
 const router = express.Router();
 
-/* ==========================================
-   APPLY ADMIN MIDDLEWARE
-========================================== */
-
 router.use(protect);
 router.use(adminOnly);
 
-/* ==========================================
-   DASHBOARD
-========================================== */
+router.get(
+  "/dashboard",
+  getStats
+);
 
 router.get(
   "/stats",
   getStats
 );
-
-/* ==========================================
-   USER MANAGEMENT
-========================================== */
 
 router.get(
   "/users",
@@ -63,10 +66,6 @@ router.delete(
   deleteUser
 );
 
-/* ==========================================
-   NOTIFICATIONS
-========================================== */
-
 router.get(
   "/notifications",
   getAdminNotifications
@@ -82,17 +81,34 @@ router.delete(
   clearAdminNotifications
 );
 
-/* ==========================================
-   BLOG MANAGEMENT
-========================================== */
-
 router.get(
   "/blog",
   getBlogs
 );
 
-/* ==========================================
-   EXPORT ROUTER
-========================================== */
+router.post(
+  "/blog",
+  createBlog
+);
+
+router.put(
+  "/blog/:id",
+  updateBlog
+);
+
+router.delete(
+  "/blog/:id",
+  deleteBlog
+);
+
+router
+  .route("/books")
+  .get(getBooks)
+  .post(createBook);
+
+router
+  .route("/books/:id")
+  .put(updateBook)
+  .delete(deleteBook);
 
 module.exports = router;

@@ -8,13 +8,35 @@ const {
   getProduct,
   updateProduct,
   deleteProduct,
+  getFeaturedProducts,
+  getProductStats,
 } = require("../controllers/productController");
 
 const protect = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
 /* ==========================================
-   PUBLIC ROUTES
+   FEATURED PRODUCTS
+========================================== */
+
+router.get(
+  "/featured",
+  getFeaturedProducts
+);
+
+/* ==========================================
+   PRODUCT STATISTICS
+========================================== */
+
+router.get(
+  "/stats",
+  protect,
+  admin,
+  getProductStats
+);
+
+/* ==========================================
+   PRODUCTS
 ========================================== */
 
 router
@@ -39,9 +61,5 @@ router
     admin,
     deleteProduct
   );
-
-/* ==========================================
-   EXPORT ROUTER
-========================================== */
 
 module.exports = router;

@@ -385,8 +385,6 @@ module.exports = {
   clearNotifications,
   getUnreadCount,
   broadcastNotification,
-
-  // Admin
   getAdminNotifications,
   deleteAdminNotification,
   clearAdminNotifications,

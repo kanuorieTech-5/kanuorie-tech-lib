@@ -1,7 +1,5 @@
 const express = require("express");
-
 const router = express.Router();
-
 const {
   createNotification,
   getNotifications,
@@ -10,9 +8,10 @@ const {
   deleteNotification,
   clearNotifications,
   getUnreadCount,
- broadcastNotification,
+  broadcastNotification,
+  getAdminNotifications,
+  deleteAdminNotification,
 } = require("../controllers/notificationController");
-
 const protect = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
@@ -52,6 +51,12 @@ router.delete(
 /* ==========================================
    ADMIN ROUTES
 ========================================== */
+router.get(
+  "/admin",
+  protect,
+  admin,
+  getAdminNotifications
+);
 
 router.post(
   "/",
@@ -65,6 +70,13 @@ router.post(
   protect,
   admin,
   broadcastNotification
+);
+
+router.delete(
+  "/admin/:id",
+  protect,
+  admin,
+  deleteAdminNotification
 );
 
 module.exports = router;

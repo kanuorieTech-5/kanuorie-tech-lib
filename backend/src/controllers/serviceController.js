@@ -8,8 +8,9 @@ const ApiError = require("../utils/ApiError");
 ========================================== */
 
 const createService = asyncHandler(async (req, res) => {
-  const service = await Service.create(req.body);
-
+const service = await Service.create({...req.body,
+  createdBy: req.user._id,
+});
   return ApiResponse.success(
     res,
     service,

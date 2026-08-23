@@ -68,8 +68,8 @@ const errorHandler = require("./middleware/errorHandler");
 
 const allowedOrigins = process.env.CLIENT_URL
   .split(",")
-  .map((origin) => origin.trim());
-
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
 /* ==========================================
    SECURITY
 ========================================== */
@@ -84,21 +84,49 @@ app.use(compression());
 
 app.use(
   cors({
-    origin(origin, callback) {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
+    origin: (origin, callback) => {
+      // Allow server-to-server requests and health checks
+      if (!origin) {
         return callback(null, true);
       }
 
+      const normalizedOrigin = origin.replace(/\/$/, "");
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      console.error(
+        `CORS blocked origin: ${origin}`
+      );
+
       return callback(
-        new Error("CORS policy does not allow this origin.")
+        new Error(
+          `CORS policy does not allow origin: ${origin}`
+        )
       );
     },
+
     credentials: true,
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+    ],
+
+    optionsSuccessStatus: 204,
   })
 );
-
 /* ==========================================
    BODY PARSERS
 ========================================== */

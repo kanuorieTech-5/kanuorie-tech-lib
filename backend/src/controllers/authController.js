@@ -8,39 +8,67 @@ const generateToken = require("../utils/generateToken");
 /* ==========================================
    REGISTER USER
 ========================================== */
-const register = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
 
-  if (!firstName || !lastName || !email || !password) {
-    throw new ApiError(400, "Please provide all required fields.");
+const register = asyncHandler(async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+  } = req.body;
+
+  // Validate required fields
+  if (
+    !firstName?.trim() ||
+    !lastName?.trim() ||
+    !email?.trim() ||
+    !password
+  ) {
+    throw new ApiError(
+      400,
+      "First name, last name, email and password are required."
+    );
   }
 
+  const normalizedEmail = email
+    .trim()
+    .toLowerCase();
+
+  // Check existing user
   const existingUser = await User.findOne({
-    email: email.toLowerCase(),
+    email: normalizedEmail,
   });
 
   if (existingUser) {
-    throw new ApiError(409, "Email already exists.");
+    throw new ApiError(
+      409,
+      "Email already exists."
+    );
   }
 
+  // Create user
   const user = await User.create({
-    firstName,
-    lastName,
-    email: email.toLowerCase(),
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    email: normalizedEmail,
     password,
   });
 
+  // Generate authentication token
   const token = generateToken(user._id);
 
   return ApiResponse.success(
     res,
     {
       token,
+
       user: {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
         role: user.role,
       },
     },
@@ -52,25 +80,46 @@ const register = asyncHandler(async (req, res) => {
 /* ==========================================
    LOGIN USER
 ========================================== */
+
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email?.trim() || !password) {
+    throw new ApiError(
+      400,
+      "Email and password are required."
+    );
+  }
+
+  const normalizedEmail = email
+    .trim()
+    .toLowerCase();
+
   const user = await User.findOne({
-    email: email.toLowerCase(),
+    email: normalizedEmail,
   }).select("+password");
 
   if (!user) {
-    throw new ApiError(401, "Invalid email or password.");
+    throw new ApiError(
+      401,
+      "Invalid email or password."
+    );
   }
 
-  const isMatch = await user.matchPassword(password);
+  const isMatch = await user.matchPassword(
+    password
+  );
 
   if (!isMatch) {
-    throw new ApiError(401, "Invalid email or password.");
+    throw new ApiError(
+      401,
+      "Invalid email or password."
+    );
   }
 
   user.lastLogin = new Date();
-  user.loginCount += 1;
+  user.loginCount =
+    (user.loginCount || 0) + 1;
 
   await user.save();
 
@@ -80,11 +129,14 @@ const login = asyncHandler(async (req, res) => {
     res,
     {
       token,
+
       user: {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
         role: user.role,
       },
     },
@@ -95,99 +147,185 @@ const login = asyncHandler(async (req, res) => {
 /* ==========================================
    GET CURRENT USER
 ========================================== */
-const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
 
-  if (!user) {
-    throw new ApiError(404, "User not found.");
+const getCurrentUser = asyncHandler(
+  async (req, res) => {
+    const user = await User.findById(
+      req.user._id
+    ).select("-password");
+
+    if (!user) {
+      throw new ApiError(
+        404,
+        "User not found."
+      );
+    }
+
+    return ApiResponse.success(
+      res,
+      user,
+      "User retrieved successfully."
+    );
   }
-
-  return ApiResponse.success(
-    res,
-    user,
-    "User retrieved successfully."
-  );
-});
+);
 
 /* ==========================================
    UPDATE PROFILE
 ========================================== */
-const updateProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
 
-  if (!user) {
-    throw new ApiError(404, "User not found.");
-  }
+const updateProfile = asyncHandler(
+  async (req, res) => {
+    const user = await User.findById(
+      req.user._id
+    );
 
-  if (req.body.email) {
-    const existingEmail = await User.findOne({
-      email: req.body.email.toLowerCase(),
-      _id: { $ne: user._id },
-    });
-
-    if (existingEmail) {
-      throw new ApiError(409, "Email already exists.");
+    if (!user) {
+      throw new ApiError(
+        404,
+        "User not found."
+      );
     }
 
-    user.email = req.body.email.toLowerCase();
+    const {
+      firstName,
+      lastName,
+      email,
+      avatar,
+      phone,
+      bio,
+    } = req.body;
+
+    /* ----------------------------------------
+       EMAIL
+    ---------------------------------------- */
+
+    if (email?.trim()) {
+      const normalizedEmail = email
+        .trim()
+        .toLowerCase();
+
+      const existingEmail =
+        await User.findOne({
+          email: normalizedEmail,
+          _id: {
+            $ne: user._id,
+          },
+        });
+
+      if (existingEmail) {
+        throw new ApiError(
+          409,
+          "Email already exists."
+        );
+      }
+
+      user.email = normalizedEmail;
+    }
+
+    /* ----------------------------------------
+       BASIC PROFILE
+    ---------------------------------------- */
+
+    if (firstName?.trim()) {
+      user.firstName =
+        firstName.trim();
+    }
+
+    if (lastName?.trim()) {
+      user.lastName =
+        lastName.trim();
+    }
+
+    if (avatar !== undefined) {
+      user.avatar = avatar;
+    }
+
+    if (phone !== undefined) {
+      user.phone = phone;
+    }
+
+    if (bio !== undefined) {
+      user.bio = bio;
+    }
+
+    await user.save();
+
+    return ApiResponse.success(
+      res,
+      {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+        phone: user.phone,
+        bio: user.bio,
+        role: user.role,
+      },
+      "Profile updated successfully."
+    );
   }
-
-  user.firstName = req.body.firstName || user.firstName;
-  user.lastName = req.body.lastName || user.lastName;
-  user.avatar = req.body.avatar || user.avatar;
-  user.phone = req.body.phone || user.phone;
-  user.bio = req.body.bio || user.bio;
-
-  if (req.body.password) {
-    user.password = req.body.password;
-  }
-
-  await user.save();
-
-  return ApiResponse.success(
-    res,
-    {
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      avatar: user.avatar,
-      phone: user.phone,
-      bio: user.bio,
-      role: user.role,
-    },
-    "Profile updated successfully."
-  );
-});
+);
 
 /* ==========================================
    CHANGE PASSWORD
 ========================================== */
-const changePassword = asyncHandler(async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
 
-  const user = await User.findById(req.user._id).select("+password");
+const changePassword = asyncHandler(
+  async (req, res) => {
+    const {
+      currentPassword,
+      newPassword,
+    } = req.body;
 
-  if (!user) {
-    throw new ApiError(404, "User not found.");
+    if (
+      !currentPassword ||
+      !newPassword
+    ) {
+      throw new ApiError(
+        400,
+        "Current password and new password are required."
+      );
+    }
+
+    const user = await User.findById(
+      req.user._id
+    ).select("+password");
+
+    if (!user) {
+      throw new ApiError(
+        404,
+        "User not found."
+      );
+    }
+
+    const isMatch =
+      await user.matchPassword(
+        currentPassword
+      );
+
+    if (!isMatch) {
+      throw new ApiError(
+        401,
+        "Current password is incorrect."
+      );
+    }
+
+    user.password = newPassword;
+
+    await user.save();
+
+    return ApiResponse.success(
+      res,
+      null,
+      "Password changed successfully."
+    );
   }
+);
 
-  const isMatch = await user.matchPassword(currentPassword);
-
-  if (!isMatch) {
-    throw new ApiError(401, "Current password is incorrect.");
-  }
-
-  user.password = newPassword;
-
-  await user.save();
-
-  return ApiResponse.success(
-    res,
-    null,
-    "Password changed successfully."
-  );
-});
+/* ==========================================
+   EXPORTS
+========================================== */
 
 module.exports = {
   register,
