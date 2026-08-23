@@ -11,143 +11,144 @@ import {
 
 import { getBlogs } from "../../services";
 
-
 export default function BlogPreview() {
-
   const [blogs, setBlogs] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
-
-
   useEffect(() => {
+    let mounted = true;
 
     const fetchBlogs = async () => {
-
       try {
+        const response = await getBlogs();
 
-        const res = await getBlogs();
+        /*
+        ==========================================
+        NORMALIZE API RESPONSE
+        ==========================================
 
-        setBlogs(res.data || []);
+        Possible API responses:
 
+        1. [...]
+        2. { data: [...] }
+        3. { data: { blogs: [...] } }
+        4. { blogs: [...] }
+        */
+
+        const data = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.data?.blogs)
+          ? response.data.blogs
+          : Array.isArray(response?.blogs)
+          ? response.blogs
+          : [];
+
+        if (mounted) {
+          setBlogs(data);
+        }
       } catch (error) {
-
         console.error(
           "Failed to load blogs:",
           error
         );
 
+        if (mounted) {
+          setBlogs([]);
+        }
       } finally {
-
-        setLoading(false);
-
+        if (mounted) {
+          setLoading(false);
+        }
       }
-
     };
-
 
     fetchBlogs();
 
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-
-
-  if (loading) return <Loader />;
-
-
+  if (loading) {
+    return (
+      <section className="py-20">
+        <Loader />
+      </section>
+    );
+  }
 
   return (
-
     <section className="bg-slate-950 py-24">
-
-
-      <div className="mx-auto max-w-7xl px-6">
-
+      <div className="px-6">
 
         <SectionTitle
-
-          badge="Knowledge Hub"
-
+          Badge="Knowledge Hub"
           title="Latest Technology Insights"
-
           subtitle="Explore tutorials, company updates and industry insights from KanuorieTech."
-
         />
 
-
-
         {blogs.length === 0 ? (
-
-          <p className="
-            mt-12
-            text-center
-            text-slate-400
-          ">
-
+          <p
+            className="
+              mt-12
+              text-center
+              text-slate-400
+            "
+          >
             Articles coming soon.
-
           </p>
-
         ) : (
-
-
-          <div className="
-            mt-16
-            grid
-            gap-8
-            lg:grid-cols-3
-          ">
-
-
-            {blogs.slice(0,3).map((blog,index)=>(
-
-
+          <div
+            className="
+              mt-16
+              grid
+              gap-8
+              lg:grid-cols-3
+            "
+          >
+            {blogs.slice(0, 3).map((blog, index) => (
               <motion.div
-
-                key={blog._id}
-
+                key={
+                  blog._id ||
+                  blog.id ||
+                  blog.slug ||
+                  `blog-${index}`
+                }
                 initial={{
-                  opacity:0,
-                  y:30
+                  opacity: 0,
+                  y: 30,
                 }}
-
                 whileInView={{
-                  opacity:1,
-                  y:0
+                  opacity: 1,
+                  y: 0,
                 }}
-
                 transition={{
-                  delay:index * 0.1
+                  delay: index * 0.1,
                 }}
-
                 viewport={{
-                  once:true
+                  once: true,
                 }}
-
               >
-
-
                 <Card
-
                   className="
                     overflow-hidden
                     border-white/10
                     bg-white/5
                     backdrop-blur-xl
                   "
-
                 >
-
-
                   <img
-
                     src={
                       blog.image ||
+                      blog.coverImage ||
                       "/images/blog-placeholder.png"
                     }
-
-                    alt={blog.title}
-
+                    alt={
+                      blog.title ||
+                      "KanuorieTech article"
+                    }
                     className="
                       mb-5
                       h-56
@@ -155,81 +156,47 @@ export default function BlogPreview() {
                       rounded-2xl
                       object-cover
                     "
-
                   />
 
-
-
-                  <h3 className="
-                    mb-4
-                    text-xl
-                    font-bold
-                    text-white
-                  ">
-
+                  <h3
+                    className="
+                      mb-4
+                      text-xl
+                      font-bold
+                      text-white
+                    "
+                  >
                     {blog.title}
-
                   </h3>
 
-
-
-
-                  <p className="
-                    mb-6
-                    leading-7
-                    text-slate-400
-                  ">
-
-                    {
-                      blog.excerpt
-                      ?.slice(0,120)
-                      ||
-                      "Read the latest insights from KanuorieTech."
-                    }
-
+                  <p
+                    className="
+                      mb-6
+                      leading-7
+                      text-slate-400
+                    "
+                  >
+                    {blog.excerpt
+                      ? blog.excerpt.slice(0, 120)
+                      : "Read the latest insights from KanuorieTech."}
                     ...
-
                   </p>
 
-
-
-
                   <Link
-                    to={`/blog/${blog._id}`}
+                    to={`/blog/${
+                      blog.slug || blog._id || blog.id
+                    }`}
                   >
-
                     <Button>
-
                       Read More
-
                     </Button>
-
-
                   </Link>
-
-
-
                 </Card>
-
-
               </motion.div>
-
-
             ))}
-
-
           </div>
-
-
         )}
-
-
-
       </div>
-
-
     </section>
-
   );
-
 }

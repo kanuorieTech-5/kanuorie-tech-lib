@@ -11,11 +11,12 @@ import {
 } from "lucide-react";
 
 import Button from "../common/Button";
+import heroImage from "../../assets/WhatsApp Image 2026-08-06 at 12.35.26 PM (1).jpeg";
 
 const stats = [
   {
     value: "120+",
-    label: "Projects Delivered",
+    label: "Learning Resourses",
   },
   {
     value: "40+",
@@ -42,8 +43,16 @@ const technologies = [
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
-
+    <section className="relative overflow-hidden bg-cover bg-center bg-no-repeat text-white"
+      style={{
+        backgroundImage: `linear-gradient(
+          to bottom right,
+          rgba(2, 6, 23, 0.45),
+          rgba(15, 23, 42, 0.35),
+          rgba(30, 58, 138, 0.30)
+        ), url("${heroImage}")`,
+      }}
+     >
       {/* Background */}
 
       <div className="absolute inset-0">
@@ -53,149 +62,98 @@ export default function Hero() {
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-cyan-500/20 blur-[140px]" />
 
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-
+      
       </div>
 
-      <div className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-20 px-6 py-28 lg:grid-cols-2">
+      <div className="relative mx-auto grid h-screen items-center gap-20 px-4 py-4 lg:grid-cols-2">
 
         {/* LEFT */}
 
         <div>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: .6 }}
             className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-5 py-2 text-sm font-medium text-blue-300 backdrop-blur-xl"
           >
-
             <GraduationCap size={18} />
-
             Empowering Businesses & Future Developers
-
           </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: .15 }}
-            className="mt-8 text-5xl font-black leading-tight lg:text-7xl"
+            className="mt-4 text-5xl font-black leading-tight lg:text-7xl"
           >
-
             Build
-
             <span className="text-blue-400">
-
               {" "}Smarter.
-
             </span>
-
             <br />
-
             Learn
-
             <span className="text-cyan-400">
-
               {" "}Faster.
-
             </span>
-
             <br />
-
             Grow
-
             <span className="text-indigo-400">
-
               {" "}Without Limits.
-
             </span>
-
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: .3 }}
-            className="mt-8 max-w-2xl text-lg leading-8 text-slate-300"
+            className="mt-4 max-w-2xl text-lg leading-8 text-slate-300"
           >
-
             KanuorieTech is a technology company helping
             businesses build modern digital solutions while
             empowering developers through practical training,
             real-world projects, and industry-focused learning.
-
           </motion.p>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: .45 }}
-            className="mt-10 flex flex-wrap gap-5"
+            className="mt-5 flex flex-wrap gap-5"
           >
-
-            <Link to="/services">
-
+            <Link to="/profile">
               <Button size="lg">
-
                 Get Started
-
               </Button>
-
             </Link>
-
-            <Link to="/courses">
-
+            <Link to="/About">
               <Button
                 variant="outline"
                 size="lg"
               >
-
-                Explore Academy
-
+                About Us
                 <ArrowRight
                   size={18}
                   className="ml-2"
                 />
-
               </Button>
-
             </Link>
-
           </motion.div>
-
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: .6 }}
-            className="mt-16 grid grid-cols-2 gap-8 md:grid-cols-4"
+            className="mt-3 grid grid-cols-2 gap-8 md:grid-cols-4"
           >
-
             {stats.map((item) => (
-
               <div key={item.label}>
-
                 <h2 className="text-3xl font-bold text-blue-400">
-
                   {item.value}
-
                 </h2>
-
-                <p className="mt-2 text-sm text-slate-400">
-
+                <p className="mt-1 text-sm text-slate-300">
                   {item.label}
-
                 </p>
-
               </div>
-
             ))}
-
           </motion.div>
-
         </div>
-
-                {/* RIGHT */}
-
+          {/* RIGHT */}
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
@@ -413,7 +371,7 @@ export default function Hero() {
           repeat: Infinity,
           duration: 1.8,
         }}
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 lg:flex flex-col items-center text-slate-400"
+        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 lg:flex flex-col items-center text-slate-200"
       >
 
         <span className="mb-2 text-sm tracking-wide">

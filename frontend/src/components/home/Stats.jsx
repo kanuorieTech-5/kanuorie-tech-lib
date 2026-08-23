@@ -36,9 +36,9 @@ export default function Stats() {
 
 
   return (
-    <section className="bg-slate-950 py-20">
+    <section className="bg-slate-950 py-2">
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
 
         {stats.map((stat, index) => (
 

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
+import logo from "../../assets/Logo.jpeg";
 import {
   ArrowRight,
   CheckCircle2,
@@ -42,34 +42,24 @@ const stats = [
   },
 ];
 
-
 export default function AboutPreview() {
 
   return (
-    <section className="bg-slate-950 py-24">
-
-      <div className="mx-auto max-w-7xl px-6">
-
-
+    <section className="bg-slate-950 py-10">
+      <div className="px-6">
         <SectionTitle
-          badge="About KanuorieTech"
+          Badge="About KanuorieTech"
           title="Building Technology That Solves Real Problems"
           subtitle="We create digital solutions for businesses while empowering the next generation of developers through practical learning."
         />
-
-
         <div className="mt-16 grid items-center gap-16 lg:grid-cols-2">
-
-
           {/* Image */}
-
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="relative"
           >
-
             <div className="
               rounded-3xl
               border
@@ -80,7 +70,7 @@ export default function AboutPreview() {
             ">
 
               <img
-                src="/images/about-preview.png"
+                src={logo}
                 alt="KanuorieTech"
                 className="
                   rounded-2xl
@@ -89,8 +79,6 @@ export default function AboutPreview() {
               />
 
             </div>
-
-
             <Card
               className="
                 absolute
@@ -114,21 +102,13 @@ export default function AboutPreview() {
               </p>
 
             </Card>
-
-
           </motion.div>
-
-
-
           {/* Content */}
-
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-
-
             <span className="
               rounded-full
               border
@@ -142,9 +122,6 @@ export default function AboutPreview() {
             ">
               Innovation • Quality • Growth
             </span>
-
-
-
             <h3 className="
               mt-6
               text-4xl
@@ -153,9 +130,6 @@ export default function AboutPreview() {
             ">
               Building Solutions That Matter
             </h3>
-
-
-
             <p className="
               mt-6
               leading-8
@@ -167,18 +141,12 @@ export default function AboutPreview() {
               technology and creativity to help businesses and
               individuals succeed in the digital economy.
             </p>
-
-
-
             <div className="mt-8 space-y-4">
-
               {highlights.map((item) => (
-
                 <div
                   key={item}
                   className="flex items-center gap-3"
                 >
-
                   <CheckCircle2
                     className="
                       h-5
@@ -186,22 +154,12 @@ export default function AboutPreview() {
                       text-cyan-400
                     "
                   />
-
-
                   <span className="text-slate-300">
                     {item}
                   </span>
-
-
                 </div>
-
               ))}
-
-
             </div>
-
-
-
 
             {/* Stats */}
 
@@ -211,24 +169,19 @@ export default function AboutPreview() {
               grid-cols-3
               gap-4
             ">
-
               {stats.map((stat) => {
-
                 const Icon = stat.icon;
-
                 return (
-
                   <Card
                     key={stat.label}
                     className="
                       border-white/10
                       bg-white/5
-                      p-5
+
                       text-center
                       backdrop-blur-xl
                     "
                   >
-
                     <Icon
                       className="
                         mx-auto
@@ -237,8 +190,6 @@ export default function AboutPreview() {
                         text-cyan-400
                       "
                     />
-
-
                     <h4 className="
                       mt-3
                       text-2xl
@@ -247,64 +198,30 @@ export default function AboutPreview() {
                     ">
                       {stat.value}
                     </h4>
-
-
                     <p className="text-sm text-slate-400">
                       {stat.label}
                     </p>
-
-
                   </Card>
-
                 );
-
               })}
-
             </div>
-
-
-
-
             {/* Buttons */}
-
             <div className="mt-10 flex flex-wrap gap-4">
-
-
               <Link to="/about">
-
                 <Button>
-
                   Learn More
-
                   <ArrowRight className="ml-2 h-4 w-4" />
-
                 </Button>
-
               </Link>
-
-
-
               <Link to="/portfolio">
-
-                <Button variant="outline">
-
+                <Button variant="outline" className="text-blue-300">
                   View Portfolio
-
                 </Button>
-
               </Link>
-
-
             </div>
-
-
           </motion.div>
-
-
         </div>
-
       </div>
-
     </section>
   );
 }

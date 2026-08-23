@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import logo from "../../assets/Logo.jpeg";
 export default function Logo({
   size = "md",
   showText = true,
@@ -27,7 +27,7 @@ export default function Logo({
       className="flex items-center gap-3"
     >
       <img
-        src="/logo.png"
+        src={logo}
         alt="KanuorieTech"
         className={`${current.logo} object-contain`}
       />

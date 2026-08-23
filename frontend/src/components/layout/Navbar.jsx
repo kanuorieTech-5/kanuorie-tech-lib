@@ -5,7 +5,7 @@ import { Menu } from "lucide-react";
 import {
   Logo,
   SearchBar,
-  ThemeToggle,
+  // ThemeToggle,
   NotificationBell,
   UserDropdown,
   MobileMenu,
@@ -15,65 +15,40 @@ import { useAuth } from "../../contexts";
 
 export default function Navbar() {
   const { user } = useAuth();
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b bg-white shadow-sm">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-
+      <header className="border-b bg-gray-300 dark:border-gray-800 dark:bg-gray-950">
+        <div className="mx-auto flex items-center gap-6 px-6 py-4">
           {/* Logo */}
           <Logo />
 
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-6 lg:flex">
             <Link to="/">Home</Link>
-
-            <Link to="/library">
-              Library
-            </Link>
-
-            <Link to="/courses">
-              Courses
-            </Link>
-
-            <Link to="/products">
-              Products
-            </Link>
-
-            <Link to="/projects">
-              Projects
-            </Link>
-
-            <Link to="/services">
-              Services
-            </Link>
-
-            <Link to="/blog">
-              Blog
-            </Link>
-
-            <Link to="/contact">
-              Contact
-            </Link>
+            <Link to="/library">📚</Link>
+            <Link to="/courses">🎓</Link>
+            <Link to="/products">Products</Link>
+            <Link to="/projects">Projects</Link>
+            <Link to="/services">Services</Link>
+            <Link to="/blog">Blog</Link>
+            <Link to="/contact">📞</Link>
+            <Link to="/profile">👤</Link>
           </nav>
 
           {/* Search */}
-          <div className="hidden w-72 xl:block">
+          <div className="ml-auto hidden w-72 xl:block">
             <SearchBar
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
-
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
 
             {user && <NotificationBell />}
 
@@ -97,23 +72,22 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Mobile */}
+            {/* Mobile Menu Button */}
             <button
-              onClick={() =>
-                setMobileOpen(true)
-              }
-              className="lg:hidden"
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden ml-30"
+              aria-label="Open menu"
             >
-              <Menu />
+              <Menu size={24} />
             </button>
           </div>
         </div>
       </header>
+
       <MobileMenu
         open={mobileOpen}
-        onClose={() =>
-          setMobileOpen(false)
-        }
+        onClose={() => setMobileOpen(false)}
       />
     </>
   );

@@ -10,7 +10,7 @@ export default function Card({
   return (
     <div
       className={clsx(
-        "rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md",
+        "rounded-xl border border-gray-200 bg- shadow-sm transition hover:shadow-md",
         className
       )}
     >
@@ -22,7 +22,7 @@ export default function Card({
         </div>
       )}
 
-      <div className={padding ? "p-6" : ""}>
+      <div className={padding ? "p-3" : ""}>
         {children}
       </div>
 

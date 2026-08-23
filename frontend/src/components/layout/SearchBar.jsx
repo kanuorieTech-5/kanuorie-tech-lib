@@ -15,7 +15,7 @@ export default function SearchBar({
       <input
         type="text"
         value={value}
-        onChange={onChange}
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className="w-full rounded-lg border py-2 pl-10 pr-4 outline-none focus:border-blue-500"
       />

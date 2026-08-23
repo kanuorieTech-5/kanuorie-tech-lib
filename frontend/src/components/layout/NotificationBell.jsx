@@ -4,7 +4,7 @@ import { useNotification } from "../../contexts";
 
 export default function NotificationBell() {
   const { unreadCount } =
-    useNotifications();
+  useNotification();
 
   return (
     <Link

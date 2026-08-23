@@ -6,18 +6,20 @@ const API = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
 });
 
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("kanuorietech_token");
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("kanuorietech_token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 API.interceptors.response.use(
   (response) => response,

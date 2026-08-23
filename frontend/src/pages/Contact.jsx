@@ -1,18 +1,9 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import toast from "react-hot-toast";
-
-import {
-  Button,
-  Card,
-  SectionTitle,
-} from "../components/common";
-import { Input } from "../components/ui";
-import {
-  Newsletter,
-  CTA,
-} from "../components/home";
-
+import { Button, Card, SectionTitle,} from "../components/common";
+import { Input, } from "../components/ui";
+import { Newsletter, CTA,} from "../components/home";
 import { sendContactMessage } from "../services";
 
 export default function Contact() {
@@ -85,7 +76,7 @@ export default function Contact() {
           <SectionTitle
             center
             light
-            badge="Contact Us"
+            Badge="Contact Us"
             title="Let's Build Something Amazing Together"
             subtitle="Whether you need software development, IT consulting, or want to learn with KanuorieTech, we'd love to hear from you."
           />
@@ -93,36 +84,12 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="bg-slate-50 py-20">
-        <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
-
-          {contactInfo.map((item) => (
-            <Card
-              key={item.title}
-              className="p-8 text-center"
-            >
-              <item.icon className="mx-auto mb-5 h-10 w-10 text-blue-600" />
-
-              <h3 className="font-semibold">
-                {item.title}
-              </h3>
-
-              <p className="mt-2 text-gray-600">
-                {item.value}
-              </p>
-            </Card>
-          ))}
-
-        </div>
-      </section>
-
-      <section className="py-24">
+      <section className="py-12">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2">
-
           <div>
             <SectionTitle
-              badge="Send a Message"
-              title="We'd Love to Hear From You"
+              Badge="Send a Message"
+              title="We'd Love to work with You"
               subtitle="Fill out the form and we'll get back to you as soon as possible."
             />
 
@@ -176,6 +143,33 @@ export default function Contact() {
               </form>
             </Card>
           </div>
+        </div>
+      </section>
+      <section className="bg-slate-50 py-20">
+        <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
+
+          {contactInfo.map((item) => (
+            <Card
+              key={item.title}
+              className="p-8 text-center"
+            >
+              <item.icon className="mx-auto mb-5 h-10 w-10 text-blue-600" />
+
+              <h3 className="font-semibold">
+                {item.title}
+              </h3>
+
+              <p className="mt-2 text-gray-600">
+                {item.value}
+              </p>
+            </Card>
+          ))}
+
+        </div>
+      </section>
+
+      <section className="py-24">
+        <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2">
 
           <div className="flex items-center">
             <Card className="w-full p-10">

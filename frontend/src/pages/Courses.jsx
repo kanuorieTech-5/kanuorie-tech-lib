@@ -99,11 +99,11 @@ export default function Courses() {
     <>
       {/* Hero */}
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-28 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8 text-white">
 
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
-        <div className="relative mx-auto max-w-6xl px-6 text-center">
+        <div className="relative px-6 text-center">
 
           <motion.span
             initial={{ opacity: 0, y: 25 }}
@@ -148,7 +148,7 @@ export default function Courses() {
 
       <section className="bg-white py-14">
 
-        <div className="mx-auto max-w-7xl px-6">
+        <div className=" px-6">
 
           <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
 
@@ -193,7 +193,7 @@ export default function Courses() {
 
         <section className="bg-slate-50 py-24">
 
-          <div className="mx-auto max-w-7xl px-6">
+          <div className="px-6">
 
             <SectionTitle
               title="Featured Course"
@@ -278,7 +278,7 @@ export default function Courses() {
 
       <section className="py-24">
 
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="px-6">
 
           <SectionTitle
             title="Browse All Courses"
@@ -477,7 +477,7 @@ export default function Courses() {
 
       <section className="bg-slate-50 py-24">
 
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="px-6">
 
           <SectionTitle
             title="Why Learn With KanuorieTech?"

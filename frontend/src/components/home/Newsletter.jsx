@@ -67,8 +67,6 @@ export default function Newsletter() {
 
 
       <div className="
-        mx-auto
-        max-w-4xl
         px-6
         text-center
       ">
@@ -76,7 +74,7 @@ export default function Newsletter() {
 
         <SectionTitle
 
-          badge="Stay Connected"
+          Badge="Stay Connected"
 
           title="Get Technology Updates Delivered"
 

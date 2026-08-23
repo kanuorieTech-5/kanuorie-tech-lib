@@ -1,179 +1,157 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-
-import {
-  Card,
-  Button,
-  Loader,
-  SectionTitle,
-} from "../common";
-
+import { SectionTitle } from "../common";
+import { TrendingResources } from "../library";
 import { getBooks } from "../../services";
-
+import defaultResources from "../../data/resources";
 
 export default function BooksPreview() {
-
-  const [books, setBooks] = useState([]);
-
+  const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
+    let mounted = true;
 
-    const fetchBooks = async () => {
-
+    const fetchResources = async () => {
       try {
+        setLoading(true);
 
-        const res = await getBooks();
+        const response = await getBooks();
 
-        setBooks(res.data || []);
+        /*
+         * Backend may return:
+         *
+         * {
+         *   data: [...]
+         * }
+         *
+         * or:
+         *
+         * {
+         *   data: {
+         *     books: [...]
+         *   }
+         * }
+         */
 
+        const books = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.data?.books)
+          ? response.data.books
+          : [];
+
+        if (!mounted) return;
+
+        /*
+         * Keep local resources as fallback/additional
+         * resources while the API is available.
+         */
+        const combined = [
+          ...defaultResources,
+          ...books,
+        ];
+
+        /*
+         * Give every resource a stable ID.
+         */
+        const formatted = combined.map(
+          (item, index) => ({
+            ...item,
+
+            resourceId:
+              item._id ||
+              item.id ||
+              item.resourceId ||
+              `${item.title}-${index}`,
+          })
+        );
+
+        /*
+         * Remove duplicates.
+         */
+        const unique = Array.from(
+          new Map(
+            formatted.map((item) => [
+              item.resourceId,
+              item,
+            ])
+          ).values()
+        );
+
+        setResources(unique);
       } catch (error) {
-
         console.error(
-          "Failed to load books:",
+          "Failed to load library resources:",
           error
         );
 
+        /*
+         * API failure should not break
+         * the homepage.
+         */
+        if (mounted) {
+          setResources(
+            defaultResources.map(
+              (item, index) => ({
+                ...item,
+
+                resourceId:
+                  item.id ||
+                  item.resourceId ||
+                  `${item.title}-${index}`,
+              })
+            )
+          );
+        }
       } finally {
-
-        setLoading(false);
-
+        if (mounted) {
+          setLoading(false);
+        }
       }
-
     };
 
+    fetchResources();
 
-    fetchBooks();
-
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-
-
-  if (loading) return <Loader />;
-
-
-
   return (
-
-    <section className="bg-slate-950 py-24">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="bg-slate-950 py-1">
+      <div className="px-6">
         <SectionTitle
-
-          badge="Digital Library"
-
+          Badge="Digital Library"
           title="Explore Premium Digital Resources"
-
           subtitle="Access ebooks, guides and learning materials designed to improve your skills."
-
         />
-        {books.length === 0 ? (
 
-          <p className="
-            mt-12
-            text-center
-            text-slate-400
-          ">
+        {/* Loading */}
+        {loading && (
+          <div className="mt-1 flex justify-center">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-cyan-400/20 border-t-cyan-400" />
+          </div>
+        )}
 
-            New books are coming soon.
+        {/* Resources */}
+        {!loading && resources.length > 0 && (
+          <div className="mt-1">
+            <TrendingResources
+              resources={resources.slice(0, 6)}
+            />
+          </div>
+        )}
 
-          </p>
-
-        ) : (
-          <div className="
-            mt-16
-            grid
-            gap-8
-            md:grid-cols-2
-            lg:grid-cols-4
-          ">
-            {books.slice(0,4).map((book,index)=>(
-              <motion.div
-
-                key={book._id}
-
-                initial={{
-                  opacity:0,
-                  y:30
-                }}
-
-                whileInView={{
-                  opacity:1,
-                  y:0
-                }}
-
-                transition={{
-                  delay:index * 0.1
-                }}
-
-                viewport={{
-                  once:true
-                }}
-
-              >
-                <Card
-
-                  className="
-                    overflow-hidden
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-xl
-                  "
-                >
-                  <img
-                    src={
-                      book.coverImage ||
-                      "/images/book-placeholder.png"
-                    }
-                    alt={book.title}
-                    className="
-                      mb-5
-                      h-60
-                      w-full
-                      rounded-2xl
-                      object-cover
-                    "
-                  />
-                  <h3 className="
-                    mb-3
-                    font-bold
-                    text-white
-                  ">
-
-                    {book.title}
-
-                  </h3>
-                  <p className="
-                    mb-5
-                    font-semibold
-                    text-cyan-400
-                  ">
-
-                    ₦
-                    {Number(book.price)
-                      .toLocaleString()
-                    }
-
-                  </p>
-                  <Link
-                    to={`/library/${book._id}`}
-                  >
-
-                    <Button fullWidth>
-
-                      View Book
-
-                    </Button>
-                  </Link>
-                </Card>
-              </motion.div>
-            ))}
+        {/* Empty state */}
+        {!loading && resources.length === 0 && (
+          <div className="mt-1 text-center">
+            <p className="text-slate-400">
+              New digital resources are coming soon.
+            </p>
           </div>
         )}
       </div>
     </section>
-
   );
-
 }

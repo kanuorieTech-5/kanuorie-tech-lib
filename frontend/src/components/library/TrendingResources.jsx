@@ -15,36 +15,24 @@ export default function TrendingResources({
   if (!resources.length) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-16">
-
-      <div className="mb-8 flex items-center justify-between">
-
+    <section className=" py-4">
+      <div className="mb-2 flex items-center justify-between">
         <div>
-
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
             Popular Picks
           </p>
 
-          <h2 className="mt-2 text-3xl font-bold text-slate-900">
-            Trending Resources
-          </h2>
-
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-300">
             The most popular books and learning resources on KanuorieTech.
           </p>
-
         </div>
-
-        <Link
+      </div>
+      <Link
           to="/library"
-          className="hidden items-center gap-2 font-semibold text-blue-600 transition hover:text-blue-700 md:flex"
+          className="items-center gap-2 font-semibold text-blue-600 transition hover:text-blue-700 md:flex ml-58 p-2"
         >
           View All
-          <ArrowRight size={18} />
         </Link>
-
-      </div>
-
       <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
 
         {resources.map((resource) => (
@@ -56,7 +44,7 @@ export default function TrendingResources({
 
             <ResourceCard
               resource={resource}
-              isSaved={savedIds.includes(resource.resourceId)}
+              // isSaved={savedIds.includes(resource.resourceId)}
               saving={savingId === resource.resourceId}
               onSave={onSave}
             />

@@ -1,71 +1,80 @@
 import ResourceCard from "./ResourceCard";
 import { Pagination } from "../common";
 
-
 export default function ResourceGrid({
-  resources,
-  savedIds,
-  savingId,
-  onSave,
-  page,
-  setPage,
-  totalPages,
+resources = [],
+savedIds = [],
+savingId = null,
+onSave,
+page = 1,
+setPage,
+totalPages = 1,
 }) {
+const handlePageChange = (nextPage) => {
+if (
+nextPage < 1 ||
+nextPage > totalPages ||
+nextPage === page
+) {
+return;
+}
 
-  if (!resources.length) {
-    return (
-      <div className="py-20 text-center text-gray-500">
-        No resources found.
+setPage(nextPage);
+
+// Keep the user at the beginning of the resource section
+window.requestAnimationFrame(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
+
+};
+
+if (!resources.length) {
+return ( <div className="py-16 text-center"> <p className="text-sm text-slate-400">
+No resources found. 
+</p>
+
+    {totalPages > 1 && (
+      <div className="mt-8 flex justify-center">
+        <Pagination
+          page={page}
+          setPage={handlePageChange}
+          totalPages={totalPages}
+        />
       </div>
-    );
-  }
+    )}
+  </div>
+);
 
+}
 
-  return (
-    <div>
+return ( 
+  <div> 
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {resources.map((resource, index) => {
+      const resourceId =
+      resource.resourceId ||
+      resource._id ||
+      resource.id ||
+      resource.link ||
+      `${resource.title}-${index}`;
 
-      <div className="
-        grid
-        gap-6
-        sm:grid-cols-2
-        lg:grid-cols-3
-        xl:grid-cols-4
-      ">
-
-        {resources.map((resource) => (
-
-          <ResourceCard
-            key={
-              resource.link ||
-              resource.resourceId ||
-              resource._id ||
-              resource.id
-            }
-            resource={resource}
-            isSaved={savedIds.includes(
-              resource.resourceId
-            )}
-            savingId={savingId}
-            onSave={onSave}
-          />
-
-        ))}
-
-      </div>
-
-
-      {totalPages > 1 && (
-        <div className="mt-12 flex justify-center">
-
-          <Pagination
-            page={page}
-            setPage={setPage}
-            totalPages={totalPages}
-          />
-
-        </div>
-      )}
-
-    </div>
-  );
+      return (
+        <ResourceCard
+          key={resourceId}
+          resource={{
+            ...resource,
+            resourceId,
+          }}
+          isSaved={savedIds.includes(resourceId)}
+          saving={savingId === resourceId}
+          onSave={onSave}
+        />
+      );
+    })}
+  </div>
+</div>
+);
 }

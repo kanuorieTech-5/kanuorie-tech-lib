@@ -5,7 +5,7 @@ import { Button, Badge } from "../common";
 
 export default function LibraryHero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-28">
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8">
 
       {/* Background Glow */}
       <div className="absolute inset-0">
@@ -13,7 +13,7 @@ export default function LibraryHero() {
         <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-cyan-400/20 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
+      <div className="relative mx-auto grid items-center gap-16 px-6 lg:grid-cols-2">
 
         {/* Left */}
 

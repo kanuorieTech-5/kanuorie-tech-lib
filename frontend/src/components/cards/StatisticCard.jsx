@@ -1,4 +1,4 @@
-import { Card } from "../ui";
+import { Card } from "../common";
 
 export default function StatisticCard({
   title,

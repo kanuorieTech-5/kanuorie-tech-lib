@@ -1,33 +1,112 @@
-import { createContext, useContext, useEffect, useMemo, useState, useCallback,} from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
+
 import * as authApi from "../api/authApi";
-export const AuthContext = createContext();
-export const useAuth = () => useContext(AuthContext);
+
+export const AuthContext = createContext(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error(
+      "useAuth must be used inside AuthProvider"
+    );
+  }
+
+  return context;
+};
 
 const TOKEN_KEY = "kanuorietech_token";
 const USER_KEY = "kanuorietech_user";
 
 export function AuthProvider({ children }) {
+  /* ==========================================
+     USER STATE
+  ========================================== */
+
   const [user, setUser] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(USER_KEY));
+      const storedUser =
+        localStorage.getItem(USER_KEY);
+
+      return storedUser
+        ? JSON.parse(storedUser)
+        : null;
     } catch {
       return null;
     }
   });
 
-  const [loadingAuth, setLoadingAuth] = useState(true);
-  const [loading, setLoading] = useState(false);
+  /* ==========================================
+     LOADING STATE
+  ========================================== */
 
-  /* ======================================
-      LOAD CURRENT USER
-  ====================================== */
+  const [loadingAuth, setLoadingAuth] =
+    useState(true);
 
-  const loadUser = async () => {
+  const [loading, setLoading] =
+    useState(false);
+
+  /* ==========================================
+     LOGOUT
+  ========================================== */
+
+  const logout = useCallback(
+    async (callAPI = true) => {
+      try {
+        if (callAPI) {
+          await authApi.logoutUser();
+        }
+      } catch (error) {
+        console.warn(
+          "Logout API request failed:",
+          error
+        );
+      } finally {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+
+        setUser(null);
+      }
+    },
+    []
+  );
+
+  /* ==========================================
+     LOAD CURRENT USER
+  ========================================== */
+
+  const loadUser = useCallback(async () => {
     try {
-      const res = await authApi.getCurrentUser();
+      const token =
+        localStorage.getItem(TOKEN_KEY);
+
+      if (!token) {
+        setUser(null);
+        return null;
+      }
+
+      const res =
+        await authApi.getCurrentUser();
 
       const currentUser =
-        res.data || res.user || res;
+        res?.data?.user ||
+        res?.data ||
+        res?.user ||
+        res;
+
+      if (!currentUser) {
+        throw new Error(
+          "Unable to determine current user."
+        );
+      }
 
       setUser(currentUser);
 
@@ -35,27 +114,36 @@ export function AuthProvider({ children }) {
         USER_KEY,
         JSON.stringify(currentUser)
       );
+
+      return currentUser;
     } catch (error) {
-      logout(false);
+      console.error(
+        "Failed to restore authentication:",
+        error
+      );
+
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+
+      setUser(null);
+
+      return null;
     } finally {
       setLoadingAuth(false);
     }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY);
-
-    if (!token) {
-      setLoadingAuth(false);
-      return;
-    }
-
-    loadUser();
   }, []);
 
-  /* ======================================
-      LOGIN
-  ====================================== */
+  /* ==========================================
+     RESTORE AUTHENTICATION
+  ========================================== */
+
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
+
+  /* ==========================================
+     LOGIN
+  ========================================== */
 
   const login = useCallback(async (credentials) => {
     setLoading(true);
@@ -64,12 +152,19 @@ export function AuthProvider({ children }) {
       const res = await authApi.loginUser(credentials);
 
       const token =
-        res.token ||
-        res.data?.token;
+        res?.token ||
+        res?.data?.token;
 
       const currentUser =
-        res.user ||
-        res.data?.user;
+        res?.user ||
+        res?.data?.user ||
+        null;
+
+      if (!token || !currentUser) {
+        throw new Error(
+          "Invalid authentication response."
+        );
+      }
 
       localStorage.setItem(
         TOKEN_KEY,
@@ -90,77 +185,75 @@ export function AuthProvider({ children }) {
   }, []);
 
   /* ======================================
-      REGISTER
-  ====================================== */
+    REGISTER
+====================================== */
 
-  const register = useCallback(async (payload) => {
-    setLoading(true);
+const register = useCallback(async (payload) => {
+  setLoading(true);
 
-    try {
-      const res = await authApi.registerUser(payload);
+  try {
+    const res = await authApi.registerUser(payload);
 
-      return res;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    return res;
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
-  /* ======================================
-      LOGOUT
-  ====================================== */
+  /* ==========================================
+     UPDATE PROFILE
+  ========================================== */
 
-  const logout = useCallback(async (callAPI = true) => {
-    try {
-      if (callAPI) {
-        await authApi.logoutUser();
-      }
-    } catch {}
+  const updateProfile = useCallback(
+    async (payload) => {
+      const res =
+        await authApi.updateProfile(
+          payload
+        );
 
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+      const updated =
+        res?.user ||
+        res?.data?.user ||
+        res?.data ||
+        res;
 
-    setUser(null);
-  }, []);
+      setUser(updated);
 
-  /* ======================================
-      UPDATE PROFILE
-  ====================================== */
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify(updated)
+      );
 
-  const updateProfile = async (payload) => {
-    const res =
-      await authApi.updateProfile(payload);
+      return updated;
+    },
+    []
+  );
 
-    const updated =
-      res.user ||
-      res.data?.user ||
-      res.data;
+  /* ==========================================
+     AVATAR
+  ========================================== */
 
-    setUser(updated);
+  const uploadAvatar = useCallback(
+    async (file) => {
+      return authApi.uploadAvatar(file);
+    },
+    []
+  );
 
-    localStorage.setItem(
-      USER_KEY,
-      JSON.stringify(updated)
-    );
+  /* ==========================================
+     AUTH HELPERS
+  ========================================== */
 
-    return updated;
-  };
-
-  /* ======================================
-      AVATAR
-  ====================================== */
-
-  const uploadAvatar = async (file) => {
-    return authApi.uploadAvatar(file);
-  };
-
-  /* ======================================
-      HELPERS
-  ====================================== */
-
-  const isAuthenticated = !!user;
+  const isAuthenticated = Boolean(user);
 
   const isAdmin =
-    user?.role === "admin";
+    String(user?.role || "")
+      .trim()
+      .toLowerCase() === "admin";
+
+  /* ==========================================
+     CONTEXT VALUE
+  ========================================== */
 
   const value = useMemo(
     () => ({
@@ -170,17 +263,16 @@ export function AuthProvider({ children }) {
       loading,
       loadingAuth,
 
+      isAuthenticated,
+      isAdmin,
+
       login,
       logout,
       register,
-
       loadUser,
 
       updateProfile,
       uploadAvatar,
-
-      isAuthenticated,
-      isAdmin,
     }),
     [
       user,
@@ -188,6 +280,12 @@ export function AuthProvider({ children }) {
       loadingAuth,
       isAuthenticated,
       isAdmin,
+      login,
+      logout,
+      register,
+      loadUser,
+      updateProfile,
+      uploadAvatar,
     ]
   );
 

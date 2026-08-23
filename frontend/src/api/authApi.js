@@ -1,76 +1,94 @@
 import API from "./axiosApi";
 
-/* ==========================================
-   AUTH
-========================================== */
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATION
+|--------------------------------------------------------------------------
+*/
 
+/**
+ * Register a new user.
+ *
+ * POST /api/v1/auth/register
+ */
 export const registerUser = async (userData) => {
-  const { data } = await API.post("/auth/register", userData);
-  return data;
-};
-
-export const loginUser = async (credentials) => {
-  const { data } = await API.post("/auth/login", credentials);
-  return data;
-};
-
-export const logoutUser = async () => {
-  const { data } = await API.post("/auth/logout");
-  return data;
-};
-
-export const refreshToken = async () => {
-  const { data } = await API.get("/auth/refresh");
-  return data;
-};
-
-/* ==========================================
-   CURRENT USER
-========================================== */
-
-export const getCurrentUser = async () => {
-  const { data } = await API.get("/auth/me");
-  return data;
-};
-
-/* ==========================================
-   EMAIL VERIFICATION
-========================================== */
-
-export const verifyEmail = async (token) => {
-  const { data } = await API.get(`/auth/verify-email/${token}`);
-  return data;
-};
-
-export const resendVerificationEmail = async () => {
-  const { data } = await API.post("/auth/resend-verification");
-  return data;
-};
-
-/* ==========================================
-   PASSWORD
-========================================== */
-
-export const forgotPassword = async (email) => {
-  const { data } = await API.post("/auth/forgot-password", {
-    email,
-  });
-
-  return data;
-};
-
-export const resetPassword = async (token, password) => {
-  const { data } = await API.put(
-    `/auth/reset-password/${token}`,
-    {
-      password,
-    }
+  const { data } = await API.post(
+    "/auth/register",
+    userData
   );
 
   return data;
 };
 
-export const changePassword = async (passwords) => {
+/**
+ * Login an existing user.
+ *
+ * POST /api/v1/auth/login
+ */
+export const loginUser = async (credentials) => {
+  const { data } = await API.post(
+    "/auth/login",
+    credentials
+  );
+
+  return data;
+};
+
+/*
+|--------------------------------------------------------------------------
+| CURRENT USER
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Get the currently authenticated user.
+ *
+ * GET /api/v1/auth/me
+ */
+export const getCurrentUser = async () => {
+  const { data } = await API.get(
+    "/auth/me"
+  );
+
+  return data;
+};
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Update the authenticated user's profile.
+ *
+ * PUT /api/v1/auth/profile
+ */
+export const updateProfile = async (
+  profileData
+) => {
+  const { data } = await API.put(
+    "/auth/profile",
+    profileData
+  );
+
+  return data;
+};
+
+/*
+|--------------------------------------------------------------------------
+| PASSWORD
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Change the authenticated user's password.
+ *
+ * PUT /api/v1/auth/change-password
+ */
+export const changePassword = async (
+  passwords
+) => {
   const { data } = await API.put(
     "/auth/change-password",
     passwords
@@ -79,32 +97,16 @@ export const changePassword = async (passwords) => {
   return data;
 };
 
-export const updateProfile = async (profileData) => {
-  const { data } = await API.put("/users/profile", profileData);
-  return data;
-};
-
-export const uploadAvatar = async (formData) => {
-  const { data } = await API.post("/users/avatar", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return data;
-};
+/*
+|--------------------------------------------------------------------------
+| DEFAULT EXPORT
+|--------------------------------------------------------------------------
+*/
 
 export default {
   registerUser,
   loginUser,
-  logoutUser,
-  refreshToken,
   getCurrentUser,
-  verifyEmail,
-  resendVerificationEmail,
-  forgotPassword,
-  resetPassword,
-  changePassword,
   updateProfile,
-  uploadAvatar,
+  changePassword,
 };

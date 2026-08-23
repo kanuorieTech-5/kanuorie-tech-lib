@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   Button,
@@ -10,108 +9,240 @@ import {
 import { getService } from "../services";
 
 export default function ServiceDetails() {
-
   const { id } = useParams();
 
   const [service, setService] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
+  /* ==========================================
+     LOAD SERVICE
+  ========================================== */
+
   useEffect(() => {
-
     const fetchService = async () => {
-
       try {
-
         const res = await getService(id);
 
-        setService(res.data);
+        setService(res?.data || null);
+      } catch (error) {
+        console.error(
+          "Failed to load service:",
+          error
+        );
 
-      } catch (err) {
-
-        console.error(err);
-
+        setService(null);
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
     fetchService();
-
   }, [id]);
 
-  if (loading) return <Loader />;
+  /* ==========================================
+     LOADING STATE
+  ========================================== */
 
-  if (!service)
+  if (loading) {
     return (
-      <div className="py-24 text-center">
-        Service not found.
-      </div>
+      <section className="flex min-h-[60vh] items-center justify-center px-6">
+        <Loader />
+      </section>
     );
+  }
+
+  /* ==========================================
+     NOT FOUND
+  ========================================== */
+
+  if (!service) {
+    return (
+      <section className="mx-auto max-w-4xl px-6 py-20">
+
+        <Card className="p-12 text-center">
+
+          <h1 className="mb-4 text-3xl font-bold">
+            Service not found
+          </h1>
+
+          <p className="mb-8 text-gray-600">
+            The service you are looking for may
+            have been removed or is no longer
+            available.
+          </p>
+
+          <Link to="/services">
+            <Button>
+              Back to Services
+            </Button>
+          </Link>
+
+        </Card>
+
+      </section>
+    );
+  }
+
+  /* ==========================================
+     NORMALIZE FEATURES
+  ========================================== */
+
+  const features = Array.isArray(
+    service.features
+  )
+    ? service.features.filter(Boolean)
+    : [];
+
+  /* ==========================================
+     PAGE
+  ========================================== */
 
   return (
+    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
 
-    <section className="mx-auto max-w-6xl px-6 py-20">
+      {/* BACK LINK */}
 
-      <div className="grid gap-12 lg:grid-cols-2">
+      <div className="mb-8">
 
-        <img
-          src={service.image}
-          alt={service.title}
-          className="rounded-xl shadow-xl"
-        />
+        <Link
+          to="/services"
+          className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
+        >
+          ← Back to Services
+        </Link>
+
+      </div>
+
+      {/* MAIN SERVICE */}
+
+      <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
+
+        {/* IMAGE */}
 
         <div>
 
-          <h1 className="mb-5 text-5xl font-bold">
+          <img
+            src={
+              service.image ||
+              "/images/service-placeholder.jpg"
+            }
+            alt={
+              service.title ||
+              "Service"
+            }
+            className="w-full rounded-2xl object-cover shadow-xl"
+          />
+
+        </div>
+
+        {/* INFORMATION */}
+
+        <div>
+
+          {/* CATEGORY */}
+
+          {service.category && (
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-600">
+              {service.category}
+            </p>
+          )}
+
+          {/* TITLE */}
+
+          <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
             {service.title}
           </h1>
 
-          <p className="mb-8 leading-8 text-gray-600">
-            {service.description}
-          </p>
+          {/* DESCRIPTION */}
 
-          <Card className="mb-8">
+          {service.description && (
+            <p className="mb-8 text-lg leading-8 text-gray-600">
+              {service.description}
+            </p>
+          )}
 
-            <div className="space-y-3">
+          {/* SERVICE DETAILS */}
 
-              <p>
+          {(service.category ||
+            service.duration ||
+            service.price) && (
+            <Card className="mb-8 p-6">
 
-                <strong>Category:</strong>{" "}
-                {service.category}
+              <div className="space-y-4">
 
-              </p>
+                {service.category && (
+                  <div className="flex items-start justify-between gap-6">
 
-              <p>
+                    <span className="font-medium text-gray-500">
+                      Category
+                    </span>
 
-                <strong>Delivery Time:</strong>{" "}
-                {service.duration}
+                    <span className="text-right font-semibold">
+                      {service.category}
+                    </span>
 
-              </p>
+                  </div>
+                )}
 
-              <p>
+                {service.duration && (
+                  <div className="flex items-start justify-between gap-6">
 
-                <strong>Starting Price:</strong>{" "}
-                ₦{service.price}
+                    <span className="font-medium text-gray-500">
+                      Delivery Time
+                    </span>
 
-              </p>
+                    <span className="text-right font-semibold">
+                      {service.duration}
+                    </span>
 
-            </div>
+                  </div>
+                )}
 
-          </Card>
+                {service.price !==
+                  undefined &&
+                  service.price !==
+                    null &&
+                  service.price !== "" && (
+                    <div className="flex items-start justify-between gap-6">
+
+                      <span className="font-medium text-gray-500">
+                        Starting Price
+                      </span>
+
+                      <span className="text-right font-semibold">
+                        ₦
+                        {Number(
+                          service.price
+                        ).toLocaleString()}
+                      </span>
+
+                    </div>
+                  )}
+
+              </div>
+
+            </Card>
+          )}
+
+          {/* ACTIONS */}
 
           <div className="flex flex-wrap gap-4">
 
-            <Button>
-              Request Quote
-            </Button>
+            <Link to="/contact">
 
-            <Button variant="secondary">
-              Book Consultation
-            </Button>
+              <Button>
+                Request a Quote
+              </Button>
+
+            </Link>
+
+            <Link to="/contact">
+
+              <Button variant="secondary">
+                Book Consultation
+              </Button>
+
+            </Link>
 
           </div>
 
@@ -119,32 +250,53 @@ export default function ServiceDetails() {
 
       </div>
 
-      {service.features?.length > 0 && (
+      {/* FEATURES */}
 
+      {features.length > 0 && (
         <section className="mt-20">
 
-          <h2 className="mb-8 text-3xl font-bold">
-            What's Included
-          </h2>
+          <div className="mb-8">
 
-          <div className="space-y-4">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
+              Service Details
+            </p>
 
-            {service.features.map((item, index) => (
+            <h2 className="text-3xl font-bold">
+              What's Included
+            </h2>
 
-              <Card key={index}>
-                {item}
-              </Card>
+          </div>
 
-            ))}
+          <div className="grid gap-4 md:grid-cols-2">
+
+            {features.map(
+              (feature, index) => (
+                <Card
+                  key={`${feature}-${index}`}
+                  className="p-6"
+                >
+
+                  <div className="flex gap-4">
+
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
+                      {index + 1}
+                    </span>
+
+                    <p className="leading-7 text-gray-700">
+                      {feature}
+                    </p>
+
+                  </div>
+
+                </Card>
+              )
+            )}
 
           </div>
 
         </section>
-
       )}
 
     </section>
-
   );
-
 }

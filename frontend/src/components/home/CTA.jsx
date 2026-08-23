@@ -27,30 +27,14 @@ export default function CTA() {
 
   return (
 
-    <section className="
-      relative
-      overflow-hidden
-      bg-gradient-to-r
-      from-blue-700
-      via-blue-800
-      to-slate-900
-      py-24
-    ">
-
+    <section className="relative overflow-hidden bg-gradient-to-r from-blue-700 via-blue-800 to-slate-900 py-24">
 
       {/* Background Glow */}
 
-      <div className="
-        absolute
-        inset-0
-        opacity-10
-      ">
+      <div className="absolute inset-0 opacity-10">
 
-        <div className="
-          absolute
-          -left-20
-          top-0
-          h-72
+        <div className="absolute
+          -left-20 top-0 h-72
           w-72
           rounded-full
           bg-white
@@ -118,7 +102,7 @@ export default function CTA() {
 
             light
 
-            badge="Get Started"
+            Badge="Get Started"
 
             title="Ready To Build Something Amazing?"
 

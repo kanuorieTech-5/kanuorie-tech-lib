@@ -9,13 +9,7 @@ export default function CategoryFilter({
       onChange={(e) =>
         onChange(e.target.value)
       }
-      className="
-        rounded-lg
-        border
-        px-4
-        py-3
-        outline-none
-      "
+      className="rounded-lg border px-4 py-3 outline-none"
     >
       {categories.map((category) => (
         <option

@@ -21,20 +21,10 @@ export default function ResourceCard({
 
   return (
     <Card
-      className="
-        group
-        overflow-hidden
-        p-0
-        transition
-        hover:-translate-y-1
-        hover:shadow-xl
-      "
+      className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100"
     >
-
       {/* Image */}
-
       <div className="relative">
-
         <img
           src={
             resource.image ||
@@ -43,151 +33,77 @@ export default function ResourceCard({
             "https://via.placeholder.com/150"
           }
           alt={resource.title}
-          className="
-            h-52
-            w-full
-            object-cover
-          "
+          className="max-h-50 w-full object-cover"
         />
-
-
-        <div className="
-          absolute
-          left-4
-          top-4
-        ">
-
+        <div className="absolute left-4 top-4">
           <Badge>
             {resource.category || "General"}
           </Badge>
-
         </div>
-
       </div>
-
-
-
       {/* Content */}
-
-      <div className="p-5">
-
-
-        <h3 className="
-          line-clamp-2
-          text-xl
-          font-bold
-          text-slate-900
-        ">
+      <div className="p-2">
+        <h3 className="line-clamp-2 text-xl font-bold text-slate-300">
           {resource.title}
         </h3>
-
-
-        <p className="
-          mt-3
-          line-clamp-3
-          text-sm
-          leading-6
-          text-gray-600
-        ">
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-400">
           {
             resource.description ||
             "Explore this learning resource."
           }
         </p>
-
-
-
-        <div className="
-          mt-5
-          flex
-          items-center
-          justify-between
-        ">
-
-          <div className="
-            flex
-            items-center
-            gap-2
-            text-sm
-            text-gray-500
-          ">
-
+        <div className=" mt-5 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-gray-500">
             <BookOpen size={16}/>
-
             Resource
-
           </div>
-
-
           {isSaved && (
-            <div className="
-              flex
-              items-center
-              gap-1
-              text-sm
-              text-green-600
-            ">
+            <div className="flex items-center gap-1 text-sm text-green-600">
               <Check size={16}/>
               Saved
             </div>
           )}
-
         </div>
+        <div className="mt-6 flex gap-3">
+          {resource.link ? (
+            <a
+              href={resource.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1"
+            >
+              <Button fullWidth>
+                Read
+              </Button>
+            </a>
+          ) : (
+            <Link
+              to={`/library/${resource.resourceId || resource._id}`}
+              className="flex-1"
+            >
+              <Button fullWidth>
+                Read
+              </Button>
+            </Link>
+          )}
 
-
-
-        <div className="
-          mt-6
-          flex
-          gap-3
-        ">
-
-
-          <Link
-            to={`/library/${resource.link || resource.resourceId || resource._id}`}
-            className="flex-1"
-          >
-
-            <Button fullWidth>
-              View
-            </Button>
-
-          </Link>
-
-
-
-          <button
-            disabled={saving || isSaved}
+           <button
+            // disabled={saving || isSaved}
             onClick={() =>
               onSave(resource)
             }
-            className="
-              flex
-              items-center
-              justify-center
-              rounded-lg
-              border
-              px-4
-              transition
-              hover:bg-slate-100
-              disabled:cursor-not-allowed
-            "
+            className="flex items-center justify-center
+              rounded-lg border px-4 transition hover:bg-blue-600
+              disabled:cursor-not-allowed bg-white"
           >
-
             {isSaved ? (
               <Check size={18}/>
             ) : (
               <Bookmark size={18}/>
             )}
-
           </button>
-
-
         </div>
-
-
       </div>
-
     </Card>
   );
 }
