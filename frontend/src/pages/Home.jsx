@@ -10,7 +10,7 @@ import BooksPreview from "../components/home/BooksPreview";
 import ProductsPreview from "../components/home/ProductsPreview";
 import Testimonials from "../components/home/Testimonials";
 import BlogPreview from "../components/home/BlogPreview";
-import TechStack from "../components/home/Techstack";
+import TechStack from "../components/home/TechStack";
 import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
 

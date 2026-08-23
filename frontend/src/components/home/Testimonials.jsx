@@ -172,12 +172,6 @@ export default function Testimonials() {
     );
   }
 
-  /*
-  ==========================================
-  RENDER
-  ==========================================
-  */
-
   return (
     <section className="bg-slate-950 py-20 text-white">
       <div className="mx-auto max-w-7xl px-6">
