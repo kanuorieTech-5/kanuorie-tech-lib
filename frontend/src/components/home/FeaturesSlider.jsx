@@ -5,32 +5,32 @@ const featuresData = [
   {
     title: "E-Library Access",
     desc: "Browse and access books, notes, guides and educational resources in one centralized digital library.",
-    img: "/images/library.jpg",
+    img: "/images/library.png",
   },
   {
     title: "Course Management",
     desc: "Enroll in courses, track progress and continue learning from your personalized dashboard.",
-    img: "/images/courses.jpg",
+    img: "/images/courses.png",
   },
   {
     title: "User Profiles",
     desc: "Create your learning identity, manage your profile and personalize your experience.",
-    img: "/images/profile.jpg",
+    img: "/images/profile.png",
   },
   {
     title: "Secure Authentication",
     desc: "Protected accounts and secure access keep user information safe.",
-    img: "/images/security.jpg",
+    img: "/images/security.png",
   },
   {
     title: "Admin Control Panel",
     desc: "Manage users, courses, books and platform content from one dashboard.",
-    img: "/images/admin.jpg",
+    img: "/images/admin.png",
   },
   {
     title: "Resource Management",
     desc: "Upload and organize learning materials with a structured content system.",
-    img: "/images/resources.jpg",
+    img: "/images/resources.png",
   },
 ];
 

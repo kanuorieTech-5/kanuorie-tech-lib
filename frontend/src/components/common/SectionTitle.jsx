@@ -27,7 +27,7 @@ export default function SectionTitle({
         className={`text-3xl font-bold ${
           light
             ? "text-white"
-            : "text-gray-300"
+            : "text-gray-600"
         }`}
       >
         {title}
@@ -38,7 +38,7 @@ export default function SectionTitle({
           className={`mt-3 ${
             light
               ? "text-gray-300"
-              : "text-gray-400"
+              : "text-gray-500"
           }`}
         >
           {subtitle}

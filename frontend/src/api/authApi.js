@@ -1,16 +1,5 @@
 import API from "./axiosApi";
 
-/*
-|--------------------------------------------------------------------------
-| AUTHENTICATION
-|--------------------------------------------------------------------------
-*/
-
-/**
- * Register a new user.
- *
- * POST /api/v1/auth/register
- */
 export const registerUser = async (userData) => {
   const { data } = await API.post(
     "/auth/register",
@@ -20,11 +9,6 @@ export const registerUser = async (userData) => {
   return data;
 };
 
-/**
- * Login an existing user.
- *
- * POST /api/v1/auth/login
- */
 export const loginUser = async (credentials) => {
   const { data } = await API.post(
     "/auth/login",
@@ -34,17 +18,6 @@ export const loginUser = async (credentials) => {
   return data;
 };
 
-/*
-|--------------------------------------------------------------------------
-| CURRENT USER
-|--------------------------------------------------------------------------
-*/
-
-/**
- * Get the currently authenticated user.
- *
- * GET /api/v1/auth/me
- */
 export const getCurrentUser = async () => {
   const { data } = await API.get(
     "/auth/me"
@@ -53,17 +26,6 @@ export const getCurrentUser = async () => {
   return data;
 };
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE
-|--------------------------------------------------------------------------
-*/
-
-/**
- * Update the authenticated user's profile.
- *
- * PUT /api/v1/auth/profile
- */
 export const updateProfile = async (
   profileData
 ) => {
@@ -75,17 +37,17 @@ export const updateProfile = async (
   return data;
 };
 
-/*
-|--------------------------------------------------------------------------
-| PASSWORD
-|--------------------------------------------------------------------------
-*/
+export const updateSettings = async (
+  settings
+) => {
+  const { data } = await API.put(
+    "/auth/profile",
+    { settings }
+  );
 
-/**
- * Change the authenticated user's password.
- *
- * PUT /api/v1/auth/change-password
- */
+  return data;
+};
+
 export const changePassword = async (
   passwords
 ) => {
@@ -97,16 +59,11 @@ export const changePassword = async (
   return data;
 };
 
-/*
-|--------------------------------------------------------------------------
-| DEFAULT EXPORT
-|--------------------------------------------------------------------------
-*/
-
 export default {
   registerUser,
   loginUser,
   getCurrentUser,
   updateProfile,
+  updateSettings,
   changePassword,
 };

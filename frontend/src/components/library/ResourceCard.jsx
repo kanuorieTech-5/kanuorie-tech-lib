@@ -21,7 +21,7 @@ export default function ResourceCard({
 
   return (
     <Card
-      className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100"
+      className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100 p-"
     >
       {/* Image */}
       <div className="relative">
@@ -43,16 +43,16 @@ export default function ResourceCard({
       </div>
       {/* Content */}
       <div className="p-2">
-        <h3 className="line-clamp-2 text-xl font-bold text-slate-300">
+        <h3 className="line-clamp-2 text-xl font-bold text-slate-500">
           {resource.title}
         </h3>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-400">
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
           {
             resource.description ||
             "Explore this learning resource."
           }
         </p>
-        <div className=" mt-5 flex items-center justify-between">
+        <div className=" mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <BookOpen size={16}/>
             Resource
@@ -64,7 +64,7 @@ export default function ResourceCard({
             </div>
           )}
         </div>
-        <div className="mt-6 flex gap-3">
+        <div className="mt-4 flex gap-3">
           {resource.link ? (
             <a
               href={resource.link}

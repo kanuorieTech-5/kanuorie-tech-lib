@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import {
-  Loader,
-  Card,
-  SectionTitle,
-} from "../common";
-
+import { Loader, Card, SectionTitle, } from "../common";
 import { getTeamMembers } from "../../services";
+import CEOImage from "../../assets/CEO.jpeg";
 
 const FALLBACK_TEAM = [
   {
     _id: "fallback-1",
     name: "KanuorieTech Team",
     position: "Digital Solutions",
-    image:
-      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+    image: CEOImage,
   },
   {
     _id: "fallback-2",

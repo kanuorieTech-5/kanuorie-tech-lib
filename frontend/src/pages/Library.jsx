@@ -12,7 +12,6 @@ import {
   LibraryHero,
   ResourceGrid,
   CategoryFilter,
-  TrendingResources,
   RecommendedResources,
 } from "../components/library";
 
@@ -59,12 +58,6 @@ export default function Library() {
   const [toast, setToast] = useState("");
   const [page, setPage] = useState(1);
   
-  /*
-  ==========================================
-  LOAD LIBRARY
-  ==========================================
-  */
-
   useEffect(() => {
     loadLibrary();
   }, []);
@@ -81,12 +74,6 @@ export default function Library() {
     setLoading(false);
   }
 };
-
-  /*
-  ==========================================
-  FETCH BOOKS / RESOURCES
-  ==========================================
-  */
 
   const fetchResources = async () => {
     try {
@@ -158,11 +145,6 @@ export default function Library() {
     }
   };
 
-  /*
-  ==========================================
-  FETCH SAVED COURSES
-  ==========================================
-  */
 const fetchSavedCourses = async () => {
   try {
     const response = await getCourses();
@@ -201,11 +183,6 @@ const fetchSavedCourses = async () => {
     setSavedIds([]);
   }
 };
-/*
-==========================================
-FILTERED RESOURCES
-==========================================
-*/
 
 const filteredResources = useMemo(() => {
   const normalizedSearch = search
@@ -241,11 +218,6 @@ const filteredResources = useMemo(() => {
   search,
   category,
 ]);
-/*
-==========================================
-SAVED RESOURCES
-==========================================
-*/
 
 const savedResources = useMemo(() => {
   return resources.filter((resource) =>
@@ -255,11 +227,6 @@ const savedResources = useMemo(() => {
   resources,
   savedIds,
 ]);
-/*
-==========================================
-RECOMMENDED RESOURCES
-==========================================
-*/
 
 const recommendedResources = useMemo(() => {
   if (!savedResources.length) {
@@ -296,11 +263,6 @@ const recommendedResources = useMemo(() => {
   savedResources,
   savedIds,
 ]);
-/*
-==========================================
-PAGINATION
-==========================================
-*/
 
 const totalPages = Math.ceil(
   filteredResources.length /
@@ -323,11 +285,6 @@ const paginatedResources =
   page,
   totalPages,
 ]);
-/*
-==========================================
-SAVE RESOURCE
-==========================================
-*/
 
 const handleSave = async (resource) => {
   if (!resource?.resourceId) {
@@ -424,54 +381,13 @@ const hasResources =
 
   return (
   <main>
-    {/* ========================================
-        LIBRARY HERO
-    ======================================== */}
-
     <LibraryHero />
-
-    {/* ========================================
-        TOAST
-    ======================================== */}
-
     {toast && (
-      <div
-        className="
-          fixed
-          right-5
-          top-5
-          z-50
-          max-w-sm
-          rounded-lg
-          bg-gray-900
-          px-5
-          py-3
-          text-sm
-          font-medium
-          text-white
-          shadow-xl
-        "
+      <div className="fixed right-5 top-5 z-50 max-w-sm rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl"
       >
         {toast}
       </div>
     )}
-
-    {/* ========================================
-        TRENDING
-    ======================================== */}
-
-    {/* {resources.length > 0 && (
-      <TrendingResources
-        resources={resources.slice(0, 6)}
-        savedIds={savedIds}
-        savingId={savingId}
-        onSave={handleSave}
-      />
-    )} */}
-
-    {/* ========================================
-        RECOMMENDED
-    ======================================== */}
 
     {recommendedResources.length > 0 && (
       <RecommendedResources
@@ -482,11 +398,7 @@ const hasResources =
       />
     )}
 
-    {/* ========================================
-        SEARCH / FILTER
-    ======================================== */}
-
-    <section className="bg-slate-50 py-20">
+    <section className="bg-slate-200 py-10">
       <div className="px-6">
 
         <h1 className="text-4xl font-bold">
@@ -500,13 +412,7 @@ const hasResources =
         </p>
 
         <div
-          className="
-            mt-8
-            flex
-            flex-col
-            gap-4
-            md:flex-row
-          "
+          className="mt-8 flex flex-col gap-4 md:flex-row"
         >
           <SearchBar
             value={search}
@@ -528,13 +434,7 @@ const hasResources =
         </div>
       </div>
     </section>
-
-    {/* ========================================
-        RESOURCE GRID
-    ======================================== */}
-
-    <section className="mx-auto px-6 py-16">
-
+    <section className="mx-auto px-6 bg-slate-200">
       {hasResources ? (
         <>
           <ResourceGrid
@@ -561,21 +461,8 @@ const hasResources =
                   behavior: "smooth",
                 });
               }}
-              className="
-                rounded-lg
-                border
-                border-gray-300
-                bg-white
-                px-4
-                py-2
-                text-sm
-                font-medium
-                text-gray-700
-                transition
-                hover:bg-gray-50
-                disabled:cursor-not-allowed
-                disabled:opacity-40
-              "
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700
+                transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -597,21 +484,8 @@ const hasResources =
                   behavior: "smooth",
                 });
               }}
-              className="
-                rounded-lg
-                border
-                border-gray-300
-                bg-white
-                px-4
-                py-2
-                text-sm
-                font-medium
-                text-gray-700
-                transition
-                hover:bg-gray-50
-                disabled:cursor-not-allowed
-                disabled:opacity-40
-              "
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700
+                transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -620,11 +494,9 @@ const hasResources =
         </>
       ) : (
         <div className="rounded-2xl border bg-white px-6 py-16 text-center shadow-sm">
-
           <h2 className="text-2xl font-bold">
             No resources found
           </h2>
-
           <p className="mx-auto mt-3 max-w-md text-gray-600">
             We couldn't find any resources
             matching your search or selected
@@ -639,17 +511,7 @@ const hasResources =
                 setCategory("All");
                 setPage(1);
               }}
-              className="
-                mt-6
-                rounded-lg
-                bg-blue-600
-                px-6
-                py-3
-                font-medium
-                text-white
-                transition
-                hover:bg-blue-700
-              "
+              className="mt-6 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition hover:bg-blue-700"
             >
               Clear Filters
             </button>
@@ -657,19 +519,8 @@ const hasResources =
 
         </div>
       )}
-
     </section>
-
-    {/* ========================================
-        NEWSLETTER
-    ======================================== */}
-
     <Newsletter />
-
-    {/* ========================================
-        CTA
-    ======================================== */}
-
     <CTA />
   </main>
 );

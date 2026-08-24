@@ -146,7 +146,7 @@ export default function Courses() {
 
       {/* Search & Filters */}
 
-      <section className="bg-white py-14">
+      <section className="bg-slate-200 py-14">
 
         <div className=" px-6">
 
@@ -157,7 +157,6 @@ export default function Courses() {
               onChange={setSearch}
               placeholder="Search courses..."
             />
-
             <div className="flex flex-wrap gap-3">
 
               {difficulties.map((level) => (
@@ -191,7 +190,7 @@ export default function Courses() {
 
       {featuredCourse && (
 
-        <section className="bg-slate-50 py-24">
+        <section className="bg-slate-200 py-24">
 
           <div className="px-6">
 
@@ -276,7 +275,7 @@ export default function Courses() {
       )}
             {/* Course Catalog */}
 
-      <section className="py-24">
+      <section className="py-10 bg-slate-200">
 
         <div className="px-6">
 
@@ -289,7 +288,7 @@ export default function Courses() {
 
           {currentCourses.length === 0 ? (
 
-            <Card className="mt-16 py-20 text-center">
+            <Card className="mt-16 py-10 text-center">
 
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
 

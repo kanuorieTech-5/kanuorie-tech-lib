@@ -15,6 +15,45 @@ import { CTA, Newsletter } from "../components/home";
 
 const PER_PAGE = 9;
 
+// const FALLBACK_IMAGE = "/images/service-placeholder.jpg";
+
+// const FALLBACK_DESCRIPTION =
+  "Learn more about this service and how it can help your business.";
+
+const getServicesData = (response) => {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (Array.isArray(response?.data)) {
+    return response.data;
+  }
+
+  if (Array.isArray(response?.data?.services)) {
+    return response.data.services;
+  }
+
+  if (Array.isArray(response?.services)) {
+    return response.services;
+  }
+
+  return [];
+};
+
+const getServiceId = (service) => {
+  return service?._id || service?.id || null;
+};
+
+const getServiceDescription = (service) => {
+  const description = service?.description?.trim();
+
+  if (!description) {
+    return FALLBACK_DESCRIPTION;
+  }
+
+  return description;
+};
+
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,54 +62,49 @@ export default function Services() {
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
 
-  /* ==========================================
-     LOAD SERVICES
-  ========================================== */
-
   useEffect(() => {
+    let isMounted = true;
+
     const fetchServices = async () => {
       try {
-        const res = await getServices();
+        const response = await getServices();
 
-        setServices(
-          Array.isArray(res?.data)
-            ? res.data
-            : []
-        );
+        const data = getServicesData(response);
+
+        if (isMounted) {
+          setServices(data);
+        }
       } catch (error) {
-        console.error(
-          "Failed to load services:",
-          error
-        );
+        console.error("Failed to load services:", error);
 
-        setServices([]);
+        if (isMounted) {
+          setServices([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchServices();
-  }, []);
 
-  /* ==========================================
-     CATEGORIES
-  ========================================== */
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const categories = useMemo(() => {
     const uniqueCategories = [
       ...new Set(
         services
-          .map((service) => service?.category)
+          .map((service) => service?.category?.trim())
           .filter(Boolean)
       ),
     ];
 
     return ["All", ...uniqueCategories];
   }, [services]);
-
-  /* ==========================================
-     FILTER SERVICES
-  ========================================== */
 
   const filteredServices = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -82,6 +116,9 @@ export default function Services() {
       const description =
         service?.description?.toLowerCase() || "";
 
+      const serviceCategory =
+        service?.category || "";
+
       const matchesSearch =
         !query ||
         title.includes(query) ||
@@ -89,208 +126,246 @@ export default function Services() {
 
       const matchesCategory =
         category === "All" ||
-        service?.category === category;
+        serviceCategory === category;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
   }, [services, search, category]);
 
-  /* ==========================================
-     PAGINATION
-  ========================================== */
-
+ 
   const totalPages = Math.ceil(
     filteredServices.length / PER_PAGE
   );
 
-  const currentServices =
-    filteredServices.slice(
-      (page - 1) * PER_PAGE,
-      page * PER_PAGE
-    );
+  const currentServices = useMemo(() => {
+    const startIndex = (page - 1) * PER_PAGE;
 
-  /* ==========================================
-     RESET PAGE WHEN FILTER CHANGES
-  ========================================== */
+    return filteredServices.slice(
+      startIndex,
+      startIndex + PER_PAGE
+    );
+  }, [filteredServices, page]);
 
   useEffect(() => {
     setPage(1);
   }, [search, category]);
 
-  /* ==========================================
-     LOADING STATE
-  ========================================== */
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   if (loading) {
     return (
-      <section className="flex min-h-[60vh] items-center justify-center px-6">
+      <section
+        className="flex min-h-[60vh] items-center justify-center bg-slate-950 px-6"
+        aria-label="Loading services"
+      >
         <Loader />
       </section>
     );
   }
 
-  /* ==========================================
-     PAGE
-  ========================================== */
-
   return (
     <>
-    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+      <section className="bg-slate-950 py-16 text-white lg:py-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
-      {/* HEADER */}
+          {/* HEADER */}
 
-      <div className="mb-12">
+          <div className="mb-12">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-cyan-400">
+              What We Do
+            </p>
 
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-600">
-          What We Do
-        </p>
+            <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
+              Our Services
+            </h1>
 
-        <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-          Our Services
-        </h1>
+            <p className="max-w-2xl text-lg leading-8 text-slate-400">
+              Discover the digital solutions and technology
+              services we provide to help businesses build,
+              grow, and succeed.
+            </p>
+          </div>
 
-        <p className="max-w-2xl text-lg leading-8 text-gray-600">
-          Discover the digital solutions and
-          technology services we provide to help
-          businesses build, grow, and succeed.
-        </p>
+          {/* FILTERS */}
 
-      </div>
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-center">
 
-      {/* FILTERS */}
-
-      <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center">
-
-        <div className="flex-1">
-
-          <SearchBar
-            value={search}
-            onChange={(value) => setSearch(value)}
-            placeholder="Search services..."
-          />
-
-        </div>
-
-        <select
-          value={category}
-          onChange={(event) =>
-            setCategory(event.target.value)
-          }
-          className="rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
-
-          {categories.map((item) => (
-            <option
-              key={item}
-              value={item}
-            >
-              {item}
-            </option>
-          ))}
-
-        </select>
-
-      </div>
-
-      {/* RESULTS */}
-
-      {currentServices.length === 0 ? (
-
-        <Card className="p-12 text-center">
-
-          <h2 className="mb-3 text-2xl font-bold">
-            No services found
-          </h2>
-
-          <p className="text-gray-600">
-            Try changing your search or category
-            filter.
-          </p>
-
-        </Card>
-
-      ) : (
-
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {currentServices.map((service) => (
-            <Card
-              key={service._id}
-              className="overflow-hidden transition hover:-translate-y-1 hover:shadow-lg"
-            >
-
-              {/* IMAGE */}
-
-              <img
-                src={
-                  service.image ||
-                  "/images/service-placeholder.jpg"
-                }
-                alt={
-                  service.title ||
-                  "Service"
-                }
-                loading="lazy"
-                className="mb-5 h-56 w-full rounded-lg object-cover"
+            <div className="flex-1">
+              <SearchBar
+                value={search}
+                onChange={setSearch}
+                placeholder="Search services..."
               />
+            </div>
 
-              {/* CATEGORY */}
+            <label className="sr-only" htmlFor="service-category">
+              Filter services by category
+            </label>
 
-              {service.category && (
-                <p className="mb-2 text-sm font-medium text-blue-600">
-                  {service.category}
-                </p>
-              )}
+            <select
+              id="service-category"
+              value={category}
+              onChange={(event) =>
+                setCategory(event.target.value)
+              }
+              className="
+                rounded-lg
+                border
+                border-white/10
+                bg-white/5
+                px-4
+                py-3
+                text-white
+                outline-none
+                transition
+                focus:border-cyan-400
+                focus:ring-2
+                focus:ring-cyan-400/20
+              "
+            >
+              {categories.map((item) => (
+                <option
+                  key={item}
+                  value={item}
+                  className="bg-slate-900 text-white"
+                >
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
 
-              {/* TITLE */}
+          {/* RESULTS */}
 
-              <h2 className="mb-3 text-2xl font-bold">
-                {service.title}
+          {currentServices.length === 0 ? (
+            <Card className="border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
+              <h2 className="mb-3 text-2xl font-bold text-white">
+                No services found
               </h2>
 
-              {/* DESCRIPTION */}
-
-              <p className="mb-6 line-clamp-3 text-gray-600">
-                {service.description ||
-                  "Learn more about this service and how it can help your business."}
+              <p className="text-slate-400">
+                Try changing your search or category
+                filter.
               </p>
 
-              {/* ACTION */}
-
-              <Link
-                to={`/services/${service._id}`}
-              >
-                <Button fullWidth>
-                  Learn More
+              {(search || category !== "All") && (
+                <Button
+                  variant="secondary"
+                  className="mt-6"
+                  onClick={() => {
+                    setSearch("");
+                    setCategory("All");
+                  }}
+                >
+                  Clear Filters
                 </Button>
-              </Link>
-
+              )}
             </Card>
+          ) : (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-          ))}
+              {currentServices.map((service) => {
+                const serviceId = getServiceId(service);
+
+                // Skip malformed records instead of
+                // creating broken links.
+                if (!serviceId) {
+                  return null;
+                }
+
+                const title =
+                  service?.title?.trim() ||
+                  "Technology Service";
+
+                const description =
+                  getServiceDescription(service);
+
+                return (
+                  <Card
+                    key={serviceId}
+                    className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0
+                      backdrop-blur-xl transition-all duration-300 hover:-translate-y-2
+                      hover:border-cyan-400/30 hover:shadow-2xl hover:shadow-cyan-500/10"
+                  >
+                    <div className="overflow-hidden">
+                      {/* <img
+                        src={
+                          service?.image ||
+                          FALLBACK_IMAGE
+                        }
+                        alt={`${title} service`}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src =
+                            FALLBACK_IMAGE;
+                        }}
+                      /> */}
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      {service?.category && (
+                        <p className="mb-3 text-sm font-medium text-cyan-400">
+                          {service.category}
+                        </p>
+                      )}
+                      <h2 className="mb-3 text-2xl font-bold text-white">
+                        {title}
+                      </h2>
+
+                      {/* DESCRIPTION */}
+
+                      <p className="mb-8 line-clamp-3 flex-1 leading-7 text-slate-400">
+                        {description}
+                      </p>
+
+                      {/* ACTION */}
+
+                      <Link
+                        to={`/services/${serviceId}`}
+                        className="mt-auto"
+                        aria-label={`Learn more about ${title}`}
+                      >
+                        <Button fullWidth>
+                          Learn More
+                        </Button>
+                      </Link>
+
+                    </div>
+                  </Card>
+                );
+              })}
+
+            </div>
+          )}
+
+          {/* PAGINATION */}
+
+          {totalPages > 1 && (
+            <div className="mt-12">
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            </div>
+          )}
 
         </div>
+      </section>
 
-      )}
+      {/* CTA */}
 
-      {/* PAGINATION */}
+      <CTA />
 
-      {totalPages > 1 && (
-        <div className="mt-12">
+      {/* NEWSLETTER */}
 
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-
-        </div>
-      )}
-    </section>
-    <CTA />
-    <Newsletter />
+      <Newsletter />
     </>
   );
 }

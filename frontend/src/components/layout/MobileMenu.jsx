@@ -25,7 +25,7 @@ export default function MobileMenu({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/40 lg:hidden"
+      className="fixed inset-0 z-50 bg-gray-300 lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation menu"
