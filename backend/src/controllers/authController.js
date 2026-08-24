@@ -5,10 +5,6 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const generateToken = require("../utils/generateToken");
 
-/* ==========================================
-   REGISTER USER
-========================================== */
-
 const register = asyncHandler(async (req, res) => {
   const {
     firstName,
@@ -76,10 +72,6 @@ const register = asyncHandler(async (req, res) => {
     201
   );
 });
-
-/* ==========================================
-   LOGIN USER
-========================================== */
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -193,6 +185,7 @@ const updateProfile = asyncHandler(
       avatar,
       phone,
       bio,
+      settings,
     } = req.body;
 
     /* ----------------------------------------
@@ -248,9 +241,94 @@ const updateProfile = asyncHandler(
       user.bio = bio;
     }
 
+    /* ----------------------------------------
+      SETTINGS
+    ---------------------------------------- */
+
+    if (settings !== undefined) {
+      if (settings.theme !== undefined) {
+        if (
+          !["light", "dark", "system"].includes(
+            settings.theme
+          )
+        ) {
+          throw new ApiError(
+            400,
+            "Invalid theme."
+          );
+        }
+
+        user.settings.theme =
+          settings.theme;
+      }
+
+      if (settings.language !== undefined) {
+        user.settings.language =
+          settings.language;
+      }
+
+      /* --------------------------------------
+        NOTIFICATION PREFERENCES
+      -------------------------------------- */
+
+      if (settings.notifications) {
+        const allowedNotifications = [
+          "courses",
+          "resources",
+          "products",
+          "account",
+          "promotions",
+        ];
+
+        allowedNotifications.forEach(
+          (key) => {
+            if (
+              settings.notifications[key] !==
+              undefined
+            ) {
+              user.settings.notifications[key] =
+                Boolean(
+                  settings.notifications[key]
+                );
+            }
+          }
+        );
+      }
+
+      /* --------------------------------------
+        EMAIL PREFERENCES
+      -------------------------------------- */
+
+      if (settings.emailPreferences) {
+        const allowedEmailPreferences = [
+          "security",
+          "courses",
+          "resources",
+          "products",
+          "newsletter",
+          "promotions",
+        ];
+
+        allowedEmailPreferences.forEach(
+          (key) => {
+            if (
+              settings.emailPreferences[key] !==
+              undefined
+            ) {
+              user.settings.emailPreferences[
+                key
+              ] = Boolean(
+                settings.emailPreferences[key]
+              );
+            }
+          }
+        );
+      }
+    }
+
     await user.save();
 
-    return ApiResponse.success(
+   return ApiResponse.success(
       res,
       {
         id: user._id,
@@ -261,6 +339,7 @@ const updateProfile = asyncHandler(
         phone: user.phone,
         bio: user.bio,
         role: user.role,
+        settings: user.settings,
       },
       "Profile updated successfully."
     );

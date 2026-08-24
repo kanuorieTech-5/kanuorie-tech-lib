@@ -106,17 +106,80 @@ const userSchema = new mongoose.Schema(
         enum: ["light", "dark", "system"],
         default: "system",
       },
+
+      language: {
+        type: String,
+        default: "en",
+      },
+
+      notifications: {
+        courses: {
+          type: Boolean,
+          default: true,
+        },
+
+        resources: {
+          type: Boolean,
+          default: true,
+        },
+
+        products: {
+          type: Boolean,
+          default: true,
+        },
+
+        account: {
+          type: Boolean,
+          default: true,
+        },
+
+        promotions: {
+          type: Boolean,
+          default: false,
+        },
+      },
+
+      emailPreferences: {
+        security: {
+          type: Boolean,
+          default: true,
+        },
+
+        courses: {
+          type: Boolean,
+          default: true,
+        },
+
+        resources: {
+          type: Boolean,
+          default: true,
+        },
+
+        products: {
+          type: Boolean,
+          default: true,
+        },
+
+        newsletter: {
+          type: Boolean,
+          default: true,
+        },
+
+        promotions: {
+          type: Boolean,
+          default: false,
+        },
+      },
+
+      // Kept for backward compatibility
       emailNotifications: {
         type: Boolean,
         default: true,
       },
+
       pushNotifications: {
         type: Boolean,
         default: true,
-      },
-      language: {
-        type: String,
-        default: "en",
       },
     },
   },
