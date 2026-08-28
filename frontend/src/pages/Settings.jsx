@@ -15,9 +15,11 @@ import {
 
 import {
   getCurrentUser,
+} from "../api/authApi";
+import {
   updateSettings,
   changePassword,
-} from "../api/authApi";
+} from "../api/userApi";
 
 import { useTheme } from "../contexts";
 

@@ -1,24 +1,29 @@
 const multer = require("multer");
-const path = require("path");
 
-/* =========================
+/* ==========================================
    MEMORY STORAGE
-========================= */
+========================================== */
+
 const storage = multer.memoryStorage();
 
-/* =========================
-   FILE FILTER
-========================= */
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-    "image/svg+xml",
-  ];
+/* ==========================================
+   ALLOWED IMAGE TYPES
+========================================== */
 
+const allowedTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
+
+/* ==========================================
+   FILE FILTER
+========================================== */
+
+const fileFilter = (req, file, cb) => {
   if (!allowedTypes.includes(file.mimetype)) {
     return cb(
       new Error(
@@ -31,28 +36,20 @@ const fileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
-/* =========================
-   MULTER CONFIG
-========================= */
+/* ==========================================
+   MULTER INSTANCE
+========================================== */
+
 const upload = multer({
   storage,
-
   fileFilter,
-
   limits: {
-    fileSize: 10 * 1024 * 1024, // 5MB
+    fileSize: 10 * 1024 * 1024,
   },
 });
 
-/* =========================
+/* ==========================================
    EXPORTS
-========================= */
+========================================== */
 
-module.exports = {
-  single: (field = "image") => upload.single(field),
-
-  multiple: (field = "images", max = 10) =>
-    upload.array(field, max),
-
-  fields: (fields) => upload.fields(fields),
-};
+module.exports = upload;

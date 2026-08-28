@@ -30,18 +30,18 @@ export const getCurrentUser = async () => {
   return data;
 };
 
-export const changePassword = async (passwords) => {
-  const { data } = await API.put(
-    "/auth/change-password",
-    passwords
-  );
+// export const changePassword = async (passwords) => {
+//   const { data } = await API.put(
+//     "/auth/change-password",
+//     passwords
+//   );
 
-  return data;
-};
+//   return data;
+// };
 
 export default {
   registerUser,
   loginUser,
   getCurrentUser,
-  changePassword,
+  // changePassword,
 };

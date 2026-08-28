@@ -1,640 +1,869 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../contexts";
 import {
-  Camera,
-  CheckCircle2,
-  Mail,
   User,
-  FileText,
-  ShieldCheck,
+  Mail,
+  Phone,
+  Camera,
+  Edit3,
+  X,
   Save,
+  Loader2,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
-import { Card, Button } from "../components/common";
-import { Input } from "../components/ui";
-import { useAuth } from "../contexts/AuthContext";
-// import { updateProfile, uploadAvatar,} from "../services";
 
 export default function Profile() {
   const {
-  user,
-  updateProfile,
-  uploadAvatar,
-} = useAuth();
+    user,
+    updateProfile,
+    uploadAvatar,
+    loading: authLoading,
+  } = useAuth();
 
-  const [loading, setLoading] = useState(false);
-  const [avatarLoading, setAvatarLoading] =
+  const fileInputRef = useRef(null);
+
+  /* ==========================================
+     MODAL STATE
+  ========================================== */
+
+  const [isEditModalOpen, setIsEditModalOpen] =
     useState(false);
 
-  const [form, setForm] = useState({
+  /* ==========================================
+     FORM STATE
+  ========================================== */
+
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    // username: "",
     email: "",
+    phone: "",
     bio: "",
   });
 
-  /*
-  |--------------------------------------------------------------------------
-  | Sync form with authenticated user
-  |--------------------------------------------------------------------------
-  */
+  const [selectedFile, setSelectedFile] =
+    useState(null);
+
+  const [previewUrl, setPreviewUrl] =
+    useState("");
+
+  /* ==========================================
+     UI STATE
+  ========================================== */
+
+  const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] =
+    useState(false);
+
+  const [successMessage, setSuccessMessage] =
+    useState("");
+
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  /* ==========================================
+     LOAD USER INTO FORM
+  ========================================== */
 
   useEffect(() => {
     if (!user) return;
 
-    setForm({
+    setFormData({
       firstName: user.firstName || "",
       lastName: user.lastName || "",
-      // username: user.username || "",
       email: user.email || "",
+      phone: user.phone || "",
       bio: user.bio || "",
     });
   }, [user]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Form change
-  |--------------------------------------------------------------------------
-  */
+  /* ==========================================
+     CLEANUP IMAGE PREVIEW
+  ========================================== */
 
-  const change = ({ target }) => {
-    setForm((prev) => ({
-      ...prev,
-      [target.name]: target.value,
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  /* ==========================================
+     OPEN MODAL
+  ========================================== */
+
+  const openEditModal = () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    setFormData({
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      bio: user?.bio || "",
+    });
+
+    setSelectedFile(null);
+
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl("");
+    }
+
+    setIsEditModalOpen(true);
+  };
+
+  /* ==========================================
+     CLOSE MODAL
+  ========================================== */
+
+  const closeEditModal = () => {
+    if (saving || uploadingAvatar) return;
+
+    setIsEditModalOpen(false);
+    setErrorMessage("");
+    setSuccessMessage("");
+    setSelectedFile(null);
+
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl("");
+    }
+  };
+
+  /* ==========================================
+     FORM CHANGE
+  ========================================== */
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
     }));
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | Save profile
-  |--------------------------------------------------------------------------
-  */
+  /* ==========================================
+     AVATAR FILE SELECTION
+  ========================================== */
 
- const saveProfile = async (event) => {
-  event.preventDefault();
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
 
-  if (!form.firstName.trim()) {
-    toast.error("First name is required.");
-    return;
-  }
+    if (!file) return;
 
-  if (!form.lastName.trim()) {
-    toast.error("Last name is required.");
-    return;
-  }
+    setErrorMessage("");
+    setSuccessMessage("");
 
-  if (!form.username.trim()) {
-    toast.error("Username is required.");
-    return;
-  }
+    /* Validate file type */
 
-  if (!form.email.trim()) {
-    toast.error("Email address is required.");
-    return;
-  }
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage(
+        "Please select a valid image file."
+      );
 
-  try {
-    setLoading(true);
+      event.target.value = "";
+      return;
+    }
 
-    await updateProfile({
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      username: form.username.trim(),
-      email: form.email.trim(),
-      bio: form.bio.trim(),
-    });
+    /* Validate file size */
 
-    toast.success("Profile updated successfully.");
-  } catch (err) {
-    console.error(
-      "Profile update error:",
-      err
-    );
+    const maxSize = 5 * 1024 * 1024;
 
-    toast.error(
-      err?.response?.data?.message ||
-        "Unable to update profile."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    if (file.size > maxSize) {
+      setErrorMessage(
+        "Image must be smaller than 5MB."
+      );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Avatar upload
-  |--------------------------------------------------------------------------
-  */
+      event.target.value = "";
+      return;
+    }
 
-  const changeAvatar = async (event) => {
-  const file = event.target.files?.[0];
+    setSelectedFile(file);
 
-  if (!file) return;
+    const url = URL.createObjectURL(file);
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-  ];
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
 
-  if (!allowedTypes.includes(file.type)) {
-    toast.error(
-      "Please select a JPG, PNG, or WebP image."
-    );
+    setPreviewUrl(url);
+  };
 
-    event.target.value = "";
-    return;
-  }
+  /* ==========================================
+     UPLOAD AVATAR
+  ========================================== */
 
-  const maxSize = 5 * 1024 * 1024;
+  const handleAvatarUpload = async () => {
+    if (!selectedFile) return;
 
-  if (file.size > maxSize) {
-    toast.error(
-      "Profile image must be smaller than 5MB."
-    );
+    setUploadingAvatar(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    event.target.value = "";
-    return;
-  }
+    try {
+      const formData = new FormData();
 
-  try {
-    setAvatarLoading(true);
+      formData.append("avatar", selectedFile);
 
-    const formData = new FormData();
+      const response =
+        await uploadAvatar(formData);
 
-    formData.append("avatar", file);
+      const uploadedAvatar =
+        response?.data?.avatar ||
+        response?.avatar ||
+        response?.data?.user?.avatar;
 
-    await uploadAvatar(formData);
+      if (!uploadedAvatar) {
+        throw new Error(
+          "Avatar uploaded but no image URL was returned."
+        );
+      }
 
-    toast.success(
-      "Profile photo updated successfully."
-    );
-  } catch (err) {
-    console.error(
-      "Avatar upload error:",
-      err
-    );
+      /*
+       * Update the profile avatar immediately.
+       *
+       * This also keeps AuthContext and localStorage
+       * synchronized.
+       */
 
-    toast.error(
-      err?.response?.data?.message ||
-        "Unable to upload profile photo."
-    );
-  } finally {
-    setAvatarLoading(false);
-    event.target.value = "";
-  }
-};
-  /*
-  |--------------------------------------------------------------------------
-  | Loading / unauthenticated state
-  |--------------------------------------------------------------------------
-  */
+      await updateProfile({
+        avatar: uploadedAvatar,
+      });
+
+      setSelectedFile(null);
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl("");
+      }
+
+      setSuccessMessage(
+        "Profile photo updated successfully."
+      );
+    } catch (error) {
+      console.error(
+        "Avatar upload error:",
+        error
+      );
+
+      setErrorMessage(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to upload profile photo."
+      );
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  /* ==========================================
+     SAVE PROFILE
+  ========================================== */
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setSaving(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      const payload = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        bio: formData.bio.trim(),
+      };
+
+      if (!payload.firstName) {
+        throw new Error(
+          "First name is required."
+        );
+      }
+
+      if (!payload.lastName) {
+        throw new Error(
+          "Last name is required."
+        );
+      }
+
+      if (!payload.email) {
+        throw new Error(
+          "Email address is required."
+        );
+      }
+
+      await updateProfile(payload);
+
+      setSuccessMessage(
+        "Profile updated successfully."
+      );
+
+      /*
+       * Give the user a moment to see the success
+       * message before closing the modal.
+       */
+
+      setTimeout(() => {
+        setIsEditModalOpen(false);
+        setSuccessMessage("");
+      }, 1000);
+    } catch (error) {
+      console.error(
+        "Profile update error:",
+        error
+      );
+
+      setErrorMessage(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to update profile."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /* ==========================================
+     AVATAR DISPLAY
+  ========================================== */
+
+  const displayAvatar =
+    previewUrl ||
+    user?.avatar ||
+    "";
+
+  const initials =
+    `${user?.firstName?.[0] || ""}${
+      user?.lastName?.[0] || ""
+    }`.toUpperCase() || "U";
+
+  /* ==========================================
+     NO USER
+  ========================================== */
 
   if (!user) {
     return (
-      <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
-        <Card className="w-full max-w-lg p-10 text-center">
-          <ShieldCheck
-            size={48}
-            className="mx-auto mb-5 text-blue-600"
-          />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
 
-          <h1 className="text-2xl font-bold text-slate-900">
-            Profile unavailable
-          </h1>
-
-          <p className="mt-3 text-slate-600">
-            Please sign in to view and manage
-            your profile.
+          <p className="text-gray-500">
+            Loading profile...
           </p>
-        </Card>
-      </section>
+        </div>
+      </div>
     );
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Display values
-  |--------------------------------------------------------------------------
-  */
-
-  const fullName =
-    `${user.firstName || ""} ${
-      user.lastName || ""
-    }`.trim() || "User";
-
-  const initials =
-    `${user.firstName?.charAt(0) || ""}${
-      user.lastName?.charAt(0) || ""
-    }`.toUpperCase() || "U";
+  /* ==========================================
+     PAGE
+  ========================================== */
 
   return (
-    <section className="min-h-screen bg-slate-50 px-6 py-12 lg:py-20">
+    <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
 
-      <div className="mx-auto max-w-6xl">
-
-        {/* =====================================================
+        {/* ======================================
             PAGE HEADER
-        ====================================================== */}
+        ====================================== */}
 
-        <div className="mb-10">
-
+        <div className="mb-8">
           <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
             Account
           </p>
 
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
-            My Profile
-          </h1>
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                My Profile
+              </h1>
 
-          <p className="mt-3 max-w-2xl text-slate-600">
-            Manage your personal information and
-            profile photo from one place.
-          </p>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Manage your personal information and
+                account details.
+              </p>
+            </div>
 
+            <button
+              type="button"
+              onClick={openEditModal}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            >
+              <Edit3 className="h-4 w-4" />
+              Edit Profile
+            </button>
+          </div>
         </div>
 
-        {/* =====================================================
-            PROFILE HERO
-        ====================================================== */}
+        {/* ======================================
+            PROFILE CARD
+        ====================================== */}
 
-        <Card className="mb-8 overflow-hidden p-0">
+        <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
 
-          <div className="h-32 bg-gradient-to-r from-slate-950 via-blue-950 to-blue-700" />
+          {/* COVER */}
 
-          <div className="px-6 pb-8 md:px-10">
+          <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 sm:h-40" />
 
-            <div className="-mt-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          {/* PROFILE CONTENT */}
 
-              <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-end">
+          <div className="px-5 pb-7 sm:px-8">
 
-                {/* Avatar */}
+            <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
 
-                <div className="relative">
+              {/* AVATAR */}
 
+              <div className="flex items-end gap-4">
+                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
                   {user.avatar ? (
                     <img
                       src={user.avatar}
-                      alt={fullName}
-                      className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-xl"
+                      alt={`${user.firstName} ${user.lastName}`}
+                      className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-blue-600 text-4xl font-black text-white shadow-xl">
-                      {initials}
-                    </div>
+                    initials
                   )}
-
-                  {/* Camera button */}
-
-                  <label
-                    htmlFor="avatar-upload"
-                    className={`absolute bottom-1 right-1 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-4 border-white bg-blue-600 text-white shadow-lg transition hover:bg-blue-700 ${
-                      avatarLoading
-                        ? "pointer-events-none opacity-60"
-                        : ""
-                    }`}
-                    title="Change profile photo"
-                  >
-                    {avatarLoading ? (
-                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    ) : (
-                      <Camera size={19} />
-                    )}
-                  </label>
-
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={changeAvatar}
-                    className="hidden"
-                    disabled={avatarLoading}
-                  />
-
                 </div>
 
-                {/* User information */}
-
-                <div className="pb-1">
-
-                  <div className="flex flex-wrap items-center gap-3">
-
-                    <h2 className="text-2xl font-black text-slate-900 md:text-3xl">
-                      {fullName}
+                <div className="pb-2">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {user.firstName}{" "}
+                      {user.lastName}
                     </h2>
 
-                    {user.role && (
-                      <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold capitalize text-blue-700">
-                        {user.role}
-                      </span>
+                    {user.role === "admin" && (
+                      <ShieldCheck className="h-5 w-5 text-blue-600" />
+                    )}
+                  </div>
+
+                  <p className="mt-1 text-gray-500 dark:text-gray-400">
+                    {user.role === "admin"
+                      ? "Administrator"
+                      : "KanuorieTech User"}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* INFORMATION */}
+
+            <div className="mt-10 grid gap-5 md:grid-cols-2">
+
+              {/* EMAIL */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
+                    <Mail className="h-5 w-5" />
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Email Address
+                    </p>
+
+                    <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* PHONE */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
+                    <Phone className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Phone Number
+                    </p>
+
+                    <p className="mt-1 font-semibold text-gray-900 dark:text-white">
+                      {user.phone || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ROLE */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
+                    <User className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Account Role
+                    </p>
+
+                    <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
+                      {user.role || "user"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* STATUS */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Account Status
+                    </p>
+
+                    <p className="mt-1 font-semibold text-emerald-600">
+                      Active
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* BIO */}
+
+            <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                About Me
+              </p>
+
+              <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
+                {user.bio ||
+                  "You haven't added a bio yet."}
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================
+          EDIT PROFILE MODAL
+      ======================================== */}
+
+      {isEditModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (
+              event.target === event.currentTarget
+            ) {
+              closeEditModal();
+            }
+          }}
+        >
+          <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl dark:bg-gray-900">
+
+            {/* MODAL HEADER */}
+
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Edit Profile
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Update your personal information.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeEditModal}
+                disabled={
+                  saving || uploadingAvatar
+                }
+                className="rounded-xl p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* MODAL BODY */}
+
+            <div className="p-6">
+
+              {/* ALERTS */}
+
+              {errorMessage && (
+                <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+
+                  <p>{errorMessage}</p>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="mb-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700 dark:border-green-900 dark:bg-green-950/40 dark:text-green-300">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+
+                  <p>{successMessage}</p>
+                </div>
+              )}
+
+              {/* =================================
+                  AVATAR
+              ================================= */}
+
+              <div className="mb-7 flex flex-col items-center">
+
+                <div className="relative">
+
+                  <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-gray-100 bg-gray-100 text-2xl font-bold text-gray-500 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-300">
+
+                    {displayAvatar ? (
+                      <img
+                        src={displayAvatar}
+                        alt="Profile preview"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      initials
                     )}
 
                   </div>
 
-                  <p className="mt-2 text-slate-500">
-                    @{user.username}
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      fileInputRef.current?.click()
+                    }
+                    disabled={
+                      uploadingAvatar ||
+                      saving
+                    }
+                    className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-blue-600 text-white shadow-md transition hover:bg-blue-700 disabled:opacity-50 dark:border-gray-900"
+                  >
+                    <Camera className="h-4 w-4" />
+                  </button>
 
                 </div>
 
-              </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                />
 
-              <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
-
-                <CheckCircle2 size={18} />
-
-                Account Active
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </Card>
-
-        {/* =====================================================
-            MAIN CONTENT
-        ====================================================== */}
-
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-
-          {/* ===================================================
-              PROFILE FORM
-          ==================================================== */}
-
-          <Card className="p-6 md:p-8">
-
-            <div className="mb-8 flex items-start justify-between gap-4">
-
-              <div>
-
-                <h2 className="text-2xl font-black text-slate-900">
-                  Personal Information
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-500">
-                  Update the information associated
-                  with your account.
+                <p className="mt-3 text-center text-xs text-gray-500">
+                  JPG, PNG or WEBP. Maximum 5MB.
                 </p>
 
-              </div>
-
-              <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-600 sm:flex">
-
-                <User size={22} />
-
-              </div>
-
-            </div>
-
-            <form
-              onSubmit={saveProfile}
-              className="space-y-6"
-            >
-
-              <div className="grid gap-6 md:grid-cols-2">
-
-                <Input
-                  label="First Name"
-                  name="firstName"
-                  value={form.firstName}
-                  onChange={change}
-                  placeholder="Enter your first name"
-                />
-
-                <Input
-                  label="Last Name"
-                  name="lastName"
-                  value={form.lastName}
-                  onChange={change}
-                  placeholder="Enter your last name"
-                />
-
-                {/* <Input
-                  label="Username"
-                  name="username"
-                  value={form.username}
-                  onChange={change}
-                  placeholder="Enter your username"
-                /> */}
-
-                <Input
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={change}
-                  placeholder="Enter your email"
-                />
-
-              </div>
-
-              {/* Bio */}
-
-              <div>
-
-                <label
-                  htmlFor="bio"
-                  className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
-                >
-                  <FileText size={16} />
-
-                  Bio
-                </label>
-
-                <textarea
-                  id="bio"
-                  rows={6}
-                  name="bio"
-                  value={form.bio}
-                  onChange={change}
-                  maxLength={500}
-                  placeholder="Tell us a little about yourself..."
-                  className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                />
-
-                <div className="mt-2 flex justify-end">
-
-                  <span className="text-xs text-slate-400">
-                    {form.bio.length}/500
-                  </span>
-
-                </div>
-
-              </div>
-
-              {/* Save */}
-
-              <div className="flex justify-end border-t border-slate-100 pt-6">
-
-                <Button
-                  type="submit"
-                  loading={loading}
-                  disabled={avatarLoading}
-                >
-                  <Save
-                    size={18}
-                    className="mr-2"
-                  />
-
-                  Save Changes
-                </Button>
-
-              </div>
-
-            </form>
-
-          </Card>
-
-          {/* ===================================================
-              ACCOUNT SUMMARY
-          ==================================================== */}
-
-          <div className="space-y-6">
-
-            <Card className="p-6">
-
-              <div className="mb-6 flex items-center gap-3">
-
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-                  <ShieldCheck size={22} />
-                </div>
-
-                <div>
-
-                  <h3 className="font-bold text-slate-900">
-                    Account Information
-                  </h3>
-
-                  <p className="text-xs text-slate-500">
-                    Your account details
-                  </p>
-
-                </div>
-
-              </div>
-
-              <div className="space-y-5">
-
-                <InfoRow
-                  icon={<User size={17} />}
-                  label="Name"
-                  value={fullName}
-                />
-
-                {/* <InfoRow
-                  icon={<AtSign size={17} />}
-                  label="Username"
-                  value={
-                    user.username
-                      ? `@${user.username}`
-                      : "Not set"
-                  }
-                /> */}
-
-                <InfoRow
-                  icon={<Mail size={17} />}
-                  label="Email"
-                  value={
-                    user.email ||
-                    "Not available"
-                  }
-                />
-
-                <InfoRow
-                  icon={
-                    <ShieldCheck
-                      size={17}
-                    />
-                  }
-                  label="Role"
-                  value={
-                    user.role || "User"
-                  }
-                />
-
-              </div>
-
-            </Card>
-
-            {/* Profile photo information */}
-
-            <Card className="p-6">
-
-              <div className="flex items-start gap-4">
-
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                  <Camera size={19} />
-                </div>
-
-                <div>
-
-                  <h3 className="font-bold text-slate-900">
-                    Profile Photo
-                  </h3>
-
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
-                    Use a clear JPG, PNG, or WebP
-                    image. Maximum file size is 5MB.
-                  </p>
-
-                  <label
-                    htmlFor="avatar-upload"
-                    className="mt-4 inline-flex cursor-pointer items-center rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                {selectedFile && (
+                  <button
+                    type="button"
+                    onClick={handleAvatarUpload}
+                    disabled={uploadingAvatar}
+                    className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
                   >
-                    <Camera
-                      size={16}
-                      className="mr-2"
-                    />
+                    {uploadingAvatar ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="h-4 w-4" />
+                        Upload Photo
+                      </>
+                    )}
+                  </button>
+                )}
 
-                    Change Photo
+              </div>
+
+              {/* =================================
+                  FORM
+              ================================= */}
+
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-5"
+              >
+
+                {/* NAME */}
+
+                <div className="grid gap-5 sm:grid-cols-2">
+
+                  <div>
+                    <label
+                      htmlFor="firstName"
+                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                    >
+                      First Name
+                    </label>
+
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="lastName"
+                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                    >
+                      Last Name
+                    </label>
+
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                    />
+                  </div>
+
+                </div>
+
+                {/* EMAIL */}
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                  >
+                    Email Address
                   </label>
 
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                  />
                 </div>
 
-              </div>
+                {/* PHONE */}
 
-            </Card>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                  >
+                    Phone Number
+                  </label>
 
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                  />
+                </div>
+
+                {/* BIO */}
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label
+                      htmlFor="bio"
+                      className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                    >
+                      Bio
+                    </label>
+
+                    <span className="text-xs text-gray-400">
+                      {formData.bio.length}/500
+                    </span>
+                  </div>
+
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    rows={5}
+                    maxLength={500}
+                    value={formData.bio}
+                    onChange={handleChange}
+                    placeholder="Tell us a little about yourself..."
+                    className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                  />
+                </div>
+
+                {/* ACTIONS */}
+
+                <div className="flex flex-col-reverse gap-3 border-t border-gray-200 pt-5 sm:flex-row sm:justify-end dark:border-gray-800">
+
+                  <button
+                    type="button"
+                    onClick={closeEditModal}
+                    disabled={
+                      saving ||
+                      uploadingAvatar
+                    }
+                    className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={
+                      saving ||
+                      uploadingAvatar ||
+                      authLoading
+                    }
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4" />
+                        Save Changes
+                      </>
+                    )}
+                  </button>
+
+                </div>
+
+              </form>
+            </div>
           </div>
-
         </div>
-
-      </div>
-
-    </section>
-  );
-}
-
-/* =============================================================
-   INFO ROW
-============================================================= */
-
-function InfoRow({
-  icon,
-  label,
-  value,
-}) {
-  return (
-    <div className="flex items-start gap-3">
-
-      <div className="mt-0.5 text-slate-400">
-        {icon}
-      </div>
-
-      <div className="min-w-0">
-
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-          {label}
-        </p>
-
-        <p className="mt-1 break-words text-sm font-semibold text-slate-700">
-          {value}
-        </p>
-
-      </div>
-
+      )}
     </div>
   );
 }

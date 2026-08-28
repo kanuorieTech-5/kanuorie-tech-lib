@@ -7,7 +7,6 @@ const {
   updateProfile,
   uploadAvatar,
   deleteAvatar,
-  changePassword,
   getUsers,
   getUser,
   updateUserRole,
@@ -19,7 +18,7 @@ const adminOnly = require("../middleware/admin");
 const upload = require("../middleware/upload");
 
 /* ==========================================
-   CURRENT USER
+   CURRENT USER PROFILE
 ========================================== */
 
 router
@@ -48,14 +47,26 @@ router.delete(
    ADMIN USER MANAGEMENT
 ========================================== */
 
-router
-  .route("/")
-  .get(protect, adminOnly, getUsers);
+router.get(
+  "/",
+  protect,
+  adminOnly,
+  getUsers
+);
 
-router
-  .route("/:id")
-  .get(protect, adminOnly, getUser)
-  .delete(protect, adminOnly, deleteUser);
+router.get(
+  "/:id",
+  protect,
+  adminOnly,
+  getUser
+);
+
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  deleteUser
+);
 
 router.put(
   "/:id/role",
@@ -63,9 +74,5 @@ router.put(
   adminOnly,
   updateUserRole
 );
-router.put(
-  "/change-password",
-  protect,
-  changePassword
-);
+
 module.exports = router;
