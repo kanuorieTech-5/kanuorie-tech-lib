@@ -59,9 +59,7 @@ export default function Newsletter() {
   return (
 
     <section className="
-      bg-gradient-to-r
-      from-blue-700
-      to-cyan-600
+      bg-slate-900
       py-24
     ">
 

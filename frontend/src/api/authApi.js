@@ -1,5 +1,9 @@
 import API from "./axiosApi";
 
+/* ==========================================
+   AUTHENTICATION
+========================================== */
+
 export const registerUser = async (userData) => {
   const { data } = await API.post(
     "/auth/register",
@@ -26,31 +30,7 @@ export const getCurrentUser = async () => {
   return data;
 };
 
-export const updateProfile = async (
-  profileData
-) => {
-  const { data } = await API.put(
-    "/auth/profile",
-    profileData
-  );
-
-  return data;
-};
-
-export const updateSettings = async (
-  settings
-) => {
-  const { data } = await API.put(
-    "/auth/profile",
-    { settings }
-  );
-
-  return data;
-};
-
-export const changePassword = async (
-  passwords
-) => {
+export const changePassword = async (passwords) => {
   const { data } = await API.put(
     "/auth/change-password",
     passwords
@@ -63,7 +43,5 @@ export default {
   registerUser,
   loginUser,
   getCurrentUser,
-  updateProfile,
-  updateSettings,
   changePassword,
 };

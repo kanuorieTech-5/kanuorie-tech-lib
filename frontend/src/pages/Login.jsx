@@ -1,20 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import {ArrowRight, Eye, EyeOff, LockKeyhole, ShieldCheck,} from "lucide-react";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
-import Card from "../components/ui/Card";
+import { ArrowRight, LockKeyhole, ShieldCheck, } from "lucide-react";
+import { Button, Card } from "../components/common";
+import { Input } from "../components/ui";
 import { useAuth } from "../contexts";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { login: authenticate } = useAuth();
-
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
   const [form, setForm] = useState({
     email: "",
@@ -22,32 +18,34 @@ export default function Login() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   /* ==========================================
-     HANDLE FORM CHANGE
+     HANDLE INPUT CHANGE
   ========================================== */
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
 
-    setForm((prev) => ({
-      ...prev,
+    setForm((previous) => ({
+      ...previous,
       [name]: value,
     }));
 
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    if (errors[name]) {
+      setErrors((previous) => ({
+        ...previous,
+        [name]: "",
+      }));
+    }
   };
 
   /* ==========================================
-     VALIDATION
+     VALIDATE FORM
   ========================================== */
 
   const validateForm = () => {
     const nextErrors = {};
-
     const email = form.email.trim();
 
     if (!email) {
@@ -66,8 +64,9 @@ export default function Login() {
   };
 
   /* ==========================================
-     SUBMIT
+     HANDLE LOGIN
   ========================================== */
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -78,27 +77,31 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const response = await authenticate({
-        email: form.email.trim(),
+      await login({
+        email: form.email.trim().toLowerCase(),
         password: form.password,
       });
 
       toast.success("Welcome back!");
 
-      const redirectTo =
-        location.state?.from?.pathname || "/";
+      const from =
+        location.state?.from;
 
-      navigate(redirectTo, {
+      const redirectPath =
+        from?.pathname
+          ? `${from.pathname}${from.search || ""}${from.hash || ""}`
+          : "/";
+
+      navigate(redirectPath, {
         replace: true,
       });
-    } catch (error) {
-      console.error("Login error:", error);
 
-      toast.error(
+      const message =
         error?.response?.data?.message ||
-          error?.message ||
-          "Login failed. Please check your credentials."
-      );
+        error?.message ||
+        "Login failed. Please check your credentials and try again.";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -108,13 +111,13 @@ export default function Login() {
     <section className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-6 py-16">
       <div className="w-full max-w-md">
 
-        {/* ==========================================
-            HEADER
-        ========================================== */}
+        {/* HEADER */}
 
         <div className="mb-8 text-center">
-
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200">
+          <div
+            className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200"
+            aria-hidden="true"
+          >
             <ShieldCheck size={28} />
           </div>
 
@@ -125,21 +128,16 @@ export default function Login() {
           <p className="mt-3 text-slate-500">
             Sign in to continue to your KanuorieTech account.
           </p>
-
         </div>
 
-        {/* ==========================================
-            LOGIN CARD
-        ========================================== */}
+        {/* LOGIN CARD */}
 
         <Card className="p-6 shadow-xl shadow-slate-200/50 sm:p-8">
-
           <form
             onSubmit={handleSubmit}
             className="space-y-5"
             noValidate
           >
-
             {/* EMAIL */}
 
             <div>
@@ -153,74 +151,51 @@ export default function Login() {
                 autoComplete="email"
                 required
                 disabled={loading}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={
+                  errors.email ? "login-email-error" : undefined
+                }
               />
 
               {errors.email && (
-                <p className="mt-2 text-sm font-medium text-red-600">
+                <p
+                  id="login-email-error"
+                  className="mt-2 text-sm font-medium text-red-600"
+                  role="alert"
+                >
                   {errors.email}
                 </p>
               )}
             </div>
 
             {/* PASSWORD */}
-
-            <div>
-
-              <div className="relative">
-
+              <div>
                 <Input
                   label="Password"
                   name="password"
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
+                  type="password"
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
                   autoComplete="current-password"
                   required
                   disabled={loading}
+                  error={errors.password}
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={
+                    errors.password
+                      ? "login-password-error"
+                      : undefined
+                  }
                 />
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword(
-                      (current) => !current
-                    )
-                  }
-                  className="absolute right-3 top-[38px] flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-                  aria-label={
-                    showPassword
-                      ? "Hide password"
-                      : "Show password"
-                  }
-                >
-                  {showPassword ? (
-                    <EyeOff size={18} />
-                  ) : (
-                    <Eye size={18} />
-                  )}
-                </button>
-
               </div>
-
-              {errors.password && (
-                <p className="mt-2 text-sm font-medium text-red-600">
-                  {errors.password}
-                </p>
-              )}
-
-            </div>
 
             {/* FORGOT PASSWORD */}
 
             <div className="flex justify-end">
               <Link
-                to="/forgot-password"
-                className="text-sm font-semibold text-blue-600 transition hover:text-blue-700 hover:underline"
+                to="/ForgotPassword"
+                className="text-sm font-semibold text-blue-600 transition hover:text-blue-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Forgot Password?
               </Link>
@@ -238,20 +213,17 @@ export default function Login() {
                 <ArrowRight
                   size={18}
                   className="mr-2"
+                  aria-hidden="true"
                 />
               )}
 
-              {loading
-                ? "Signing In..."
-                : "Sign In"}
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
-
           </form>
 
           {/* DIVIDER */}
 
           <div className="my-7 flex items-center gap-4">
-
             <div className="h-px flex-1 bg-slate-200" />
 
             <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
@@ -259,7 +231,6 @@ export default function Login() {
             </span>
 
             <div className="h-px flex-1 bg-slate-200" />
-
           </div>
 
           {/* REGISTER */}
@@ -273,19 +244,17 @@ export default function Login() {
               Create an Account
             </Button>
           </Link>
-
         </Card>
 
-        {/* SECURITY */}
+        {/* SECURITY NOTICE */}
 
         <div className="mt-6 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
-          <LockKeyhole size={14} />
+          <LockKeyhole size={14} aria-hidden="true" />
 
           <span>
             Your account information is securely protected.
           </span>
         </div>
-
       </div>
     </section>
   );

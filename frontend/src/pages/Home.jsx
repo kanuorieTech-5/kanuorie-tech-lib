@@ -1,4 +1,5 @@
 import Hero from "../components/home/Hero";
+import AboutPreview from "../components/home/Aboutpreview";
 import ImageSlider from "../components/home/ImageSlider";
 import Features from "../components/home/Features";
 import PlatformFeatures from "../components/home/FeaturesSlider";
@@ -15,16 +16,13 @@ import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
 
 export default function Home() {
-
   return (
-
-    <main>
-
+    <main className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
       <Hero />
-      
+
+      <AboutPreview />
+
       <ImageSlider />
-      
-      {/* <AboutPreview /> */}
 
       <Features />
 
@@ -51,9 +49,6 @@ export default function Home() {
       <Newsletter />
 
       <CTA />
-
     </main>
-
   );
-
 }

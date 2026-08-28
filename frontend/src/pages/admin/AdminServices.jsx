@@ -453,7 +453,7 @@ export default function AdminServices() {
                           </div>
 
                           <div className="min-w-0">
-                            <p className="font-semibold text-white">
+                            <p className="font-semibold text-cyan-500">
                               {service.title}
                             </p>
 

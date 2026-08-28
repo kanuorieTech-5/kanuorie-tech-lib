@@ -99,7 +99,7 @@ export default function CoursesPreview() {
   }
 
   return (
-    <section className="bg-slate-950 py-24">
+    <section className="bg-slate-900 py-24">
       <div className="px-6">
 
         <SectionTitle

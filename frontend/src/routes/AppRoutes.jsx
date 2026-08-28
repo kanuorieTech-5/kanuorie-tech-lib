@@ -54,9 +54,8 @@ const Testimonials = lazy(() =>
 );
 
 const Login = lazy(() => import("../pages/Login"));
-const Register = lazy(() =>
-  import("../pages/Register")
-);
+const Register = lazy(() => import("../pages/Register"));
+const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() =>
@@ -284,7 +283,7 @@ export default function AppRoutes() {
               path="register"
               element={<Register />}
             />
-
+            <Route path="ForgotPassword" element={<ForgotPassword />} />
           </Route>
 
         </Route>

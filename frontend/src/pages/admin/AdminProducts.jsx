@@ -71,10 +71,6 @@ export default function AdminProducts() {
 
   const [form, setForm] = useState(EMPTY_FORM);
 
-  /* ==========================================
-     LOAD PRODUCTS
-  ========================================== */
-
   const loadProducts = async () => {
     try {
       setLoading(true);
@@ -122,10 +118,6 @@ export default function AdminProducts() {
     loadProducts();
   }, []);
 
-  /* ==========================================
-     FILTER PRODUCTS
-  ========================================== */
-
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const searchValue =
@@ -169,10 +161,6 @@ export default function AdminProducts() {
     status,
   ]);
 
-  /* ==========================================
-     STATISTICS
-  ========================================== */
-
   const stats = useMemo(() => {
     return {
       total: products.length,
@@ -191,19 +179,11 @@ export default function AdminProducts() {
     };
   }, [products]);
 
-  /* ==========================================
-     OPEN CREATE MODAL
-  ========================================== */
-
   const handleCreate = () => {
     setEditingProduct(null);
     setForm(EMPTY_FORM);
     setShowModal(true);
   };
-
-  /* ==========================================
-     OPEN EDIT MODAL
-  ========================================== */
 
   const handleEdit = (product) => {
     setEditingProduct(product);
@@ -239,10 +219,6 @@ export default function AdminProducts() {
     setShowModal(true);
   };
 
-  /* ==========================================
-     CLOSE MODAL
-  ========================================== */
-
   const closeModal = () => {
     if (saving) return;
 
@@ -250,10 +226,6 @@ export default function AdminProducts() {
     setEditingProduct(null);
     setForm(EMPTY_FORM);
   };
-
-  /* ==========================================
-     FORM CHANGE
-  ========================================== */
 
   const handleChange = (event) => {
     const { name, value, type, checked } =
@@ -267,10 +239,6 @@ export default function AdminProducts() {
           : value,
     }));
   };
-
-  /* ==========================================
-     SAVE PRODUCT
-  ========================================== */
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -378,10 +346,6 @@ export default function AdminProducts() {
     }
   };
 
-  /* ==========================================
-     DELETE PRODUCT
-  ========================================== */
-
   const handleDelete = async (product) => {
     const confirmed = window.confirm(
       `Delete "${product.name}"? This action cannot be undone.`
@@ -415,10 +379,6 @@ export default function AdminProducts() {
     }
   };
 
-  /* ==========================================
-     LOADING
-  ========================================== */
-
   if (loading) {
     return (
       <section className="py-12">
@@ -428,10 +388,6 @@ export default function AdminProducts() {
       </section>
     );
   }
-
-  /* ==========================================
-     ERROR
-  ========================================== */
 
   if (error) {
     return (
@@ -460,10 +416,6 @@ export default function AdminProducts() {
 
   return (
     <section className="space-y-8 py-6">
-      {/* ==========================================
-          HEADER
-      ========================================== */}
-
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
         <div>
           <SectionTitle
@@ -481,10 +433,6 @@ export default function AdminProducts() {
           Add Product
         </Button>
       </div>
-
-      {/* ==========================================
-          STATISTICS
-      ========================================== */}
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -511,10 +459,6 @@ export default function AdminProducts() {
           value={stats.featured}
         />
       </div>
-
-      {/* ==========================================
-          FILTERS
-      ========================================== */}
 
       <Card className="p-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px]">
@@ -586,10 +530,6 @@ export default function AdminProducts() {
           </select>
         </div>
       </Card>
-
-      {/* ==========================================
-          PRODUCTS
-      ========================================== */}
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
@@ -777,10 +717,6 @@ export default function AdminProducts() {
           </table>
         </div>
       </Card>
-
-      {/* ==========================================
-          PRODUCT MODAL
-      ========================================== */}
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
@@ -1006,10 +942,6 @@ export default function AdminProducts() {
   );
 }
 
-/* ==========================================
-   STAT CARD
-========================================== */
-
 function StatCard({
   icon,
   label,
@@ -1035,10 +967,6 @@ function StatCard({
     </Card>
   );
 }
-
-/* ==========================================
-   FORM FIELD
-========================================== */
 
 function FormField({
   label,

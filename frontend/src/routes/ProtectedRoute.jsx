@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts";
 
 export default function ProtectedRoute() {
@@ -6,6 +6,8 @@ export default function ProtectedRoute() {
     user,
     loadingAuth,
   } = useAuth();
+
+  const location = useLocation();
 
   if (loadingAuth) {
     return (
@@ -22,6 +24,7 @@ export default function ProtectedRoute() {
       <Navigate
         to="/login"
         replace
+        state={{ from: location }}
       />
     );
   }

@@ -22,6 +22,10 @@ import {
   deleteProject,
 } from "../../services";
 
+import {
+  uploadImage,
+} from "../../api/uploadApi";
+
 const initialForm = {
   title: "",
   description: "",
@@ -56,7 +60,17 @@ export default function AdminProjects() {
   const [editingProject, setEditingProject] = useState(null);
 
   const [form, setForm] = useState(initialForm);
+  const [mainImageFile, setMainImageFile] =
+    useState(null);
 
+  const [galleryFiles, setGalleryFiles] =
+    useState([]);
+
+  const [mainImagePreview, setMainImagePreview] =
+    useState("");
+
+  const [galleryPreviews, setGalleryPreviews] =
+    useState([]);
   /* ==========================================
      FETCH PROJECTS
   ========================================== */
@@ -108,6 +122,16 @@ export default function AdminProjects() {
     loadProjects(1, "");
   }, []);
 
+  // const uploadImage = async (file) => {
+  // const response =
+  //   await uploadProjectImage(file);
+
+  // return (
+  //   response?.data?.url ||
+  //   response?.url ||
+  //   ""
+  // );
+// };
   /* ==========================================
      FORM HANDLING
   ========================================== */
@@ -122,15 +146,122 @@ export default function AdminProjects() {
         type === "checkbox" ? checked : value,
     }));
   };
+const handleMainImageChange = (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/svg+xml",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    toast.error(
+      "Please select a JPG, PNG, WEBP, GIF or SVG image."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    toast.error(
+      "Image must be smaller than 10MB."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  setMainImageFile(file);
+
+  const previewUrl =
+    URL.createObjectURL(file);
+
+  setMainImagePreview(previewUrl);
+};
+
+const handleGalleryChange = (event) => {
+  const files = Array.from(
+    event.target.files || []
+  );
+
+  if (!files.length) return;
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/svg+xml",
+  ];
+
+  const invalidFile = files.find(
+    (file) =>
+      !allowedTypes.includes(file.type)
+  );
+
+  if (invalidFile) {
+    toast.error(
+      "Only JPG, PNG, WEBP, GIF and SVG images are allowed."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  const oversizedFile = files.find(
+    (file) => file.size > 10 * 1024 * 1024
+  );
+
+  if (oversizedFile) {
+    toast.error(
+      "Each image must be smaller than 10MB."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  setGalleryFiles(files);
+
+  const previews = files.map((file) =>
+    URL.createObjectURL(file)
+  );
+
+  setGalleryPreviews(previews);
+};
 
   const openCreateModal = () => {
     setEditingProject(null);
     setForm(initialForm);
+
+    setMainImageFile(null);
+    setGalleryFiles([]);
+
+    setMainImagePreview("");
+    setGalleryPreviews([]);
+
     setShowModal(true);
   };
 
   const openEditModal = (project) => {
     setEditingProject(project);
+
+    setMainImageFile(null);
+    setGalleryFiles([]);
+
+    setMainImagePreview(
+      project.image || ""
+    );
+
+    setGalleryPreviews(
+      project.gallery || []
+    );
 
     setForm({
       title: project.title || "",
@@ -154,97 +285,161 @@ export default function AdminProjects() {
   };
 
   const closeModal = () => {
-    if (saving) return;
+  if (saving) return;
 
-    setShowModal(false);
-    setEditingProject(null);
-    setForm(initialForm);
-  };
+  setShowModal(false);
+  setEditingProject(null);
+  setForm(initialForm);
 
+  setMainImageFile(null);
+  setGalleryFiles([]);
+
+  setMainImagePreview("");
+  setGalleryPreviews([]);
+};
   /* ==========================================
      CREATE / UPDATE
   ========================================== */
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    if (!form.title.trim()) {
-      toast.error("Project title is required.");
-      return;
-    }
+  if (!form.title.trim()) {
+    toast.error("Project title is required.");
+    return;
+  }
 
-    if (!form.description.trim()) {
-      toast.error(
-        "Project description is required."
+  if (!form.description.trim()) {
+    toast.error(
+      "Project description is required."
+    );
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    let imageUrl = form.image.trim();
+
+    if (mainImageFile) {
+      toast.loading("Uploading main image...", {
+        id: "project-upload",
+      });
+
+      const response = await uploadImage(
+        mainImageFile
       );
-      return;
-    }
 
-    try {
-      setSaving(true);
+      imageUrl =
+        response?.data?.url ||
+        response?.url ||
+        "";
 
-      const payload = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        image: form.image.trim(),
-
-        gallery: form.gallery
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean),
-
-        technologies: form.technologies
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
-
-        category: form.category.trim(),
-        client: form.client.trim(),
-        github: form.github.trim(),
-        liveDemo: form.liveDemo.trim(),
-
-        featured: form.featured,
-        published: form.published,
-      };
-
-      if (editingProject) {
-        await updateProject(
-          editingProject._id,
-          payload
-        );
-
-        toast.success(
-          "Project updated successfully."
-        );
-      } else {
-        await createProject(payload);
-
-        toast.success(
-          "Project created successfully."
+      if (!imageUrl) {
+        throw new Error(
+          "Image upload succeeded but no image URL was returned."
         );
       }
 
-      closeModal();
-
-      await loadProjects(
-        editingProject
-          ? pagination.page
-          : 1
+      console.log(
+        "Uploaded main image URL:",
+        imageUrl
       );
-    } catch (err) {
-      console.error(
-        "Failed to save project:",
-        err
-      );
-
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to save project."
-      );
-    } finally {
-      setSaving(false);
     }
-  };
+    
+    let galleryUrls = form.gallery
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+        if (galleryFiles.length > 0) {
+      toast.loading("Uploading gallery images...", {
+        id: "project-upload",
+      });
+
+      const uploadedGallery =
+        await Promise.all(
+          galleryFiles.map(async (file) => {
+            const response =
+              await uploadImage(file);
+
+            return (
+              response?.data?.url ||
+              response?.url ||
+              ""
+            );
+          })
+        );
+
+      galleryUrls = [
+        ...galleryUrls,
+        ...uploadedGallery.filter(Boolean),
+      ];
+    }
+
+    toast.dismiss("project-upload");
+
+    const payload = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      image: imageUrl,
+
+      gallery: galleryUrls,
+
+      technologies: form.technologies
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
+
+      category: form.category.trim(),
+      client: form.client.trim(),
+      github: form.github.trim(),
+      liveDemo: form.liveDemo.trim(),
+
+      featured: form.featured,
+      published: form.published,
+    };
+
+    if (editingProject) {
+      await updateProject(
+        editingProject._id,
+        payload
+      );
+
+      toast.success(
+        "Project updated successfully."
+      );
+    } else {
+      await createProject(payload);
+
+      toast.success(
+        "Project created successfully."
+      );
+    }
+
+    closeModal();
+
+    await loadProjects(
+      editingProject
+        ? pagination.page
+        : 1
+    );
+  } catch (err) {
+    toast.dismiss("project-upload");
+
+    console.error(
+      "Failed to save project:",
+      err
+    );
+
+    toast.error(
+      err?.response?.data?.message ||
+        "Unable to save project."
+    );
+  } finally {
+    setSaving(false);
+  }
+};
 
   /* ==========================================
      DELETE
@@ -490,11 +685,11 @@ export default function AdminProjects() {
                       "Web Development"}
                   </p>
 
-                  <h2 className="mt-2 line-clamp-1 text-xl font-bold text-white">
+                  <h2 className="mt-2 line-clamp-1 text-xl font-bold text-cyan-500">
                     {project.title}
                   </h2>
 
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
                     {project.description}
                   </p>
 
@@ -508,7 +703,7 @@ export default function AdminProjects() {
                         .map((technology) => (
                           <span
                             key={technology}
-                            className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-300"
+                            className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-600"
                           >
                             {technology}
                           </span>
@@ -540,7 +735,7 @@ export default function AdminProjects() {
                       onClick={() =>
                         openEditModal(project)
                       }
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white/10 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-gray-300 px-3 py-2.5 text-sm font-semibold text-black transition hover:bg-white/15"
                     >
                       <Pencil className="h-4 w-4" />
                       Edit
@@ -563,7 +758,7 @@ export default function AdminProjects() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-lg bg-white/10 px-3 py-2.5 text-white transition hover:bg-white/15"
+                        className="inline-flex items-center justify-center rounded-lg bg-gray-200 px-3 py-2.5 transition hover:bg-white/15"
                         title="GitHub"
                       >
                         <Github className="h-4 w-4" />
@@ -746,26 +941,88 @@ export default function AdminProjects() {
                   />
                 </div>
 
-                {/* Image */}
+                {/* Main Image */}
 
                 <div className="md:col-span-2">
                   <label className="mb-2 block text-sm font-medium text-slate-300">
-                    Main Image URL
+                    Main Project Image
                   </label>
 
-                  <input
-                    name="image"
-                    value={form.image}
-                    onChange={handleChange}
-                    placeholder="https://..."
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
-                  />
+                  <div className="space-y-4">
+                    {/* File Upload */}
+
+                    <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/5 px-6 py-8 text-center transition hover:border-cyan-400/40 hover:bg-white/10">
+                      <div>
+                        <p className="font-semibold text-white">
+                          📁 Choose image from your computer
+                        </p>
+
+                        <p className="mt-1 text-xs text-slate-500">
+                          JPG, PNG, WEBP, GIF or SVG
+                        </p>
+                      </div>
+
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                        onChange={handleMainImageChange}
+                        className="hidden"
+                      />
+                    </label>
+
+                    {/* Selected File */}
+
+                    {mainImageFile && (
+                      <p className="text-sm text-cyan-400">
+                        Selected: {mainImageFile.name}
+                      </p>
+                    )}
+
+                    {/* Preview */}
+
+                    {(mainImagePreview ||
+                      form.image) && (
+                      <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-900">
+                        <img
+                          src={
+                            mainImagePreview ||
+                            form.image
+                          }
+                          alt="Project preview"
+                          className="h-64 w-full object-cover"
+                        />
+                      </div>
+                    )}
+
+                    {/* URL */}
+
+                    <div>
+                      <label className="mb-2 block text-xs font-medium text-slate-400">
+                        Or use an image URL
+                      </label>
+
+                      <input
+                        name="image"
+                        value={form.image}
+                        onChange={(event) => {
+                          handleChange(event);
+
+                          if (mainImageFile) {
+                            setMainImageFile(null);
+                            setMainImagePreview("");
+                          }
+                        }}
+                        placeholder="https://..."
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Technologies */}
 
                 <div className="md:col-span-2">
-                  <label className="mb-2 block text-sm font-medium text-slate-300">
+                  <label className="mb-2 block text-sm font-medium text-slate-500">
                     Technologies
                   </label>
 
@@ -786,21 +1043,88 @@ export default function AdminProjects() {
 
                 <div className="md:col-span-2">
                   <label className="mb-2 block text-sm font-medium text-slate-300">
-                    Gallery URLs
+                    Gallery Images
                   </label>
 
-                  <textarea
-                    name="gallery"
-                    value={form.gallery}
-                    onChange={handleChange}
-                    placeholder={`https://image-1.jpg\nhttps://image-2.jpg`}
-                    rows={4}
-                    className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
-                  />
+                  <div className="space-y-4">
+                    {/* Multiple File Upload */}
 
-                  <p className="mt-2 text-xs text-slate-600">
-                    Add one image URL per line.
-                  </p>
+                    <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/5 px-6 py-8 text-center transition hover:border-cyan-400/40 hover:bg-white/10">
+                      <div>
+                        <p className="font-semibold text-white">
+                          📁 Choose multiple images
+                        </p>
+
+                        <p className="mt-1 text-xs text-slate-500">
+                          Select up to 10 images
+                        </p>
+                      </div>
+
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                        onChange={handleGalleryChange}
+                        className="hidden"
+                      />
+                    </label>
+
+                    {/* Selected Files */}
+
+                    {galleryFiles.length > 0 && (
+                      <p className="text-sm text-cyan-400">
+                        {galleryFiles.length} image
+                        {galleryFiles.length > 1
+                          ? "s"
+                          : ""}{" "}
+                        selected
+                      </p>
+                    )}
+
+                    {/* Preview Grid */}
+
+                    {galleryPreviews.length > 0 && (
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {galleryPreviews.map(
+                          (preview, index) => (
+                            <div
+                              key={preview}
+                              className="overflow-hidden rounded-xl border border-white/10 bg-slate-900"
+                            >
+                              <img
+                                src={preview}
+                                alt={`Gallery preview ${
+                                  index + 1
+                                }`}
+                                className="h-32 w-full object-cover"
+                              />
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+
+                    {/* Existing / Manual URLs */}
+
+                    <div>
+                      <label className="mb-2 block text-xs font-medium text-slate-400">
+                        Or add image URLs
+                      </label>
+
+                      <textarea
+                        name="gallery"
+                        value={form.gallery}
+                        onChange={handleChange}
+                        placeholder={`https://image-1.jpg https://image-2.jpg`}
+                        rows={4}
+                        className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                      />
+
+                      <p className="mt-2 text-xs text-slate-600">
+                        Add one image URL per line.
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* GitHub */}

@@ -467,15 +467,7 @@ export default function Projects() {
 
           {/* Filters */}
 
-          <div
-            className="
-              mb-10
-              flex
-              flex-col
-              gap-4
-              md:flex-row
-              md:items-center
-            "
+          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center"
           >
             <div className="flex-1">
               <SearchBar

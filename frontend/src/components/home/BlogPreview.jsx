@@ -80,7 +80,7 @@ export default function BlogPreview() {
   }
 
   return (
-    <section className="bg-slate-950 py-24">
+    <section className="bg-slate-900 dark:bg-slate-900 text-gray-900 dark:text-white py-24">
       <div className="px-6">
 
         <SectionTitle
@@ -91,22 +91,12 @@ export default function BlogPreview() {
 
         {blogs.length === 0 ? (
           <p
-            className="
-              mt-12
-              text-center
-              text-slate-400
-            "
+            className="mt-12 text-center text-slate-400"
           >
             Articles coming soon.
           </p>
         ) : (
-          <div
-            className="
-              mt-16
-              grid
-              gap-8
-              lg:grid-cols-3
-            "
+          <div className="mt-16 grid gap-8 lg:grid-cols-3"
           >
             {blogs.slice(0, 3).map((blog, index) => (
               <motion.div
@@ -132,12 +122,7 @@ export default function BlogPreview() {
                 }}
               >
                 <Card
-                  className="
-                    overflow-hidden
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-xl
-                  "
+                  className="overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl"
                 >
                   <img
                     src={
@@ -149,32 +134,17 @@ export default function BlogPreview() {
                       blog.title ||
                       "KanuorieTech article"
                     }
-                    className="
-                      mb-5
-                      h-56
-                      w-full
-                      rounded-2xl
-                      object-cover
-                    "
+                    className="mb-5 h-56 w-full rounded-2xl object-cover"
                   />
 
                   <h3
-                    className="
-                      mb-4
-                      text-xl
-                      font-bold
-                      text-white
-                    "
+                    className="mb-4 text-xl font-bold text-white"
                   >
                     {blog.title}
                   </h3>
 
                   <p
-                    className="
-                      mb-6
-                      leading-7
-                      text-slate-400
-                    "
+                    className="mb-6 leading-7 text-slate-400"
                   >
                     {blog.excerpt
                       ? blog.excerpt.slice(0, 120)

@@ -122,20 +122,8 @@ export default function Hero() {
                 Get Started
               </Button>
             </Link>
-            <Link to="/About">
-              <Button
-                variant="outline"
-                size="lg"
-              >
-                About Us
-                <ArrowRight
-                  size={18}
-                  className="ml-2"
-                />
-              </Button>
-            </Link>
           </motion.div>
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: .6 }}
@@ -151,7 +139,7 @@ export default function Hero() {
                 </p>
               </div>
             ))}
-          </motion.div>
+          </motion.div> */}
         </div>
           {/* RIGHT */}
         <motion.div

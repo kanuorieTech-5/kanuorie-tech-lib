@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const cloudinary = require("../config/cloudinary");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
@@ -41,45 +41,283 @@ const updateProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found.");
   }
 
-  if (
-    req.body.email &&
-    req.body.email.toLowerCase() !== user.email
-  ) {
-    const exists = await User.findOne({
-      email: req.body.email.toLowerCase(),
-      _id: { $ne: user._id },
-    });
+  const {
+    firstName,
+    lastName,
+    username,
+    email,
+    avatar,
+    phone,
+    bio,
+    settings,
+  } = req.body;
 
-    if (exists) {
+  if (email?.trim()) {
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
+
+    if (normalizedEmail !== user.email) {
+      const exists = await User.findOne({
+        email: normalizedEmail,
+        _id: {
+          $ne: user._id,
+        },
+      });
+
+      if (exists) {
+        throw new ApiError(
+          409,
+          "Email already exists."
+        );
+      }
+
+      user.email = normalizedEmail;
+    }
+  }
+
+  if (firstName?.trim()) {
+    user.firstName = firstName.trim();
+  }
+
+  if (lastName?.trim()) {
+    user.lastName = lastName.trim();
+  }
+
+    /* ----------------------------------------
+    USERNAME
+  ---------------------------------------- */
+
+  if (username !== undefined) {
+    const normalizedUsername = username
+      .trim()
+      .toLowerCase();
+
+    if (!normalizedUsername) {
       throw new ApiError(
-        409,
-        "Email already exists."
+        400,
+        "Username cannot be empty."
       );
     }
 
-    user.email = req.body.email.toLowerCase();
+    if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
+      throw new ApiError(
+        400,
+        "Username can only contain letters, numbers, and underscores."
+      );
+    }
+
+    if (normalizedUsername !== user.username) {
+      const existingUsername =
+        await User.findOne({
+          username: normalizedUsername,
+          _id: {
+            $ne: user._id,
+          },
+        });
+
+      if (existingUsername) {
+        throw new ApiError(
+          409,
+          "Username already exists."
+        );
+      }
+
+      user.username = normalizedUsername;
+    }
   }
 
-  const editableFields = [
-    "firstName",
-    "lastName",
-    "phone",
-    "bio",
-    "avatar",
-  ];
+  if (avatar !== undefined) {
+    user.avatar = avatar;
+  }
 
-  editableFields.forEach((field) => {
-    if (req.body[field] !== undefined) {
-      user[field] = req.body[field];
+  if (phone !== undefined) {
+    user.phone = phone;
+  }
+
+  if (bio !== undefined) {
+    user.bio = bio;
+  }
+
+  if (settings !== undefined) {
+
+    /* Theme */
+
+    if (
+      settings.theme !== undefined &&
+      ["light", "dark", "system"].includes(
+        settings.theme
+      )
+    ) {
+      user.settings.theme = settings.theme;
     }
-  });
+
+    /* Language */
+
+    if (settings.language !== undefined) {
+      user.settings.language =
+        settings.language;
+    }
+
+    /* Notifications */
+
+    if (settings.notifications) {
+      const notificationKeys = [
+        "courses",
+        "resources",
+        "products",
+        "account",
+        "promotions",
+      ];
+
+      notificationKeys.forEach((key) => {
+        if (
+          settings.notifications[key] !==
+          undefined
+        ) {
+          user.settings.notifications[key] =
+            Boolean(
+              settings.notifications[key]
+            );
+        }
+      });
+    }
+
+    /* Email Preferences */
+
+    if (settings.emailPreferences) {
+      const emailPreferenceKeys = [
+        "security",
+        "courses",
+        "resources",
+        "products",
+        "newsletter",
+        "promotions",
+      ];
+
+      emailPreferenceKeys.forEach((key) => {
+        if (
+          settings.emailPreferences[key] !==
+          undefined
+        ) {
+          /*
+           * Security emails should always
+           * remain enabled.
+           */
+          if (key === "security") {
+            user.settings.emailPreferences[
+              key
+            ] = true;
+          } else {
+            user.settings.emailPreferences[
+              key
+            ] = Boolean(
+              settings.emailPreferences[key]
+            );
+          }
+        }
+      });
+    }
+  }
 
   await user.save();
 
   return ApiResponse.success(
     res,
-    user.toJSON(),
+    {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username || "",
+      email: user.email,
+      avatar: user.avatar,
+      phone: user.phone,
+      bio: user.bio,
+      role: user.role,
+      isVerified: user.isVerified,
+      settings: user.settings,
+    },
     "Profile updated successfully."
+  );
+});
+
+/* ==========================================
+   UPLOAD AVATAR
+========================================== */
+
+const uploadAvatar = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(
+      400,
+      "Please select an image to upload."
+    );
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  const dataURI = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+    "base64"
+  )}`;
+
+  const result = await cloudinary.uploader.upload(
+    dataURI,
+    {
+      folder: "kanuorietech/avatars",
+      resource_type: "image",
+      transformation: [
+        {
+          width: 500,
+          height: 500,
+          crop: "fill",
+          gravity: "face",
+        },
+        {
+          quality: "auto",
+        },
+        {
+          fetch_format: "auto",
+        },
+      ],
+    }
+  );
+
+  user.avatar = result.secure_url;
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    {
+      avatar: user.avatar,
+      publicId: result.public_id,
+    },
+    "Avatar uploaded successfully."
+  );
+});
+
+/* ==========================================
+   DELETE AVATAR
+========================================== */
+
+const deleteAvatar = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  user.avatar = "";
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Avatar removed successfully."
   );
 });
 
@@ -290,11 +528,13 @@ const deleteUser = asyncHandler(async (req, res) => {
 ========================================== */
 
 module.exports = {
-  getProfile,
-  updateProfile,
-  getDashboard,
-  getUsers,
-  getUser,
-  updateUserRole,
-  deleteUser,
+  getProfile, 
+  updateProfile, 
+  uploadAvatar, 
+  deleteAvatar, 
+  getDashboard, 
+  getUsers, 
+  getUser, 
+  updateUserRole, 
+  deleteUser, 
 };

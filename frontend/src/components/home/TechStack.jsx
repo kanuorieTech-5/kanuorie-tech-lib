@@ -62,7 +62,7 @@ const technologies = [
 
 export default function TechStack() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-24">
+    <section className="relative overflow-hidden bg-slate-900 py-24">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />

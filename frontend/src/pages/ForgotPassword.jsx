@@ -1,8 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import { forgotPassword } from "../services";
-import { Card, Input, Button } from "../components/common";
+import { Card, Button } from "../components/common";
+import { Input } from "../components/ui"
 
 export default function ForgotPassword() {
 

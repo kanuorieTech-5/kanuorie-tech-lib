@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import {
   HelpCircle,
   BookOpen,
@@ -9,7 +10,11 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import { Card, Button, SectionTitle } from "../components/common";
+import {
+  Card,
+  Button,
+  SectionTitle,
+} from "../components/common";
 
 const HELP_CATEGORIES = [
   {
@@ -44,9 +49,9 @@ const HELP_CATEGORIES = [
 
 export default function Help() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="bg-slate-950 py-24 text-white">
         <div className="mx-auto max-w-7xl px-6 text-center">
 
@@ -69,8 +74,8 @@ export default function Help() {
         </div>
       </section>
 
-      {/* Help Categories */}
-      <section className="py-20">
+      {/* HELP CATEGORIES */}
+      <section className="bg-slate-50 py-20 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl px-6">
 
           <SectionTitle
@@ -87,33 +92,47 @@ export default function Help() {
               return (
                 <Card
                   key={item.title}
-                  className="flex h-full flex-col p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  className="
+                    flex h-full flex-col
+                    border-gray-200
+                    bg-white
+                    p-6
+                    transition
+                    duration-300
+                    hover:-translate-y-1
+                    hover:shadow-xl
+                    dark:border-white/10
+                    dark:bg-white/5
+                  "
                 >
-                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50">
+
+                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-500/10">
                     <Icon
-                      className="h-6 w-6 text-cyan-600"
+                      className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
                       aria-hidden="true"
                     />
                   </div>
 
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                     {item.title}
                   </h2>
 
-                  <p className="mt-3 flex-1 leading-7 text-slate-600">
+                  <p className="mt-3 flex-1 leading-7 text-slate-600 dark:text-slate-400">
                     {item.description}
                   </p>
 
                   <Link
                     to={item.link}
-                    className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-600 hover:text-cyan-700"
+                    className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-600 transition hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
                   >
                     Explore
+
                     <ArrowRight
                       size={17}
                       aria-hidden="true"
                     />
                   </Link>
+
                 </Card>
               );
             })}
@@ -123,8 +142,8 @@ export default function Help() {
         </div>
       </section>
 
-      {/* FAQ / Common Questions */}
-      <section className="bg-white py-20">
+      {/* FAQ */}
+      <section className="bg-white py-20 dark:bg-slate-900">
         <div className="mx-auto max-w-4xl px-6">
 
           <SectionTitle
@@ -135,59 +154,43 @@ export default function Help() {
 
           <div className="mt-12 space-y-4">
 
-            <details className="group rounded-xl border bg-slate-50 p-5">
-              <summary className="cursor-pointer list-none font-semibold text-slate-900">
-                How do I create an account?
-              </summary>
+            <FAQItem
+              question="How do I create an account?"
+            >
+              Click the Register option in the navigation menu,
+              provide your account information, and follow the
+              registration instructions.
+            </FAQItem>
 
-              <p className="mt-4 leading-7 text-slate-600">
-                Click the Register option in the navigation menu,
-                provide your account information, and follow the
-                registration instructions.
-              </p>
-            </details>
+            <FAQItem
+              question="How do I save a resource?"
+            >
+              Open the Library and click the bookmark button on
+              any resource you want to save. Saved resources can
+              be accessed from your learning dashboard.
+            </FAQItem>
 
-            <details className="group rounded-xl border bg-slate-50 p-5">
-              <summary className="cursor-pointer list-none font-semibold text-slate-900">
-                How do I save a resource?
-              </summary>
+            <FAQItem
+              question="How do I update my profile?"
+            >
+              After signing in, open your Profile page from the
+              account menu. You can update your personal
+              information and profile photo there.
+            </FAQItem>
 
-              <p className="mt-4 leading-7 text-slate-600">
-                Open the Library and click the bookmark button on
-                any resource you want to save. Saved resources can
-                be accessed from your learning dashboard.
-              </p>
-            </details>
-
-            <details className="group rounded-xl border bg-slate-50 p-5">
-              <summary className="cursor-pointer list-none font-semibold text-slate-900">
-                How do I update my profile?
-              </summary>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                After signing in, open your Profile page from the
-                account menu. You can update your personal
-                information and profile photo there.
-              </p>
-            </details>
-
-            <details className="group rounded-xl border bg-slate-50 p-5">
-              <summary className="cursor-pointer list-none font-semibold text-slate-900">
-                I need additional assistance. What should I do?
-              </summary>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                If you cannot find an answer here, contact the
-                KanuorieTech team and we'll be happy to assist you.
-              </p>
-            </details>
+            <FAQItem
+              question="I need additional assistance. What should I do?"
+            >
+              If you cannot find an answer here, contact the
+              KanuorieTech team and we'll be happy to assist you.
+            </FAQItem>
 
           </div>
 
         </div>
       </section>
 
-      {/* Contact CTA */}
+      {/* CONTACT CTA */}
       <section className="bg-slate-950 py-20 text-white">
         <div className="mx-auto max-w-4xl px-6 text-center">
 
@@ -219,5 +222,43 @@ export default function Help() {
       </section>
 
     </main>
+  );
+}
+
+/* ==========================================
+   FAQ ITEM
+========================================== */
+
+function FAQItem({ question, children }) {
+  return (
+    <details
+      className="
+        group
+        rounded-xl
+        border
+        border-gray-200
+        bg-slate-50
+        p-5
+        transition
+        dark:border-white/10
+        dark:bg-white/5
+      "
+    >
+      <summary
+        className="
+          cursor-pointer
+          list-none
+          font-semibold
+          text-slate-900
+          dark:text-white
+        "
+      >
+        {question}
+      </summary>
+
+      <p className="mt-4 leading-7 text-slate-600 dark:text-slate-400">
+        {children}
+      </p>
+    </details>
   );
 }

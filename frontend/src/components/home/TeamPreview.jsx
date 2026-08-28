@@ -225,7 +225,7 @@ export default function TeamPreview() {
 
   if (loading) {
     return (
-      <section className="bg-slate-950 py-24">
+      <section className="bg-slate-200 py-24">
         <div className="mx-auto flex max-w-7xl justify-center px-6">
           <Loader />
         </div>
@@ -240,7 +240,7 @@ export default function TeamPreview() {
   */
 
   return (
-    <section className="bg-slate-950 py-24 text-white">
+    <section className="bg-slate-900 py-24 text-white">
       <div className="px-6">
 
         <SectionTitle
@@ -250,7 +250,7 @@ export default function TeamPreview() {
         />
 
         {team.length === 0 && (
-          <p className="mt-8 text-center text-sm text-slate-500">
+          <p className="mt-8 text-center text-sm text-slate-400">
             Our team profiles are being updated.
           </p>
         )}

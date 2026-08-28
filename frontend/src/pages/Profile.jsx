@@ -5,23 +5,21 @@ import {
   CheckCircle2,
   Mail,
   User,
-  AtSign,
   FileText,
   ShieldCheck,
   Save,
 } from "lucide-react";
-
 import { Card, Button } from "../components/common";
 import { Input } from "../components/ui";
-
 import { useAuth } from "../contexts/AuthContext";
-import {
-  updateProfile,
-  uploadAvatar,
-} from "../services";
+// import { updateProfile, uploadAvatar,} from "../services";
 
 export default function Profile() {
-  const { user, setUser } = useAuth();
+  const {
+  user,
+  updateProfile,
+  uploadAvatar,
+} = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] =
@@ -30,7 +28,7 @@ export default function Profile() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    username: "",
+    // username: "",
     email: "",
     bio: "",
   });
@@ -47,7 +45,7 @@ export default function Profile() {
     setForm({
       firstName: user.firstName || "",
       lastName: user.lastName || "",
-      username: user.username || "",
+      // username: user.username || "",
       email: user.email || "",
       bio: user.bio || "",
     });
@@ -72,66 +70,55 @@ export default function Profile() {
   |--------------------------------------------------------------------------
   */
 
-  const saveProfile = async (event) => {
-    event.preventDefault();
+ const saveProfile = async (event) => {
+  event.preventDefault();
 
-    if (!form.firstName.trim()) {
-      toast.error("First name is required.");
-      return;
-    }
+  if (!form.firstName.trim()) {
+    toast.error("First name is required.");
+    return;
+  }
 
-    if (!form.lastName.trim()) {
-      toast.error("Last name is required.");
-      return;
-    }
+  if (!form.lastName.trim()) {
+    toast.error("Last name is required.");
+    return;
+  }
 
-    if (!form.username.trim()) {
-      toast.error("Username is required.");
-      return;
-    }
+  if (!form.username.trim()) {
+    toast.error("Username is required.");
+    return;
+  }
 
-    if (!form.email.trim()) {
-      toast.error("Email address is required.");
-      return;
-    }
+  if (!form.email.trim()) {
+    toast.error("Email address is required.");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const res = await updateProfile(form);
+    await updateProfile({
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      username: form.username.trim(),
+      email: form.email.trim(),
+      bio: form.bio.trim(),
+    });
 
-      const updatedUser =
-        res?.data?.user ||
-        res?.data ||
-        res?.user ||
-        null;
+    toast.success("Profile updated successfully.");
+  } catch (err) {
+    console.error(
+      "Profile update error:",
+      err
+    );
 
-      if (updatedUser) {
-        setUser(updatedUser);
-      } else {
-        setUser({
-          ...user,
-          ...form,
-        });
-      }
-
-      toast.success(
-        "Profile updated successfully."
-      );
-    } catch (err) {
-      console.error(
-        "Profile update error:",
-        err
-      );
-
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to update profile."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast.error(
+      err?.response?.data?.message ||
+        "Unable to update profile."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   /*
   |--------------------------------------------------------------------------
@@ -140,96 +127,63 @@ export default function Profile() {
   */
 
   const changeAvatar = async (event) => {
-    const file = event.target.files?.[0];
+  const file = event.target.files?.[0];
 
-    if (!file) return;
+  if (!file) return;
 
-    /*
-     * Basic client-side validation
-     */
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+  ];
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/jpg",
-    ];
+  if (!allowedTypes.includes(file.type)) {
+    toast.error(
+      "Please select a JPG, PNG, or WebP image."
+    );
 
-    if (!allowedTypes.includes(file.type)) {
-      toast.error(
-        "Please select a JPG, PNG, or WebP image."
-      );
+    event.target.value = "";
+    return;
+  }
 
-      event.target.value = "";
-      return;
-    }
+  const maxSize = 5 * 1024 * 1024;
 
-    /*
-     * Keep uploads reasonably sized.
-     * Backend should still validate this.
-     */
+  if (file.size > maxSize) {
+    toast.error(
+      "Profile image must be smaller than 5MB."
+    );
 
-    const maxSize = 5 * 1024 * 1024;
+    event.target.value = "";
+    return;
+  }
 
-    if (file.size > maxSize) {
-      toast.error(
-        "Profile image must be smaller than 5MB."
-      );
+  try {
+    setAvatarLoading(true);
 
-      event.target.value = "";
-      return;
-    }
+    const formData = new FormData();
 
-    try {
-      setAvatarLoading(true);
+    formData.append("avatar", file);
 
-      const formData = new FormData();
+    await uploadAvatar(formData);
 
-      formData.append("avatar", file);
+    toast.success(
+      "Profile photo updated successfully."
+    );
+  } catch (err) {
+    console.error(
+      "Avatar upload error:",
+      err
+    );
 
-      const res =
-        await uploadAvatar(formData);
-
-      const avatar =
-        res?.data?.avatar ||
-        res?.avatar ||
-        res?.data?.user?.avatar;
-
-      if (!avatar) {
-        throw new Error(
-          "Avatar URL was not returned by the server."
-        );
-      }
-
-      setUser({
-        ...user,
-        avatar,
-      });
-
-      toast.success(
-        "Profile photo updated successfully."
-      );
-    } catch (err) {
-      console.error(
-        "Avatar upload error:",
-        err
-      );
-
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to upload profile photo."
-      );
-    } finally {
-      setAvatarLoading(false);
-
-      /*
-       * Allow selecting the same image again.
-       */
-
-      event.target.value = "";
-    }
-  };
-
+    toast.error(
+      err?.response?.data?.message ||
+        "Unable to upload profile photo."
+    );
+  } finally {
+    setAvatarLoading(false);
+    event.target.value = "";
+  }
+};
   /*
   |--------------------------------------------------------------------------
   | Loading / unauthenticated state
@@ -457,13 +411,13 @@ export default function Profile() {
                   placeholder="Enter your last name"
                 />
 
-                <Input
+                {/* <Input
                   label="Username"
                   name="username"
                   value={form.username}
                   onChange={change}
                   placeholder="Enter your username"
-                />
+                /> */}
 
                 <Input
                   label="Email Address"
@@ -569,7 +523,7 @@ export default function Profile() {
                   value={fullName}
                 />
 
-                <InfoRow
+                {/* <InfoRow
                   icon={<AtSign size={17} />}
                   label="Username"
                   value={
@@ -577,7 +531,7 @@ export default function Profile() {
                       ? `@${user.username}`
                       : "Not set"
                   }
-                />
+                /> */}
 
                 <InfoRow
                   icon={<Mail size={17} />}

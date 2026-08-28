@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import * as authApi from "../api/authApi";
+import * as userApi from "../api/userApi";
 
 export const AuthContext = createContext(null);
 
@@ -207,38 +208,66 @@ const register = useCallback(async (payload) => {
   const updateProfile = useCallback(
     async (payload) => {
       const res =
-        await authApi.updateProfile(
-          payload
+        await userApi.updateProfile(payload);
+
+      const updatedUser =
+        res?.data || res?.user || res;
+
+      if (!updatedUser) {
+        throw new Error(
+          "Profile update returned no user data."
         );
+      }
 
-      const updated =
-        res?.user ||
-        res?.data?.user ||
-        res?.data ||
-        res;
-
-      setUser(updated);
+      setUser(updatedUser);
 
       localStorage.setItem(
         USER_KEY,
-        JSON.stringify(updated)
+        JSON.stringify(updatedUser)
       );
 
-      return updated;
+      return updatedUser;
     },
     []
   );
-
   /* ==========================================
      AVATAR
   ========================================== */
+const uploadAvatar = useCallback(
+  async (formData) => {
+    const res =
+      await userApi.uploadAvatar(formData);
 
-  const uploadAvatar = useCallback(
-    async (file) => {
-      return authApi.uploadAvatar(file);
-    },
-    []
-  );
+    const avatar =
+      res?.data?.avatar ||
+      res?.avatar;
+
+    if (!avatar) {
+      throw new Error(
+        "Avatar URL was not returned by the server."
+      );
+    }
+
+    setUser((currentUser) => {
+      if (!currentUser) return currentUser;
+
+      const updatedUser = {
+        ...currentUser,
+        avatar,
+      };
+
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify(updatedUser)
+      );
+
+      return updatedUser;
+    });
+
+    return res;
+  },
+  []
+);
 
   /* ==========================================
      AUTH HELPERS

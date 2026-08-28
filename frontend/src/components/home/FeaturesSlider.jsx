@@ -72,7 +72,7 @@ export default function FeaturesSlider() {
 
   return (
 
-    <section className="bg-slate-950 py-24 overflow-hidden">
+    <section className="bg-slate-900 py-24 overflow-hidden">
       <div className="px-6">
         <div className="text-center">
           <span className="rounded-full bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-400">

@@ -45,7 +45,7 @@ const stats = [
 export default function AboutPreview() {
 
   return (
-    <section className="bg-slate-950 py-10">
+    <section className="bg-gray-900 text-gray-900 dark:text-white py-10">
       <div className="px-6">
         <SectionTitle
           Badge="About KanuorieTech"
@@ -213,7 +213,7 @@ export default function AboutPreview() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/portfolio">
+              <Link to="/projects">
                 <Button variant="outline" className="text-blue-300">
                   View Portfolio
                 </Button>

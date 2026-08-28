@@ -6,17 +6,13 @@ export default function SectionTitle({
   light = false,
 }) {
   return (
-    <div
-      className={`mb-10 ${
-        center ? "text-center" : ""
-      }`}
-    >
+    <div className={`mb-10 ${center ? "text-center" : ""}`}>
       {Badge && (
         <p
           className={`mb-3 text-sm font-semibold uppercase tracking-wider ${
             light
               ? "text-blue-300"
-              : "text-blue-600"
+              : "text-blue-600 dark:text-blue-400"
           }`}
         >
           {Badge}
@@ -27,7 +23,7 @@ export default function SectionTitle({
         className={`text-3xl font-bold ${
           light
             ? "text-white"
-            : "text-gray-600"
+            : "text-cyan-500 dark:text-white"
         }`}
       >
         {title}
@@ -37,8 +33,8 @@ export default function SectionTitle({
         <p
           className={`mt-3 ${
             light
-              ? "text-gray-300"
-              : "text-gray-500"
+              ? "text-gray-200"
+              : "text-gray-500 dark:text-gray-400"
           }`}
         >
           {subtitle}

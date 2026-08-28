@@ -111,7 +111,7 @@ export default function ProjectsPreview() {
 
   if (loading) {
     return (
-      <section className="bg-slate-950 py-24">
+      <section className="bg-slate-200 py-24">
         <div className="mx-auto flex max-w-7xl justify-center px-6">
           <Loader />
         </div>
@@ -121,7 +121,7 @@ export default function ProjectsPreview() {
 
   if (!projects.length) {
     return (
-      <section className="bg-slate-950 py-24 text-white">
+      <section className="bg-slate-900 py-24 text-white">
         <div className="px-6">
           <SectionTitle
             Badge="Our Portfolio"

@@ -153,7 +153,7 @@ export default function ServicesPreview() {
 
   if (loading) {
     return (
-      <section className="bg-slate-950 py-24">
+      <section className="bg-slate-900 py-24">
         <div className="flex justify-center">
           <Loader />
         </div>
@@ -162,7 +162,7 @@ export default function ServicesPreview() {
   }
 
   return (
-    <section className="bg-slate-950 py-24 text-white">
+    <section className="bg-slate-900 py-24 text-white">
       <div className="px-6">
 
         <SectionTitle

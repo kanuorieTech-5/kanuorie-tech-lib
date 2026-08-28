@@ -212,20 +212,9 @@ export default function Services() {
               onChange={(event) =>
                 setCategory(event.target.value)
               }
-              className="
-                rounded-lg
-                border
-                border-white/10
-                bg-white/5
-                px-4
-                py-3
-                text-white
-                outline-none
-                transition
-                focus:border-cyan-400
-                focus:ring-2
-                focus:ring-cyan-400/20
-              "
+              className="rounded-lg border border-white/10 bg-white/5
+                px-4 py-3 text-white outline-none transition
+                focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
             >
               {categories.map((item) => (
                 <option
@@ -242,12 +231,12 @@ export default function Services() {
           {/* RESULTS */}
 
           {currentServices.length === 0 ? (
-            <Card className="border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
-              <h2 className="mb-3 text-2xl font-bold text-white">
+            <Card className="border-white/10 bg-white/90 p-12 text-center backdrop-blur-xl">
+              <h2 className="mb-3 text-2xl font-bold text-black">
                 No services found
               </h2>
 
-              <p className="text-slate-400">
+              <p className="text-slate-600">
                 Try changing your search or category
                 filter.
               </p>

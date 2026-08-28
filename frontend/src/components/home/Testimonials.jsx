@@ -173,8 +173,8 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="bg-slate-950 py-20 text-white">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="bg-slate-900 py-20 text-white">
+      <div className="mx-auto px-6">
 
         <SectionTitle
           title="What Our Clients Say"
