@@ -1,5 +1,5 @@
 import Hero from "../components/home/Hero";
-import AboutPreview from "../components/home/Aboutpreview";
+import AboutPreview from "../components/home/AboutPreview";
 import ImageSlider from "../components/home/ImageSlider";
 import Features from "../components/home/Features";
 import PlatformFeatures from "../components/home/FeaturesSlider";
