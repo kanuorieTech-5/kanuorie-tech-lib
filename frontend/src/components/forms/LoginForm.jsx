@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Input } from "../ui";
 
-export default function LoginForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function LoginForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -25,18 +22,11 @@ export default function LoginForm({
 
   return (
     <Card className="mx-auto max-w-md p-8">
-      <h2 className="mb-2 text-3xl font-bold">
-        Welcome Back
-      </h2>
+      <h2 className="mb-2 text-3xl font-bold">Welcome Back</h2>
 
-      <p className="mb-8 text-gray-500">
-        Sign in to your account.
-      </p>
+      <p className="mb-8 text-gray-500">Sign in to your account.</p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="space-y-5">
         <Input
           label="Email"
           type="email"
@@ -56,28 +46,18 @@ export default function LoginForm({
         />
 
         <div className="flex justify-end">
-          <Link
-            to="/forgot-password"
-            className="text-sm text-blue-600"
-          >
+          <Link to="/forgot-password" className="text-sm text-blue-600">
             Forgot Password?
           </Link>
         </div>
 
-        <Button
-          type="submit"
-          loading={loading}
-          fullWidth
-        >
+        <Button type="submit" loading={loading} fullWidth>
           Login
         </Button>
 
         <p className="text-center text-sm">
           Don't have an account?{" "}
-          <Link
-            to="/register"
-            className="font-medium text-blue-600"
-          >
+          <Link to="/register" className="font-medium text-blue-600">
             Register
           </Link>
         </p>

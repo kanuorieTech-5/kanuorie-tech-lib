@@ -3,17 +3,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FolderKanban, Search } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-  Pagination,
-} from "../components/common";
+import { Card, Button, Loader, Pagination } from "../components/common";
 
-import {
-  Newsletter,
-  CTA,
-} from "../components/home";
+import { Newsletter, CTA } from "../components/home";
 
 import { SearchBar } from "../components/layout";
 
@@ -21,8 +13,7 @@ import { getProjects } from "../services";
 
 const PER_PAGE = 9;
 
-const PROJECT_PLACEHOLDER =
-  "/images/project-placeholder.jpg";
+const PROJECT_PLACEHOLDER = "/images/project-placeholder.jpg";
 
 /* ==========================================
    HELPERS
@@ -53,8 +44,7 @@ const getProjectId = (project) => {
 };
 
 const getProjectDescription = (project) => {
-  const description =
-    project?.description?.trim();
+  const description = project?.description?.trim();
 
   if (!description) {
     return "Explore this project and learn more about the solution.";
@@ -91,22 +81,18 @@ export default function Projects() {
 
         const response = await getProjects();
 
-        const data =
-          getProjectsData(response);
+        const data = getProjectsData(response);
 
         if (mounted) {
           setProjects(data);
         }
       } catch (err) {
-        console.error(
-          "Failed to load projects:",
-          err
-        );
+        console.error("Failed to load projects:", err);
 
         if (mounted) {
           setProjects([]);
           setError(
-            "We couldn't load the projects right now. Please try again."
+            "We couldn't load the projects right now. Please try again.",
           );
         }
       } finally {
@@ -130,11 +116,7 @@ export default function Projects() {
   const categories = useMemo(() => {
     const uniqueCategories = [
       ...new Set(
-        projects
-          .map((project) =>
-            project?.category?.trim()
-          )
-          .filter(Boolean)
+        projects.map((project) => project?.category?.trim()).filter(Boolean),
       ),
     ];
 
@@ -146,62 +128,38 @@ export default function Projects() {
   ========================================== */
 
   const filteredProjects = useMemo(() => {
-    const query =
-      search.trim().toLowerCase();
+    const query = search.trim().toLowerCase();
 
     return projects.filter((project) => {
-      const title =
-        project?.title?.toLowerCase() || "";
+      const title = project?.title?.toLowerCase() || "";
 
-      const description =
-        project?.description?.toLowerCase() ||
-        "";
+      const description = project?.description?.toLowerCase() || "";
 
-      const projectCategory =
-        project?.category || "";
+      const projectCategory = project?.category || "";
 
       const matchesSearch =
-        !query ||
-        title.includes(query) ||
-        description.includes(query);
+        !query || title.includes(query) || description.includes(query);
 
       const matchesCategory =
-        category === "All" ||
-        projectCategory === category;
+        category === "All" || projectCategory === category;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
-  }, [
-    projects,
-    search,
-    category,
-  ]);
+  }, [projects, search, category]);
 
   /* ==========================================
      PAGINATION
   ========================================== */
 
-  const totalPages = Math.ceil(
-    filteredProjects.length / PER_PAGE
-  );
+  const totalPages = Math.ceil(filteredProjects.length / PER_PAGE);
 
   const currentProjects = useMemo(() => {
-    const start =
-      (page - 1) * PER_PAGE;
+    const start = (page - 1) * PER_PAGE;
 
     const end = start + PER_PAGE;
 
-    return filteredProjects.slice(
-      start,
-      end
-    );
-  }, [
-    filteredProjects,
-    page,
-  ]);
+    return filteredProjects.slice(start, end);
+  }, [filteredProjects, page]);
 
   /* ==========================================
      RESET PAGE WHEN FILTER CHANGES
@@ -216,16 +174,10 @@ export default function Projects() {
   ========================================== */
 
   useEffect(() => {
-    if (
-      totalPages > 0 &&
-      page > totalPages
-    ) {
+    if (totalPages > 0 && page > totalPages) {
       setPage(totalPages);
     }
-  }, [
-    page,
-    totalPages,
-  ]);
+  }, [page, totalPages]);
 
   /* ==========================================
      LOADING
@@ -337,11 +289,7 @@ export default function Projects() {
               text-blue-400
             "
           >
-            <FolderKanban
-              size={16}
-              aria-hidden="true"
-            />
-
+            <FolderKanban size={16} aria-hidden="true" />
             Our Portfolio
           </motion.div>
 
@@ -368,9 +316,7 @@ export default function Projects() {
             "
           >
             Projects That Create{" "}
-            <span className="text-blue-400">
-              Real Impact
-            </span>
+            <span className="text-blue-400">Real Impact</span>
           </motion.h1>
 
           <motion.p
@@ -395,9 +341,8 @@ export default function Projects() {
               sm:leading-8
             "
           >
-            Explore digital products, websites,
-            platforms and technology solutions
-            built by KanuorieTech.
+            Explore digital products, websites, platforms and technology
+            solutions built by KanuorieTech.
           </motion.p>
         </div>
       </section>
@@ -417,7 +362,6 @@ export default function Projects() {
         aria-labelledby="projects-heading"
       >
         <div className="mx-auto max-w-7xl">
-
           {/* Header */}
 
           <div className="mb-12">
@@ -458,17 +402,14 @@ export default function Projects() {
                 lg:leading-8
               "
             >
-              Discover some of the digital
-              solutions, platforms and products
-              we have built for businesses,
-              organizations and learners.
+              Discover some of the digital solutions, platforms and products we
+              have built for businesses, organizations and learners.
             </p>
           </div>
 
           {/* Filters */}
 
-          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center"
-          >
+          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center">
             <div className="flex-1">
               <SearchBar
                 value={search}
@@ -478,21 +419,14 @@ export default function Projects() {
             </div>
 
             <div className="md:w-56">
-              <label
-                htmlFor="project-category"
-                className="sr-only"
-              >
+              <label htmlFor="project-category" className="sr-only">
                 Filter projects by category
               </label>
 
               <select
                 id="project-category"
                 value={category}
-                onChange={(event) =>
-                  setCategory(
-                    event.target.value
-                  )
-                }
+                onChange={(event) => setCategory(event.target.value)}
                 className="
                   w-full
                   rounded-lg
@@ -510,10 +444,7 @@ export default function Projects() {
                 "
               >
                 {categories.map((item) => (
-                  <option
-                    key={item}
-                    value={item}
-                  >
+                  <option key={item} value={item}>
                     {item}
                   </option>
                 ))}
@@ -553,9 +484,7 @@ export default function Projects() {
           >
             {filteredProjects.length > 0
               ? `${filteredProjects.length} ${
-                  filteredProjects.length === 1
-                    ? "project"
-                    : "projects"
+                  filteredProjects.length === 1 ? "project" : "projects"
                 } found`
               : "No projects found"}
           </div>
@@ -587,12 +516,10 @@ export default function Projects() {
               </h2>
 
               <p className="text-slate-600">
-                Try changing your search or
-                category filter.
+                Try changing your search or category filter.
               </p>
 
-              {(search ||
-                category !== "All") && (
+              {(search || category !== "All") && (
                 <button
                   type="button"
                   onClick={() => {
@@ -620,40 +547,32 @@ export default function Projects() {
                 lg:grid-cols-3
               "
             >
-              {currentProjects.map(
-                (project, index) => {
-                  const projectId =
-                    getProjectId(project);
+              {currentProjects.map((project, index) => {
+                const projectId = getProjectId(project);
 
-                  return (
-                    <motion.div
-                      key={
-                        projectId ||
-                        `project-${index}`
-                      }
-                      initial={{
-                        opacity: 0,
-                        y: 25,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.45,
-                        delay: Math.min(
-                          index * 0.06,
-                          0.3
-                        ),
-                      }}
-                      viewport={{
-                        once: true,
-                        amount: 0.15,
-                      }}
-                      className="h-full"
-                    >
-                      <Card
-                        className="
+                return (
+                  <motion.div
+                    key={projectId || `project-${index}`}
+                    initial={{
+                      opacity: 0,
+                      y: 25,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      delay: Math.min(index * 0.06, 0.3),
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.15,
+                    }}
+                    className="h-full"
+                  >
+                    <Card
+                      className="
                           flex
                           h-full
                           flex-col
@@ -666,22 +585,19 @@ export default function Projects() {
                           hover:-translate-y-1
                           hover:shadow-xl
                         "
-                      >
-                        {/* Image */}
+                    >
+                      {/* Image */}
 
-                        <div className="overflow-hidden">
-                          <img
-                            src={
-                              project?.image ||
-                              PROJECT_PLACEHOLDER
-                            }
-                            alt={
-                              project?.title
-                                ? `${project.title} project`
-                                : "KanuorieTech project"
-                            }
-                            loading="lazy"
-                            className="
+                      <div className="overflow-hidden">
+                        <img
+                          src={project?.image || PROJECT_PLACEHOLDER}
+                          alt={
+                            project?.title
+                              ? `${project.title} project`
+                              : "KanuorieTech project"
+                          }
+                          loading="lazy"
+                          className="
                               h-56
                               w-full
                               object-cover
@@ -689,106 +605,91 @@ export default function Projects() {
                               duration-500
                               hover:scale-105
                             "
-                            onError={(
-                              event
-                            ) => {
-                              if (
-                                event
-                                  .currentTarget
-                                  .src
-                                  .includes(
-                                    PROJECT_PLACEHOLDER
-                                  )
-                              ) {
-                                return;
-                              }
+                          onError={(event) => {
+                            if (
+                              event.currentTarget.src.includes(
+                                PROJECT_PLACEHOLDER,
+                              )
+                            ) {
+                              return;
+                            }
 
-                              event.currentTarget.src =
-                                PROJECT_PLACEHOLDER;
-                            }}
-                          />
-                        </div>
+                            event.currentTarget.src = PROJECT_PLACEHOLDER;
+                          }}
+                        />
+                      </div>
 
-                        {/* Content */}
+                      {/* Content */}
 
-                        <div
-                          className="
+                      <div
+                        className="
                             flex
                             flex-1
                             flex-col
                             p-6
                           "
-                        >
-                          {/* Category */}
+                      >
+                        {/* Category */}
 
-                          {project?.category && (
-                            <p
-                              className="
+                        {project?.category && (
+                          <p
+                            className="
                                 mb-2
                                 text-sm
                                 font-semibold
                                 text-blue-600
                               "
-                            >
-                              {project.category}
-                            </p>
-                          )}
+                          >
+                            {project.category}
+                          </p>
+                        )}
 
-                          {/* Title */}
+                        {/* Title */}
 
-                          <h3
-                            className="
+                        <h3
+                          className="
                               mb-3
                               text-2xl
                               font-bold
                               text-slate-900
                             "
-                          >
-                            {project?.title ||
-                              "KanuorieTech Project"}
-                          </h3>
+                        >
+                          {project?.title || "KanuorieTech Project"}
+                        </h3>
 
-                          {/* Description */}
+                        {/* Description */}
 
-                          <p
-                            className="
+                        <p
+                          className="
                               mb-8
                               line-clamp-3
                               flex-1
                               leading-7
                               text-slate-600
                             "
+                        >
+                          {getProjectDescription(project)}
+                        </p>
+
+                        {/* Action */}
+
+                        {projectId ? (
+                          <Link
+                            to={`/projects/${projectId}`}
+                            className="mt-auto"
                           >
-                            {getProjectDescription(
-                              project
-                            )}
-                          </p>
-
-                          {/* Action */}
-
-                          {projectId ? (
-                            <Link
-                              to={`/projects/${projectId}`}
-                              className="mt-auto"
-                            >
-                              <Button fullWidth>
-                                View Project
-                              </Button>
-                            </Link>
-                          ) : (
-                            <Button
-                              fullWidth
-                              disabled
-                            >
-                              Unavailable
-                            </Button>
-                          )}
-                        </div>
-                      </Card>
-                    </motion.div>
-                  );
-                }
-              )}
+                            <Button fullWidth>View Project</Button>
+                          </Link>
+                        ) : (
+                          <Button fullWidth disabled>
+                            Unavailable
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
 

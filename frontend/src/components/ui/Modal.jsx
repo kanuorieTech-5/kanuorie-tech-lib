@@ -37,11 +37,7 @@ export default function Modal({
 
         <div className="p-6">{children}</div>
 
-        {footer && (
-          <div className="border-t p-5">
-            {footer}
-          </div>
-        )}
+        {footer && <div className="border-t p-5">{footer}</div>}
       </div>
     </div>
   );

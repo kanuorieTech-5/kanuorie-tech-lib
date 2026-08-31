@@ -29,26 +29,19 @@ export const getAdminUsers = async (params = {}) => {
 };
 
 export const getAdminUser = async (id) => {
-  const { data } = await API.get(
-    `/users/${id}`
-  );
+  const { data } = await API.get(`/users/${id}`);
 
   return data;
 };
 
 export const updateUserRole = async (id, role) => {
-  const { data } = await API.put(
-    `/users/${id}/role`,
-    { role }
-  );
+  const { data } = await API.put(`/users/${id}/role`, { role });
 
   return data;
 };
 
 export const deleteAdminUser = async (id) => {
-  const { data } = await API.delete(
-    `/users/${id}`
-  );
+  const { data } = await API.delete(`/users/${id}`);
 
   return data;
 };
@@ -58,38 +51,25 @@ export const deleteAdminUser = async (id) => {
 ===================================================== */
 
 export const getAdminBooks = async (params = {}) => {
-  const { data } = await API.get(
-    `/books?${params.toString()}`
-  );
+  const { data } = await API.get(`/books?${params.toString()}`);
 
   return data;
 };
 
 export const createAdminBook = async (bookData) => {
-  const { data } = await API.post(
-    "/books",
-    bookData
-  );
+  const { data } = await API.post("/books", bookData);
 
   return data;
 };
 
-export const updateAdminBook = async (
-  id,
-  bookData
-) => {
-  const { data } = await API.put(
-    `/books/${id}`,
-    bookData
-  );
+export const updateAdminBook = async (id, bookData) => {
+  const { data } = await API.put(`/books/${id}`, bookData);
 
   return data;
 };
 
 export const deleteAdminBook = async (id) => {
-  const { data } = await API.delete(
-    `/books/${id}`
-  );
+  const { data } = await API.delete(`/books/${id}`);
 
   return data;
 };
@@ -103,18 +83,15 @@ export const getAdminServices = async () => {
   return response.data;
 };
 
-
 export const createAdminService = async (data) => {
   const response = await API.post("/services", data);
   return response.data;
 };
 
-
 export const updateAdminService = async (id, data) => {
   const response = await API.put(`/services/${id}`, data);
   return response.data;
 };
-
 
 export const deleteAdminService = async (id) => {
   const response = await API.delete(`/services/${id}`);
@@ -131,27 +108,19 @@ export const getAdminTeam = async () => {
 };
 
 export const createTeamMember = async (memberData) => {
-  const { data } = await API.post(
-    "/team",
-    memberData
-  );
+  const { data } = await API.post("/team", memberData);
 
   return data;
 };
 
 export const updateTeamMember = async (id, memberData) => {
-  const { data } = await API.put(
-    `/team/${id}`,
-    memberData
-  );
+  const { data } = await API.put(`/team/${id}`, memberData);
 
   return data;
 };
 
 export const deleteTeamMember = async (id) => {
-  const { data } = await API.delete(
-    `/team/${id}`
-  );
+  const { data } = await API.delete(`/team/${id}`);
 
   return data;
 };
@@ -161,38 +130,25 @@ export const deleteTeamMember = async (id) => {
 ===================================================== */
 
 export const getAdminTestimonials = async () => {
-  const { data } = await API.get(
-    "/testimonials"
-  );
+  const { data } = await API.get("/testimonials");
 
   return data;
 };
 
 export const createTestimonial = async (testimonialData) => {
-  const { data } = await API.post(
-    "/testimonials",
-    testimonialData
-  );
+  const { data } = await API.post("/testimonials", testimonialData);
 
   return data;
 };
 
-export const updateTestimonial = async (
-  id,
-  testimonialData
-) => {
-  const { data } = await API.put(
-    `/testimonials/${id}`,
-    testimonialData
-  );
+export const updateTestimonial = async (id, testimonialData) => {
+  const { data } = await API.put(`/testimonials/${id}`, testimonialData);
 
   return data;
 };
 
 export const deleteTestimonial = async (id) => {
-  const { data } = await API.delete(
-    `/testimonials/${id}`
-  );
+  const { data } = await API.delete(`/testimonials/${id}`);
 
   return data;
 };
@@ -209,30 +165,19 @@ export const getAdminBlogs = async (params = {}) => {
 };
 
 export const createAdminBlog = async (blogData) => {
-  const { data } = await API.post(
-    "/blog",
-    blogData
-  );
+  const { data } = await API.post("/blog", blogData);
 
   return data;
 };
 
-export const updateAdminBlog = async (
-  id,
-  blogData
-) => {
-  const { data } = await API.put(
-    `/blog/${id}`,
-    blogData
-  );
+export const updateAdminBlog = async (id, blogData) => {
+  const { data } = await API.put(`/blog/${id}`, blogData);
 
   return data;
 };
 
 export const deleteAdminBlog = async (id) => {
-  const { data } = await API.delete(
-    `/blog/${id}`
-  );
+  const { data } = await API.delete(`/blog/${id}`);
 
   return data;
 };
@@ -250,21 +195,13 @@ export const getAdminOrders = async (params = {}) => {
 };
 
 export const getAdminOrder = async (id) => {
-  const { data } = await API.get(
-    `/orders/${id}`
-  );
+  const { data } = await API.get(`/orders/${id}`);
 
   return data;
 };
 
-export const updateOrderStatus = async (
-  id,
-  status
-) => {
-  const { data } = await API.put(
-    `/orders/${id}/status`,
-    { status }
-  );
+export const updateOrderStatus = async (id, status) => {
+  const { data } = await API.put(`/orders/${id}/status`, { status });
 
   return data;
 };
@@ -281,14 +218,8 @@ export const getAdminContacts = async (params = {}) => {
   return data;
 };
 
-export const updateContactStatus = async (
-  id,
-  status
-) => {
-  const { data } = await API.put(
-    `/contacts/${id}/status`,
-    { status }
-  );
+export const updateContactStatus = async (id, status) => {
+  const { data } = await API.put(`/contacts/${id}/status`, { status });
 
   return data;
 };
@@ -306,9 +237,7 @@ export const getSubscribers = async (params = {}) => {
 };
 
 export const deleteSubscriber = async (id) => {
-  const { data } = await API.delete(
-    `/newsletter/${id}`
-  );
+  const { data } = await API.delete(`/newsletter/${id}`);
 
   return data;
 };
@@ -317,45 +246,26 @@ export const deleteSubscriber = async (id) => {
    NOTIFICATIONS
 ===================================================== */
 
-export const getAdminNotifications = async (
-  params = {}
-) => {
-  const { data } = await API.get(
-    "/notifications",
-    { params }
-  );
+export const getAdminNotifications = async (params = {}) => {
+  const { data } = await API.get("/notifications", { params });
 
   return data;
 };
 
-export const createAdminNotification = async (
-  notificationData
-) => {
-  const { data } = await API.post(
-    "/notifications",
-    notificationData
-  );
+export const createAdminNotification = async (notificationData) => {
+  const { data } = await API.post("/notifications", notificationData);
 
   return data;
 };
 
-export const broadcastNotification = async (
-  notificationData
-) => {
-  const { data } = await API.post(
-    "/notifications/broadcast",
-    notificationData
-  );
+export const broadcastNotification = async (notificationData) => {
+  const { data } = await API.post("/notifications/broadcast", notificationData);
 
   return data;
 };
 
-export const deleteAdminNotification = async (
-  id
-) => {
-  const { data } = await API.delete(
-    `/notifications/admin/${id}`
-  );
+export const deleteAdminNotification = async (id) => {
+  const { data } = await API.delete(`/notifications/admin/${id}`);
 
   return data;
 };

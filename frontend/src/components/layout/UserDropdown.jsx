@@ -19,30 +19,20 @@ export default function UserDropdown() {
 
   useEffect(() => {
     const closeMenu = (e) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
 
     document.addEventListener("mousedown", closeMenu);
 
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        closeMenu
-      );
+    return () => document.removeEventListener("mousedown", closeMenu);
   }, []);
 
   if (!user) return null;
 
   return (
-    <div
-      ref={menuRef}
-      className="relative"
-    >
+    <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-100"
@@ -50,16 +40,13 @@ export default function UserDropdown() {
         <img
           src={
             user.avatar ||
-            "https://ui-avatars.com/api/?name=" +
-              encodeURIComponent(user.name)
+            "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.name)
           }
           alt={user.name}
           className="h-9 w-9 rounded-full object-cover"
         />
 
-        <span className="hidden md:block">
-          {user.name}
-        </span>
+        <span className="hidden md:block">{user.name}</span>
 
         <ChevronDown size={18} />
       </button>

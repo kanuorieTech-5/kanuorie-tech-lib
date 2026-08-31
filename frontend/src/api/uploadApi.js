@@ -9,18 +9,13 @@ export const uploadImage = async (file) => {
 
   formData.append("image", file);
 
-  const { data } = await API.post(
-    "/upload/image",
-    formData
-  );
+  const { data } = await API.post("/upload/image", formData);
 
   return data;
 };
 
 export const deleteImage = async (publicId) => {
-  const { data } = await API.delete(
-    `/upload/${encodeURIComponent(publicId)}`
-  );
+  const { data } = await API.delete(`/upload/${encodeURIComponent(publicId)}`);
 
   return data;
 };

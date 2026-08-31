@@ -13,9 +13,8 @@ export default function Radio({
     <label
       className={clsx(
         "flex cursor-pointer items-center gap-3",
-        disabled &&
-          "cursor-not-allowed opacity-60",
-        className
+        disabled && "cursor-not-allowed opacity-60",
+        className,
       )}
     >
       <input

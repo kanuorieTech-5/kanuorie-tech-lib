@@ -1,6 +1,4 @@
-export default function StatsGrid({
-  children,
-}) {
+export default function StatsGrid({ children }) {
   return (
     <div
       className="

@@ -22,9 +22,7 @@ import {
   deleteProject,
 } from "../../services";
 
-import {
-  uploadImage,
-} from "../../api/uploadApi";
+import { uploadImage } from "../../api/uploadApi";
 
 const initialForm = {
   title: "",
@@ -60,25 +58,18 @@ export default function AdminProjects() {
   const [editingProject, setEditingProject] = useState(null);
 
   const [form, setForm] = useState(initialForm);
-  const [mainImageFile, setMainImageFile] =
-    useState(null);
+  const [mainImageFile, setMainImageFile] = useState(null);
 
-  const [galleryFiles, setGalleryFiles] =
-    useState([]);
+  const [galleryFiles, setGalleryFiles] = useState([]);
 
-  const [mainImagePreview, setMainImagePreview] =
-    useState("");
+  const [mainImagePreview, setMainImagePreview] = useState("");
 
-  const [galleryPreviews, setGalleryPreviews] =
-    useState([]);
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
   /* ==========================================
      FETCH PROJECTS
   ========================================== */
 
-  const loadProjects = async (
-    page = pagination.page,
-    searchValue = search
-  ) => {
+  const loadProjects = async (page = pagination.page, searchValue = search) => {
     try {
       setLoading(true);
       setError("");
@@ -86,9 +77,7 @@ export default function AdminProjects() {
       const response = await getProjects({
         page,
         limit: pagination.limit,
-        ...(searchValue.trim()
-          ? { search: searchValue.trim() }
-          : {}),
+        ...(searchValue.trim() ? { search: searchValue.trim() } : {}),
       });
 
       const data = response?.data ?? response ?? {};
@@ -101,18 +90,12 @@ export default function AdminProjects() {
           limit: pagination.limit,
           total: data.projects?.length ?? 0,
           pages: 1,
-        }
+        },
       );
     } catch (err) {
-      console.error(
-        "Failed to load projects:",
-        err
-      );
+      console.error("Failed to load projects:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to load projects."
-      );
+      setError(err?.response?.data?.message || "Unable to load projects.");
     } finally {
       setLoading(false);
     }
@@ -131,110 +114,90 @@ export default function AdminProjects() {
   //   response?.url ||
   //   ""
   // );
-// };
+  // };
   /* ==========================================
      FORM HANDLING
   ========================================== */
 
   const handleChange = (event) => {
-    const { name, value, type, checked } =
-      event.target;
+    const { name, value, type, checked } = event.target;
 
     setForm((current) => ({
       ...current,
-      [name]:
-        type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
-const handleMainImageChange = (event) => {
-  const file = event.target.files?.[0];
+  const handleMainImageChange = (event) => {
+    const file = event.target.files?.[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-    "image/svg+xml",
-  ];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/svg+xml",
+    ];
 
-  if (!allowedTypes.includes(file.type)) {
-    toast.error(
-      "Please select a JPG, PNG, WEBP, GIF or SVG image."
-    );
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please select a JPG, PNG, WEBP, GIF or SVG image.");
 
-    event.target.value = "";
-    return;
-  }
+      event.target.value = "";
+      return;
+    }
 
-  if (file.size > 10 * 1024 * 1024) {
-    toast.error(
-      "Image must be smaller than 10MB."
-    );
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be smaller than 10MB.");
 
-    event.target.value = "";
-    return;
-  }
+      event.target.value = "";
+      return;
+    }
 
-  setMainImageFile(file);
+    setMainImageFile(file);
 
-  const previewUrl =
-    URL.createObjectURL(file);
+    const previewUrl = URL.createObjectURL(file);
 
-  setMainImagePreview(previewUrl);
-};
+    setMainImagePreview(previewUrl);
+  };
 
-const handleGalleryChange = (event) => {
-  const files = Array.from(
-    event.target.files || []
-  );
+  const handleGalleryChange = (event) => {
+    const files = Array.from(event.target.files || []);
 
-  if (!files.length) return;
+    if (!files.length) return;
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-    "image/svg+xml",
-  ];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/svg+xml",
+    ];
 
-  const invalidFile = files.find(
-    (file) =>
-      !allowedTypes.includes(file.type)
-  );
+    const invalidFile = files.find((file) => !allowedTypes.includes(file.type));
 
-  if (invalidFile) {
-    toast.error(
-      "Only JPG, PNG, WEBP, GIF and SVG images are allowed."
-    );
+    if (invalidFile) {
+      toast.error("Only JPG, PNG, WEBP, GIF and SVG images are allowed.");
 
-    event.target.value = "";
-    return;
-  }
+      event.target.value = "";
+      return;
+    }
 
-  const oversizedFile = files.find(
-    (file) => file.size > 10 * 1024 * 1024
-  );
+    const oversizedFile = files.find((file) => file.size > 10 * 1024 * 1024);
 
-  if (oversizedFile) {
-    toast.error(
-      "Each image must be smaller than 10MB."
-    );
+    if (oversizedFile) {
+      toast.error("Each image must be smaller than 10MB.");
 
-    event.target.value = "";
-    return;
-  }
+      event.target.value = "";
+      return;
+    }
 
-  setGalleryFiles(files);
+    setGalleryFiles(files);
 
-  const previews = files.map((file) =>
-    URL.createObjectURL(file)
-  );
+    const previews = files.map((file) => URL.createObjectURL(file));
 
-  setGalleryPreviews(previews);
-};
+    setGalleryPreviews(previews);
+  };
 
   const openCreateModal = () => {
     setEditingProject(null);
@@ -255,191 +218,147 @@ const handleGalleryChange = (event) => {
     setMainImageFile(null);
     setGalleryFiles([]);
 
-    setMainImagePreview(
-      project.image || ""
-    );
+    setMainImagePreview(project.image || "");
 
-    setGalleryPreviews(
-      project.gallery || []
-    );
+    setGalleryPreviews(project.gallery || []);
 
     setForm({
       title: project.title || "",
       description: project.description || "",
       image: project.image || "",
-      gallery:
-        project.gallery?.join("\n") || "",
-      technologies:
-        project.technologies?.join(", ") || "",
-      category:
-        project.category || "Web Development",
+      gallery: project.gallery?.join("\n") || "",
+      technologies: project.technologies?.join(", ") || "",
+      category: project.category || "Web Development",
       client: project.client || "",
       github: project.github || "",
       liveDemo: project.liveDemo || "",
       featured: Boolean(project.featured),
-      published:
-        project.published !== false,
+      published: project.published !== false,
     });
 
     setShowModal(true);
   };
 
   const closeModal = () => {
-  if (saving) return;
+    if (saving) return;
 
-  setShowModal(false);
-  setEditingProject(null);
-  setForm(initialForm);
+    setShowModal(false);
+    setEditingProject(null);
+    setForm(initialForm);
 
-  setMainImageFile(null);
-  setGalleryFiles([]);
+    setMainImageFile(null);
+    setGalleryFiles([]);
 
-  setMainImagePreview("");
-  setGalleryPreviews([]);
-};
+    setMainImagePreview("");
+    setGalleryPreviews([]);
+  };
   /* ==========================================
      CREATE / UPDATE
   ========================================== */
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (!form.title.trim()) {
-    toast.error("Project title is required.");
-    return;
-  }
+    if (!form.title.trim()) {
+      toast.error("Project title is required.");
+      return;
+    }
 
-  if (!form.description.trim()) {
-    toast.error(
-      "Project description is required."
-    );
-    return;
-  }
+    if (!form.description.trim()) {
+      toast.error("Project description is required.");
+      return;
+    }
 
-  try {
-    setSaving(true);
+    try {
+      setSaving(true);
 
-    let imageUrl = form.image.trim();
+      let imageUrl = form.image.trim();
 
-    if (mainImageFile) {
-      toast.loading("Uploading main image...", {
-        id: "project-upload",
-      });
+      if (mainImageFile) {
+        toast.loading("Uploading main image...", {
+          id: "project-upload",
+        });
 
-      const response = await uploadImage(
-        mainImageFile
-      );
+        const response = await uploadImage(mainImageFile);
 
-      imageUrl =
-        response?.data?.url ||
-        response?.url ||
-        "";
+        imageUrl = response?.data?.url || response?.url || "";
 
-      if (!imageUrl) {
-        throw new Error(
-          "Image upload succeeded but no image URL was returned."
-        );
+        if (!imageUrl) {
+          throw new Error(
+            "Image upload succeeded but no image URL was returned.",
+          );
+        }
+
+        console.log("Uploaded main image URL:", imageUrl);
       }
 
-      console.log(
-        "Uploaded main image URL:",
-        imageUrl
-      );
-    }
-    
-    let galleryUrls = form.gallery
-      .split("\n")
-      .map((item) => item.trim())
-      .filter(Boolean);
+      let galleryUrls = form.gallery
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
 
-        if (galleryFiles.length > 0) {
-      toast.loading("Uploading gallery images...", {
-        id: "project-upload",
-      });
+      if (galleryFiles.length > 0) {
+        toast.loading("Uploading gallery images...", {
+          id: "project-upload",
+        });
 
-      const uploadedGallery =
-        await Promise.all(
+        const uploadedGallery = await Promise.all(
           galleryFiles.map(async (file) => {
-            const response =
-              await uploadImage(file);
+            const response = await uploadImage(file);
 
-            return (
-              response?.data?.url ||
-              response?.url ||
-              ""
-            );
-          })
+            return response?.data?.url || response?.url || "";
+          }),
         );
 
-      galleryUrls = [
-        ...galleryUrls,
-        ...uploadedGallery.filter(Boolean),
-      ];
+        galleryUrls = [...galleryUrls, ...uploadedGallery.filter(Boolean)];
+      }
+
+      toast.dismiss("project-upload");
+
+      const payload = {
+        title: form.title.trim(),
+        description: form.description.trim(),
+        image: imageUrl,
+
+        gallery: galleryUrls,
+
+        technologies: form.technologies
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        category: form.category.trim(),
+        client: form.client.trim(),
+        github: form.github.trim(),
+        liveDemo: form.liveDemo.trim(),
+
+        featured: form.featured,
+        published: form.published,
+      };
+
+      if (editingProject) {
+        await updateProject(editingProject._id, payload);
+
+        toast.success("Project updated successfully.");
+      } else {
+        await createProject(payload);
+
+        toast.success("Project created successfully.");
+      }
+
+      closeModal();
+
+      await loadProjects(editingProject ? pagination.page : 1);
+    } catch (err) {
+      toast.dismiss("project-upload");
+
+      console.error("Failed to save project:", err);
+
+      toast.error(err?.response?.data?.message || "Unable to save project.");
+    } finally {
+      setSaving(false);
     }
-
-    toast.dismiss("project-upload");
-
-    const payload = {
-      title: form.title.trim(),
-      description: form.description.trim(),
-      image: imageUrl,
-
-      gallery: galleryUrls,
-
-      technologies: form.technologies
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-
-      category: form.category.trim(),
-      client: form.client.trim(),
-      github: form.github.trim(),
-      liveDemo: form.liveDemo.trim(),
-
-      featured: form.featured,
-      published: form.published,
-    };
-
-    if (editingProject) {
-      await updateProject(
-        editingProject._id,
-        payload
-      );
-
-      toast.success(
-        "Project updated successfully."
-      );
-    } else {
-      await createProject(payload);
-
-      toast.success(
-        "Project created successfully."
-      );
-    }
-
-    closeModal();
-
-    await loadProjects(
-      editingProject
-        ? pagination.page
-        : 1
-    );
-  } catch (err) {
-    toast.dismiss("project-upload");
-
-    console.error(
-      "Failed to save project:",
-      err
-    );
-
-    toast.error(
-      err?.response?.data?.message ||
-        "Unable to save project."
-    );
-  } finally {
-    setSaving(false);
-  }
-};
+  };
 
   /* ==========================================
      DELETE
@@ -447,7 +366,7 @@ const handleGalleryChange = (event) => {
 
   const handleDelete = async (project) => {
     const confirmed = window.confirm(
-      `Delete "${project.title}"?\n\nThis action cannot be undone.`
+      `Delete "${project.title}"?\n\nThis action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -457,27 +376,18 @@ const handleGalleryChange = (event) => {
 
       await deleteProject(project._id);
 
-      toast.success(
-        "Project deleted successfully."
-      );
+      toast.success("Project deleted successfully.");
 
       const nextPage =
-        projects.length === 1 &&
-        pagination.page > 1
+        projects.length === 1 && pagination.page > 1
           ? pagination.page - 1
           : pagination.page;
 
       await loadProjects(nextPage);
     } catch (err) {
-      console.error(
-        "Failed to delete project:",
-        err
-      );
+      console.error("Failed to delete project:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to delete project."
-      );
+      toast.error(err?.response?.data?.message || "Unable to delete project.");
     } finally {
       setDeleting(null);
     }
@@ -498,11 +408,7 @@ const handleGalleryChange = (event) => {
   ========================================== */
 
   const goToPage = (page) => {
-    if (
-      page < 1 ||
-      page > pagination.pages ||
-      page === pagination.page
-    ) {
+    if (page < 1 || page > pagination.pages || page === pagination.page) {
       return;
     }
 
@@ -525,9 +431,7 @@ const handleGalleryChange = (event) => {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold">
-                Projects
-              </h1>
+              <h1 className="text-2xl font-bold">Projects</h1>
 
               <p className="mt-1 text-sm text-slate-400">
                 Manage your portfolio projects.
@@ -542,7 +446,6 @@ const handleGalleryChange = (event) => {
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400"
         >
           <Plus className="h-5 w-5" />
-
           Add Project
         </button>
       </div>
@@ -560,9 +463,7 @@ const handleGalleryChange = (event) => {
             <input
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search projects..."
               className="w-full rounded-xl border border-white/10 bg-slate-900 py-3 pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50"
             />
@@ -581,9 +482,7 @@ const handleGalleryChange = (event) => {
 
       {error && (
         <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-5">
-          <p className="font-medium text-red-400">
-            {error}
-          </p>
+          <p className="font-medium text-red-400">{error}</p>
 
           <button
             type="button"
@@ -601,9 +500,7 @@ const handleGalleryChange = (event) => {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-16 text-center">
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-slate-700 border-t-cyan-400" />
 
-          <p className="mt-4 text-sm text-slate-400">
-            Loading projects...
-          </p>
+          <p className="mt-4 text-sm text-slate-400">Loading projects...</p>
         </div>
       ) : projects.length === 0 ? (
         /* Empty */
@@ -611,13 +508,10 @@ const handleGalleryChange = (event) => {
         <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-16 text-center">
           <FolderKanban className="mx-auto h-12 w-12 text-slate-600" />
 
-          <h2 className="mt-5 text-lg font-semibold">
-            No projects found
-          </h2>
+          <h2 className="mt-5 text-lg font-semibold">No projects found</h2>
 
           <p className="mt-2 text-sm text-slate-500">
-            Create your first project to start building
-            your portfolio.
+            Create your first project to start building your portfolio.
           </p>
 
           <button
@@ -626,7 +520,6 @@ const handleGalleryChange = (event) => {
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950"
           >
             <Plus className="h-5 w-5" />
-
             Create Project
           </button>
         </div>
@@ -670,9 +563,7 @@ const handleGalleryChange = (event) => {
                           : "bg-slate-700 text-slate-300"
                       }`}
                     >
-                      {project.published
-                        ? "Published"
-                        : "Draft"}
+                      {project.published ? "Published" : "Draft"}
                     </span>
                   </div>
                 </div>
@@ -681,8 +572,7 @@ const handleGalleryChange = (event) => {
 
                 <div className="p-6">
                   <p className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
-                    {project.category ||
-                      "Web Development"}
+                    {project.category || "Web Development"}
                   </p>
 
                   <h2 className="mt-2 line-clamp-1 text-xl font-bold text-cyan-500">
@@ -695,19 +585,16 @@ const handleGalleryChange = (event) => {
 
                   {/* Technologies */}
 
-                  {project.technologies?.length >
-                    0 && (
+                  {project.technologies?.length > 0 && (
                     <div className="mt-5 flex flex-wrap gap-2">
-                      {project.technologies
-                        .slice(0, 4)
-                        .map((technology) => (
-                          <span
-                            key={technology}
-                            className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-600"
-                          >
-                            {technology}
-                          </span>
-                        ))}
+                      {project.technologies.slice(0, 4).map((technology) => (
+                        <span
+                          key={technology}
+                          className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-600"
+                        >
+                          {technology}
+                        </span>
+                      ))}
                     </div>
                   )}
 
@@ -716,14 +603,11 @@ const handleGalleryChange = (event) => {
                   <div className="mt-5 flex items-center gap-4 border-t border-white/10 pt-4 text-xs text-slate-500">
                     <span className="inline-flex items-center gap-1">
                       <Eye className="h-4 w-4" />
-
                       {project.views || 0} views
                     </span>
 
                     {project.client && (
-                      <span className="truncate">
-                        {project.client}
-                      </span>
+                      <span className="truncate">{project.client}</span>
                     )}
                   </div>
 
@@ -732,9 +616,7 @@ const handleGalleryChange = (event) => {
                   <div className="mt-5 flex flex-wrap gap-2">
                     <button
                       type="button"
-                      onClick={() =>
-                        openEditModal(project)
-                      }
+                      onClick={() => openEditModal(project)}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-gray-300 px-3 py-2.5 text-sm font-semibold text-black transition hover:bg-white/15"
                     >
                       <Pencil className="h-4 w-4" />
@@ -767,12 +649,8 @@ const handleGalleryChange = (event) => {
 
                     <button
                       type="button"
-                      disabled={
-                        deleting === project._id
-                      }
-                      onClick={() =>
-                        handleDelete(project)
-                      }
+                      disabled={deleting === project._id}
+                      onClick={() => handleDelete(project)}
                       className="inline-flex items-center justify-center rounded-lg bg-red-500/10 px-3 py-2.5 text-red-400 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
                       title="Delete"
                     >
@@ -803,11 +681,7 @@ const handleGalleryChange = (event) => {
                 <button
                   type="button"
                   disabled={pagination.page <= 1}
-                  onClick={() =>
-                    goToPage(
-                      pagination.page - 1
-                    )
-                  }
+                  onClick={() => goToPage(pagination.page - 1)}
                   className="rounded-lg bg-white/10 px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Previous
@@ -815,15 +689,8 @@ const handleGalleryChange = (event) => {
 
                 <button
                   type="button"
-                  disabled={
-                    pagination.page >=
-                    pagination.pages
-                  }
-                  onClick={() =>
-                    goToPage(
-                      pagination.page + 1
-                    )
-                  }
+                  disabled={pagination.page >= pagination.pages}
+                  onClick={() => goToPage(pagination.page + 1)}
                   className="rounded-lg bg-white/10 px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
@@ -846,9 +713,7 @@ const handleGalleryChange = (event) => {
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-slate-950 px-6 py-5">
               <div>
                 <h2 className="text-xl font-bold text-white">
-                  {editingProject
-                    ? "Edit Project"
-                    : "Create Project"}
+                  {editingProject ? "Edit Project" : "Create Project"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500">
@@ -869,10 +734,7 @@ const handleGalleryChange = (event) => {
 
             {/* Form */}
 
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 p-6"
-            >
+            <form onSubmit={handleSubmit} className="space-y-6 p-6">
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Title */}
 
@@ -980,14 +842,10 @@ const handleGalleryChange = (event) => {
 
                     {/* Preview */}
 
-                    {(mainImagePreview ||
-                      form.image) && (
+                    {(mainImagePreview || form.image) && (
                       <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-900">
                         <img
-                          src={
-                            mainImagePreview ||
-                            form.image
-                          }
+                          src={mainImagePreview || form.image}
                           alt="Project preview"
                           className="h-64 w-full object-cover"
                         />
@@ -1074,10 +932,7 @@ const handleGalleryChange = (event) => {
                     {galleryFiles.length > 0 && (
                       <p className="text-sm text-cyan-400">
                         {galleryFiles.length} image
-                        {galleryFiles.length > 1
-                          ? "s"
-                          : ""}{" "}
-                        selected
+                        {galleryFiles.length > 1 ? "s" : ""} selected
                       </p>
                     )}
 
@@ -1085,22 +940,18 @@ const handleGalleryChange = (event) => {
 
                     {galleryPreviews.length > 0 && (
                       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                        {galleryPreviews.map(
-                          (preview, index) => (
-                            <div
-                              key={preview}
-                              className="overflow-hidden rounded-xl border border-white/10 bg-slate-900"
-                            >
-                              <img
-                                src={preview}
-                                alt={`Gallery preview ${
-                                  index + 1
-                                }`}
-                                className="h-32 w-full object-cover"
-                              />
-                            </div>
-                          )
-                        )}
+                        {galleryPreviews.map((preview, index) => (
+                          <div
+                            key={preview}
+                            className="overflow-hidden rounded-xl border border-white/10 bg-slate-900"
+                          >
+                            <img
+                              src={preview}
+                              alt={`Gallery preview ${index + 1}`}
+                              className="h-32 w-full object-cover"
+                            />
+                          </div>
+                        ))}
                       </div>
                     )}
 
@@ -1175,9 +1026,7 @@ const handleGalleryChange = (event) => {
                   />
 
                   <div>
-                    <p className="font-medium text-white">
-                      Featured Project
-                    </p>
+                    <p className="font-medium text-white">Featured Project</p>
 
                     <p className="text-xs text-slate-500">
                       Show this project prominently.
@@ -1195,9 +1044,7 @@ const handleGalleryChange = (event) => {
                   />
 
                   <div>
-                    <p className="font-medium text-white">
-                      Published
-                    </p>
+                    <p className="font-medium text-white">Published</p>
 
                     <p className="text-xs text-slate-500">
                       Make this project visible publicly.
@@ -1227,9 +1074,7 @@ const handleGalleryChange = (event) => {
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" />
                   )}
 
-                  {editingProject
-                    ? "Update Project"
-                    : "Create Project"}
+                  {editingProject ? "Update Project" : "Create Project"}
                 </button>
               </div>
             </form>

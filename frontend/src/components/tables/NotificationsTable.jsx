@@ -27,16 +27,8 @@ export default function NotificationsTable({
       key: "isRead",
       title: "Status",
       render: (notification) => (
-        <Badge
-          variant={
-            notification.isRead
-              ? "success"
-              : "warning"
-          }
-        >
-          {notification.isRead
-            ? "Read"
-            : "Unread"}
+        <Badge variant={notification.isRead ? "success" : "warning"}>
+          {notification.isRead ? "Read" : "Unread"}
         </Badge>
       ),
     },
@@ -44,9 +36,7 @@ export default function NotificationsTable({
       key: "createdAt",
       title: "Date",
       render: (notification) =>
-        new Date(
-          notification.createdAt
-        ).toLocaleDateString(),
+        new Date(notification.createdAt).toLocaleDateString(),
     },
   ];
 

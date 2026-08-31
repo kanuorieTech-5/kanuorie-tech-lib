@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import {
-  Button,
-  Card,
-  Loader,
-} from "../components/common";
+import { Button, Card, Loader } from "../components/common";
 
 import { getProject } from "../services";
 
@@ -26,10 +22,7 @@ export default function ProjectDetails() {
 
         setProject(res?.data || null);
       } catch (error) {
-        console.error(
-          "Failed to load project:",
-          error
-        );
+        console.error("Failed to load project:", error);
 
         setProject(null);
       } finally {
@@ -59,34 +52,23 @@ export default function ProjectDetails() {
   if (!project) {
     return (
       <section className="mx-auto max-w-4xl px-6 py-20">
-
         <Card className="p-12 text-center">
-
-          <h1 className="mb-4 text-3xl font-bold">
-            Project not found
-          </h1>
+          <h1 className="mb-4 text-3xl font-bold">Project not found</h1>
 
           <p className="mb-8 text-gray-600">
-            The project you are looking for may
-            have been removed or is no longer
-            available.
+            The project you are looking for may have been removed or is no
+            longer available.
           </p>
 
           <Link to="/projects">
-            <Button>
-              Back to Projects
-            </Button>
+            <Button>Back to Projects</Button>
           </Link>
-
         </Card>
-
       </section>
     );
   }
 
-  const technologies = Array.isArray(
-    project.technologies
-  )
+  const technologies = Array.isArray(project.technologies)
     ? project.technologies.filter(Boolean)
     : [];
 
@@ -96,42 +78,29 @@ export default function ProjectDetails() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-
       {/* BACK LINK */}
       <div className="mb-8">
-
         <Link
           to="/projects"
           className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
         >
           ← Back to Projects
         </Link>
-
       </div>
 
       {/* MAIN PROJECT */}
       <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
-
         {/* PROJECT IMAGE */}
         <div>
-
           <img
-            src={
-              project.image ||
-              "/images/project-placeholder.jpg"
-            }
-            alt={
-              project.title ||
-              "Project"
-            }
+            src={project.image || "/images/project-placeholder.jpg"}
+            alt={project.title || "Project"}
             className="w-full rounded-2xl object-cover shadow-xl"
           />
-
         </div>
 
         {/* PROJECT INFORMATION */}
         <div>
-
           {/* CATEGORY */}
           {project.category && (
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-600">
@@ -154,13 +123,9 @@ export default function ProjectDetails() {
           {/* TECHNOLOGIES */}
           {technologies.length > 0 && (
             <Card className="mb-8 p-6">
-
-              <h2 className="mb-4 text-xl font-semibold">
-                Technologies Used
-              </h2>
+              <h2 className="mb-4 text-xl font-semibold">Technologies Used</h2>
 
               <div className="flex flex-wrap gap-3">
-
                 {technologies.map((tech) => (
                   <span
                     key={tech}
@@ -169,26 +134,20 @@ export default function ProjectDetails() {
                     {tech}
                   </span>
                 ))}
-
               </div>
-
             </Card>
           )}
 
           {/* ACTIONS */}
-          {(project.demoUrl ||
-            project.githubUrl) && (
+          {(project.demoUrl || project.githubUrl) && (
             <div className="flex flex-wrap gap-4">
-
               {project.demoUrl && (
                 <a
                   href={project.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button>
-                    Live Demo
-                  </Button>
+                  <Button>Live Demo</Button>
                 </a>
               )}
 
@@ -198,19 +157,13 @@ export default function ProjectDetails() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button variant="secondary">
-                    View on GitHub
-                  </Button>
+                  <Button variant="secondary">View on GitHub</Button>
                 </a>
               )}
-
             </div>
           )}
-
         </div>
-
       </div>
-
     </section>
   );
 }

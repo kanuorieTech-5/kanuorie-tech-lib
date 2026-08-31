@@ -10,10 +10,7 @@ export const getProfile = async () => {
 };
 
 export const updateProfile = async (profileData) => {
-  const { data } = await API.put(
-    "/users/profile",
-    profileData
-  );
+  const { data } = await API.put("/users/profile", profileData);
 
   return data;
 };
@@ -23,18 +20,13 @@ export const updateProfile = async (profileData) => {
 ========================================== */
 
 export const uploadAvatar = async (formData) => {
-  const { data } = await API.put(
-    "/users/avatar",
-    formData
-  );
+  const { data } = await API.put("/users/avatar", formData);
 
   return data;
 };
 
 export const deleteAvatar = async () => {
-  const { data } = await API.delete(
-    "/users/avatar"
-  );
+  const { data } = await API.delete("/users/avatar");
 
   return data;
 };
@@ -44,10 +36,7 @@ export const deleteAvatar = async () => {
 ========================================== */
 
 export const changePassword = async (passwordData) => {
-  const { data } = await API.put(
-    "/users/change-password",
-    passwordData
-  );
+  const { data } = await API.put("/users/change-password", passwordData);
 
   return data;
 };
@@ -57,9 +46,7 @@ export const changePassword = async (passwordData) => {
 ========================================== */
 
 export const deleteAccount = async () => {
-  const { data } = await API.delete(
-    "/users/profile"
-  );
+  const { data } = await API.delete("/users/profile");
 
   return data;
 };
@@ -69,18 +56,13 @@ export const deleteAccount = async () => {
 ========================================== */
 
 export const getSettings = async () => {
-  const { data } = await API.get(
-    "/users/settings"
-  );
+  const { data } = await API.get("/users/settings");
 
   return data;
 };
 
 export const updateSettings = async (settings) => {
-  const { data } = await API.put(
-    "/users/settings",
-    settings
-  );
+  const { data } = await API.put("/users/settings", settings);
 
   return data;
 };

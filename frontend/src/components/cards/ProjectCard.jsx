@@ -13,20 +13,12 @@ export default function ProjectCard({ project }) {
       <div className="space-y-4 p-6">
         <Badge>{project.technology}</Badge>
 
-        <h3 className="text-xl font-semibold">
-          {project.name}
-        </h3>
+        <h3 className="text-xl font-semibold">{project.name}</h3>
 
-        <p className="line-clamp-3 text-gray-500">
-          {project.description}
-        </p>
+        <p className="line-clamp-3 text-gray-500">{project.description}</p>
 
         <div className="flex justify-between">
-          <Button
-            as={Link}
-            to={`/projects/${project._id}`}
-            size="sm"
-          >
+          <Button as={Link} to={`/projects/${project._id}`} size="sm">
             Details
           </Button>
 

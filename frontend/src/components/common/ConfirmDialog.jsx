@@ -20,10 +20,7 @@ export default function ConfirmDialog({
       size="sm"
       footer={
         <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={onCancel}
-          >
+          <Button variant="outline" onClick={onCancel}>
             {cancelText}
           </Button>
 
@@ -37,9 +34,7 @@ export default function ConfirmDialog({
         </div>
       }
     >
-      <p className="leading-7 text-gray-600">
-        {message}
-      </p>
+      <p className="leading-7 text-gray-600">{message}</p>
     </Modal>
   );
 }

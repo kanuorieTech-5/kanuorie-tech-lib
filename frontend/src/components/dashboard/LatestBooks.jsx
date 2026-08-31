@@ -13,12 +13,8 @@ export default function LatestBooks({ books = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
-              Latest Books
-            </h2>
-            <p className="text-sm text-slate-500">
-              Recently added books
-            </p>
+            <h2 className="text-lg font-bold text-slate-900">Latest Books</h2>
+            <p className="text-sm text-slate-500">Recently added books</p>
           </div>
         </div>
 
@@ -35,9 +31,7 @@ export default function LatestBooks({ books = [] }) {
         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
           <BookOpen className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700">
-            No books yet
-          </p>
+          <p className="font-medium text-slate-700">No books yet</p>
 
           <p className="mt-1 text-sm text-slate-500">
             Recently added books will appear here.
@@ -48,10 +42,7 @@ export default function LatestBooks({ books = [] }) {
           {latestBooks.map((book, index) => {
             const id = book._id || book.id || index;
 
-            const title =
-              book.title ||
-              book.name ||
-              "Untitled Book";
+            const title = book.title || book.name || "Untitled Book";
 
             const author =
               book.author?.name ||
@@ -67,10 +58,7 @@ export default function LatestBooks({ books = [] }) {
               null;
 
             return (
-              <div
-                key={id}
-                className="flex items-center gap-4 py-4"
-              >
+              <div key={id} className="flex items-center gap-4 py-4">
                 {cover ? (
                   <img
                     src={cover}
@@ -88,9 +76,7 @@ export default function LatestBooks({ books = [] }) {
                     {title}
                   </p>
 
-                  <p className="truncate text-sm text-slate-500">
-                    {author}
-                  </p>
+                  <p className="truncate text-sm text-slate-500">{author}</p>
                 </div>
 
                 <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">

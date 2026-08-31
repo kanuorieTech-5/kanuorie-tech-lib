@@ -18,14 +18,8 @@ export default function CustomLineChart({
   xKey,
 }) {
   return (
-    <ChartCard
-      title={title}
-      subtitle={subtitle}
-    >
-      <ResponsiveContainer
-        width="100%"
-        height={320}
-      >
+    <ChartCard title={title} subtitle={subtitle}>
+      <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
 
@@ -35,11 +29,7 @@ export default function CustomLineChart({
 
           <Tooltip />
 
-          <Line
-            type="monotone"
-            dataKey={dataKey}
-            strokeWidth={3}
-          />
+          <Line type="monotone" dataKey={dataKey} strokeWidth={3} />
         </LineChart>
       </ResponsiveContainer>
     </ChartCard>

@@ -1,24 +1,14 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  Select,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, Select, TextArea } from "../ui";
 
-export default function ServiceInquiryForm({
-  onSubmit,
-  loading = false,
-}) {
-  const [form, setForm] =
-    useState({
-      name: "",
-      email: "",
-      service: "",
-      budget: "",
-      message: "",
-    });
+export default function ServiceInquiryForm({ onSubmit, loading = false }) {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    service: "",
+    budget: "",
+    message: "",
+  });
 
   const change = ({ target }) =>
     setForm((prev) => ({
@@ -59,23 +49,19 @@ export default function ServiceInquiryForm({
           onChange={change}
           options={[
             {
-              label:
-                "Web Development",
+              label: "Web Development",
               value: "web",
             },
             {
-              label:
-                "Mobile App",
+              label: "Mobile App",
               value: "mobile",
             },
             {
-              label:
-                "UI/UX Design",
+              label: "UI/UX Design",
               value: "uiux",
             },
             {
-              label:
-                "Consulting",
+              label: "Consulting",
               value: "consulting",
             },
           ]}
@@ -96,10 +82,7 @@ export default function ServiceInquiryForm({
           onChange={change}
         />
 
-        <Button
-          loading={loading}
-          type="submit"
-        >
+        <Button loading={loading} type="submit">
           Submit Inquiry
         </Button>
       </form>

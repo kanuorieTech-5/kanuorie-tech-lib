@@ -9,12 +9,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  SectionTitle,
-} from "../common";
-
+import { Card, Button, SectionTitle } from "../common";
 
 const highlights = [
   "Custom Software Development",
@@ -22,7 +17,6 @@ const highlights = [
   "Professional IT Consulting",
   "Modern Web & Mobile Applications",
 ];
-
 
 const stats = [
   {
@@ -43,7 +37,6 @@ const stats = [
 ];
 
 export default function AboutPreview() {
-
   return (
     <section className="bg-gray-900 text-gray-900 dark:text-white py-10">
       <div className="px-6">
@@ -60,15 +53,16 @@ export default function AboutPreview() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="
+            <div
+              className="
               rounded-3xl
               border
               border-white/10
               bg-white/5
               p-3
               backdrop-blur-xl
-            ">
-
+            "
+            >
               <img
                 src={logo}
                 alt="KanuorieTech"
@@ -77,7 +71,6 @@ export default function AboutPreview() {
                   shadow-2xl
                 "
               />
-
             </div>
             <Card
               className="
@@ -92,15 +85,9 @@ export default function AboutPreview() {
                 lg:block
               "
             >
+              <p className="text-4xl font-bold text-cyan-400">98%</p>
 
-              <p className="text-4xl font-bold text-cyan-400">
-                98%
-              </p>
-
-              <p className="mt-2 text-slate-300">
-                Client Satisfaction
-              </p>
-
+              <p className="mt-2 text-slate-300">Client Satisfaction</p>
             </Card>
           </motion.div>
           {/* Content */}
@@ -109,7 +96,8 @@ export default function AboutPreview() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <span className="
+            <span
+              className="
               rounded-full
               border
               border-cyan-400/20
@@ -119,34 +107,35 @@ export default function AboutPreview() {
               text-sm
               font-semibold
               text-cyan-300
-            ">
+            "
+            >
               Innovation • Quality • Growth
             </span>
-            <h3 className="
+            <h3
+              className="
               mt-6
               text-4xl
               font-bold
               text-white
-            ">
+            "
+            >
               Building Solutions That Matter
             </h3>
-            <p className="
+            <p
+              className="
               mt-6
               leading-8
               text-slate-400
-            ">
-              KanuorieTech is a technology company focused on
-              developing scalable software, digital products,
-              and practical learning experiences. We combine
-              technology and creativity to help businesses and
-              individuals succeed in the digital economy.
+            "
+            >
+              KanuorieTech is a technology company focused on developing
+              scalable software, digital products, and practical learning
+              experiences. We combine technology and creativity to help
+              businesses and individuals succeed in the digital economy.
             </p>
             <div className="mt-8 space-y-4">
               {highlights.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3"
-                >
+                <div key={item} className="flex items-center gap-3">
                   <CheckCircle2
                     className="
                       h-5
@@ -154,21 +143,21 @@ export default function AboutPreview() {
                       text-cyan-400
                     "
                   />
-                  <span className="text-slate-300">
-                    {item}
-                  </span>
+                  <span className="text-slate-300">{item}</span>
                 </div>
               ))}
             </div>
 
             {/* Stats */}
 
-            <div className="
+            <div
+              className="
               mt-10
               grid
               grid-cols-3
               gap-4
-            ">
+            "
+            >
               {stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
@@ -190,17 +179,17 @@ export default function AboutPreview() {
                         text-cyan-400
                       "
                     />
-                    <h4 className="
+                    <h4
+                      className="
                       mt-3
                       text-2xl
                       font-bold
                       text-white
-                    ">
+                    "
+                    >
                       {stat.value}
                     </h4>
-                    <p className="text-sm text-slate-400">
-                      {stat.label}
-                    </p>
+                    <p className="text-sm text-slate-400">{stat.label}</p>
                   </Card>
                 );
               })}

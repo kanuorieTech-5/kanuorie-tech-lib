@@ -85,13 +85,9 @@ export default function AdminSidebar() {
         {/* Brand */}
         <div className="flex h-16 items-center border-b border-white/10 px-6">
           <div>
-            <h2 className="text-lg font-bold">
-              KanuorieTech
-            </h2>
+            <h2 className="text-lg font-bold">KanuorieTech</h2>
 
-            <p className="text-xs text-slate-400">
-              Admin Panel
-            </p>
+            <p className="text-xs text-slate-400">Admin Panel</p>
           </div>
         </div>
 

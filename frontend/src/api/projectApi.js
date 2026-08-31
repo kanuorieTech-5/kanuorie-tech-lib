@@ -35,10 +35,7 @@ export const getProject = async (id) => {
  * Admin only
  */
 export const createProject = async (projectData) => {
-  const { data } = await API.post(
-    "/projects",
-    projectData
-  );
+  const { data } = await API.post("/projects", projectData);
 
   return data;
 };
@@ -47,14 +44,8 @@ export const createProject = async (projectData) => {
  * Update a project
  * Admin only
  */
-export const updateProject = async (
-  id,
-  projectData
-) => {
-  const { data } = await API.put(
-    `/projects/${id}`,
-    projectData
-  );
+export const updateProject = async (id, projectData) => {
+  const { data } = await API.put(`/projects/${id}`, projectData);
 
   return data;
 };
@@ -64,9 +55,7 @@ export const updateProject = async (
  * Admin only
  */
 export const deleteProject = async (id) => {
-  const { data } = await API.delete(
-    `/projects/${id}`
-  );
+  const { data } = await API.delete(`/projects/${id}`);
 
   return data;
 };

@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Input } from "../ui";
 
-export default function RegisterForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function RegisterForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -28,18 +25,11 @@ export default function RegisterForm({
 
   return (
     <Card className="mx-auto max-w-lg p-8">
-      <h2 className="mb-2 text-3xl font-bold">
-        Create Account
-      </h2>
+      <h2 className="mb-2 text-3xl font-bold">Create Account</h2>
 
-      <p className="mb-8 text-gray-500">
-        Join KanuorieTech Hub today.
-      </p>
+      <p className="mb-8 text-gray-500">Join KanuorieTech Hub today.</p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="space-y-5">
         <Input
           label="First Name"
           name="firstName"
@@ -83,20 +73,13 @@ export default function RegisterForm({
           required
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-          fullWidth
-        >
+        <Button type="submit" loading={loading} fullWidth>
           Register
         </Button>
 
         <p className="text-center text-sm">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-blue-600"
-          >
+          <Link to="/login" className="font-medium text-blue-600">
             Login
           </Link>
         </p>

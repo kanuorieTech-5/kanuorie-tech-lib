@@ -1,16 +1,7 @@
-export default function Pagination({
-  page,
-  totalPages,
-  onChange,
-}) {
+export default function Pagination({ page, totalPages, onChange }) {
   return (
     <div className="flex items-center justify-center gap-3">
-      <button
-        disabled={page === 1}
-        onClick={() =>
-          onChange(page - 1)
-        }
-      >
+      <button disabled={page === 1} onClick={() => onChange(page - 1)}>
         Previous
       </button>
 
@@ -18,12 +9,7 @@ export default function Pagination({
         {page} / {totalPages}
       </span>
 
-      <button
-        disabled={page === totalPages}
-        onClick={() =>
-          onChange(page + 1)
-        }
-      >
+      <button disabled={page === totalPages} onClick={() => onChange(page + 1)}>
         Next
       </button>
     </div>

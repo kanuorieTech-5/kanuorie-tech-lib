@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { useNotification } from "../../contexts";
 
 export default function NotificationBell() {
-  const { unreadCount } =
-  useNotification();
+  const { unreadCount } = useNotification();
 
   return (
     <Link

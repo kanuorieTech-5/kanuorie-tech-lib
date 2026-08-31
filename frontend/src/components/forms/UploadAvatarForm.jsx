@@ -1,13 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-} from "../ui";
+import { Button, Card } from "../ui";
 
-export default function UploadAvatarForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function UploadAvatarForm({ onSubmit, loading = false }) {
   const [file, setFile] = useState(null);
 
   const submit = (e) => {
@@ -23,22 +17,14 @@ export default function UploadAvatarForm({
 
   return (
     <Card className="max-w-md p-8">
-      <form
-        onSubmit={submit}
-        className="space-y-5"
-      >
+      <form onSubmit={submit} className="space-y-5">
         <input
           type="file"
           accept="image/*"
-          onChange={(e) =>
-            setFile(e.target.files[0])
-          }
+          onChange={(e) => setFile(e.target.files[0])}
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-        >
+        <Button type="submit" loading={loading}>
           Upload Avatar
         </Button>
       </form>

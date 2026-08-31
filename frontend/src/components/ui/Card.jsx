@@ -28,7 +28,7 @@ export default function Card({
           "bg-white/70 dark:bg-slate-900/70 backdrop-blur-md": glass,
           "cursor-pointer": onClick,
         },
-        className
+        className,
       )}
     >
       {children}
@@ -38,26 +38,16 @@ export default function Card({
 
 /* ---------- Sub Components ---------- */
 
-export function CardHeader({
-  children,
-  className = "",
-}) {
-  return (
-    <div className={clsx("mb-4", className)}>
-      {children}
-    </div>
-  );
+export function CardHeader({ children, className = "" }) {
+  return <div className={clsx("mb-4", className)}>{children}</div>;
 }
 
-export function CardTitle({
-  children,
-  className = "",
-}) {
+export function CardTitle({ children, className = "" }) {
   return (
     <h3
       className={clsx(
         "text-xl font-bold text-slate-900 dark:text-white",
-        className
+        className,
       )}
     >
       {children}
@@ -65,15 +55,12 @@ export function CardTitle({
   );
 }
 
-export function CardDescription({
-  children,
-  className = "",
-}) {
+export function CardDescription({ children, className = "" }) {
   return (
     <p
       className={clsx(
         "mt-2 text-sm text-gray-600 dark:text-gray-400",
-        className
+        className,
       )}
     >
       {children}
@@ -81,28 +68,13 @@ export function CardDescription({
   );
 }
 
-export function CardContent({
-  children,
-  className = "",
-}) {
-  return (
-    <div className={className}>
-      {children}
-    </div>
-  );
+export function CardContent({ children, className = "" }) {
+  return <div className={className}>{children}</div>;
 }
 
-export function CardFooter({
-  children,
-  className = "",
-}) {
+export function CardFooter({ children, className = "" }) {
   return (
-    <div
-      className={clsx(
-        "mt-6 flex items-center justify-between",
-        className
-      )}
-    >
+    <div className={clsx("mt-6 flex items-center justify-between", className)}>
       {children}
     </div>
   );

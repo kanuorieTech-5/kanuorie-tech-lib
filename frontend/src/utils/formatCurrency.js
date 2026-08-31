@@ -1,16 +1,10 @@
-export const formatCurrency = (
-  amount,
-  currency = "USD"
-) => {
+export const formatCurrency = (amount, currency = "USD") => {
   if (amount === null || amount === undefined) {
     return "";
   }
 
-  return new Intl.NumberFormat(
-    "en-US",
-    {
-      style: "currency",
-      currency,
-    }
-  ).format(amount);
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount);
 };

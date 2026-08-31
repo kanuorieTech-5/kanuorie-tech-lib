@@ -11,14 +11,12 @@ export default function Label({
       htmlFor={htmlFor}
       className={clsx(
         "mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200",
-        className
+        className,
       )}
     >
       {children}
 
-      {required && (
-        <span className="ml-1 text-red-500">*</span>
-      )}
+      {required && <span className="ml-1 text-red-500">*</span>}
     </label>
   );
 }

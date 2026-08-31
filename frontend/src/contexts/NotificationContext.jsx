@@ -20,8 +20,7 @@ import { useSocket } from "./SocketContext";
 
 const NotificationContext = createContext(null);
 
-export const useNotification = () =>
-  useContext(NotificationContext);
+export const useNotification = () => useContext(NotificationContext);
 
 export function NotificationProvider({ children }) {
   const { isAuthenticated } = useAuth();
@@ -45,11 +44,7 @@ export function NotificationProvider({ children }) {
 
       const response = await getNotifications();
 
-      const data =
-        response?.notifications ||
-        response?.data ||
-        response ||
-        [];
+      const data = response?.notifications || response?.data || response || [];
 
       setNotifications(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -67,10 +62,7 @@ export function NotificationProvider({ children }) {
     if (!socket) return;
 
     const handleNotification = (notification) => {
-      setNotifications((prev) => [
-        notification,
-        ...prev,
-      ]);
+      setNotifications((prev) => [notification, ...prev]);
     };
 
     socket.on("notification", handleNotification);
@@ -98,14 +90,13 @@ export function NotificationProvider({ children }) {
 
       setNotifications((prev) =>
         prev.map((notification) =>
-          notification._id === id ||
-          notification.id === id
+          notification._id === id || notification.id === id
             ? {
                 ...notification,
                 isRead: true,
               }
-            : notification
-        )
+            : notification,
+        ),
       );
     } catch (error) {
       console.error(error);
@@ -124,7 +115,7 @@ export function NotificationProvider({ children }) {
         prev.map((notification) => ({
           ...notification,
           isRead: true,
-        }))
+        })),
       );
     } catch (error) {
       console.error(error);
@@ -141,10 +132,8 @@ export function NotificationProvider({ children }) {
 
       setNotifications((prev) =>
         prev.filter(
-          (notification) =>
-            notification._id !== id &&
-            notification.id !== id
-        )
+          (notification) => notification._id !== id && notification.id !== id,
+        ),
       );
     } catch (error) {
       console.error(error);
@@ -170,11 +159,8 @@ export function NotificationProvider({ children }) {
   ========================================== */
 
   const unreadCount = useMemo(
-    () =>
-      notifications.filter(
-        (notification) => !notification.isRead
-      ).length,
-    [notifications]
+    () => notifications.filter((notification) => !notification.isRead).length,
+    [notifications],
   );
 
   const value = useMemo(
@@ -192,12 +178,7 @@ export function NotificationProvider({ children }) {
 
       clearNotifications: clearAllNotifications,
     }),
-    [
-      notifications,
-      unreadCount,
-      loading,
-      fetchNotifications,
-    ]
+    [notifications, unreadCount, loading, fetchNotifications],
   );
 
   return (

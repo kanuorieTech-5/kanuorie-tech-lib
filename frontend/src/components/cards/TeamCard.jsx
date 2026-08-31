@@ -1,9 +1,5 @@
 import { Card, Avatar } from "../ui";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaTwitter,
-} from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 export default function TeamCard({ member }) {
   return (
@@ -15,45 +11,27 @@ export default function TeamCard({ member }) {
         className="mx-auto"
       />
 
-      <h3 className="mt-5 text-xl font-semibold">
-        {member.name}
-      </h3>
+      <h3 className="mt-5 text-xl font-semibold">{member.name}</h3>
 
-      <p className="text-primary">
-        {member.role}
-      </p>
+      <p className="text-primary">{member.role}</p>
 
-      <p className="mt-4 line-clamp-3 text-gray-500">
-        {member.bio}
-      </p>
+      <p className="mt-4 line-clamp-3 text-gray-500">{member.bio}</p>
 
       <div className="mt-6 flex justify-center gap-4">
         {member.linkedin && (
-          <a
-            href={member.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
             <FaLinkedin />
           </a>
         )}
 
         {member.github && (
-          <a
-            href={member.github}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={member.github} target="_blank" rel="noopener noreferrer">
             <FaGithub />
           </a>
         )}
 
         {member.twitter && (
-          <a
-            href={member.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={member.twitter} target="_blank" rel="noopener noreferrer">
             <FaTwitter />
           </a>
         )}

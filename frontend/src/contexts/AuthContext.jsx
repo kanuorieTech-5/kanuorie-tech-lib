@@ -16,9 +16,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used inside AuthProvider"
-    );
+    throw new Error("useAuth must be used inside AuthProvider");
   }
 
   return context;
@@ -34,12 +32,9 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(() => {
     try {
-      const storedUser =
-        localStorage.getItem(USER_KEY);
+      const storedUser = localStorage.getItem(USER_KEY);
 
-      return storedUser
-        ? JSON.parse(storedUser)
-        : null;
+      return storedUser ? JSON.parse(storedUser) : null;
     } catch {
       return null;
     }
@@ -49,36 +44,28 @@ export function AuthProvider({ children }) {
      LOADING STATE
   ========================================== */
 
-  const [loadingAuth, setLoadingAuth] =
-    useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
   /* ==========================================
      LOGOUT
   ========================================== */
 
-  const logout = useCallback(
-    async (callAPI = true) => {
-      try {
-        if (callAPI) {
-          await authApi.logoutUser();
-        }
-      } catch (error) {
-        console.warn(
-          "Logout API request failed:",
-          error
-        );
-      } finally {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-
-        setUser(null);
+  const logout = useCallback(async (callAPI = true) => {
+    try {
+      if (callAPI) {
+        await authApi.logoutUser();
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.warn("Logout API request failed:", error);
+    } finally {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+
+      setUser(null);
+    }
+  }, []);
 
   /* ==========================================
      LOAD CURRENT USER
@@ -86,42 +73,28 @@ export function AuthProvider({ children }) {
 
   const loadUser = useCallback(async () => {
     try {
-      const token =
-        localStorage.getItem(TOKEN_KEY);
+      const token = localStorage.getItem(TOKEN_KEY);
 
       if (!token) {
         setUser(null);
         return null;
       }
 
-      const res =
-        await authApi.getCurrentUser();
+      const res = await authApi.getCurrentUser();
 
-      const currentUser =
-        res?.data?.user ||
-        res?.data ||
-        res?.user ||
-        res;
+      const currentUser = res?.data?.user || res?.data || res?.user || res;
 
       if (!currentUser) {
-        throw new Error(
-          "Unable to determine current user."
-        );
+        throw new Error("Unable to determine current user.");
       }
 
       setUser(currentUser);
 
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(currentUser)
-      );
+      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
 
       return currentUser;
     } catch (error) {
-      console.error(
-        "Failed to restore authentication:",
-        error
-      );
+      console.error("Failed to restore authentication:", error);
 
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
@@ -152,30 +125,17 @@ export function AuthProvider({ children }) {
     try {
       const res = await authApi.loginUser(credentials);
 
-      const token =
-        res?.token ||
-        res?.data?.token;
+      const token = res?.token || res?.data?.token;
 
-      const currentUser =
-        res?.user ||
-        res?.data?.user ||
-        null;
+      const currentUser = res?.user || res?.data?.user || null;
 
       if (!token || !currentUser) {
-        throw new Error(
-          "Invalid authentication response."
-        );
+        throw new Error("Invalid authentication response.");
       }
 
-      localStorage.setItem(
-        TOKEN_KEY,
-        token
-      );
+      localStorage.setItem(TOKEN_KEY, token);
 
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(currentUser)
-      );
+      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
 
       setUser(currentUser);
 
@@ -189,63 +149,47 @@ export function AuthProvider({ children }) {
     REGISTER
 ====================================== */
 
-const register = useCallback(async (payload) => {
-  setLoading(true);
+  const register = useCallback(async (payload) => {
+    setLoading(true);
 
-  try {
-    const res = await authApi.registerUser(payload);
+    try {
+      const res = await authApi.registerUser(payload);
 
-    return res;
-  } finally {
-    setLoading(false);
-  }
-}, []);
+      return res;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   /* ==========================================
      UPDATE PROFILE
   ========================================== */
 
-  const updateProfile = useCallback(
-    async (payload) => {
-      const res =
-        await userApi.updateProfile(payload);
+  const updateProfile = useCallback(async (payload) => {
+    const res = await userApi.updateProfile(payload);
 
-      const updatedUser =
-        res?.data || res?.user || res;
+    const updatedUser = res?.data || res?.user || res;
 
-      if (!updatedUser) {
-        throw new Error(
-          "Profile update returned no user data."
-        );
-      }
+    if (!updatedUser) {
+      throw new Error("Profile update returned no user data.");
+    }
 
-      setUser(updatedUser);
+    setUser(updatedUser);
 
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(updatedUser)
-      );
+    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
 
-      return updatedUser;
-    },
-    []
-  );
+    return updatedUser;
+  }, []);
   /* ==========================================
      AVATAR
   ========================================== */
-const uploadAvatar = useCallback(
-  async (formData) => {
-    const res =
-      await userApi.uploadAvatar(formData);
+  const uploadAvatar = useCallback(async (formData) => {
+    const res = await userApi.uploadAvatar(formData);
 
-    const avatar =
-      res?.data?.avatar ||
-      res?.avatar;
+    const avatar = res?.data?.avatar || res?.avatar;
 
     if (!avatar) {
-      throw new Error(
-        "Avatar URL was not returned by the server."
-      );
+      throw new Error("Avatar URL was not returned by the server.");
     }
 
     setUser((currentUser) => {
@@ -256,18 +200,13 @@ const uploadAvatar = useCallback(
         avatar,
       };
 
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(updatedUser)
-      );
+      localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
 
       return updatedUser;
     });
 
     return res;
-  },
-  []
-);
+  }, []);
 
   /* ==========================================
      AUTH HELPERS
@@ -315,12 +254,8 @@ const uploadAvatar = useCallback(
       loadUser,
       updateProfile,
       uploadAvatar,
-    ]
+    ],
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -23,7 +23,7 @@ export default function useApi(apiFunction) {
         setLoading(false);
       }
     },
-    [apiFunction]
+    [apiFunction],
   );
 
   return {

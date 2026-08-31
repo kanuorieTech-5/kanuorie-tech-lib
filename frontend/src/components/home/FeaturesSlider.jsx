@@ -35,43 +35,25 @@ const featuresData = [
 ];
 
 export default function FeaturesSlider() {
-
-  const [currentIndex,setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-
-    setCurrentIndex((prev)=>
-      prev >= featuresData.length - 3
-      ? 0
-      : prev + 1
-    );
-
+    setCurrentIndex((prev) => (prev >= featuresData.length - 3 ? 0 : prev + 1));
   };
 
   const prevSlide = () => {
-
-    setCurrentIndex((prev)=>
-      prev === 0
-      ? featuresData.length - 3
-      : prev - 1
+    setCurrentIndex((prev) =>
+      prev === 0 ? featuresData.length - 3 : prev - 1,
     );
-
   };
 
-  useEffect(()=>{
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 5000);
 
-    const interval = setInterval(
-      nextSlide,
-      5000
-    );
-
-    return () =>
-      clearInterval(interval);
-
-  },[]);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-
     <section className="bg-slate-900 py-24 overflow-hidden">
       <div className="px-6">
         <div className="text-center">
@@ -90,16 +72,17 @@ export default function FeaturesSlider() {
           <motion.div
             className="flex"
             animate={{
-              x:`-${currentIndex * 33.333}%`
+              x: `-${currentIndex * 33.333}%`,
             }}
             transition={{
-              duration:0.7
+              duration: 0.7,
             }}
           >
-            {featuresData.map((item)=>(
+            {featuresData.map((item) => (
               <div
                 key={item.title}
-                className="w-full flex-shrink-0 px-3 md:w-1/2 lg:w-1/3">
+                className="w-full flex-shrink-0 px-3 md:w-1/2 lg:w-1/3"
+              >
                 <div className=" overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl">
                   <img
                     src={item.img}
@@ -110,9 +93,7 @@ export default function FeaturesSlider() {
                     <h3 className="text-xl font-bold text-white">
                       {item.title}
                     </h3>
-                    <p className="mt-3 leading-7 text-slate-400">
-                      {item.desc}
-                    </p>
+                    <p className="mt-3 leading-7 text-slate-400">{item.desc}</p>
                   </div>
                 </div>
               </div>

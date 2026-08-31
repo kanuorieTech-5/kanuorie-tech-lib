@@ -20,7 +20,7 @@ export default function Avatar({
         className={clsx(
           "flex items-center justify-center rounded-full bg-blue-600 font-semibold text-white",
           sizes[size],
-          className
+          className,
         )}
       >
         {name
@@ -39,11 +39,7 @@ export default function Avatar({
     <img
       src={src}
       alt={alt}
-      className={clsx(
-        "rounded-full object-cover",
-        sizes[size],
-        className
-      )}
+      className={clsx("rounded-full object-cover", sizes[size], className)}
     />
   );
 }

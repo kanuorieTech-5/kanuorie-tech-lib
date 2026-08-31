@@ -22,52 +22,42 @@ const images = [
     src: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=60",
     caption: "Innovative products designed for the digital age",
   },
-  { src: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=60",
-    caption: "Empowering learners through practical technology education" 
+  {
+    src: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=60",
+    caption: "Empowering learners through practical technology education",
   },
   {
     src: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=800&q=60",
-    caption: "Building digital solutions through collaboration"
+    caption: "Building digital solutions through collaboration",
   },
   {
     src: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=60",
-    caption: "Innovative products designed for the digital age"
+    caption: "Innovative products designed for the digital age",
   },
   {
     src: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=60",
-    caption: "Accessing knowledge through digital resources"
+    caption: "Accessing knowledge through digital resources",
   },
   {
     src: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60",
-    caption: "Coding and problem solving"
+    caption: "Coding and problem solving",
   },
 ];
 export default function ImageSlider() {
-  const [currentIndex,setCurrentIndex] = useState(0);
-  const [paused,setPaused] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const touchStartX = useRef(null);
   const nextSlide = () => {
-    setCurrentIndex(
-      (prev)=>
-        (prev + 1) % images.length
-    );
+    setCurrentIndex((prev) => (prev + 1) % images.length);
   };
   const prevSlide = () => {
-    setCurrentIndex(
-      (prev)=>
-        prev === 0
-        ? images.length - 1
-        : prev - 1
-    );
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
-  useEffect(()=>{
-    if(paused) return;
-    const timer=setInterval(
-      nextSlide,
-      5000
-    );
-    return ()=>clearInterval(timer);
-  },[paused]);
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, [paused]);
   return (
     <section className="py-24 bg-slate-900 dark:bg-slate-900 ">
       <div className="px-6">
@@ -82,24 +72,22 @@ export default function ImageSlider() {
             A glimpse into our technology, learning and innovation ecosystem.
           </p>
         </div>
-        <div className="relative overflow-hidden rounded-3xl shadow-2xl"
-          onMouseEnter={() =>
-            setPaused(true)
-          }
-          onMouseLeave={() =>
-            setPaused(false)
-          }
+        <div
+          className="relative overflow-hidden rounded-3xl shadow-2xl"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
         >
-          <motion.div className="flex"
+          <motion.div
+            className="flex"
             animate={{
-              x:`-${currentIndex * 100}%`
+              x: `-${currentIndex * 100}%`,
             }}
 
             transition={{
-              duration:0.7
+              duration: 0.7,
             }}
           >
-            {images.map((item)=>(
+            {images.map((item) => (
               <div
                 key={item.caption}
                 className="relative w-full flex-shrink-0 h-[220px] sm:h-[500px] md:h-[600px] flex-shrink-0"
@@ -110,8 +98,7 @@ export default function ImageSlider() {
                   loading="lazy"
                   className="h-[220px] w-full object-cover sm:h-[450px]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
-                  />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className=" absolute bottom-8 left-8 right-8">
                   <h3 className="max-w-3xl text-2xl font-bold text-white md:text-4xl">
                     {item.caption}

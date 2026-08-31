@@ -4,10 +4,7 @@ import AppRoutes from "./routes/AppRoutes";
 function App() {
   return (
     <>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-      />
+      <Toaster position="top-right" reverseOrder={false} />
 
       <AppRoutes />
     </>

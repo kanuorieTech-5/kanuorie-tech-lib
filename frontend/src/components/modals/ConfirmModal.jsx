@@ -9,30 +9,16 @@ export default function ConfirmModal({
   message,
 }) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <p>{message}</p>
 
       <div className="mt-6 flex justify-end gap-3">
-
-        <Button
-          variant="outline"
-          onClick={onClose}
-        >
+        <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
 
-        <Button
-          onClick={onConfirm}
-        >
-          Confirm
-        </Button>
-
+        <Button onClick={onConfirm}>Confirm</Button>
       </div>
-
     </Modal>
   );
 }

@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import {
-  Loader,
-  Card,
-  Button,
-  SectionTitle,
-} from "../common";
+import { Loader, Card, Button, SectionTitle } from "../common";
 
 import { getBlogs } from "../../services";
 
@@ -38,21 +33,18 @@ export default function BlogPreview() {
         const data = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
-          ? response.data
-          : Array.isArray(response?.data?.blogs)
-          ? response.data.blogs
-          : Array.isArray(response?.blogs)
-          ? response.blogs
-          : [];
+            ? response.data
+            : Array.isArray(response?.data?.blogs)
+              ? response.data.blogs
+              : Array.isArray(response?.blogs)
+                ? response.blogs
+                : [];
 
         if (mounted) {
           setBlogs(data);
         }
       } catch (error) {
-        console.error(
-          "Failed to load blogs:",
-          error
-        );
+        console.error("Failed to load blogs:", error);
 
         if (mounted) {
           setBlogs([]);
@@ -82,7 +74,6 @@ export default function BlogPreview() {
   return (
     <section className="bg-slate-900 dark:bg-slate-900 text-gray-900 dark:text-white py-24">
       <div className="px-6">
-
         <SectionTitle
           Badge="Knowledge Hub"
           title="Latest Technology Insights"
@@ -90,22 +81,14 @@ export default function BlogPreview() {
         />
 
         {blogs.length === 0 ? (
-          <p
-            className="mt-12 text-center text-slate-400"
-          >
+          <p className="mt-12 text-center text-slate-400">
             Articles coming soon.
           </p>
         ) : (
-          <div className="mt-16 grid gap-8 lg:grid-cols-3"
-          >
+          <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {blogs.slice(0, 3).map((blog, index) => (
               <motion.div
-                key={
-                  blog._id ||
-                  blog.id ||
-                  blog.slug ||
-                  `blog-${index}`
-                }
+                key={blog._id || blog.id || blog.slug || `blog-${index}`}
                 initial={{
                   opacity: 0,
                   y: 30,
@@ -121,45 +104,30 @@ export default function BlogPreview() {
                   once: true,
                 }}
               >
-                <Card
-                  className="overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl"
-                >
+                <Card className="overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl">
                   <img
                     src={
                       blog.image ||
                       blog.coverImage ||
                       "/images/blog-placeholder.png"
                     }
-                    alt={
-                      blog.title ||
-                      "KanuorieTech article"
-                    }
+                    alt={blog.title || "KanuorieTech article"}
                     className="mb-5 h-56 w-full rounded-2xl object-cover"
                   />
 
-                  <h3
-                    className="mb-4 text-xl font-bold text-white"
-                  >
+                  <h3 className="mb-4 text-xl font-bold text-white">
                     {blog.title}
                   </h3>
 
-                  <p
-                    className="mb-6 leading-7 text-slate-400"
-                  >
+                  <p className="mb-6 leading-7 text-slate-400">
                     {blog.excerpt
                       ? blog.excerpt.slice(0, 120)
                       : "Read the latest insights from KanuorieTech."}
                     ...
                   </p>
 
-                  <Link
-                    to={`/blog/${
-                      blog.slug || blog._id || blog.id
-                    }`}
-                  >
-                    <Button>
-                      Read More
-                    </Button>
+                  <Link to={`/blog/${blog.slug || blog._id || blog.id}`}>
+                    <Button>Read More</Button>
                   </Link>
                 </Card>
               </motion.div>

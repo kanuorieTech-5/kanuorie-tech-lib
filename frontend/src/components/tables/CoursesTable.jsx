@@ -39,10 +39,7 @@ export default function CoursesTable({
       title: "Actions",
       render: (course) => (
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() => onEdit(course)}
-          >
+          <Button size="sm" onClick={() => onEdit(course)}>
             Edit
           </Button>
 

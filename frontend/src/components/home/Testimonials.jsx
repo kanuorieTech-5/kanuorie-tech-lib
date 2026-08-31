@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 
-import {
-  Loader,
-  Card,
-  SectionTitle,
-} from "../common";
+import { Loader, Card, SectionTitle } from "../common";
 
 import { getTestimonials } from "../../services";
 
@@ -14,22 +10,19 @@ const FALLBACK_TESTIMONIALS = [
   {
     _id: "fallback-1",
     name: "Startup Founder",
-    message:
-      "Professional execution and outstanding communication.",
+    message: "Professional execution and outstanding communication.",
     position: "Startup Founder",
   },
   {
     _id: "fallback-2",
     name: "Product Designer",
-    message:
-      "Modern experience and strong delivery.",
+    message: "Modern experience and strong delivery.",
     position: "Product Designer",
   },
   {
     _id: "fallback-3",
     name: "Business Owner",
-    message:
-      "KanuorieTech transformed our digital presence.",
+    message: "KanuorieTech transformed our digital presence.",
     position: "Business Owner",
   },
 ];
@@ -55,19 +48,16 @@ export default function Testimonials() {
         const data = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
-          ? response.data
-          : Array.isArray(response?.data?.testimonials)
-          ? response.data.testimonials
-          : [];
+            ? response.data
+            : Array.isArray(response?.data?.testimonials)
+              ? response.data.testimonials
+              : [];
 
         if (mounted) {
           setTestimonials(data);
         }
       } catch (error) {
-        console.error(
-          "Failed to load testimonials:",
-          error
-        );
+        console.error("Failed to load testimonials:", error);
 
         if (mounted) {
           setTestimonials([]);
@@ -93,9 +83,7 @@ export default function Testimonials() {
   */
 
   const items =
-    testimonials.length > 0
-      ? testimonials.slice(0, 6)
-      : FALLBACK_TESTIMONIALS;
+    testimonials.length > 0 ? testimonials.slice(0, 6) : FALLBACK_TESTIMONIALS;
 
   /*
   ==========================================
@@ -127,9 +115,7 @@ export default function Testimonials() {
 
     const interval = setInterval(() => {
       setCurrentIndex((previous) =>
-        previous >= items.length - 1
-          ? 0
-          : previous + 1
+        previous >= items.length - 1 ? 0 : previous + 1,
       );
     }, 5000);
 
@@ -144,17 +130,13 @@ export default function Testimonials() {
 
   const nextSlide = () => {
     setCurrentIndex((previous) =>
-      previous >= items.length - 1
-        ? 0
-        : previous + 1
+      previous >= items.length - 1 ? 0 : previous + 1,
     );
   };
 
   const prevSlide = () => {
     setCurrentIndex((previous) =>
-      previous === 0
-        ? items.length - 1
-        : previous - 1
+      previous === 0 ? items.length - 1 : previous - 1,
     );
   };
 
@@ -175,7 +157,6 @@ export default function Testimonials() {
   return (
     <section className="bg-slate-900 py-20 text-white">
       <div className="mx-auto px-6">
-
         <SectionTitle
           title="What Our Clients Say"
           subtitle="Real experiences from people and businesses we've worked with."
@@ -183,7 +164,6 @@ export default function Testimonials() {
         />
 
         <div className="relative mt-12 overflow-hidden">
-
           <motion.div
             className="flex"
             animate={{
@@ -196,11 +176,7 @@ export default function Testimonials() {
           >
             {items.map((item, index) => (
               <div
-                key={
-                  item._id ||
-                  item.id ||
-                  `${item.name}-${index}`
-                }
+                key={item._id || item.id || `${item.name}-${index}`}
                 className="min-w-full px-2"
               >
                 <motion.div
@@ -252,9 +228,7 @@ export default function Testimonials() {
                     </p>
 
                     <div>
-                      <h4 className="font-bold text-white">
-                        {item.name}
-                      </h4>
+                      <h4 className="font-bold text-white">{item.name}</h4>
 
                       {(item.position || item.role) && (
                         <p className="mt-1 text-sm text-slate-400">
@@ -267,7 +241,6 @@ export default function Testimonials() {
               </div>
             ))}
           </motion.div>
-
         </div>
 
         {/* ========================================
@@ -276,7 +249,6 @@ export default function Testimonials() {
 
         {items.length > 1 && (
           <div className="mt-8 flex justify-center gap-4">
-
             <button
               type="button"
               onClick={prevSlide}
@@ -312,7 +284,6 @@ export default function Testimonials() {
             >
               →
             </button>
-
           </div>
         )}
 
@@ -324,16 +295,10 @@ export default function Testimonials() {
           <div className="mt-6 flex justify-center gap-2">
             {items.map((item, index) => (
               <button
-                key={
-                  item._id ||
-                  item.id ||
-                  `indicator-${index}`
-                }
+                key={item._id || item.id || `indicator-${index}`}
                 type="button"
                 onClick={() => setCurrentIndex(index)}
-                aria-label={`Go to testimonial ${
-                  index + 1
-                }`}
+                aria-label={`Go to testimonial ${index + 1}`}
                 className={`
                   h-2
                   rounded-full
@@ -348,7 +313,6 @@ export default function Testimonials() {
             ))}
           </div>
         )}
-
       </div>
     </section>
   );

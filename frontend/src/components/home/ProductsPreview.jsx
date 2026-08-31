@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import {
-  Card,
-  Button,
-  Loader,
-  SectionTitle,
-} from "../common";
+import { Card, Button, Loader, SectionTitle } from "../common";
 
 import { getProducts } from "../../services";
 
@@ -38,10 +33,7 @@ export default function ProductsPreview() {
 
         setProducts(data);
       } catch (error) {
-        console.error(
-          "Failed to load products:",
-          error
-        );
+        console.error("Failed to load products:", error);
 
         setProducts([]);
       } finally {
@@ -76,9 +68,7 @@ export default function ProductsPreview() {
 
         {products.length === 0 ? (
           <div className="mt-16 rounded-3xl border border-white/10 bg-white/5 px-6 py-16 text-center backdrop-blur-xl">
-            <p className="text-slate-400">
-              Products coming soon.
-            </p>
+            <p className="text-slate-400">Products coming soon.</p>
           </div>
         ) : (
           <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -143,16 +133,11 @@ export default function ProductsPreview() {
                     </p>
 
                     <p className="mb-6 mt-auto text-lg font-bold text-cyan-400">
-                      ₦
-                      {Number(product.price || 0).toLocaleString()}
+                      ₦{Number(product.price || 0).toLocaleString()}
                     </p>
 
-                    <Link
-                      to={`/products/${product._id || product.id}`}
-                    >
-                      <Button fullWidth>
-                        View Product
-                      </Button>
+                    <Link to={`/products/${product._id || product.id}`}>
+                      <Button fullWidth>View Product</Button>
                     </Link>
                   </div>
                 </Card>
@@ -164,9 +149,7 @@ export default function ProductsPreview() {
         {products.length > 4 && (
           <div className="mt-12 text-center">
             <Link to="/products">
-              <Button variant="secondary">
-                View All Products
-              </Button>
+              <Button variant="secondary">View All Products</Button>
             </Link>
           </div>
         )}

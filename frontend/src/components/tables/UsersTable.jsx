@@ -29,21 +29,14 @@ export default function UsersTable({
     {
       key: "role",
       title: "Role",
-      render: (user) => (
-        <Badge>
-          {user.role}
-        </Badge>
-      ),
+      render: (user) => <Badge>{user.role}</Badge>,
     },
     {
       key: "actions",
       title: "Actions",
       render: (user) => (
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() => onEdit(user)}
-          >
+          <Button size="sm" onClick={() => onEdit(user)}>
             Edit
           </Button>
 

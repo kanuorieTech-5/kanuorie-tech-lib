@@ -1,28 +1,11 @@
 import { Link } from "react-router-dom";
-import {
-  Bookmark,
-  Check,
-  BookOpen,
-} from "lucide-react";
+import { Bookmark, Check, BookOpen } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Badge,
-} from "../common";
+import { Card, Button, Badge } from "../common";
 
-
-export default function ResourceCard({
-  resource,
-  isSaved,
-  saving,
-  onSave,
-}) {
-
+export default function ResourceCard({ resource, isSaved, saving, onSave }) {
   return (
-    <Card
-      className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100 p-"
-    >
+    <Card className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100 p-">
       {/* Image */}
       <div className="relative">
         <img
@@ -36,9 +19,7 @@ export default function ResourceCard({
           className="max-h-50 w-full object-cover"
         />
         <div className="absolute left-4 top-4">
-          <Badge>
-            {resource.category || "General"}
-          </Badge>
+          <Badge>{resource.category || "General"}</Badge>
         </div>
       </div>
       {/* Content */}
@@ -47,19 +28,16 @@ export default function ResourceCard({
           {resource.title}
         </h3>
         <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
-          {
-            resource.description ||
-            "Explore this learning resource."
-          }
+          {resource.description || "Explore this learning resource."}
         </p>
         <div className=" mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <BookOpen size={16}/>
+            <BookOpen size={16} />
             Resource
           </div>
           {isSaved && (
             <div className="flex items-center gap-1 text-sm text-green-600">
-              <Check size={16}/>
+              <Check size={16} />
               Saved
             </div>
           )}
@@ -72,35 +50,25 @@ export default function ResourceCard({
               rel="noopener noreferrer"
               className="flex-1"
             >
-              <Button fullWidth>
-                Read
-              </Button>
+              <Button fullWidth>Read</Button>
             </a>
           ) : (
             <Link
               to={`/library/${resource.resourceId || resource._id}`}
               className="flex-1"
             >
-              <Button fullWidth>
-                Read
-              </Button>
+              <Button fullWidth>Read</Button>
             </Link>
           )}
 
-           <button
+          <button
             // disabled={saving || isSaved}
-            onClick={() =>
-              onSave(resource)
-            }
+            onClick={() => onSave(resource)}
             className="flex items-center justify-center
               rounded-lg border px-4 transition hover:bg-blue-600
               disabled:cursor-not-allowed bg-white"
           >
-            {isSaved ? (
-              <Check size={18}/>
-            ) : (
-              <Bookmark size={18}/>
-            )}
+            {isSaved ? <Check size={18} /> : <Bookmark size={18} />}
           </button>
         </div>
       </div>

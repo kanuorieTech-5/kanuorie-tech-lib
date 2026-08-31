@@ -7,10 +7,7 @@ export default function SearchBar({
 }) {
   return (
     <div className="relative w-full">
-      <Search
-        className="absolute left-3 top-3 text-gray-400"
-        size={18}
-      />
+      <Search className="absolute left-3 top-3 text-gray-400" size={18} />
 
       <input
         type="text"

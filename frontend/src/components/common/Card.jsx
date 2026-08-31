@@ -11,26 +11,18 @@ export default function Card({
     <div
       className={clsx(
         "rounded-xl border border-gray-200 bg-white/5 shadow-sm transition hover:shadow-md",
-        className
+        className,
       )}
     >
       {title && (
         <div className="border-b px-6 py-4">
-          <h3 className="text-lg font-semibold text-slate-900">
-            {title}
-          </h3>
+          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
         </div>
       )}
 
-      <div className={padding ? "p-3" : ""}>
-        {children}
-      </div>
+      <div className={padding ? "p-3" : ""}>{children}</div>
 
-      {footer && (
-        <div className="border-t px-6 py-4">
-          {footer}
-        </div>
-      )}
+      {footer && <div className="border-t px-6 py-4">{footer}</div>}
     </div>
   );
 }

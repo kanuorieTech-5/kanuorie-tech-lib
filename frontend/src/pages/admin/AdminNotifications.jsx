@@ -11,11 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-} from "../../components/common";
+import { Card, Button, Loader } from "../../components/common";
 
 import {
   getAdminNotifications,
@@ -39,11 +35,9 @@ export default function AdminNotifications() {
 
   const [form, setForm] = useState(EMPTY_FORM);
 
-  const [showCreateForm, setShowCreateForm] =
-    useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
-  const [showBroadcastForm, setShowBroadcastForm] =
-    useState(false);
+  const [showBroadcastForm, setShowBroadcastForm] = useState(false);
 
   /* ==========================================
      LOAD NOTIFICATIONS
@@ -53,30 +47,19 @@ export default function AdminNotifications() {
     try {
       setLoading(true);
 
-      const response =
-        await getAdminNotifications({
-          page: 1,
-          limit: 50,
-        });
+      const response = await getAdminNotifications({
+        page: 1,
+        limit: 50,
+      });
 
-      const data =
-        response?.data?.data ??
-        response?.data ??
-        response ??
-        [];
+      const data = response?.data?.data ?? response?.data ?? response ?? [];
 
-      setNotifications(
-        Array.isArray(data) ? data : []
-      );
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error(
-        "Failed to load admin notifications:",
-        error
-      );
+      console.error("Failed to load admin notifications:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Unable to load notifications."
+        error?.response?.data?.message || "Unable to load notifications.",
       );
     } finally {
       setLoading(false);
@@ -107,14 +90,8 @@ export default function AdminNotifications() {
   const handleCreate = async (event) => {
     event.preventDefault();
 
-    if (
-      !form.recipient.trim() ||
-      !form.title.trim() ||
-      !form.message.trim()
-    ) {
-      toast.error(
-        "Recipient, title and message are required."
-      );
+    if (!form.recipient.trim() || !form.title.trim() || !form.message.trim()) {
+      toast.error("Recipient, title and message are required.");
 
       return;
     }
@@ -129,23 +106,17 @@ export default function AdminNotifications() {
         type: form.type,
       });
 
-      toast.success(
-        "Notification sent successfully."
-      );
+      toast.success("Notification sent successfully.");
 
       setForm(EMPTY_FORM);
       setShowCreateForm(false);
 
       await loadNotifications();
     } catch (error) {
-      console.error(
-        "Failed to create notification:",
-        error
-      );
+      console.error("Failed to create notification:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Failed to send notification."
+        error?.response?.data?.message || "Failed to send notification.",
       );
     } finally {
       setSubmitting(false);
@@ -159,13 +130,8 @@ export default function AdminNotifications() {
   const handleBroadcast = async (event) => {
     event.preventDefault();
 
-    if (
-      !form.title.trim() ||
-      !form.message.trim()
-    ) {
-      toast.error(
-        "Title and message are required."
-      );
+    if (!form.title.trim() || !form.message.trim()) {
+      toast.error("Title and message are required.");
 
       return;
     }
@@ -173,23 +139,18 @@ export default function AdminNotifications() {
     try {
       setSubmitting(true);
 
-      const response =
-        await broadcastNotification({
-          title: form.title.trim(),
-          message: form.message.trim(),
-          type:
-            form.type || "announcement",
-        });
+      const response = await broadcastNotification({
+        title: form.title.trim(),
+        message: form.message.trim(),
+        type: form.type || "announcement",
+      });
 
-      const sent =
-        response?.data?.sent ??
-        response?.sent ??
-        null;
+      const sent = response?.data?.sent ?? response?.sent ?? null;
 
       toast.success(
         sent !== null
           ? `Notification sent to ${sent} users.`
-          : "Broadcast notification sent."
+          : "Broadcast notification sent.",
       );
 
       setForm(EMPTY_FORM);
@@ -197,14 +158,10 @@ export default function AdminNotifications() {
 
       await loadNotifications();
     } catch (error) {
-      console.error(
-        "Failed to broadcast notification:",
-        error
-      );
+      console.error("Failed to broadcast notification:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Failed to broadcast notification."
+        error?.response?.data?.message || "Failed to broadcast notification.",
       );
     } finally {
       setSubmitting(false);
@@ -219,7 +176,7 @@ export default function AdminNotifications() {
     if (!id) return;
 
     const confirmed = window.confirm(
-      "Are you sure you want to delete this notification?"
+      "Are you sure you want to delete this notification?",
     );
 
     if (!confirmed) return;
@@ -229,25 +186,16 @@ export default function AdminNotifications() {
 
       await deleteAdminNotification(id);
 
-      toast.success(
-        "Notification deleted successfully."
-      );
+      toast.success("Notification deleted successfully.");
 
       setNotifications((prev) =>
-        prev.filter(
-          (notification) =>
-            notification._id !== id
-        )
+        prev.filter((notification) => notification._id !== id),
       );
     } catch (error) {
-      console.error(
-        "Failed to delete notification:",
-        error
-      );
+      console.error("Failed to delete notification:", error);
 
       toast.error(
-        error?.response?.data?.message ||
-          "Failed to delete notification."
+        error?.response?.data?.message || "Failed to delete notification.",
       );
     } finally {
       setDeletingId(null);
@@ -268,13 +216,11 @@ export default function AdminNotifications() {
 
   return (
     <div className="space-y-8">
-
       {/* ======================================
           HEADER
       ====================================== */}
 
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
-
         <div>
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -294,30 +240,18 @@ export default function AdminNotifications() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-
-          <Button
-            variant="outline"
-            onClick={loadNotifications}
-          >
-            <RefreshCw
-              size={17}
-              className="mr-2"
-            />
+          <Button variant="outline" onClick={loadNotifications}>
+            <RefreshCw size={17} className="mr-2" />
             Refresh
           </Button>
 
           <Button
             onClick={() => {
               setShowBroadcastForm(false);
-              setShowCreateForm(
-                (current) => !current
-              );
+              setShowCreateForm((current) => !current);
             }}
           >
-            <Send
-              size={17}
-              className="mr-2"
-            />
+            <Send size={17} className="mr-2" />
             Send Notification
           </Button>
 
@@ -325,18 +259,12 @@ export default function AdminNotifications() {
             variant="secondary"
             onClick={() => {
               setShowCreateForm(false);
-              setShowBroadcastForm(
-                (current) => !current
-              );
+              setShowBroadcastForm((current) => !current);
             }}
           >
-            <Megaphone
-              size={17}
-              className="mr-2"
-            />
+            <Megaphone size={17} className="mr-2" />
             Broadcast
           </Button>
-
         </div>
       </div>
 
@@ -346,7 +274,6 @@ export default function AdminNotifications() {
 
       {showCreateForm && (
         <Card className="p-6">
-
           <div className="mb-6">
             <h2 className="text-lg font-bold text-slate-900">
               Send Notification
@@ -357,11 +284,7 @@ export default function AdminNotifications() {
             </p>
           </div>
 
-          <form
-            onSubmit={handleCreate}
-            className="grid gap-5"
-          >
-
+          <form onSubmit={handleCreate} className="grid gap-5">
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Recipient User ID
@@ -377,7 +300,6 @@ export default function AdminNotifications() {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Title
@@ -403,28 +325,17 @@ export default function AdminNotifications() {
                   onChange={handleChange}
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
-                  <option value="system">
-                    System
-                  </option>
+                  <option value="system">System</option>
 
-                  <option value="announcement">
-                    Announcement
-                  </option>
+                  <option value="announcement">Announcement</option>
 
-                  <option value="course">
-                    Course
-                  </option>
+                  <option value="course">Course</option>
 
-                  <option value="book">
-                    Book
-                  </option>
+                  <option value="book">Book</option>
 
-                  <option value="order">
-                    Order
-                  </option>
+                  <option value="order">Order</option>
                 </select>
               </div>
-
             </div>
 
             <div>
@@ -443,7 +354,6 @@ export default function AdminNotifications() {
             </div>
 
             <div className="flex justify-end gap-3">
-
               <Button
                 type="button"
                 variant="outline"
@@ -455,20 +365,11 @@ export default function AdminNotifications() {
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                loading={submitting}
-                disabled={submitting}
-              >
-                <Send
-                  size={17}
-                  className="mr-2"
-                />
+              <Button type="submit" loading={submitting} disabled={submitting}>
+                <Send size={17} className="mr-2" />
                 Send Notification
               </Button>
-
             </div>
-
           </form>
         </Card>
       )}
@@ -479,14 +380,9 @@ export default function AdminNotifications() {
 
       {showBroadcastForm && (
         <Card className="border-blue-200 bg-blue-50/50 p-6">
-
           <div className="mb-6">
             <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Megaphone
-                size={20}
-                className="text-blue-600"
-              />
-
+              <Megaphone size={20} className="text-blue-600" />
               Broadcast Notification
             </h2>
 
@@ -495,13 +391,8 @@ export default function AdminNotifications() {
             </p>
           </div>
 
-          <form
-            onSubmit={handleBroadcast}
-            className="space-y-5"
-          >
-
+          <form onSubmit={handleBroadcast} className="space-y-5">
             <div className="grid gap-5 md:grid-cols-2">
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Title
@@ -527,28 +418,17 @@ export default function AdminNotifications() {
                   onChange={handleChange}
                   className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
-                  <option value="announcement">
-                    Announcement
-                  </option>
+                  <option value="announcement">Announcement</option>
 
-                  <option value="system">
-                    System
-                  </option>
+                  <option value="system">System</option>
 
-                  <option value="course">
-                    Course
-                  </option>
+                  <option value="course">Course</option>
 
-                  <option value="book">
-                    Book
-                  </option>
+                  <option value="book">Book</option>
 
-                  <option value="order">
-                    Order
-                  </option>
+                  <option value="order">Order</option>
                 </select>
               </div>
-
             </div>
 
             <div>
@@ -567,7 +447,6 @@ export default function AdminNotifications() {
             </div>
 
             <div className="flex justify-end gap-3">
-
               <Button
                 type="button"
                 variant="outline"
@@ -579,20 +458,11 @@ export default function AdminNotifications() {
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                loading={submitting}
-                disabled={submitting}
-              >
-                <Megaphone
-                  size={17}
-                  className="mr-2"
-                />
+              <Button type="submit" loading={submitting} disabled={submitting}>
+                <Megaphone size={17} className="mr-2" />
                 Broadcast to All Users
               </Button>
-
             </div>
-
           </form>
         </Card>
       )}
@@ -602,10 +472,8 @@ export default function AdminNotifications() {
       ====================================== */}
 
       <Card className="overflow-hidden">
-
         <div className="border-b border-slate-200 px-6 py-5">
           <div className="flex items-center justify-between">
-
             <div>
               <h2 className="text-lg font-bold text-slate-900">
                 Notification History
@@ -619,17 +487,12 @@ export default function AdminNotifications() {
             <div className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
               {notifications.length}
             </div>
-
           </div>
         </div>
 
         {notifications.length === 0 ? (
           <div className="px-6 py-16 text-center">
-
-            <Bell
-              size={42}
-              className="mx-auto text-slate-300"
-            />
+            <Bell size={42} className="mx-auto text-slate-300" />
 
             <h3 className="mt-4 text-lg font-semibold text-slate-800">
               No notifications yet
@@ -638,38 +501,28 @@ export default function AdminNotifications() {
             <p className="mt-2 text-sm text-slate-500">
               Notifications sent to users will appear here.
             </p>
-
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-
             {notifications.map((notification) => {
+              const recipient = notification.recipient;
 
-              const recipient =
-                notification.recipient;
-
-              const sender =
-                notification.sender;
+              const sender = notification.sender;
 
               return (
                 <div
                   key={notification._id}
                   className="flex flex-col gap-4 px-6 py-5 transition hover:bg-slate-50 md:flex-row md:items-center md:justify-between"
                 >
-
                   <div className="flex min-w-0 gap-4">
-
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
                       <Bell size={20} />
                     </div>
 
                     <div className="min-w-0">
-
                       <div className="flex flex-wrap items-center gap-2">
-
                         <h3 className="font-semibold text-slate-900">
-                          {notification.title ||
-                            "Untitled Notification"}
+                          {notification.title || "Untitled Notification"}
                         </h3>
 
                         {notification.type && (
@@ -677,7 +530,6 @@ export default function AdminNotifications() {
                             {notification.type}
                           </span>
                         )}
-
                       </div>
 
                       <p className="mt-1 line-clamp-2 text-sm text-slate-600">
@@ -685,79 +537,54 @@ export default function AdminNotifications() {
                       </p>
 
                       <div className="mt-2 flex flex-wrap gap-4 text-xs text-slate-400">
-
                         <span className="flex items-center gap-1">
                           <Users size={13} />
 
-                          {recipient?.name ||
-                            recipient?.email ||
-                            "User"}
+                          {recipient?.name || recipient?.email || "User"}
                         </span>
 
                         <span className="flex items-center gap-1">
                           <Clock size={13} />
 
                           {notification.createdAt
-                            ? new Date(
-                                notification.createdAt
-                              ).toLocaleString()
+                            ? new Date(notification.createdAt).toLocaleString()
                             : "Unknown date"}
                         </span>
 
                         <span className="flex items-center gap-1">
-
                           {notification.isRead ? (
                             <>
-                              <CheckCircle
-                                size={13}
-                              />
+                              <CheckCircle size={13} />
                               Read
                             </>
                           ) : (
                             "Unread"
                           )}
-
                         </span>
-
                       </div>
 
                       {sender && (
                         <p className="mt-1 text-xs text-slate-400">
-                          Sent by{" "}
-                          {sender.name ||
-                            sender.email ||
-                            "Admin"}
+                          Sent by {sender.name || sender.email || "Admin"}
                         </p>
                       )}
-
                     </div>
-
                   </div>
 
                   <button
                     type="button"
-                    onClick={() =>
-                      handleDelete(
-                        notification._id
-                      )
-                    }
-                    disabled={
-                      deletingId ===
-                      notification._id
-                    }
+                    onClick={() => handleDelete(notification._id)}
+                    disabled={deletingId === notification._id}
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                     title="Delete notification"
                   >
                     <Trash2 size={18} />
                   </button>
-
                 </div>
               );
             })}
-
           </div>
         )}
-
       </Card>
     </div>
   );

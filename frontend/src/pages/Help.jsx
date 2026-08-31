@@ -10,11 +10,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  SectionTitle,
-} from "../components/common";
+import { Card, Button, SectionTitle } from "../components/common";
 
 const HELP_CATEGORIES = [
   {
@@ -50,16 +46,11 @@ const HELP_CATEGORIES = [
 export default function Help() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
-
       {/* HERO */}
       <section className="bg-slate-950 py-24 text-white">
         <div className="mx-auto max-w-7xl px-6 text-center">
-
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10">
-            <HelpCircle
-              className="h-9 w-9 text-cyan-400"
-              aria-hidden="true"
-            />
+            <HelpCircle className="h-9 w-9 text-cyan-400" aria-hidden="true" />
           </div>
 
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
@@ -67,17 +58,15 @@ export default function Help() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-400">
-            Find answers, explore our resources, and learn how to
-            get the most out of KanuorieTech.
+            Find answers, explore our resources, and learn how to get the most
+            out of KanuorieTech.
           </p>
-
         </div>
       </section>
 
       {/* HELP CATEGORIES */}
       <section className="bg-slate-50 py-20 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl px-6">
-
           <SectionTitle
             Badge="Help Center"
             title="Find What You Need"
@@ -85,7 +74,6 @@ export default function Help() {
           />
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-
             {HELP_CATEGORIES.map((item) => {
               const Icon = item.icon;
 
@@ -105,7 +93,6 @@ export default function Help() {
                     dark:bg-white/5
                   "
                 >
-
                   <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-500/10">
                     <Icon
                       className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
@@ -126,26 +113,18 @@ export default function Help() {
                     className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-600 transition hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
                   >
                     Explore
-
-                    <ArrowRight
-                      size={17}
-                      aria-hidden="true"
-                    />
+                    <ArrowRight size={17} aria-hidden="true" />
                   </Link>
-
                 </Card>
               );
             })}
-
           </div>
-
         </div>
       </section>
 
       {/* FAQ */}
       <section className="bg-white py-20 dark:bg-slate-900">
         <div className="mx-auto max-w-4xl px-6">
-
           <SectionTitle
             Badge="Frequently Asked Questions"
             title="Common Questions"
@@ -153,74 +132,51 @@ export default function Help() {
           />
 
           <div className="mt-12 space-y-4">
-
-            <FAQItem
-              question="How do I create an account?"
-            >
-              Click the Register option in the navigation menu,
-              provide your account information, and follow the
-              registration instructions.
+            <FAQItem question="How do I create an account?">
+              Click the Register option in the navigation menu, provide your
+              account information, and follow the registration instructions.
             </FAQItem>
 
-            <FAQItem
-              question="How do I save a resource?"
-            >
-              Open the Library and click the bookmark button on
-              any resource you want to save. Saved resources can
-              be accessed from your learning dashboard.
+            <FAQItem question="How do I save a resource?">
+              Open the Library and click the bookmark button on any resource you
+              want to save. Saved resources can be accessed from your learning
+              dashboard.
             </FAQItem>
 
-            <FAQItem
-              question="How do I update my profile?"
-            >
-              After signing in, open your Profile page from the
-              account menu. You can update your personal
-              information and profile photo there.
+            <FAQItem question="How do I update my profile?">
+              After signing in, open your Profile page from the account menu.
+              You can update your personal information and profile photo there.
             </FAQItem>
 
-            <FAQItem
-              question="I need additional assistance. What should I do?"
-            >
-              If you cannot find an answer here, contact the
-              KanuorieTech team and we'll be happy to assist you.
+            <FAQItem question="I need additional assistance. What should I do?">
+              If you cannot find an answer here, contact the KanuorieTech team
+              and we'll be happy to assist you.
             </FAQItem>
-
           </div>
-
         </div>
       </section>
 
       {/* CONTACT CTA */}
       <section className="bg-slate-950 py-20 text-white">
         <div className="mx-auto max-w-4xl px-6 text-center">
-
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10">
-            <Mail
-              className="h-7 w-7 text-cyan-400"
-              aria-hidden="true"
-            />
+            <Mail className="h-7 w-7 text-cyan-400" aria-hidden="true" />
           </div>
 
-          <h2 className="text-3xl font-bold md:text-4xl">
-            Still Need Help?
-          </h2>
+          <h2 className="text-3xl font-bold md:text-4xl">Still Need Help?</h2>
 
           <p className="mx-auto mt-4 max-w-xl leading-7 text-slate-400">
-            Our team is here to help. Send us a message and we'll
-            get back to you as soon as possible.
+            Our team is here to help. Send us a message and we'll get back to
+            you as soon as possible.
           </p>
 
           <div className="mt-8">
             <Link to="/contact">
-              <Button>
-                Contact Us
-              </Button>
+              <Button>Contact Us</Button>
             </Link>
           </div>
-
         </div>
       </section>
-
     </main>
   );
 }

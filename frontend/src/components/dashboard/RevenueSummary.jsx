@@ -1,8 +1,4 @@
-import {
-  TrendingUp,
-  DollarSign,
-  Wallet,
-} from "lucide-react";
+import { TrendingUp, DollarSign, Wallet } from "lucide-react";
 
 export default function RevenueSummary({ data = {} }) {
   const revenue = data || {};
@@ -14,34 +10,20 @@ export default function RevenueSummary({ data = {} }) {
     revenue.amount ??
     0;
 
-  const today =
-    revenue.today ??
-    revenue.todayRevenue ??
-    revenue.daily ??
-    0;
+  const today = revenue.today ?? revenue.todayRevenue ?? revenue.daily ?? 0;
 
-  const month =
-    revenue.month ??
-    revenue.monthly ??
-    revenue.monthRevenue ??
-    0;
+  const month = revenue.month ?? revenue.monthly ?? revenue.monthRevenue ?? 0;
 
   const growth =
-    revenue.growth ??
-    revenue.growthRate ??
-    revenue.percentage ??
-    0;
+    revenue.growth ?? revenue.growthRate ?? revenue.percentage ?? 0;
 
   const formatCurrency = (value) => {
     const numericValue = Number(value || 0);
 
-    return `?${numericValue.toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      }
-    )}`;
+    return `?${numericValue.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   return (
@@ -65,22 +47,14 @@ export default function RevenueSummary({ data = {} }) {
           </div>
         </div>
 
-        <TrendingUp
-          size={22}
-          className="text-emerald-500"
-        />
+        <TrendingUp size={22} className="text-emerald-500" />
       </div>
 
       <div className="rounded-2xl bg-slate-50 p-5">
-        <p className="text-sm font-medium text-slate-500">
-          Total Revenue
-        </p>
+        <p className="text-sm font-medium text-slate-500">Total Revenue</p>
 
         <div className="mt-2 flex items-center gap-2">
-          <DollarSign
-            size={22}
-            className="text-emerald-600"
-          />
+          <DollarSign size={22} className="text-emerald-600" />
 
           <h3 className="text-3xl font-black text-slate-900">
             {formatCurrency(total)}
@@ -110,18 +84,13 @@ export default function RevenueSummary({ data = {} }) {
         </div>
 
         <div className="mt-4 flex items-center gap-2 text-sm">
-          <TrendingUp
-            size={16}
-            className="text-emerald-500"
-          />
+          <TrendingUp size={16} className="text-emerald-500" />
 
           <span className="font-semibold text-emerald-600">
             {Number(growth || 0).toFixed(1)}%
           </span>
 
-          <span className="text-slate-500">
-            growth
-          </span>
+          <span className="text-slate-500">growth</span>
         </div>
       </div>
     </section>

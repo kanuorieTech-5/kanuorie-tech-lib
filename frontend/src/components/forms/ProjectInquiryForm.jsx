@@ -1,24 +1,15 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, TextArea } from "../ui";
 
-export default function ProjectInquiryForm({
-  onSubmit,
-  loading = false,
-}) {
-  const [form, setForm] =
-    useState({
-      company: "",
-      contact: "",
-      email: "",
-      projectType: "",
-      timeline: "",
-      description: "",
-    });
+export default function ProjectInquiryForm({ onSubmit, loading = false }) {
+  const [form, setForm] = useState({
+    company: "",
+    contact: "",
+    email: "",
+    projectType: "",
+    timeline: "",
+    description: "",
+  });
 
   const change = ({ target }) =>
     setForm((prev) => ({
@@ -81,10 +72,7 @@ export default function ProjectInquiryForm({
           onChange={change}
         />
 
-        <Button
-          loading={loading}
-          type="submit"
-        >
+        <Button loading={loading} type="submit">
           Send Request
         </Button>
       </form>

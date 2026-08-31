@@ -13,24 +13,14 @@ export default function BlogCard({ post }) {
       <div className="space-y-4 p-6">
         <Badge>{post.category}</Badge>
 
-        <h3 className="line-clamp-2 text-xl font-semibold">
-          {post.title}
-        </h3>
+        <h3 className="line-clamp-2 text-xl font-semibold">{post.title}</h3>
 
-        <p className="line-clamp-3 text-gray-500">
-          {post.excerpt}
-        </p>
+        <p className="line-clamp-3 text-gray-500">{post.excerpt}</p>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-400">
-            {post.createdAt}
-          </span>
+          <span className="text-sm text-gray-400">{post.createdAt}</span>
 
-          <Button
-            as={Link}
-            to={`/blog/${post._id}`}
-            size="sm"
-          >
+          <Button as={Link} to={`/blog/${post._id}`} size="sm">
             Read More
           </Button>
         </div>

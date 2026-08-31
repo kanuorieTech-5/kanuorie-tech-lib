@@ -1,89 +1,58 @@
 import { useState } from "react";
 
-import {
-  Button,
-  SectionTitle,
-} from "../common";
+import { Button, SectionTitle } from "../common";
 
-import {
-  subscribeNewsletter,
-} from "../../services";
-
+import { subscribeNewsletter } from "../../services";
 
 export default function Newsletter() {
-
   const [email, setEmail] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   const [message, setMessage] = useState("");
 
-
-
   const submit = async (e) => {
-
     e.preventDefault();
 
     try {
-
       setLoading(true);
 
       await subscribeNewsletter({
         email,
       });
 
-
       setEmail("");
 
-      setMessage(
-        "Thanks for subscribing!"
-      );
-
-
+      setMessage("Thanks for subscribing!");
     } catch (error) {
-
-      setMessage(
-        "Something went wrong. Please try again."
-      );
-
+      setMessage("Something went wrong. Please try again.");
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
-
-
   return (
-
-    <section className="
+    <section
+      className="
       bg-slate-900
       py-24
-    ">
-
-
-      <div className="
+    "
+    >
+      <div
+        className="
         px-6
         text-center
-      ">
-
-
+      "
+      >
         <SectionTitle
-
           Badge="Stay Connected"
 
           title="Get Technology Updates Delivered"
 
           subtitle="Receive new courses, digital resources, articles and company updates from KanuorieTech."
-
         />
 
-
-
         <form
-
           onSubmit={submit}
 
           className="
@@ -95,21 +64,15 @@ export default function Newsletter() {
             gap-4
             sm:flex-row
           "
-
         >
-
-
           <input
-
             type="email"
 
             required
 
             value={email}
 
-            onChange={(e)=>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
 
             placeholder="Enter your email"
 
@@ -124,53 +87,29 @@ export default function Newsletter() {
               text-slate-900
               outline-none
             "
-
           />
 
-
-
           <Button
-
             type="submit"
 
             disabled={loading}
-
           >
-
-            {
-              loading
-              ? "Subscribing..."
-              : "Subscribe"
-            }
-
-
+            {loading ? "Subscribing..." : "Subscribe"}
           </Button>
-
-
         </form>
 
-
-
         {message && (
-
-          <p className="
+          <p
+            className="
             mt-5
             text-sm
             text-white
-          ">
-
+          "
+          >
             {message}
-
           </p>
-
         )}
-
-
       </div>
-
-
     </section>
-
   );
-
 }

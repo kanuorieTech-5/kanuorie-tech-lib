@@ -14,11 +14,7 @@ import {
   User,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-} from "../../components/common";
+import { Card, Button, Loader } from "../../components/common";
 
 import {
   getAdminBlogs,
@@ -72,10 +68,7 @@ export default function AdminBlog() {
     } catch (err) {
       console.error("Failed to load admin blogs:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to load blog posts."
-      );
+      setError(err?.response?.data?.message || "Unable to load blog posts.");
     } finally {
       setLoading(false);
     }
@@ -119,9 +112,7 @@ export default function AdminBlog() {
           ? blog.author?.name || ""
           : blog.author || "",
       category: blog.category || "",
-      tags: Array.isArray(blog.tags)
-        ? blog.tags.join(", ")
-        : blog.tags || "",
+      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : blog.tags || "",
       status: blog.status || "draft",
     });
 
@@ -159,10 +150,7 @@ export default function AdminBlog() {
       };
 
       if (editingBlog) {
-        await updateAdminBlog(
-          editingBlog._id || editingBlog.id,
-          payload
-        );
+        await updateAdminBlog(editingBlog._id || editingBlog.id, payload);
 
         toast.success("Blog post updated successfully.");
       } else {
@@ -176,10 +164,7 @@ export default function AdminBlog() {
     } catch (err) {
       console.error("Failed to save blog:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to save blog post."
-      );
+      toast.error(err?.response?.data?.message || "Unable to save blog post.");
     } finally {
       setSaving(false);
     }
@@ -194,7 +179,7 @@ export default function AdminBlog() {
     }
 
     const confirmed = window.confirm(
-      `Delete "${blog.title}"? This action cannot be undone.`
+      `Delete "${blog.title}"? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -204,17 +189,12 @@ export default function AdminBlog() {
 
       toast.success("Blog post deleted successfully.");
 
-      setBlogs((prev) =>
-        prev.filter(
-          (item) => (item._id || item.id) !== id
-        )
-      );
+      setBlogs((prev) => prev.filter((item) => (item._id || item.id) !== id));
     } catch (err) {
       console.error("Failed to delete blog:", err);
 
       toast.error(
-        err?.response?.data?.message ||
-          "Unable to delete blog post."
+        err?.response?.data?.message || "Unable to delete blog post.",
       );
     }
   };
@@ -253,14 +233,9 @@ export default function AdminBlog() {
             Blog unavailable
           </h2>
 
-          <p className="mt-2 text-sm text-red-600">
-            {error}
-          </p>
+          <p className="mt-2 text-sm text-red-600">{error}</p>
 
-          <Button
-            className="mt-5"
-            onClick={loadBlogs}
-          >
+          <Button className="mt-5" onClick={loadBlogs}>
             Try Again
           </Button>
         </Card>
@@ -270,11 +245,9 @@ export default function AdminBlog() {
 
   return (
     <section className="space-y-6 py-2">
-
       {/* HEADER */}
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
         <div>
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -282,9 +255,7 @@ export default function AdminBlog() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Blog
-              </h1>
+              <h1 className="text-2xl font-bold text-slate-900">Blog</h1>
 
               <p className="text-sm text-slate-500">
                 Manage your blog posts and articles.
@@ -311,9 +282,7 @@ export default function AdminBlog() {
           <input
             type="search"
             value={search}
-            onChange={(event) =>
-              setSearch(event.target.value)
-            }
+            onChange={(event) => setSearch(event.target.value)}
             placeholder="Search blog posts..."
             className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
@@ -324,14 +293,10 @@ export default function AdminBlog() {
 
       {showForm && (
         <Card className="p-6">
-
           <div className="mb-6 flex items-center justify-between">
-
             <div>
               <h2 className="text-xl font-bold text-slate-900">
-                {editingBlog
-                  ? "Edit Blog Post"
-                  : "Create Blog Post"}
+                {editingBlog ? "Edit Blog Post" : "Create Blog Post"}
               </h2>
 
               <p className="mt-1 text-sm text-slate-500">
@@ -348,14 +313,9 @@ export default function AdminBlog() {
             >
               <X size={20} />
             </button>
-
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="grid gap-5"
-          >
-
+          <form onSubmit={handleSubmit} className="grid gap-5">
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Title
@@ -372,7 +332,6 @@ export default function AdminBlog() {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Category
@@ -400,7 +359,6 @@ export default function AdminBlog() {
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
-
             </div>
 
             <div>
@@ -477,18 +435,13 @@ export default function AdminBlog() {
                 onChange={handleChange}
                 className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               >
-                <option value="draft">
-                  Draft
-                </option>
+                <option value="draft">Draft</option>
 
-                <option value="published">
-                  Published
-                </option>
+                <option value="published">Published</option>
               </select>
             </div>
 
             <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
-
               <Button
                 type="button"
                 variant="outline"
@@ -498,18 +451,10 @@ export default function AdminBlog() {
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                loading={saving}
-                disabled={saving}
-              >
-                {editingBlog
-                  ? "Update Post"
-                  : "Create Post"}
+              <Button type="submit" loading={saving} disabled={saving}>
+                {editingBlog ? "Update Post" : "Create Post"}
               </Button>
-
             </div>
-
           </form>
         </Card>
       )}
@@ -518,16 +463,10 @@ export default function AdminBlog() {
 
       {filteredBlogs.length === 0 ? (
         <Card className="p-12 text-center">
-
-          <FileText
-            size={42}
-            className="mx-auto text-slate-300"
-          />
+          <FileText size={42} className="mx-auto text-slate-300" />
 
           <h3 className="mt-4 text-lg font-semibold text-slate-900">
-            {search
-              ? "No blog posts found"
-              : "No blog posts yet"}
+            {search ? "No blog posts found" : "No blog posts yet"}
           </h3>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -537,47 +476,28 @@ export default function AdminBlog() {
           </p>
 
           {!search && (
-            <Button
-              className="mt-5"
-              onClick={openCreateForm}
-            >
-              <Plus
-                size={18}
-                className="mr-2"
-              />
+            <Button className="mt-5" onClick={openCreateForm}>
+              <Plus size={18} className="mr-2" />
               Create Blog Post
             </Button>
           )}
-
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-
           {filteredBlogs.map((blog) => {
-
             const id = blog._id || blog.id;
 
             const isPublished =
-              String(blog.status || "").toLowerCase() ===
-              "published";
+              String(blog.status || "").toLowerCase() === "published";
 
             return (
-              <Card
-                key={id}
-                className="overflow-hidden"
-              >
-
+              <Card key={id} className="overflow-hidden">
                 {/* IMAGE */}
 
                 <div className="relative h-48 bg-slate-100">
-
-                  {blog.image ||
-                  blog.featuredImage ? (
+                  {blog.image || blog.featuredImage ? (
                     <img
-                      src={
-                        blog.image ||
-                        blog.featuredImage
-                      }
+                      src={blog.image || blog.featuredImage}
                       alt={blog.title}
                       className="h-full w-full object-cover"
                     />
@@ -595,42 +515,26 @@ export default function AdminBlog() {
                           : "bg-amber-100 text-amber-700"
                       }`}
                     >
-                      {isPublished ? (
-                        <Eye size={13} />
-                      ) : (
-                        <EyeOff size={13} />
-                      )}
+                      {isPublished ? <Eye size={13} /> : <EyeOff size={13} />}
 
-                      {isPublished
-                        ? "Published"
-                        : "Draft"}
+                      {isPublished ? "Published" : "Draft"}
                     </span>
                   </div>
-
                 </div>
 
                 {/* CONTENT */}
 
                 <div className="p-5">
-
                   <div className="flex items-center gap-3 text-xs text-slate-400">
-
-                    {blog.category && (
-                      <span>
-                        {blog.category}
-                      </span>
-                    )}
+                    {blog.category && <span>{blog.category}</span>}
 
                     {blog.createdAt && (
                       <span className="flex items-center gap-1">
                         <Calendar size={13} />
 
-                        {new Date(
-                          blog.createdAt
-                        ).toLocaleDateString()}
+                        {new Date(blog.createdAt).toLocaleDateString()}
                       </span>
                     )}
-
                   </div>
 
                   <h3 className="mt-3 line-clamp-2 text-lg font-bold text-slate-900">
@@ -647,8 +551,7 @@ export default function AdminBlog() {
                     <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
                       <User size={14} />
                       <span>
-                        {typeof blog.author ===
-                        "object"
+                        {typeof blog.author === "object"
                           ? blog.author?.name
                           : blog.author}
                       </span>
@@ -658,43 +561,30 @@ export default function AdminBlog() {
                   {/* ACTIONS */}
 
                   <div className="mt-5 flex gap-2 border-t border-slate-100 pt-4">
-
                     <Button
                       variant="outline"
                       className="flex-1"
-                      onClick={() =>
-                        openEditForm(blog)
-                      }
+                      onClick={() => openEditForm(blog)}
                     >
-                      <Edit3
-                        size={16}
-                        className="mr-2"
-                      />
+                      <Edit3 size={16} className="mr-2" />
                       Edit
                     </Button>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        handleDelete(blog)
-                      }
+                      onClick={() => handleDelete(blog)}
                       className="rounded-lg border border-red-200 px-4 text-red-600 transition hover:bg-red-50"
                       aria-label="Delete blog post"
                     >
                       <Trash2 size={17} />
                     </button>
-
                   </div>
-
                 </div>
-
               </Card>
             );
           })}
-
         </div>
       )}
-
     </section>
   );
 }

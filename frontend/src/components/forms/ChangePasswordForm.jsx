@@ -1,14 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-} from "../ui";
+import { Button, Card, Input } from "../ui";
 
-export default function ChangePasswordForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function ChangePasswordForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -57,10 +50,7 @@ export default function ChangePasswordForm({
           required
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-        >
+        <Button type="submit" loading={loading}>
           Update Password
         </Button>
       </form>

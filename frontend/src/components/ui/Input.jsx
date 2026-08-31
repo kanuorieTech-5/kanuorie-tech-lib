@@ -28,48 +28,30 @@ const Input = forwardRef(
 
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [showPassword, setShowPassword] =
-      useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
-    const isPassword =
-      type === "password";
+    const isPassword = type === "password";
 
-    const inputType =
-      isPassword && showPassword
-        ? "text"
-        : type;
+    const inputType = isPassword && showPassword ? "text" : type;
 
     return (
-      <div
-        className={clsx(
-          fullWidth && "w-full"
-        )}
-      >
+      <div className={clsx(fullWidth && "w-full")}>
         {label && (
           <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
 
-            {required && (
-              <span className="ml-1 text-red-500">
-                *
-              </span>
-            )}
+            {required && <span className="ml-1 text-red-500">*</span>}
           </label>
         )}
 
         <div className="relative">
           {/* Left Icon */}
 
-          {(leftIcon ||
-            variant === "search") && (
+          {(leftIcon || variant === "search") && (
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-              {variant === "search" ? (
-                <Search size={18} />
-              ) : (
-                leftIcon
-              )}
+              {variant === "search" ? <Search size={18} /> : leftIcon}
             </span>
           )}
 
@@ -85,23 +67,16 @@ const Input = forwardRef(
               "dark:border-slate-700 dark:bg-slate-900 dark:text-white",
 
               {
-                "pl-11":
-                  leftIcon ||
-                  variant === "search",
+                "pl-11": leftIcon || variant === "search",
 
-                "pr-11":
-                  rightIcon ||
-                  isPassword ||
-                  loading,
+                "pr-11": rightIcon || isPassword || loading,
 
-                "border-red-500":
-                  error,
+                "border-red-500": error,
 
-                "cursor-not-allowed opacity-70":
-                  disabled,
+                "cursor-not-allowed opacity-70": disabled,
               },
 
-              className
+              className,
             )}
             {...props}
           />
@@ -110,60 +85,39 @@ const Input = forwardRef(
 
           {loading && (
             <span className="absolute right-4 top-1/2 -translate-y-1/2">
-              <Loader2
-                size={18}
-                className="animate-spin"
-              />
+              <Loader2 size={18} className="animate-spin" />
             </span>
           )}
 
           {/* Password */}
 
-          {isPassword &&
-            !loading && (
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPassword(
-                    !showPassword
-                  )
-                }
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
-              >
-                {showPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
-              </button>
-            )}
+          {isPassword && !loading && (
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          )}
 
           {/* Right Icon */}
 
-          {!loading &&
-            !isPassword &&
-            rightIcon && (
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                {rightIcon}
-              </span>
-            )}
+          {!loading && !isPassword && rightIcon && (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              {rightIcon}
+            </span>
+          )}
         </div>
 
-        {helperText &&
-          !error && (
-            <p className="mt-2 text-sm text-gray-500">
-              {helperText}
-            </p>
-          )}
-
-        {error && (
-          <p className="mt-2 text-sm text-red-500">
-            {error}
-          </p>
+        {helperText && !error && (
+          <p className="mt-2 text-sm text-gray-500">{helperText}</p>
         )}
+
+        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

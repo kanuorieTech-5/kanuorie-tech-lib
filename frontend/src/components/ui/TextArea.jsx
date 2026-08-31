@@ -14,7 +14,7 @@ const TextArea = forwardRef(
       fullWidth = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div className={clsx(fullWidth && "w-full")}>
@@ -22,9 +22,7 @@ const TextArea = forwardRef(
           <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
 
-            {required && (
-              <span className="ml-1 text-red-500">*</span>
-            )}
+            {required && <span className="ml-1 text-red-500">*</span>}
           </label>
         )}
 
@@ -41,29 +39,22 @@ const TextArea = forwardRef(
 
             {
               "border-red-500": error,
-              "cursor-not-allowed opacity-70":
-                disabled,
+              "cursor-not-allowed opacity-70": disabled,
             },
 
-            className
+            className,
           )}
           {...props}
         />
 
         {helperText && !error && (
-          <p className="mt-2 text-sm text-gray-500">
-            {helperText}
-          </p>
+          <p className="mt-2 text-sm text-gray-500">{helperText}</p>
         )}
 
-        {error && (
-          <p className="mt-2 text-sm text-red-500">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 TextArea.displayName = "TextArea";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ArrowRight, LockKeyhole, ShieldCheck, } from "lucide-react";
+import { ArrowRight, LockKeyhole, ShieldCheck } from "lucide-react";
 import { Button, Card } from "../components/common";
 import { Input } from "../components/ui";
 import { useAuth } from "../contexts";
@@ -84,13 +84,11 @@ export default function Login() {
 
       toast.success("Welcome back!");
 
-      const from =
-        location.state?.from;
+      const from = location.state?.from;
 
-      const redirectPath =
-        from?.pathname
-          ? `${from.pathname}${from.search || ""}${from.hash || ""}`
-          : "/";
+      const redirectPath = from?.pathname
+        ? `${from.pathname}${from.search || ""}${from.hash || ""}`
+        : "/";
 
       navigate(redirectPath, {
         replace: true,
@@ -110,7 +108,6 @@ export default function Login() {
   return (
     <section className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-6 py-16">
       <div className="w-full max-w-md">
-
         {/* HEADER */}
 
         <div className="mb-8 text-center">
@@ -133,11 +130,7 @@ export default function Login() {
         {/* LOGIN CARD */}
 
         <Card className="p-6 shadow-xl shadow-slate-200/50 sm:p-8">
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5"
-            noValidate
-          >
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {/* EMAIL */}
 
             <div>
@@ -169,26 +162,24 @@ export default function Login() {
             </div>
 
             {/* PASSWORD */}
-              <div>
-                <Input
-                  label="Password"
-                  name="password"
-                  type="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
-                  required
-                  disabled={loading}
-                  error={errors.password}
-                  aria-invalid={Boolean(errors.password)}
-                  aria-describedby={
-                    errors.password
-                      ? "login-password-error"
-                      : undefined
-                  }
-                />
-              </div>
+            <div>
+              <Input
+                label="Password"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                required
+                disabled={loading}
+                error={errors.password}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={
+                  errors.password ? "login-password-error" : undefined
+                }
+              />
+            </div>
 
             {/* FORGOT PASSWORD */}
 
@@ -210,11 +201,7 @@ export default function Login() {
               disabled={loading}
             >
               {!loading && (
-                <ArrowRight
-                  size={18}
-                  className="mr-2"
-                  aria-hidden="true"
-                />
+                <ArrowRight size={18} className="mr-2" aria-hidden="true" />
               )}
 
               {loading ? "Signing In..." : "Sign In"}
@@ -236,11 +223,7 @@ export default function Login() {
           {/* REGISTER */}
 
           <Link to="/register">
-            <Button
-              variant="outline"
-              fullWidth
-              disabled={loading}
-            >
+            <Button variant="outline" fullWidth disabled={loading}>
               Create an Account
             </Button>
           </Link>
@@ -251,9 +234,7 @@ export default function Login() {
         <div className="mt-6 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
           <LockKeyhole size={14} aria-hidden="true" />
 
-          <span>
-            Your account information is securely protected.
-          </span>
+          <span>Your account information is securely protected.</span>
         </div>
       </div>
     </section>

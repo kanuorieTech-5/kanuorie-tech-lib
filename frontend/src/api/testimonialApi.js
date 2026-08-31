@@ -14,30 +14,19 @@ export const getTestimonials = async () => {
 ========================================== */
 
 export const createTestimonial = async (testimonial) => {
-  const { data } = await API.post(
-    "/testimonials",
-    testimonial
-  );
+  const { data } = await API.post("/testimonials", testimonial);
 
   return data;
 };
 
-export const updateTestimonial = async (
-  id,
-  testimonial
-) => {
-  const { data } = await API.put(
-    `/testimonials/${id}`,
-    testimonial
-  );
+export const updateTestimonial = async (id, testimonial) => {
+  const { data } = await API.put(`/testimonials/${id}`, testimonial);
 
   return data;
 };
 
 export const deleteTestimonial = async (id) => {
-  const { data } = await API.delete(
-    `/testimonials/${id}`
-  );
+  const { data } = await API.delete(`/testimonials/${id}`);
 
   return data;
 };

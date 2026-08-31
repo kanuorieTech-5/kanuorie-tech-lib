@@ -33,8 +33,7 @@ export default function BlogTable({
     {
       key: "createdAt",
       title: "Published",
-      render: (post) =>
-        new Date(post.createdAt).toLocaleDateString(),
+      render: (post) => new Date(post.createdAt).toLocaleDateString(),
     },
     {
       key: "actions",

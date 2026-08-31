@@ -15,13 +15,10 @@ export default function Pagination({
 
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-
       <Button
         variant="outline"
         disabled={currentPage === 1}
-        onClick={() =>
-          onPageChange(currentPage - 1)
-        }
+        onClick={() => onPageChange(currentPage - 1)}
       >
         Previous
       </Button>
@@ -29,14 +26,8 @@ export default function Pagination({
       {pages.map((page) => (
         <Button
           key={page}
-          variant={
-            currentPage === page
-              ? "primary"
-              : "outline"
-          }
-          onClick={() =>
-            onPageChange(page)
-          }
+          variant={currentPage === page ? "primary" : "outline"}
+          onClick={() => onPageChange(page)}
         >
           {page}
         </Button>
@@ -45,9 +36,7 @@ export default function Pagination({
       <Button
         variant="outline"
         disabled={currentPage === totalPages}
-        onClick={() =>
-          onPageChange(currentPage + 1)
-        }
+        onClick={() => onPageChange(currentPage + 1)}
       >
         Next
       </Button>

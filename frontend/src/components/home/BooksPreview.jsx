@@ -36,10 +36,10 @@ export default function BooksPreview() {
         const books = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
-          ? response.data
-          : Array.isArray(response?.data?.books)
-          ? response.data.books
-          : [];
+            ? response.data
+            : Array.isArray(response?.data?.books)
+              ? response.data.books
+              : [];
 
         if (!mounted) return;
 
@@ -47,44 +47,28 @@ export default function BooksPreview() {
          * Keep local resources as fallback/additional
          * resources while the API is available.
          */
-        const combined = [
-          ...defaultResources,
-          ...books,
-        ];
+        const combined = [...defaultResources, ...books];
 
         /*
          * Give every resource a stable ID.
          */
-        const formatted = combined.map(
-          (item, index) => ({
-            ...item,
+        const formatted = combined.map((item, index) => ({
+          ...item,
 
-            resourceId:
-              item._id ||
-              item.id ||
-              item.resourceId ||
-              `${item.title}-${index}`,
-          })
-        );
+          resourceId:
+            item._id || item.id || item.resourceId || `${item.title}-${index}`,
+        }));
 
         /*
          * Remove duplicates.
          */
         const unique = Array.from(
-          new Map(
-            formatted.map((item) => [
-              item.resourceId,
-              item,
-            ])
-          ).values()
+          new Map(formatted.map((item) => [item.resourceId, item])).values(),
         );
 
         setResources(unique);
       } catch (error) {
-        console.error(
-          "Failed to load library resources:",
-          error
-        );
+        console.error("Failed to load library resources:", error);
 
         /*
          * API failure should not break
@@ -92,16 +76,12 @@ export default function BooksPreview() {
          */
         if (mounted) {
           setResources(
-            defaultResources.map(
-              (item, index) => ({
-                ...item,
+            defaultResources.map((item, index) => ({
+              ...item,
 
-                resourceId:
-                  item.id ||
-                  item.resourceId ||
-                  `${item.title}-${index}`,
-              })
-            )
+              resourceId:
+                item.id || item.resourceId || `${item.title}-${index}`,
+            })),
           );
         }
       } finally {
@@ -137,9 +117,7 @@ export default function BooksPreview() {
         {/* Resources */}
         {!loading && resources.length > 0 && (
           <div className="mt-1">
-            <TrendingResources
-              resources={resources.slice(0, 6)}
-            />
+            <TrendingResources resources={resources.slice(0, 6)} />
           </div>
         )}
 

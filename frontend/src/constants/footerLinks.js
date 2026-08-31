@@ -1,49 +1,42 @@
 export const FOOTER_LINKS = {
+  company: [
+    {
+      label: "About Us",
+      path: "/about",
+    },
 
-company: [
+    {
+      label: "Contact",
+      path: "/contact",
+    },
+  ],
 
-  {
-    label:"About Us",
-    path:"/about",
-  },
+  resources: [
+    {
+      label: "Library",
+      path: "/library",
+    },
 
-  {
-    label:"Contact",
-    path:"/contact",
-  },
+    {
+      label: "Courses",
+      path: "/courses",
+    },
 
-],
+    {
+      label: "Blog",
+      path: "/blog",
+    },
+  ],
 
-resources:[
-  {
-    label:"Library",
-    path:"/library",
-  },
+  legal: [
+    {
+      label: "Privacy Policy",
+      path: "/privacy",
+    },
 
-  {
-    label:"Courses",
-    path:"/courses",
-  },
-
-  {
-    label:"Blog",
-    path:"/blog",
-  },
-
-],
-
-legal:[
-
-  {
-    label:"Privacy Policy",
-    path:"/privacy",
-  },
-
-  {
-    label:"Terms & Conditions",
-    path:"/terms",
-  },
-
-],
-
+    {
+      label: "Terms & Conditions",
+      path: "/terms",
+    },
+  ],
 };

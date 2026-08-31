@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext(null);
 
@@ -16,9 +11,7 @@ export function ThemeProvider({ children }) {
     if (savedTheme === "dark") return true;
     if (savedTheme === "light") return false;
 
-    return window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
@@ -53,9 +46,7 @@ export function useTheme() {
   const context = useContext(ThemeContext);
 
   if (!context) {
-    throw new Error(
-      "useTheme must be used inside ThemeProvider"
-    );
+    throw new Error("useTheme must be used inside ThemeProvider");
   }
 
   return context;

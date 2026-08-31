@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import {
-  Card,
-  Button,
-  SectionTitle,
-  Loader,
-} from "../common";
+import { Card, Button, SectionTitle, Loader } from "../common";
 
 import { getCourses } from "../../services";
 
@@ -28,19 +23,16 @@ export default function CoursesPreview() {
         const data = Array.isArray(res)
           ? res
           : Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res?.data?.courses)
-          ? res.data.courses
-          : [];
+            ? res.data
+            : Array.isArray(res?.data?.courses)
+              ? res.data.courses
+              : [];
 
         if (mounted) {
           setCourses(data);
         }
       } catch (error) {
-        console.error(
-          "Failed to load courses:",
-          error
-        );
+        console.error("Failed to load courses:", error);
 
         if (mounted) {
           setCourses([]);
@@ -59,30 +51,21 @@ export default function CoursesPreview() {
     };
   }, []);
 
-  const maxIndex = Math.max(
-    courses.length - VISIBLE,
-    0
-  );
+  const maxIndex = Math.max(courses.length - VISIBLE, 0);
 
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   useEffect(() => {
     if (courses.length <= VISIBLE) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex ? 0 : previous + 1
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
@@ -101,7 +84,6 @@ export default function CoursesPreview() {
   return (
     <section className="bg-slate-900 py-24">
       <div className="px-6">
-
         <SectionTitle
           Badge="KanuorieTech Academy"
           title="Learn Skills That Build Careers"
@@ -115,7 +97,6 @@ export default function CoursesPreview() {
         ) : (
           <>
             <div className="mt-16 overflow-hidden">
-
               <motion.div
                 className="flex"
                 animate={{
@@ -126,14 +107,9 @@ export default function CoursesPreview() {
                   ease: "easeInOut",
                 }}
               >
-
                 {courses.map((course, index) => (
                   <div
-                    key={
-                      course._id ||
-                      course.id ||
-                      index
-                    }
+                    key={course._id || course.id || index}
                     className="
                       w-full
                       shrink-0
@@ -152,11 +128,9 @@ export default function CoursesPreview() {
                         hover:border-cyan-400/40
                       "
                     >
-
                       <img
                         src={
-                          course.thumbnail ||
-                          "/images/course-placeholder.png"
+                          course.thumbnail || "/images/course-placeholder.png"
                         }
                         alt={course.title}
                         className="
@@ -174,32 +148,22 @@ export default function CoursesPreview() {
                       </h3>
 
                       <p className="mb-6 text-slate-400">
-                        {course.description?.slice(
-                          0,
-                          100
-                        ) ||
+                        {course.description?.slice(0, 100) ||
                           "Explore this practical technology course."}
                         ...
                       </p>
 
-                      <Link
-                        to={`/courses/${course._id}`}
-                      >
-                        <Button fullWidth>
-                          View Course
-                        </Button>
+                      <Link to={`/courses/${course._id}`}>
+                        <Button fullWidth>View Course</Button>
                       </Link>
-
                     </Card>
                   </div>
                 ))}
-
               </motion.div>
             </div>
 
             {courses.length > VISIBLE && (
               <div className="mt-10 flex justify-center gap-4">
-
                 <button
                   type="button"
                   onClick={prevSlide}
@@ -233,12 +197,10 @@ export default function CoursesPreview() {
                 >
                   →
                 </button>
-
               </div>
             )}
           </>
         )}
-
       </div>
     </section>
   );

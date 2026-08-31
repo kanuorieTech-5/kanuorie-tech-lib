@@ -1,7 +1,4 @@
-import {
-  Button,
-  Card,
-} from "../ui";
+import { Button, Card } from "../ui";
 
 export default function CourseEnrollmentForm({
   course,
@@ -11,9 +8,7 @@ export default function CourseEnrollmentForm({
 }) {
   return (
     <Card className="p-6">
-      <h3 className="text-xl font-semibold">
-        {course?.title}
-      </h3>
+      <h3 className="text-xl font-semibold">{course?.title}</h3>
 
       <p className="mt-2 text-gray-600 dark:text-gray-300">
         {course?.description}
@@ -25,9 +20,7 @@ export default function CourseEnrollmentForm({
         loading={loading}
         onClick={() => onEnroll?.(course)}
       >
-        {enrolled
-          ? "Already Enrolled"
-          : "Enroll Now"}
+        {enrolled ? "Already Enrolled" : "Enroll Now"}
       </Button>
     </Card>
   );

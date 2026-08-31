@@ -2,9 +2,7 @@ import { Link } from "react-router-dom";
 import { GraduationCap, ArrowRight } from "lucide-react";
 
 export default function LatestCourses({ courses = [] }) {
-  const latestCourses = Array.isArray(courses)
-    ? courses.slice(0, 5)
-    : [];
+  const latestCourses = Array.isArray(courses) ? courses.slice(0, 5) : [];
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -15,13 +13,9 @@ export default function LatestCourses({ courses = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
-              Latest Courses
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900">Latest Courses</h2>
 
-            <p className="text-sm text-slate-500">
-              Recently added courses
-            </p>
+            <p className="text-sm text-slate-500">Recently added courses</p>
           </div>
         </div>
 
@@ -36,14 +30,9 @@ export default function LatestCourses({ courses = [] }) {
 
       {latestCourses.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-          <GraduationCap
-            className="mx-auto mb-3 text-slate-400"
-            size={32}
-          />
+          <GraduationCap className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700">
-            No courses yet
-          </p>
+          <p className="font-medium text-slate-700">No courses yet</p>
 
           <p className="mt-1 text-sm text-slate-500">
             Recently added courses will appear here.
@@ -52,15 +41,9 @@ export default function LatestCourses({ courses = [] }) {
       ) : (
         <div className="divide-y divide-slate-100">
           {latestCourses.map((course, index) => {
-            const id =
-              course._id ||
-              course.id ||
-              index;
+            const id = course._id || course.id || index;
 
-            const title =
-              course.title ||
-              course.name ||
-              "Untitled Course";
+            const title = course.title || course.name || "Untitled Course";
 
             const instructor =
               course.instructor?.name ||
@@ -78,10 +61,7 @@ export default function LatestCourses({ courses = [] }) {
               null;
 
             return (
-              <div
-                key={id}
-                className="flex items-center gap-4 py-4"
-              >
+              <div key={id} className="flex items-center gap-4 py-4">
                 {image ? (
                   <img
                     src={image}

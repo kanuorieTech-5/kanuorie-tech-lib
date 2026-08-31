@@ -1,15 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, TextArea } from "../ui";
 
-export default function ContactForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function ContactForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -31,10 +23,7 @@ export default function ContactForm({
 
   return (
     <Card className="max-w-3xl p-8">
-      <form
-        onSubmit={submit}
-        className="space-y-6"
-      >
+      <form onSubmit={submit} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           <Input
             label="Full Name"
@@ -71,10 +60,7 @@ export default function ContactForm({
           required
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-        >
+        <Button type="submit" loading={loading}>
           Send Message
         </Button>
       </form>

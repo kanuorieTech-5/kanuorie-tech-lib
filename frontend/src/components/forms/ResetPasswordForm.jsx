@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Input } from "../ui";
 
-export default function ResetPasswordForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function ResetPasswordForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",
@@ -24,18 +21,11 @@ export default function ResetPasswordForm({
 
   return (
     <Card className="mx-auto max-w-md p-8">
-      <h2 className="mb-2 text-3xl font-bold">
-        Reset Password
-      </h2>
+      <h2 className="mb-2 text-3xl font-bold">Reset Password</h2>
 
-      <p className="mb-8 text-gray-500">
-        Enter your new password.
-      </p>
+      <p className="mb-8 text-gray-500">Enter your new password.</p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="space-y-5">
         <Input
           label="New Password"
           type="password"
@@ -54,11 +44,7 @@ export default function ResetPasswordForm({
           required
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-          fullWidth
-        >
+        <Button type="submit" loading={loading} fullWidth>
           Reset Password
         </Button>
       </form>

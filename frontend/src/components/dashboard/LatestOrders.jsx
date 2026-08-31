@@ -8,9 +8,7 @@ import {
 } from "lucide-react";
 
 export default function LatestOrders({ orders = [] }) {
-  const latestOrders = Array.isArray(orders)
-    ? orders.slice(0, 5)
-    : [];
+  const latestOrders = Array.isArray(orders) ? orders.slice(0, 5) : [];
 
   const getStatusStyle = (status) => {
     const normalized = String(status || "").toLowerCase();
@@ -22,8 +20,7 @@ export default function LatestOrders({ orders = [] }) {
       normalized === "successful"
     ) {
       return {
-        className:
-          "bg-emerald-50 text-emerald-600",
+        className: "bg-emerald-50 text-emerald-600",
         icon: CheckCircle2,
       };
     }
@@ -34,15 +31,13 @@ export default function LatestOrders({ orders = [] }) {
       normalized === "failed"
     ) {
       return {
-        className:
-          "bg-red-50 text-red-600",
+        className: "bg-red-50 text-red-600",
         icon: XCircle,
       };
     }
 
     return {
-      className:
-        "bg-amber-50 text-amber-600",
+      className: "bg-amber-50 text-amber-600",
       icon: Clock3,
     };
   };
@@ -56,13 +51,9 @@ export default function LatestOrders({ orders = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
-              Latest Orders
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900">Latest Orders</h2>
 
-            <p className="text-sm text-slate-500">
-              Recent customer orders
-            </p>
+            <p className="text-sm text-slate-500">Recent customer orders</p>
           </div>
         </div>
 
@@ -77,14 +68,9 @@ export default function LatestOrders({ orders = [] }) {
 
       {latestOrders.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-          <ShoppingBag
-            className="mx-auto mb-3 text-slate-400"
-            size={32}
-          />
+          <ShoppingBag className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700">
-            No orders yet
-          </p>
+          <p className="font-medium text-slate-700">No orders yet</p>
 
           <p className="mt-1 text-sm text-slate-500">
             New customer orders will appear here.
@@ -93,11 +79,7 @@ export default function LatestOrders({ orders = [] }) {
       ) : (
         <div className="divide-y divide-slate-100">
           {latestOrders.map((order, index) => {
-            const id =
-              order._id ||
-              order.id ||
-              order.orderId ||
-              index;
+            const id = order._id || order.id || order.orderId || index;
 
             const customer =
               order.user?.name ||
@@ -109,30 +91,16 @@ export default function LatestOrders({ orders = [] }) {
               "Customer";
 
             const amount =
-              order.amount ??
-              order.total ??
-              order.totalAmount ??
-              0;
+              order.amount ?? order.total ?? order.totalAmount ?? 0;
 
-            const status =
-              order.status ||
-              order.paymentStatus ||
-              "Pending";
+            const status = order.status || order.paymentStatus || "Pending";
 
-            const {
-              className,
-              icon: StatusIcon,
-            } = getStatusStyle(status);
+            const { className, icon: StatusIcon } = getStatusStyle(status);
 
             return (
-              <div
-                key={id}
-                className="flex items-center gap-4 py-4"
-              >
+              <div key={id} className="flex items-center gap-4 py-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600">
-                  {String(customer)
-                    .charAt(0)
-                    .toUpperCase()}
+                  {String(customer).charAt(0).toUpperCase()}
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -150,9 +118,7 @@ export default function LatestOrders({ orders = [] }) {
                 >
                   <StatusIcon size={13} />
 
-                  {String(status)
-                    .charAt(0)
-                    .toUpperCase() +
+                  {String(status).charAt(0).toUpperCase() +
                     String(status).slice(1)}
                 </span>
               </div>

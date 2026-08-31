@@ -1,16 +1,9 @@
 import clsx from "clsx";
 
-export default function Checkbox({
-  label,
-  className = "",
-  ...props
-}) {
+export default function Checkbox({ label, className = "", ...props }) {
   return (
     <label
-      className={clsx(
-        "flex cursor-pointer items-center gap-3",
-        className
-      )}
+      className={clsx("flex cursor-pointer items-center gap-3", className)}
     >
       <input
         type="checkbox"

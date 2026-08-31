@@ -9,33 +9,18 @@ import {
 
 import ChartCard from "./ChartCard";
 
-export default function CustomRadarChart({
-  title,
-  subtitle,
-  data,
-}) {
+export default function CustomRadarChart({ title, subtitle, data }) {
   return (
-    <ChartCard
-      title={title}
-      subtitle={subtitle}
-    >
-      <ResponsiveContainer
-        width="100%"
-        height={320}
-      >
+    <ChartCard title={title} subtitle={subtitle}>
+      <ResponsiveContainer width="100%" height={320}>
         <RadarChart data={data}>
           <PolarGrid />
 
-          <PolarAngleAxis
-            dataKey="subject"
-          />
+          <PolarAngleAxis dataKey="subject" />
 
           <PolarRadiusAxis />
 
-          <Radar
-            dataKey="value"
-            fillOpacity={0.5}
-          />
+          <Radar dataKey="value" fillOpacity={0.5} />
         </RadarChart>
       </ResponsiveContainer>
     </ChartCard>

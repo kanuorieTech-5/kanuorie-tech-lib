@@ -30,7 +30,7 @@ export default function Badge({
         variants[variant],
         sizes[size],
         rounded ? "rounded-full" : "rounded-md",
-        className
+        className,
       )}
     >
       {children}

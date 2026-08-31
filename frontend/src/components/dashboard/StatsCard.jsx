@@ -9,31 +9,15 @@ export default function StatsCard({
 }) {
   return (
     <Card className="flex items-center justify-between">
-
       <div>
+        <p className="text-sm text-gray-500">{title}</p>
 
-        <p className="text-sm text-gray-500">
-          {title}
-        </p>
+        <h3 className="mt-2 text-3xl font-bold">{value}</h3>
 
-        <h3 className="mt-2 text-3xl font-bold">
-          {value}
-        </h3>
-
-        {change && (
-          <p className="mt-2 text-sm text-green-600">
-            {change}
-          </p>
-        )}
-
+        {change && <p className="mt-2 text-sm text-green-600">{change}</p>}
       </div>
 
-      <div
-        className={`rounded-xl p-4 text-white ${color}`}
-      >
-        {icon}
-      </div>
-
+      <div className={`rounded-xl p-4 text-white ${color}`}>{icon}</div>
     </Card>
   );
 }

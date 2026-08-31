@@ -28,10 +28,7 @@ export const getProduct = async (id) => {
  * Create a product
  */
 export const createProduct = async (productData) => {
-  const { data } = await API.post(
-    "/products",
-    productData
-  );
+  const { data } = await API.post("/products", productData);
 
   return data;
 };
@@ -39,14 +36,8 @@ export const createProduct = async (productData) => {
 /**
  * Update a product
  */
-export const updateProduct = async (
-  id,
-  productData
-) => {
-  const { data } = await API.put(
-    `/products/${id}`,
-    productData
-  );
+export const updateProduct = async (id, productData) => {
+  const { data } = await API.put(`/products/${id}`, productData);
 
   return data;
 };
@@ -55,9 +46,7 @@ export const updateProduct = async (
  * Delete a product
  */
 export const deleteProduct = async (id) => {
-  const { data } = await API.delete(
-    `/products/${id}`
-  );
+  const { data } = await API.delete(`/products/${id}`);
 
   return data;
 };
@@ -66,9 +55,7 @@ export const deleteProduct = async (id) => {
  * Get featured products
  */
 export const getFeaturedProducts = async () => {
-  const { data } = await API.get(
-    "/products/featured"
-  );
+  const { data } = await API.get("/products/featured");
 
   return data;
 };
@@ -77,9 +64,7 @@ export const getFeaturedProducts = async () => {
  * Get product statistics
  */
 export const getProductStats = async () => {
-  const { data } = await API.get(
-    "/products/stats"
-  );
+  const { data } = await API.get("/products/stats");
 
   return data;
 };

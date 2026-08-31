@@ -10,7 +10,7 @@ export default function Divider({
       <div
         className={clsx(
           "mx-2 h-full min-h-6 w-px bg-gray-200 dark:bg-slate-700",
-          className
+          className,
         )}
       />
     );
@@ -21,19 +21,14 @@ export default function Divider({
       <hr
         className={clsx(
           "my-6 border-gray-200 dark:border-slate-700",
-          className
+          className,
         )}
       />
     );
   }
 
   return (
-    <div
-      className={clsx(
-        "my-6 flex items-center",
-        className
-      )}
-    >
+    <div className={clsx("my-6 flex items-center", className)}>
       <div className="h-px flex-1 bg-gray-200 dark:bg-slate-700" />
 
       <span className="mx-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">

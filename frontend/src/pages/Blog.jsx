@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  CalendarDays,
-  ArrowRight,
-  BookOpen,
-} from "lucide-react";
+import { CalendarDays, ArrowRight, BookOpen } from "lucide-react";
 
 import {
   Card,
@@ -16,10 +12,7 @@ import {
 
 import { SearchBar } from "../components/layout";
 
-import {
-  Newsletter,
-  CTA,
-} from "../components/home";
+import { Newsletter, CTA } from "../components/home";
 
 import { getBlogs } from "../services";
 
@@ -63,8 +56,7 @@ const getBlogId = (blog) => {
 };
 
 const getExcerpt = (blog, length = null) => {
-  const excerpt =
-    blog?.excerpt?.trim() || FALLBACK_EXCERPT;
+  const excerpt = blog?.excerpt?.trim() || FALLBACK_EXCERPT;
 
   if (!length || excerpt.length <= length) {
     return excerpt;
@@ -150,14 +142,11 @@ export default function Blog() {
     }
 
     return blogs.filter((blog) => {
-      const title =
-        blog?.title?.toLowerCase() || "";
+      const title = blog?.title?.toLowerCase() || "";
 
-      const excerpt =
-        blog?.excerpt?.toLowerCase() || "";
+      const excerpt = blog?.excerpt?.toLowerCase() || "";
 
-      const content =
-        blog?.content?.toLowerCase() || "";
+      const content = blog?.content?.toLowerCase() || "";
 
       return (
         title.includes(query) ||
@@ -177,23 +166,14 @@ export default function Blog() {
      PAGINATION
   ========================================== */
 
-  const totalArticles = Math.max(
-    filteredBlogs.length - 1,
-    0
-  );
+  const totalArticles = Math.max(filteredBlogs.length - 1, 0);
 
-  const totalPages = Math.ceil(
-    totalArticles / POSTS_PER_PAGE
-  );
+  const totalPages = Math.ceil(totalArticles / POSTS_PER_PAGE);
 
   const currentBlogs = useMemo(() => {
-    const startIndex =
-      1 + (page - 1) * POSTS_PER_PAGE;
+    const startIndex = 1 + (page - 1) * POSTS_PER_PAGE;
 
-    return filteredBlogs.slice(
-      startIndex,
-      startIndex + POSTS_PER_PAGE
-    );
+    return filteredBlogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
   }, [filteredBlogs, page]);
 
   /* ==========================================
@@ -274,7 +254,6 @@ export default function Blog() {
         />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center">
-
           <span
             className="
               inline-flex
@@ -304,10 +283,7 @@ export default function Blog() {
               lg:text-7xl
             "
           >
-            KanuorieTech{" "}
-            <span className="text-blue-400">
-              Blog
-            </span>
+            KanuorieTech <span className="text-blue-400">Blog</span>
           </h1>
 
           <p
@@ -320,11 +296,9 @@ export default function Blog() {
               text-slate-300
             "
           >
-            Discover practical programming tutorials,
-            software engineering tips, industry news,
-            career advice and technology insights.
+            Discover practical programming tutorials, software engineering tips,
+            industry news, career advice and technology insights.
           </p>
-
         </div>
       </section>
 
@@ -334,11 +308,7 @@ export default function Blog() {
 
       <section className="bg-white py-12 lg:py-14">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-
-          <label
-            htmlFor="blog-search"
-            className="sr-only"
-          >
+          <label htmlFor="blog-search" className="sr-only">
             Search articles
           </label>
 
@@ -348,7 +318,6 @@ export default function Blog() {
             onChange={setSearch}
             placeholder="Search articles..."
           />
-
         </div>
       </section>
 
@@ -359,11 +328,7 @@ export default function Blog() {
       {featuredPost ? (
         <section className="bg-slate-50 py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-
-            <SectionTitle
-              title="Featured Article"
-              subtitle="Editor's pick"
-            />
+            <SectionTitle title="Featured Article" subtitle="Editor's pick" />
 
             <Card
               className="
@@ -375,19 +340,12 @@ export default function Blog() {
                 lg:grid-cols-2
               "
             >
-
               {/* IMAGE */}
 
               <div className="overflow-hidden">
                 <img
-                  src={
-                    featuredPost?.image ||
-                    FALLBACK_IMAGE
-                  }
-                  alt={
-                    featuredPost?.title ||
-                    "Featured article"
-                  }
+                  src={featuredPost?.image || FALLBACK_IMAGE}
+                  alt={featuredPost?.title || "Featured article"}
                   className="
                     h-72
                     w-full
@@ -397,8 +355,7 @@ export default function Blog() {
                   loading="eager"
                   onError={(event) => {
                     event.currentTarget.onerror = null;
-                    event.currentTarget.src =
-                      FALLBACK_IMAGE;
+                    event.currentTarget.src = FALLBACK_IMAGE;
                   }}
                 />
               </div>
@@ -406,7 +363,6 @@ export default function Blog() {
               {/* CONTENT */}
 
               <div className="flex flex-col p-8 lg:p-10">
-
                 <div
                   className="
                     mb-6
@@ -418,20 +374,13 @@ export default function Blog() {
                 >
                   <CalendarDays size={18} />
 
-                  <time
-                    dateTime={
-                      featuredPost?.createdAt || undefined
-                    }
-                  >
-                    {formatDate(
-                      featuredPost?.createdAt
-                    )}
+                  <time dateTime={featuredPost?.createdAt || undefined}>
+                    {formatDate(featuredPost?.createdAt)}
                   </time>
                 </div>
 
                 <h2 className="text-3xl font-bold text-slate-900 lg:text-4xl">
-                  {featuredPost?.title ||
-                    "Featured Article"}
+                  {featuredPost?.title || "Featured Article"}
                 </h2>
 
                 <p className="mt-6 leading-8 text-slate-600">
@@ -440,30 +389,22 @@ export default function Blog() {
 
                 {getBlogId(featuredPost) && (
                   <Link
-                    to={`/blog/${getBlogId(
-                      featuredPost
-                    )}`}
+                    to={`/blog/${getBlogId(featuredPost)}`}
                     className="mt-10 inline-flex"
                   >
                     <Button>
                       Read Article
-                      <ArrowRight
-                        className="ml-2"
-                        size={18}
-                      />
+                      <ArrowRight className="ml-2" size={18} />
                     </Button>
                   </Link>
                 )}
-
               </div>
-
             </Card>
           </div>
         </section>
       ) : (
         <section className="bg-slate-50 py-20">
           <div className="mx-auto max-w-4xl px-6">
-
             <Card className="p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900">
                 No articles found
@@ -483,7 +424,6 @@ export default function Blog() {
                 </Button>
               )}
             </Card>
-
           </div>
         </section>
       )}
@@ -494,16 +434,13 @@ export default function Blog() {
 
       {currentBlogs.length > 0 && (
         <section className="bg-white py-24">
-
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-
             <SectionTitle
               title="Latest Articles"
               subtitle="Stay updated with technology"
             />
 
             <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-
               {currentBlogs.map((blog) => {
                 const blogId = getBlogId(blog);
 
@@ -511,9 +448,7 @@ export default function Blog() {
                   return null;
                 }
 
-                const title =
-                  blog?.title?.trim() ||
-                  "Technology Article";
+                const title = blog?.title?.trim() || "Technology Article";
 
                 return (
                   <Card
@@ -526,15 +461,11 @@ export default function Blog() {
                       bg-white
                     "
                   >
-
                     {/* IMAGE */}
 
                     <div className="overflow-hidden">
                       <img
-                        src={
-                          blog?.image ||
-                          FALLBACK_IMAGE
-                        }
+                        src={blog?.image || FALLBACK_IMAGE}
                         alt={title}
                         loading="lazy"
                         decoding="async"
@@ -548,8 +479,7 @@ export default function Blog() {
                         "
                         onError={(event) => {
                           event.currentTarget.onerror = null;
-                          event.currentTarget.src =
-                            FALLBACK_IMAGE;
+                          event.currentTarget.src = FALLBACK_IMAGE;
                         }}
                       />
                     </div>
@@ -557,7 +487,6 @@ export default function Blog() {
                     {/* CONTENT */}
 
                     <div className="p-1">
-
                       {/* DATE */}
 
                       <div
@@ -573,15 +502,8 @@ export default function Blog() {
                       >
                         <CalendarDays size={16} />
 
-                        <time
-                          dateTime={
-                            blog?.createdAt ||
-                            undefined
-                          }
-                        >
-                          {formatDate(
-                            blog?.createdAt
-                          )}
+                        <time dateTime={blog?.createdAt || undefined}>
+                          {formatDate(blog?.createdAt)}
                         </time>
                       </div>
 
@@ -599,21 +521,13 @@ export default function Blog() {
 
                       {/* ACTION */}
 
-                      <Link
-                        to={`/blog/${blogId}`}
-                        className="block"
-                      >
-                        <Button fullWidth>
-                          Read More
-                        </Button>
+                      <Link to={`/blog/${blogId}`} className="block">
+                        <Button fullWidth>Read More</Button>
                       </Link>
-
                     </div>
-
                   </Card>
                 );
               })}
-
             </div>
 
             {/* PAGINATION */}
@@ -627,7 +541,6 @@ export default function Blog() {
                 />
               </div>
             )}
-
           </div>
         </section>
       )}
@@ -639,14 +552,11 @@ export default function Blog() {
       {featuredPost && currentBlogs.length === 0 && (
         <section className="bg-white pb-20">
           <div className="mx-auto max-w-4xl px-6 text-center">
-
             {filteredBlogs.length === 1 && (
               <p className="text-slate-500">
-                This is currently the only article
-                available.
+                This is currently the only article available.
               </p>
             )}
-
           </div>
         </section>
       )}

@@ -16,9 +16,7 @@ export default function Select({
         <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
           {label}
 
-          {required && (
-            <span className="ml-1 text-red-500">*</span>
-          )}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </label>
       )}
 
@@ -35,31 +33,22 @@ export default function Select({
             "border-red-500": error,
           },
 
-          className
+          className,
         )}
         {...props}
       >
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
 
       {helperText && !error && (
-        <p className="mt-2 text-sm text-gray-500">
-          {helperText}
-        </p>
+        <p className="mt-2 text-sm text-gray-500">{helperText}</p>
       )}
 
-      {error && (
-        <p className="mt-2 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
     </div>
   );
 }

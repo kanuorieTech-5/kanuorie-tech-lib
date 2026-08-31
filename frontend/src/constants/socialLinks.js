@@ -1,5 +1,4 @@
 export const SOCIAL_LINKS = {
-
   LINKEDIN: "https://linkedin.com",
 
   FACEBOOK: "https://facebook.com",
@@ -9,5 +8,4 @@ export const SOCIAL_LINKS = {
   TWITTER: "https://twitter.com",
 
   YOUTUBE: "https://youtube.com",
-
 };

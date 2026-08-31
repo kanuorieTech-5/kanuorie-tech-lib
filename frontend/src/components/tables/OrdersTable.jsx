@@ -22,8 +22,7 @@ export default function OrdersTable({
     {
       key: "customer",
       title: "Customer",
-      render: (order) =>
-        order.user?.name,
+      render: (order) => order.user?.name,
     },
     {
       key: "amount",
@@ -32,11 +31,7 @@ export default function OrdersTable({
     {
       key: "status",
       title: "Status",
-      render: (order) => (
-        <Badge>
-          {order.status}
-        </Badge>
-      ),
+      render: (order) => <Badge>{order.status}</Badge>,
     },
   ];
 

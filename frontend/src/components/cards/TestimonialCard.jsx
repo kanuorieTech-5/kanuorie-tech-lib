@@ -1,24 +1,15 @@
 import { Card, Avatar } from "../ui";
 
-export default function TestimonialCard({
-  testimonial,
-}) {
+export default function TestimonialCard({ testimonial }) {
   return (
     <Card className="p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="flex items-center gap-4">
-        <Avatar
-          src={testimonial.avatar}
-          alt={testimonial.name}
-        />
+        <Avatar src={testimonial.avatar} alt={testimonial.name} />
 
         <div>
-          <h4 className="font-semibold">
-            {testimonial.name}
-          </h4>
+          <h4 className="font-semibold">{testimonial.name}</h4>
 
-          <p className="text-sm text-gray-500">
-            {testimonial.position}
-          </p>
+          <p className="text-sm text-gray-500">{testimonial.position}</p>
         </div>
       </div>
 

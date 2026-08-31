@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import {
-  Button,
-  Card,
-  Loader,
-} from "../components/common";
+import { Button, Card, Loader } from "../components/common";
 
 import { getProduct } from "../services";
 
@@ -27,10 +23,7 @@ export default function ProductDetails() {
 
         setProduct(res?.data || null);
       } catch (error) {
-        console.error(
-          "Failed to load product:",
-          error
-        );
+        console.error("Failed to load product:", error);
 
         setProduct(null);
       } finally {
@@ -56,9 +49,7 @@ export default function ProductDetails() {
       product object to the cart.
     */
 
-    toast.success(
-      `${product.title} added to cart.`
-    );
+    toast.success(`${product.title} added to cart.`);
   };
 
   /* ==========================================
@@ -73,9 +64,7 @@ export default function ProductDetails() {
       here once the cart/payment system is ready.
     */
 
-    toast.success(
-      "Checkout will be available soon."
-    );
+    toast.success("Checkout will be available soon.");
   };
 
   /* ==========================================
@@ -97,27 +86,18 @@ export default function ProductDetails() {
   if (!product) {
     return (
       <section className="mx-auto max-w-4xl px-6 py-20">
-
         <Card className="p-12 text-center">
-
-          <h1 className="mb-4 text-3xl font-bold">
-            Product not found
-          </h1>
+          <h1 className="mb-4 text-3xl font-bold">Product not found</h1>
 
           <p className="mb-8 text-gray-600">
-            The product you are looking for may
-            have been removed or is no longer
-            available.
+            The product you are looking for may have been removed or is no
+            longer available.
           </p>
 
           <Link to="/products">
-            <Button>
-              Back to Products
-            </Button>
+            <Button>Back to Products</Button>
           </Link>
-
         </Card>
-
       </section>
     );
   }
@@ -126,9 +106,7 @@ export default function ProductDetails() {
      PRODUCT DATA
   ========================================== */
 
-  const features = Array.isArray(
-    product.features
-  )
+  const features = Array.isArray(product.features)
     ? product.features.filter(Boolean)
     : [];
 
@@ -140,46 +118,33 @@ export default function ProductDetails() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-
       {/* BACK LINK */}
 
       <div className="mb-8">
-
         <Link
           to="/products"
           className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
         >
           ← Back to Products
         </Link>
-
       </div>
 
       {/* PRODUCT */}
 
       <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
-
         {/* PRODUCT IMAGE */}
 
         <div>
-
           <img
-            src={
-              product.image ||
-              "/images/product-placeholder.jpg"
-            }
-            alt={
-              product.title ||
-              "Product"
-            }
+            src={product.image || "/images/product-placeholder.jpg"}
+            alt={product.title || "Product"}
             className="w-full rounded-2xl object-cover shadow-xl"
           />
-
         </div>
 
         {/* PRODUCT INFORMATION */}
 
         <div>
-
           {/* CATEGORY */}
 
           {product.category && (
@@ -213,71 +178,42 @@ export default function ProductDetails() {
           {/* ACTIONS */}
 
           <div className="flex flex-wrap gap-4">
+            <Button onClick={addToCart}>Add to Cart</Button>
 
-            <Button onClick={addToCart}>
-              Add to Cart
-            </Button>
-
-            <Button
-              variant="secondary"
-              onClick={handleBuyNow}
-            >
+            <Button variant="secondary" onClick={handleBuyNow}>
               Buy Now
             </Button>
-
           </div>
-
         </div>
-
       </div>
 
       {/* FEATURES */}
 
       {features.length > 0 && (
         <section className="mt-20">
-
           <div className="mb-8">
-
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
               Product Information
             </p>
 
-            <h2 className="text-3xl font-bold">
-              Features
-            </h2>
-
+            <h2 className="text-3xl font-bold">Features</h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
+            {features.map((feature, index) => (
+              <Card key={`${feature}-${index}`} className="p-6">
+                <div className="flex gap-4">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
+                    {index + 1}
+                  </span>
 
-            {features.map(
-              (feature, index) => (
-                <Card
-                  key={`${feature}-${index}`}
-                  className="p-6"
-                >
-
-                  <div className="flex gap-4">
-
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
-                      {index + 1}
-                    </span>
-
-                    <p className="leading-7 text-gray-700">
-                      {feature}
-                    </p>
-
-                  </div>
-
-                </Card>
-              )
-            )}
-
+                  <p className="leading-7 text-gray-700">{feature}</p>
+                </div>
+              </Card>
+            ))}
           </div>
-
         </section>
       )}
-
     </section>
   );
 }

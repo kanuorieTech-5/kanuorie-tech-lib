@@ -11,10 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import {
-  Card,
-  SectionTitle,
-} from "../common";
+import { Card, SectionTitle } from "../common";
 
 const features = [
   {
@@ -56,11 +53,9 @@ const features = [
 ];
 
 export default function Features() {
-  const [currentIndex, setCurrentIndex] =
-    useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [isPaused, setIsPaused] =
-    useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const getVisibleCards = () => {
     if (typeof window === "undefined") {
@@ -78,8 +73,7 @@ export default function Features() {
     return 3;
   };
 
-  const [visibleCards, setVisibleCards] =
-    useState(getVisibleCards);
+  const [visibleCards, setVisibleCards] = useState(getVisibleCards);
 
   /*
   ==========================================
@@ -92,23 +86,14 @@ export default function Features() {
       setVisibleCards(getVisibleCards());
     };
 
-    window.addEventListener(
-      "resize",
-      handleResize
-    );
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const maxIndex = Math.max(
-    features.length - visibleCards,
-    0
-  );
+  const maxIndex = Math.max(features.length - visibleCards, 0);
 
   /*
   ==========================================
@@ -117,9 +102,7 @@ export default function Features() {
   */
 
   const nextSlide = () => {
-    setCurrentIndex((prev) =>
-      prev >= maxIndex ? 0 : prev + 1
-    );
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
   /*
@@ -129,9 +112,7 @@ export default function Features() {
   */
 
   const prevSlide = () => {
-    setCurrentIndex((prev) =>
-      prev <= 0 ? maxIndex : prev - 1
-    );
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   };
 
   /*
@@ -141,27 +122,18 @@ export default function Features() {
   */
 
   useEffect(() => {
-    if (
-      isPaused ||
-      features.length <= visibleCards
-    ) {
+    if (isPaused || features.length <= visibleCards) {
       return;
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) =>
-        prev >= maxIndex ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, 4000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [
-    isPaused,
-    maxIndex,
-    visibleCards,
-  ]);
+  }, [isPaused, maxIndex, visibleCards]);
 
   /*
   ==========================================
@@ -177,9 +149,7 @@ export default function Features() {
 
   return (
     <section className="bg-slate-900 py-24">
-
       <div className="px-6 text-center text-white">
-
         <SectionTitle
           center
           badge="Why Choose Us"
@@ -189,69 +159,54 @@ export default function Features() {
 
         <div
           className="relative mt-16"
-          onMouseEnter={() =>
-            setIsPaused(true)
-          }
-          onMouseLeave={() =>
-            setIsPaused(false)
-          }
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
-
           {/* SLIDER */}
 
           <div className="overflow-hidden">
-
             <motion.div
               className="flex"
               animate={{
-                x: `-${
-                  currentIndex *
-                  (100 / visibleCards)
-                }%`,
+                x: `-${currentIndex * (100 / visibleCards)}%`,
               }}
               transition={{
                 duration: 0.7,
                 ease: "easeInOut",
               }}
             >
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
 
-              {features.map(
-                (feature, index) => {
-                  const Icon =
-                    feature.icon;
-
-                  return (
-                    <div
-                      key={feature.title}
-                      className="shrink-0 px-3"
-                      style={{
-                        width: `${100 / visibleCards}%`,
+                return (
+                  <div
+                    key={feature.title}
+                    className="shrink-0 px-3"
+                    style={{
+                      width: `${100 / visibleCards}%`,
+                    }}
+                  >
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: 30,
                       }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.08,
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.2,
+                      }}
+                      className="h-full"
                     >
-
-                      <motion.div
-                        initial={{
-                          opacity: 0,
-                          y: 30,
-                        }}
-                        whileInView={{
-                          opacity: 1,
-                          y: 0,
-                        }}
-                        transition={{
-                          duration: 0.5,
-                          delay:
-                            index * 0.08,
-                        }}
-                        viewport={{
-                          once: true,
-                          amount: 0.2,
-                        }}
-                        className="h-full"
-                      >
-
-                        <Card
-                          className="
+                      <Card
+                        className="
                             h-full
                             border-white/10
                             bg-white/5
@@ -262,41 +217,33 @@ export default function Features() {
                             hover:border-cyan-400/40
                             hover:-translate-y-1
                           "
-                        >
-
-                          <Icon
-                            size={42}
-                            className="
+                      >
+                        <Icon
+                          size={42}
+                          className="
                               mb-6
                               text-cyan-400
                             "
-                          />
+                        />
 
-                          <h3 className="mb-3 text-xl font-semibold text-white">
-                            {feature.title}
-                          </h3>
+                        <h3 className="mb-3 text-xl font-semibold text-white">
+                          {feature.title}
+                        </h3>
 
-                          <p className="leading-7 text-slate-400">
-                            {feature.description}
-                          </p>
-
-                        </Card>
-
-                      </motion.div>
-
-                    </div>
-                  );
-                }
-              )}
-
+                        <p className="leading-7 text-slate-400">
+                          {feature.description}
+                        </p>
+                      </Card>
+                    </motion.div>
+                  </div>
+                );
+              })}
             </motion.div>
-
           </div>
 
           {/* CONTROLS */}
 
-          {features.length >
-            visibleCards && (
+          {features.length > visibleCards && (
             <>
               <button
                 type="button"
@@ -357,27 +304,20 @@ export default function Features() {
               </button>
             </>
           )}
-
         </div>
 
         {/* DOTS */}
 
-        {features.length >
-          visibleCards && (
+        {features.length > visibleCards && (
           <div className="mt-8 flex justify-center gap-2">
-
             {Array.from({
               length: maxIndex + 1,
             }).map((_, index) => (
               <button
                 key={index}
                 type="button"
-                onClick={() =>
-                  setCurrentIndex(index)
-                }
-                aria-label={`Go to feature slide ${
-                  index + 1
-                }`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to feature slide ${index + 1}`}
                 className={`
                   h-2
                   rounded-full
@@ -391,12 +331,9 @@ export default function Features() {
                 `}
               />
             ))}
-
           </div>
         )}
-
       </div>
-
     </section>
   );
 }

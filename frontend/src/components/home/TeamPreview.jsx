@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Loader, Card, SectionTitle, } from "../common";
+import { Loader, Card, SectionTitle } from "../common";
 import { getTeamMembers } from "../../services";
 import CEOImage from "../../assets/CEO.jpeg";
 
@@ -16,22 +16,19 @@ const FALLBACK_TEAM = [
     _id: "fallback-2",
     name: "Development Team",
     position: "Software Development",
-    image:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+    image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
   },
   {
     _id: "fallback-3",
     name: "Creative Team",
     position: "Design & Digital Experience",
-    image:
-      "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+    image: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
   },
   {
     _id: "fallback-4",
     name: "Education Team",
     position: "Technology & Learning",
-    image:
-      "https://cdn-icons-png.flaticon.com/512/2721/2721296.png",
+    image: "https://cdn-icons-png.flaticon.com/512/2721/2721296.png",
   },
 ];
 
@@ -58,19 +55,16 @@ export default function TeamPreview() {
         const data = Array.isArray(res)
           ? res
           : Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res?.data?.team)
-          ? res.data.team
-          : [];
+            ? res.data
+            : Array.isArray(res?.data?.team)
+              ? res.data.team
+              : [];
 
         if (mounted) {
           setTeam(data);
         }
       } catch (error) {
-        console.error(
-          "Failed to load team:",
-          error
-        );
+        console.error("Failed to load team:", error);
 
         if (mounted) {
           setTeam([]);
@@ -95,10 +89,7 @@ export default function TeamPreview() {
   ==========================================
   */
 
-  const members =
-    team.length > 0
-      ? team
-      : FALLBACK_TEAM;
+  const members = team.length > 0 ? team : FALLBACK_TEAM;
 
   /*
   ==========================================
@@ -122,24 +113,17 @@ export default function TeamPreview() {
     return 4;
   };
 
-  const [visibleCards, setVisibleCards] =
-    useState(getVisibleCards);
+  const [visibleCards, setVisibleCards] = useState(getVisibleCards);
 
   useEffect(() => {
     const handleResize = () => {
       setVisibleCards(getVisibleCards());
     };
 
-    window.addEventListener(
-      "resize",
-      handleResize
-    );
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -149,10 +133,7 @@ export default function TeamPreview() {
   ==========================================
   */
 
-  const maxIndex = Math.max(
-    members.length - visibleCards,
-    0
-  );
+  const maxIndex = Math.max(members.length - visibleCards, 0);
 
   /*
   ==========================================
@@ -161,9 +142,7 @@ export default function TeamPreview() {
   */
 
   const nextSlide = () => {
-    setCurrentIndex((prev) =>
-      prev >= maxIndex ? 0 : prev + 1
-    );
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
   /*
@@ -173,9 +152,7 @@ export default function TeamPreview() {
   */
 
   const prevSlide = () => {
-    setCurrentIndex((prev) =>
-      prev <= 0 ? maxIndex : prev - 1
-    );
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   };
 
   /*
@@ -190,20 +167,13 @@ export default function TeamPreview() {
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) =>
-        prev >= maxIndex ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, 4000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [
-    isPaused,
-    maxIndex,
-    members.length,
-    visibleCards,
-  ]);
+  }, [isPaused, maxIndex, members.length, visibleCards]);
 
   /*
   ==========================================
@@ -242,7 +212,6 @@ export default function TeamPreview() {
   return (
     <section className="bg-slate-900 py-24 text-white">
       <div className="px-6">
-
         <SectionTitle
           Badge="Our Team"
           title="Meet The People Behind KanuorieTech"
@@ -260,61 +229,47 @@ export default function TeamPreview() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-
           {/* SLIDER */}
 
           <div className="overflow-hidden">
-
             <motion.div
               className="flex"
               animate={{
-                x: `-${
-                  currentIndex *
-                  (100 / visibleCards)
-                }%`,
+                x: `-${currentIndex * (100 / visibleCards)}%`,
               }}
               transition={{
                 duration: 0.7,
                 ease: "easeInOut",
               }}
             >
-
-              {members.map(
-                (member, index) => (
-                  <div
-                    key={
-                      member._id ||
-                      member.id ||
-                      `${member.name}-${index}`
-                    }
-                    className="shrink-0 px-3"
-                    style={{
-                      width: `${100 / visibleCards}%`,
+              {members.map((member, index) => (
+                <div
+                  key={member._id || member.id || `${member.name}-${index}`}
+                  className="shrink-0 px-3"
+                  style={{
+                    width: `${100 / visibleCards}%`,
+                  }}
+                >
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      y: 30,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.2,
                     }}
                   >
-
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        y: 30,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        delay:
-                          index * 0.08,
-                      }}
-                      viewport={{
-                        once: true,
-                        amount: 0.2,
-                      }}
-                    >
-
-                      <Card
-                        className="
+                    <Card
+                      className="
                           h-full
                           overflow-hidden
                           border-white/10
@@ -323,22 +278,17 @@ export default function TeamPreview() {
                           text-center
                           backdrop-blur-xl
                         "
-                      >
-
-                        <img
-                          src={
-                            member.image ||
-                            "/images/team-placeholder.png"
-                          }
-                          alt={
-                            member.name
-                              ? `${member.name} - ${
-                                  member.position ||
-                                  "KanuorieTech team member"
-                                }`
-                              : "KanuorieTech team member"
-                          }
-                          className="
+                    >
+                      <img
+                        src={member.image || "/images/team-placeholder.png"}
+                        alt={
+                          member.name
+                            ? `${member.name} - ${
+                                member.position || "KanuorieTech team member"
+                              }`
+                            : "KanuorieTech team member"
+                        }
+                        className="
                             h-64
                             w-full
                             object-cover
@@ -346,39 +296,31 @@ export default function TeamPreview() {
                             duration-500
                             hover:scale-105
                           "
-                          loading="lazy"
-                        />
+                        loading="lazy"
+                      />
 
-                        <div className="p-6">
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold text-white">
+                          {member.name}
+                        </h3>
 
-                          <h3 className="text-xl font-bold text-white">
-                            {member.name}
-                          </h3>
+                        {member.position && (
+                          <p className="mt-2 text-cyan-400">
+                            {member.position}
+                          </p>
+                        )}
 
-                          {member.position && (
-                            <p className="mt-2 text-cyan-400">
-                              {member.position}
-                            </p>
-                          )}
-
-                          {member.bio && (
-                            <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-400">
-                              {member.bio}
-                            </p>
-                          )}
-
-                        </div>
-
-                      </Card>
-
-                    </motion.div>
-
-                  </div>
-                )
-              )}
-
+                        {member.bio && (
+                          <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-400">
+                            {member.bio}
+                          </p>
+                        )}
+                      </div>
+                    </Card>
+                  </motion.div>
+                </div>
+              ))}
             </motion.div>
-
           </div>
 
           {/* PREVIOUS */}
@@ -446,26 +388,20 @@ export default function TeamPreview() {
               </button>
             </>
           )}
-
         </div>
 
         {/* DOTS */}
 
         {members.length > visibleCards && (
           <div className="mt-8 flex justify-center gap-2">
-
             {Array.from({
               length: maxIndex + 1,
             }).map((_, index) => (
               <button
                 key={index}
                 type="button"
-                onClick={() =>
-                  setCurrentIndex(index)
-                }
-                aria-label={`Go to team slide ${
-                  index + 1
-                }`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to team slide ${index + 1}`}
                 className={`
                   h-2
                   rounded-full
@@ -479,10 +415,8 @@ export default function TeamPreview() {
                 `}
               />
             ))}
-
           </div>
         )}
-
       </div>
     </section>
   );

@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 const AppContext = createContext(null);
 
@@ -50,8 +45,7 @@ export const AppProvider = ({ children }) => {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  const toggleSidebar = () =>
-    setSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   /* =========================
       MODAL
@@ -97,20 +91,10 @@ export const AppProvider = ({ children }) => {
       pageTitle,
       setPageTitle,
     }),
-    [
-      loading,
-      sidebarOpen,
-      search,
-      modal,
-      pageTitle,
-    ]
+    [loading, sidebarOpen, search, modal, pageTitle],
   );
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export const useApp = () => useContext(AppContext);

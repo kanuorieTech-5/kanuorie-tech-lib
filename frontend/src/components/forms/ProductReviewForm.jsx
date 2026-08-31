@@ -1,15 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Select,
-  TextArea,
-} from "../ui";
+import { Button, Card, Select, TextArea } from "../ui";
 
-export default function ProductReviewForm({
-  loading = false,
-  onSubmit,
-}) {
+export default function ProductReviewForm({ loading = false, onSubmit }) {
   const [review, setReview] = useState({
     rating: "5",
     comment: "",
@@ -52,10 +44,7 @@ export default function ProductReviewForm({
           onChange={change}
         />
 
-        <Button
-          loading={loading}
-          type="submit"
-        >
+        <Button loading={loading} type="submit">
           Submit Review
         </Button>
       </form>

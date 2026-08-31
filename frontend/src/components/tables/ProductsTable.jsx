@@ -39,10 +39,7 @@ export default function ProductsTable({
       title: "Actions",
       render: (product) => (
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() => onEdit(product)}
-          >
+          <Button size="sm" onClick={() => onEdit(product)}>
             Edit
           </Button>
 

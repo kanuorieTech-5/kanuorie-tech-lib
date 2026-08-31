@@ -82,9 +82,7 @@ export default function AdminSidebar() {
   return (
     <aside className="w-72 border-r bg-slate-900 text-white">
       <div className="border-b p-6">
-        <h2 className="text-2xl font-bold">
-          Admin Panel
-        </h2>
+        <h2 className="text-2xl font-bold">Admin Panel</h2>
       </div>
 
       <nav className="p-4">
@@ -97,9 +95,7 @@ export default function AdminSidebar() {
               to={item.path}
               className={({ isActive }) =>
                 `mb-2 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
-                  isActive
-                    ? "bg-blue-600"
-                    : "hover:bg-slate-800"
+                  isActive ? "bg-blue-600" : "hover:bg-slate-800"
                 }`
               }
             >

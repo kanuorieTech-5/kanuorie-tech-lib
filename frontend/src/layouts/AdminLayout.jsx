@@ -2,10 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import AdminSidebar from "../components/layout/AdminSidebar";
 
-import {
-  DashboardTopbar,
-  DashboardBreadcrumb,
-} from "../components/dashboard";
+import { DashboardTopbar, DashboardBreadcrumb } from "../components/dashboard";
 
 export default function AdminLayout() {
   return (

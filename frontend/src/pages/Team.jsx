@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  Loader,
-  Card,
-} from "../components/common";
+import { Loader, Card } from "../components/common";
 
 import { getTeamMembers } from "../services";
 
@@ -31,7 +28,7 @@ export default function Team() {
         if (mounted) {
           setError(
             err.response?.data?.message ||
-              "Unable to load our team at the moment."
+              "Unable to load our team at the moment.",
           );
         }
       } finally {
@@ -69,9 +66,8 @@ export default function Team() {
         </h1>
 
         <p className="text-lg leading-8 text-gray-600">
-          Meet the talented people behind KanuorieTech, working together
-          to build meaningful digital solutions and deliver great
-          experiences.
+          Meet the talented people behind KanuorieTech, working together to
+          build meaningful digital solutions and deliver great experiences.
         </p>
       </div>
 
@@ -106,25 +102,19 @@ export default function Team() {
               {/* Image */}
               <div className="overflow-hidden">
                 <img
-                  src={
-                    member.image ||
-                    "/images/default-avatar.png"
-                  }
+                  src={member.image || "/images/default-avatar.png"}
                   alt={member.name || "Team member"}
                   loading="lazy"
                   className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      "/images/default-avatar.png";
+                    e.currentTarget.src = "/images/default-avatar.png";
                   }}
                 />
               </div>
 
               {/* Content */}
               <div className="p-6">
-                <h2 className="text-xl font-bold">
-                  {member.name}
-                </h2>
+                <h2 className="text-xl font-bold">{member.name}</h2>
 
                 {member.position && (
                   <p className="mt-1 text-sm font-medium text-blue-600">

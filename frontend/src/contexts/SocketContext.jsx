@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 import { useAuth } from "./AuthContext";
@@ -40,10 +35,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     newSocket.on("connect", () => {
-      console.log(
-        "🟢 Socket Connected:",
-        newSocket.id
-      );
+      console.log("🟢 Socket Connected:", newSocket.id);
 
       if (user?._id) {
         newSocket.emit("join-user-room", user._id);
@@ -67,9 +59,7 @@ export const SocketProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   return (
-    <SocketContext.Provider value={socket}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 };
 

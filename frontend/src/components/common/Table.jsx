@@ -40,18 +40,10 @@ export default function Table({
             </tr>
           ) : (
             data.map((row, index) => (
-              <tr
-                key={row._id || row.id || index}
-                className="hover:bg-gray-50"
-              >
+              <tr key={row._id || row.id || index} className="hover:bg-gray-50">
                 {columns.map((column) => (
-                  <td
-                    key={column.accessor}
-                    className="px-6 py-4"
-                  >
-                    {column.render
-                      ? column.render(row)
-                      : row[column.accessor]}
+                  <td key={column.accessor} className="px-6 py-4">
+                    {column.render ? column.render(row) : row[column.accessor]}
                   </td>
                 ))}
               </tr>

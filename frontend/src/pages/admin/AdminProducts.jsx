@@ -13,12 +13,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-import {
-  Card,
-  Button,
-  Loader,
-  SectionTitle,
-} from "../../components/common";
+import { Card, Button, Loader, SectionTitle } from "../../components/common";
 
 import {
   getProducts,
@@ -66,8 +61,7 @@ export default function AdminProducts() {
   const [status, setStatus] = useState("All");
 
   const [showModal, setShowModal] = useState(false);
-  const [editingProduct, setEditingProduct] =
-    useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const [form, setForm] = useState(EMPTY_FORM);
 
@@ -91,24 +85,13 @@ export default function AdminProducts() {
        * }
        */
 
-      const data =
-        response?.data?.products ??
-        response?.products ??
-        [];
+      const data = response?.data?.products ?? response?.products ?? [];
 
-      setProducts(
-        Array.isArray(data) ? data : []
-      );
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(
-        "Failed to load products:",
-        err
-      );
+      console.error("Failed to load products:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to load products."
-      );
+      setError(err?.response?.data?.message || "Unable to load products.");
     } finally {
       setLoading(false);
     }
@@ -120,62 +103,36 @@ export default function AdminProducts() {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const searchValue =
-        search.trim().toLowerCase();
+      const searchValue = search.trim().toLowerCase();
 
       const matchesSearch =
         !searchValue ||
-        product.name
-          ?.toLowerCase()
-          .includes(searchValue) ||
-        product.description
-          ?.toLowerCase()
-          .includes(searchValue) ||
-        product.excerpt
-          ?.toLowerCase()
-          .includes(searchValue);
+        product.name?.toLowerCase().includes(searchValue) ||
+        product.description?.toLowerCase().includes(searchValue) ||
+        product.excerpt?.toLowerCase().includes(searchValue);
 
       const matchesCategory =
-        category === "All" ||
-        product.category === category;
+        category === "All" || product.category === category;
 
       const matchesStatus =
         status === "All" ||
-        (status === "Published" &&
-          product.published === true) ||
-        (status === "Unpublished" &&
-          product.published === false) ||
-        (status === "Featured" &&
-          product.featured === true);
+        (status === "Published" && product.published === true) ||
+        (status === "Unpublished" && product.published === false) ||
+        (status === "Featured" && product.featured === true);
 
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesStatus
-      );
+      return matchesSearch && matchesCategory && matchesStatus;
     });
-  }, [
-    products,
-    search,
-    category,
-    status,
-  ]);
+  }, [products, search, category, status]);
 
   const stats = useMemo(() => {
     return {
       total: products.length,
 
-      published: products.filter(
-        (product) => product.published
-      ).length,
+      published: products.filter((product) => product.published).length,
 
-      unpublished: products.filter(
-        (product) => !product.published
-      ).length,
+      unpublished: products.filter((product) => !product.published).length,
 
-      featured: products.filter(
-        (product) => product.featured
-      ).length,
+      featured: products.filter((product) => product.featured).length,
     };
   }, [products]);
 
@@ -193,27 +150,17 @@ export default function AdminProducts() {
       excerpt: product.excerpt || "",
       description: product.description || "",
       image: product.image || "",
-      category:
-        product.category || "Other",
+      category: product.category || "Other",
       price: product.price ?? 0,
-      currency:
-        product.currency || "USD",
-      featured:
-        Boolean(product.featured),
-      published:
-        product.published !== false,
-      downloadUrl:
-        product.downloadUrl || "",
-      demoUrl:
-        product.demoUrl || "",
-      githubUrl:
-        product.githubUrl || "",
-      technologies:
-        Array.isArray(
-          product.technologies
-        )
-          ? product.technologies.join(", ")
-          : "",
+      currency: product.currency || "USD",
+      featured: Boolean(product.featured),
+      published: product.published !== false,
+      downloadUrl: product.downloadUrl || "",
+      demoUrl: product.demoUrl || "",
+      githubUrl: product.githubUrl || "",
+      technologies: Array.isArray(product.technologies)
+        ? product.technologies.join(", ")
+        : "",
     });
 
     setShowModal(true);
@@ -228,15 +175,11 @@ export default function AdminProducts() {
   };
 
   const handleChange = (event) => {
-    const { name, value, type, checked } =
-      event.target;
+    const { name, value, type, checked } = event.target;
 
     setForm((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -244,16 +187,12 @@ export default function AdminProducts() {
     event.preventDefault();
 
     if (!form.name.trim()) {
-      toast.error(
-        "Product name is required."
-      );
+      toast.error("Product name is required.");
       return;
     }
 
     if (!form.description.trim()) {
-      toast.error(
-        "Product description is required."
-      );
+      toast.error("Product description is required.");
       return;
     }
 
@@ -263,84 +202,50 @@ export default function AdminProducts() {
       const payload = {
         name: form.name.trim(),
         excerpt: form.excerpt.trim(),
-        description:
-          form.description.trim(),
+        description: form.description.trim(),
         image: form.image.trim(),
         category: form.category,
         price: Number(form.price) || 0,
-        currency:
-          form.currency
-            .trim()
-            .toUpperCase() || "USD",
+        currency: form.currency.trim().toUpperCase() || "USD",
         featured: Boolean(form.featured),
         published: Boolean(form.published),
-        downloadUrl:
-          form.downloadUrl.trim(),
+        downloadUrl: form.downloadUrl.trim(),
         demoUrl: form.demoUrl.trim(),
-        githubUrl:
-          form.githubUrl.trim(),
+        githubUrl: form.githubUrl.trim(),
 
-        technologies:
-          form.technologies
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean),
+        technologies: form.technologies
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
       };
 
       if (editingProduct) {
-        const response =
-          await updateProduct(
-            editingProduct._id,
-            payload
-          );
+        const response = await updateProduct(editingProduct._id, payload);
 
-        const updated =
-          response?.data ??
-          response?.product ??
-          response;
+        const updated = response?.data ?? response?.product ?? response;
 
         setProducts((prev) =>
           prev.map((item) =>
-            item._id ===
-            editingProduct._id
-              ? updated
-              : item
-          )
+            item._id === editingProduct._id ? updated : item,
+          ),
         );
 
-        toast.success(
-          "Product updated successfully."
-        );
+        toast.success("Product updated successfully.");
       } else {
-        const response =
-          await createProduct(payload);
+        const response = await createProduct(payload);
 
-        const created =
-          response?.data ??
-          response?.product ??
-          response;
+        const created = response?.data ?? response?.product ?? response;
 
-        setProducts((prev) => [
-          created,
-          ...prev,
-        ]);
+        setProducts((prev) => [created, ...prev]);
 
-        toast.success(
-          "Product created successfully."
-        );
+        toast.success("Product created successfully.");
       }
 
       closeModal();
     } catch (err) {
-      console.error(
-        "Failed to save product:",
-        err
-      );
+      console.error("Failed to save product:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Failed to save product."
-      );
+      toast.error(err?.response?.data?.message || "Failed to save product.");
     } finally {
       setSaving(false);
     }
@@ -348,7 +253,7 @@ export default function AdminProducts() {
 
   const handleDelete = async (product) => {
     const confirmed = window.confirm(
-      `Delete "${product.name}"? This action cannot be undone.`
+      `Delete "${product.name}"? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -356,26 +261,13 @@ export default function AdminProducts() {
     try {
       await deleteProduct(product._id);
 
-      setProducts((prev) =>
-        prev.filter(
-          (item) =>
-            item._id !== product._id
-        )
-      );
+      setProducts((prev) => prev.filter((item) => item._id !== product._id));
 
-      toast.success(
-        "Product deleted successfully."
-      );
+      toast.success("Product deleted successfully.");
     } catch (err) {
-      console.error(
-        "Failed to delete product:",
-        err
-      );
+      console.error("Failed to delete product:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Failed to delete product."
-      );
+      toast.error(err?.response?.data?.message || "Failed to delete product.");
     }
   };
 
@@ -397,9 +289,7 @@ export default function AdminProducts() {
             Products unavailable
           </h2>
 
-          <p className="mt-2 text-sm text-red-600">
-            {error}
-          </p>
+          <p className="mt-2 text-sm text-red-600">{error}</p>
 
           <button
             type="button"
@@ -471,11 +361,7 @@ export default function AdminProducts() {
             <input
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(
-                  event.target.value
-                )
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search products..."
               className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
             />
@@ -483,50 +369,27 @@ export default function AdminProducts() {
 
           <select
             value={category}
-            onChange={(event) =>
-              setCategory(
-                event.target.value
-              )
-            }
+            onChange={(event) => setCategory(event.target.value)}
             className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-cyan-400"
           >
-            <option value="All">
-              All Categories
-            </option>
+            <option value="All">All Categories</option>
 
-            {CATEGORIES.map(
-              (item) => (
-                <option
-                  key={item}
-                  value={item}
-                >
-                  {item}
-                </option>
-              )
-            )}
+            {CATEGORIES.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </select>
 
           <select
             value={status}
-            onChange={(event) =>
-              setStatus(
-                event.target.value
-              )
-            }
+            onChange={(event) => setStatus(event.target.value)}
             className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-cyan-400"
           >
-            <option value="All">
-              All Status
-            </option>
-            <option value="Published">
-              Published
-            </option>
-            <option value="Unpublished">
-              Unpublished
-            </option>
-            <option value="Featured">
-              Featured
-            </option>
+            <option value="All">All Status</option>
+            <option value="Published">Published</option>
+            <option value="Unpublished">Unpublished</option>
+            <option value="Featured">Featured</option>
           </select>
         </div>
       </Card>
@@ -563,17 +426,10 @@ export default function AdminProducts() {
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {filteredProducts.length ===
-              0 ? (
+              {filteredProducts.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan="6"
-                    className="px-6 py-16 text-center"
-                  >
-                    <Package
-                      size={40}
-                      className="mx-auto text-slate-300"
-                    />
+                  <td colSpan="6" className="px-6 py-16 text-center">
+                    <Package size={40} className="mx-auto text-slate-300" />
 
                     <p className="mt-4 font-semibold text-slate-700">
                       No products found
@@ -585,133 +441,98 @@ export default function AdminProducts() {
                   </td>
                 </tr>
               ) : (
-                filteredProducts.map(
-                  (product) => (
-                    <tr
-                      key={product._id}
-                      className="transition hover:bg-slate-50"
-                    >
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-4">
-                          <img
-                            src={
-                              product.image ||
-                              "/images/product-placeholder.png"
-                            }
-                            alt={
-                              product.name
-                            }
-                            className="h-14 w-14 rounded-xl object-cover"
-                          />
-
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h3 className="truncate font-bold text-slate-900">
-                                {
-                                  product.name
-                                }
-                              </h3>
-
-                              {product.featured && (
-                                <Star
-                                  size={15}
-                                  className="fill-yellow-400 text-yellow-400"
-                                />
-                              )}
-                            </div>
-
-                            <p className="mt-1 max-w-xs truncate text-sm text-slate-500">
-                              {
-                                product.excerpt ||
-                                product.description
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-5">
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                          {
-                            product.category
+                filteredProducts.map((product) => (
+                  <tr
+                    key={product._id}
+                    className="transition hover:bg-slate-50"
+                  >
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={
+                            product.image || "/images/product-placeholder.png"
                           }
-                        </span>
-                      </td>
+                          alt={product.name}
+                          className="h-14 w-14 rounded-xl object-cover"
+                        />
 
-                      <td className="px-6 py-5 font-bold text-slate-900">
-                        {product.currency ||
-                          "USD"}{" "}
-                        {Number(
-                          product.price || 0
-                        ).toLocaleString()}
-                      </td>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="truncate font-bold text-slate-900">
+                              {product.name}
+                            </h3>
 
-                      <td className="px-6 py-5">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                            product.published
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-slate-100 text-slate-600"
-                          }`}
+                            {product.featured && (
+                              <Star
+                                size={15}
+                                className="fill-yellow-400 text-yellow-400"
+                              />
+                            )}
+                          </div>
+
+                          <p className="mt-1 max-w-xs truncate text-sm text-slate-500">
+                            {product.excerpt || product.description}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                        {product.category}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-5 font-bold text-slate-900">
+                      {product.currency || "USD"}{" "}
+                      {Number(product.price || 0).toLocaleString()}
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          product.published
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {product.published ? "Published" : "Unpublished"}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <div className="text-xs text-slate-500">
+                        <p>{product.views || 0} views</p>
+
+                        <p className="mt-1">
+                          {product.downloads || 0} downloads
+                        </p>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(product)}
+                          className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-600"
+                          title="Edit product"
                         >
-                          {product.published
-                            ? "Published"
-                            : "Unpublished"}
-                        </span>
-                      </td>
+                          <Pencil size={17} />
+                        </button>
 
-                      <td className="px-6 py-5">
-                        <div className="text-xs text-slate-500">
-                          <p>
-                            {product.views ||
-                              0}{" "}
-                            views
-                          </p>
-
-                          <p className="mt-1">
-                            {product.downloads ||
-                              0}{" "}
-                            downloads
-                          </p>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-5">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleEdit(
-                                product
-                              )
-                            }
-                            className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-600"
-                            title="Edit product"
-                          >
-                            <Pencil
-                              size={17}
-                            />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDelete(
-                                product
-                              )
-                            }
-                            className="rounded-lg border border-red-200 p-2 text-red-500 transition hover:bg-red-50"
-                            title="Delete product"
-                          >
-                            <Trash2
-                              size={17}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                )
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(product)}
+                          className="rounded-lg border border-red-200 p-2 text-red-500 transition hover:bg-red-50"
+                          title="Delete product"
+                        >
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
@@ -724,9 +545,7 @@ export default function AdminProducts() {
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
-                  {editingProduct
-                    ? "Edit Product"
-                    : "Create Product"}
+                  {editingProduct ? "Edit Product" : "Create Product"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500">
@@ -745,10 +564,7 @@ export default function AdminProducts() {
               </button>
             </div>
 
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 p-6"
-            >
+            <form onSubmit={handleSubmit} className="space-y-6 p-6">
               <div className="grid gap-5 md:grid-cols-2">
                 <FormField
                   label="Product Name"
@@ -770,16 +586,11 @@ export default function AdminProducts() {
                     onChange={handleChange}
                     className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-400"
                   >
-                    {CATEGORIES.map(
-                      (item) => (
-                        <option
-                          key={item}
-                          value={item}
-                        >
-                          {item}
-                        </option>
-                      )
-                    )}
+                    {CATEGORIES.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -923,15 +734,12 @@ export default function AdminProducts() {
                   Cancel
                 </button>
 
-                <Button
-                  type="submit"
-                  disabled={saving}
-                >
+                <Button type="submit" disabled={saving}>
                   {saving
                     ? "Saving..."
                     : editingProduct
-                    ? "Update Product"
-                    : "Create Product"}
+                      ? "Update Product"
+                      : "Create Product"}
                 </Button>
               </div>
             </form>
@@ -942,27 +750,17 @@ export default function AdminProducts() {
   );
 }
 
-function StatCard({
-  icon,
-  label,
-  value,
-}) {
+function StatCard({ icon, label, value }) {
   return (
     <Card className="p-5">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">
-            {label}
-          </p>
+          <p className="text-sm font-medium text-slate-500">{label}</p>
 
-          <p className="mt-2 text-3xl font-black text-slate-900">
-            {value}
-          </p>
+          <p className="mt-2 text-3xl font-black text-slate-900">{value}</p>
         </div>
 
-        <div className="rounded-xl bg-cyan-50 p-3 text-cyan-600">
-          {icon}
-        </div>
+        <div className="rounded-xl bg-cyan-50 p-3 text-cyan-600">{icon}</div>
       </div>
     </Card>
   );
@@ -982,11 +780,7 @@ function FormField({
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700">
         {label}
-        {required && (
-          <span className="ml-1 text-red-500">
-            *
-          </span>
-        )}
+        {required && <span className="ml-1 text-red-500">*</span>}
       </label>
 
       <input

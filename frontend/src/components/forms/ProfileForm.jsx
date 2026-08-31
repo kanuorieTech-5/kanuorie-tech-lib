@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, TextArea } from "../ui";
 
-export default function ProfileForm({
-  user = {},
-  loading = false,
-  onSubmit,
-}) {
+export default function ProfileForm({ user = {}, loading = false, onSubmit }) {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -43,10 +34,7 @@ export default function ProfileForm({
 
   return (
     <Card className="max-w-3xl p-8">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           <Input
             label="First Name"
@@ -89,10 +77,7 @@ export default function ProfileForm({
           onChange={handleChange}
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-        >
+        <Button type="submit" loading={loading}>
           Save Changes
         </Button>
       </form>

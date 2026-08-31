@@ -22,9 +22,7 @@ export const getSubscribers = async () => {
 };
 
 export const deleteSubscriber = async (id) => {
-  const { data } = await API.delete(
-    `/newsletter/${id}`
-  );
+  const { data } = await API.delete(`/newsletter/${id}`);
 
   return data;
 };

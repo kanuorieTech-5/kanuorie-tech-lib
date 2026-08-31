@@ -17,16 +17,11 @@ export default function Notifications() {
             Account
           </p>
 
-          <h1 className="text-4xl font-bold tracking-tight">
-            Notifications
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight">Notifications</h1>
         </div>
 
         {notifications.length > 0 && (
-          <Button
-            variant="secondary"
-            onClick={clearNotifications}
-          >
+          <Button variant="secondary" onClick={clearNotifications}>
             Clear All
           </Button>
         )}
@@ -36,19 +31,15 @@ export default function Notifications() {
       <div className="space-y-5">
         {notifications.length === 0 ? (
           <Card className="p-8 text-center">
-            <h2 className="mb-2 text-xl font-semibold">
-              No notifications yet
-            </h2>
+            <h2 className="mb-2 text-xl font-semibold">No notifications yet</h2>
 
             <p className="text-gray-500">
-              You&apos;re all caught up. New notifications will
-              appear here.
+              You&apos;re all caught up. New notifications will appear here.
             </p>
           </Card>
         ) : (
           notifications.map((notification) => {
-            const notificationId =
-              notification?._id || notification?.id;
+            const notificationId = notification?._id || notification?.id;
 
             const isRead = Boolean(notification?.read);
 
@@ -56,9 +47,7 @@ export default function Notifications() {
               <Card
                 key={notificationId}
                 className={`transition ${
-                  isRead
-                    ? "border-gray-200"
-                    : "border-blue-500 bg-blue-50/50"
+                  isRead ? "border-gray-200" : "border-blue-500 bg-blue-50/50"
                 }`}
               >
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -73,23 +62,19 @@ export default function Notifications() {
                       )}
 
                       <h2 className="font-bold text-gray-900">
-                        {notification?.title ||
-                          "Notification"}
+                        {notification?.title || "Notification"}
                       </h2>
                     </div>
 
                     <p className="leading-7 text-gray-600">
-                      {notification?.message ||
-                        "You have a new notification."}
+                      {notification?.message || "You have a new notification."}
                     </p>
                   </div>
 
                   {!isRead && notificationId && (
                     <Button
                       size="sm"
-                      onClick={() =>
-                        markAsRead(notificationId)
-                      }
+                      onClick={() => markAsRead(notificationId)}
                     >
                       Mark as Read
                     </Button>

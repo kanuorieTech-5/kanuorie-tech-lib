@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import {
-  Card,
-  Button,
-  Loader,
-  SectionTitle,
-} from "../common";
+import { Card, Button, Loader, SectionTitle } from "../common";
 
 import { getProjects } from "../../services";
 
@@ -28,10 +23,10 @@ export default function ProjectsPreview() {
         const data = Array.isArray(res)
           ? res
           : Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res?.data?.projects)
-          ? res.data.projects
-          : [];
+            ? res.data
+            : Array.isArray(res?.data?.projects)
+              ? res.data.projects
+              : [];
 
         if (mounted) {
           setProjects(data);
@@ -72,21 +67,14 @@ export default function ProjectsPreview() {
   ==========================================
   */
 
-  const maxIndex = Math.max(
-    projects.length - VISIBLE_DESKTOP,
-    0
-  );
+  const maxIndex = Math.max(projects.length - VISIBLE_DESKTOP, 0);
 
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   /*
@@ -101,9 +89,7 @@ export default function ProjectsPreview() {
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex ? 0 : previous + 1
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
@@ -130,14 +116,11 @@ export default function ProjectsPreview() {
           />
 
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <h3 className="text-xl font-bold">
-              Projects Coming Soon
-            </h3>
+            <h3 className="text-xl font-bold">Projects Coming Soon</h3>
 
             <p className="mx-auto mt-3 max-w-lg text-slate-400">
-              We're currently updating our portfolio.
-              Check back soon to explore projects built by
-              KanuorieTech.
+              We're currently updating our portfolio. Check back soon to explore
+              projects built by KanuorieTech.
             </p>
           </div>
         </div>
@@ -148,7 +131,6 @@ export default function ProjectsPreview() {
   return (
     <section className="bg-slate-950 py-24 text-white">
       <div className="px-6">
-
         <SectionTitle
           Badge="Our Portfolio"
           title="Projects That Create Real Impact"
@@ -160,7 +142,6 @@ export default function ProjectsPreview() {
         ======================================== */}
 
         <div className="relative mt-16 overflow-hidden">
-
           <motion.div
             className="flex"
             animate={{
@@ -172,8 +153,7 @@ export default function ProjectsPreview() {
             }}
           >
             {projects.map((project, index) => {
-              const projectId =
-                project._id || project.id;
+              const projectId = project._id || project.id;
 
               const description =
                 project.description?.trim() ||
@@ -186,10 +166,7 @@ export default function ProjectsPreview() {
 
               return (
                 <div
-                  key={
-                    projectId ||
-                    `${project.title}-${index}`
-                  }
+                  key={projectId || `${project.title}-${index}`}
                   className="
                     w-full
                     shrink-0
@@ -228,10 +205,7 @@ export default function ProjectsPreview() {
                       "
                     >
                       <img
-                        src={
-                          project.image ||
-                          "/images/project-placeholder.png"
-                        }
+                        src={project.image || "/images/project-placeholder.png"}
                         alt={
                           project.title
                             ? `${project.title} project`
@@ -249,7 +223,6 @@ export default function ProjectsPreview() {
                       />
 
                       <div className="flex flex-1 flex-col p-6">
-
                         <h3 className="mb-3 text-2xl font-bold text-white">
                           {project.title}
                         </h3>
@@ -263,12 +236,9 @@ export default function ProjectsPreview() {
                             to={`/projects/${projectId}`}
                             className="mt-auto"
                           >
-                            <Button>
-                              View Project
-                            </Button>
+                            <Button>View Project</Button>
                           </Link>
                         )}
-
                       </div>
                     </Card>
                   </motion.div>
@@ -284,7 +254,6 @@ export default function ProjectsPreview() {
 
         {projects.length > VISIBLE_DESKTOP && (
           <div className="mt-10 flex justify-center gap-4">
-
             <button
               type="button"
               onClick={prevSlide}
@@ -320,20 +289,16 @@ export default function ProjectsPreview() {
             >
               →
             </button>
-
           </div>
         )}
 
         {projects.length > 3 && (
           <div className="mt-12 text-center">
             <Link to="/projects">
-              <Button variant="secondary">
-                View All Projects
-              </Button>
+              <Button variant="secondary">View All Projects</Button>
             </Link>
           </div>
         )}
-
       </div>
     </section>
   );

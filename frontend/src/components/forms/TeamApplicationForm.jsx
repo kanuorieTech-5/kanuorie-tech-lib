@@ -1,15 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, TextArea } from "../ui";
 
-export default function TeamApplicationForm({
-  loading = false,
-  onSubmit,
-}) {
+export default function TeamApplicationForm({ loading = false, onSubmit }) {
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -74,10 +66,7 @@ export default function TeamApplicationForm({
           onChange={handleChange}
         />
 
-        <Button
-          loading={loading}
-          type="submit"
-        >
+        <Button loading={loading} type="submit">
           Submit Application
         </Button>
       </form>

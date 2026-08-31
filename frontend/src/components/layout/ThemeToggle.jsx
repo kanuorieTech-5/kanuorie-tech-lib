@@ -8,16 +8,8 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={
-        darkMode
-          ? "Switch to light mode"
-          : "Switch to dark mode"
-      }
-      title={
-        darkMode
-          ? "Switch to light mode"
-          : "Switch to dark mode"
-      }
+      aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+      title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       className="
         rounded-lg
         border

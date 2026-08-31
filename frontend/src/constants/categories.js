@@ -1,5 +1,4 @@
 export const BOOK_CATEGORIES = [
-
   "Technology",
 
   "Business",
@@ -11,5 +10,4 @@ export const BOOK_CATEGORIES = [
   "Marketing",
 
   "Personal Development",
-
 ];

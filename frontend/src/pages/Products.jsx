@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BookOpen, Search } from "lucide-react";
-import { Card, Button, Loader, Pagination, } from "../components/common";
+import { Card, Button, Loader, Pagination } from "../components/common";
 import { SearchBar } from "../components/layout";
 import { getProducts } from "../services";
 import { CTA, Newsletter } from "../components/home";
 
 const PER_PAGE = 12;
 
-const PRODUCT_PLACEHOLDER =
-  "/images/product-placeholder.jpg";
+const PRODUCT_PLACEHOLDER = "/images/product-placeholder.jpg";
 
 const getProductsData = (response) => {
   if (Array.isArray(response)) {
@@ -39,9 +38,7 @@ const getProductId = (product) => {
 const getProductPrice = (product) => {
   const price = Number(product?.price);
 
-  return Number.isFinite(price) && price >= 0
-    ? price
-    : null;
+  return Number.isFinite(price) && price >= 0 ? price : null;
 };
 
 export default function Products() {
@@ -67,15 +64,12 @@ export default function Products() {
           setProducts(data);
         }
       } catch (err) {
-        console.error(
-          "Failed to load products:",
-          err
-        );
+        console.error("Failed to load products:", err);
 
         if (mounted) {
           setProducts([]);
           setError(
-            "We couldn't load the products right now. Please try again."
+            "We couldn't load the products right now. Please try again.",
           );
         }
       } finally {
@@ -95,9 +89,7 @@ export default function Products() {
   const categories = useMemo(() => {
     const uniqueCategories = [
       ...new Set(
-        products
-          .map((product) => product?.category?.trim())
-          .filter(Boolean)
+        products.map((product) => product?.category?.trim()).filter(Boolean),
       ),
     ];
 
@@ -108,34 +100,23 @@ export default function Products() {
     const query = search.trim().toLowerCase();
 
     return products.filter((product) => {
-      const title =
-        product?.title?.toLowerCase() || "";
+      const title = product?.title?.toLowerCase() || "";
 
-      const description =
-        product?.description?.toLowerCase() || "";
+      const description = product?.description?.toLowerCase() || "";
 
-      const productCategory =
-        product?.category || "";
+      const productCategory = product?.category || "";
 
       const matchesSearch =
-        !query ||
-        title.includes(query) ||
-        description.includes(query);
+        !query || title.includes(query) || description.includes(query);
 
       const matchesCategory =
-        category === "All" ||
-        productCategory === category;
+        category === "All" || productCategory === category;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
   }, [products, search, category]);
 
-  const totalPages = Math.ceil(
-    filteredProducts.length / PER_PAGE
-  );
+  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
 
   const paginatedProducts = useMemo(() => {
     const start = (page - 1) * PER_PAGE;
@@ -149,10 +130,7 @@ export default function Products() {
   }, [search, category]);
 
   useEffect(() => {
-    if (
-      totalPages > 0 &&
-      page > totalPages
-    ) {
+    if (totalPages > 0 && page > totalPages) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
@@ -249,11 +227,7 @@ export default function Products() {
               text-blue-400
             "
           >
-            <BookOpen
-              size={16}
-              aria-hidden="true"
-            />
-
+            <BookOpen size={16} aria-hidden="true" />
             Digital Products
           </motion.div>
 
@@ -279,10 +253,7 @@ export default function Products() {
               lg:text-7xl
             "
           >
-            Tools Built To Help You{" "}
-            <span className="text-blue-400">
-              Grow
-            </span>
+            Tools Built To Help You <span className="text-blue-400">Grow</span>
           </motion.h1>
 
           <motion.p
@@ -307,10 +278,8 @@ export default function Products() {
               sm:leading-8
             "
           >
-            Explore premium digital resources,
-            templates and technology products
-            created by KanuorieTech to help you
-            learn, build and grow.
+            Explore premium digital resources, templates and technology products
+            created by KanuorieTech to help you learn, build and grow.
           </motion.p>
         </div>
       </section>
@@ -365,9 +334,8 @@ export default function Products() {
                 lg:leading-8
               "
             >
-              Discover digital tools and resources
-              designed to support your learning,
-              productivity and digital growth.
+              Discover digital tools and resources designed to support your
+              learning, productivity and digital growth.
             </p>
           </div>
 
@@ -404,9 +372,7 @@ export default function Products() {
               <select
                 id="product-category"
                 value={category}
-                onChange={(event) =>
-                  setCategory(event.target.value)
-                }
+                onChange={(event) => setCategory(event.target.value)}
                 className="
                   w-full
                   rounded-lg
@@ -424,10 +390,7 @@ export default function Products() {
                 "
               >
                 {categories.map((item) => (
-                  <option
-                    key={item}
-                    value={item}
-                  >
+                  <option key={item} value={item}>
                     {item}
                   </option>
                 ))}
@@ -457,15 +420,10 @@ export default function Products() {
 
           {/* Results */}
 
-          <div
-            aria-live="polite"
-            className="mb-6 text-sm text-slate-500"
-          >
+          <div aria-live="polite" className="mb-6 text-sm text-slate-500">
             {filteredProducts.length > 0
               ? `${filteredProducts.length} ${
-                  filteredProducts.length === 1
-                    ? "product"
-                    : "products"
+                  filteredProducts.length === 1 ? "product" : "products"
                 } found`
               : "No products found"}
           </div>
@@ -497,8 +455,7 @@ export default function Products() {
               </h2>
 
               <p className="text-slate-600">
-                Try changing your search or
-                category filter.
+                Try changing your search or category filter.
               </p>
 
               {(search || category !== "All") && (
@@ -529,43 +486,34 @@ export default function Products() {
                 xl:grid-cols-4
               "
             >
-              {paginatedProducts.map(
-                (product, index) => {
-                  const productId =
-                    getProductId(product);
+              {paginatedProducts.map((product, index) => {
+                const productId = getProductId(product);
 
-                  const price =
-                    getProductPrice(product);
+                const price = getProductPrice(product);
 
-                  return (
-                    <motion.div
-                      key={
-                        productId ||
-                        `product-${index}`
-                      }
-                      initial={{
-                        opacity: 0,
-                        y: 25,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.45,
-                        delay: Math.min(
-                          index * 0.06,
-                          0.3
-                        ),
-                      }}
-                      viewport={{
-                        once: true,
-                        amount: 0.15,
-                      }}
-                      className="h-full"
-                    >
-                      <Card
-                        className="
+                return (
+                  <motion.div
+                    key={productId || `product-${index}`}
+                    initial={{
+                      opacity: 0,
+                      y: 25,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      delay: Math.min(index * 0.06, 0.3),
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.15,
+                    }}
+                    className="h-full"
+                  >
+                    <Card
+                      className="
                           flex
                           h-full
                           flex-col
@@ -578,22 +526,19 @@ export default function Products() {
                           hover:-translate-y-1
                           hover:shadow-xl
                         "
-                      >
-                        {/* Image */}
+                    >
+                      {/* Image */}
 
-                        <div className="overflow-hidden">
-                          <img
-                            src={
-                              product?.image ||
-                              product?.coverImage ||
-                              PRODUCT_PLACEHOLDER
-                            }
-                            alt={
-                              product?.title ||
-                              "Digital product"
-                            }
-                            loading="lazy"
-                            className="
+                      <div className="overflow-hidden">
+                        <img
+                          src={
+                            product?.image ||
+                            product?.coverImage ||
+                            PRODUCT_PLACEHOLDER
+                          }
+                          alt={product?.title || "Digital product"}
+                          loading="lazy"
+                          className="
                               h-56
                               w-full
                               object-cover
@@ -601,117 +546,107 @@ export default function Products() {
                               duration-500
                               hover:scale-105
                             "
-                            onError={(event) => {
-                              if (
-                                event.currentTarget.src.includes(
-                                  PRODUCT_PLACEHOLDER
-                                )
-                              ) {
-                                return;
-                              }
+                          onError={(event) => {
+                            if (
+                              event.currentTarget.src.includes(
+                                PRODUCT_PLACEHOLDER,
+                              )
+                            ) {
+                              return;
+                            }
 
-                              event.currentTarget.src =
-                                PRODUCT_PLACEHOLDER;
-                            }}
-                          />
-                        </div>
+                            event.currentTarget.src = PRODUCT_PLACEHOLDER;
+                          }}
+                        />
+                      </div>
 
-                        {/* Content */}
+                      {/* Content */}
 
-                        <div
-                          className="
+                      <div
+                        className="
                             flex
                             flex-1
                             flex-col
                             p-6
                           "
-                        >
-                          {/* Category */}
+                      >
+                        {/* Category */}
 
-                          {product?.category && (
-                            <p
-                              className="
+                        {product?.category && (
+                          <p
+                            className="
                                 mb-2
                                 text-sm
                                 font-semibold
                                 text-blue-600
                               "
-                            >
-                              {product.category}
-                            </p>
-                          )}
+                          >
+                            {product.category}
+                          </p>
+                        )}
 
-                          {/* Title */}
+                        {/* Title */}
 
-                          <h3
-                            className="
+                        <h3
+                          className="
                               mb-3
                               text-xl
                               font-bold
                               text-slate-900
                             "
-                          >
-                            {product?.title ||
-                              "Digital Product"}
-                          </h3>
+                        >
+                          {product?.title || "Digital Product"}
+                        </h3>
 
-                          {/* Description */}
+                        {/* Description */}
 
-                          <p
-                            className="
+                        <p
+                          className="
                               mb-6
                               line-clamp-3
                               leading-6
                               text-slate-600
                             "
-                          >
-                            {product?.description ||
-                              "View this product for more information."}
-                          </p>
+                        >
+                          {product?.description ||
+                            "View this product for more information."}
+                        </p>
 
-                          {/* Price */}
+                        {/* Price */}
 
-                          <p
-                            className="
+                        <p
+                          className="
                               mb-6
                               mt-auto
                               text-2xl
                               font-bold
                               text-blue-600
                             "
+                        >
+                          {price !== null
+                            ? `₦${price.toLocaleString("en-NG")}`
+                            : "Price unavailable"}
+                        </p>
+
+                        {/* Action */}
+
+                        {productId ? (
+                          <Link
+                            to={`/products/${productId}`}
+                            className="mt-auto"
                           >
-                            {price !== null
-                              ? `₦${price.toLocaleString(
-                                  "en-NG"
-                                )}`
-                              : "Price unavailable"}
-                          </p>
-
-                          {/* Action */}
-
-                          {productId ? (
-                            <Link
-                              to={`/products/${productId}`}
-                              className="mt-auto"
-                            >
-                              <Button fullWidth>
-                                View Product
-                              </Button>
-                            </Link>
-                          ) : (
-                            <Button
-                              fullWidth
-                              disabled
-                            >
-                              Unavailable
-                            </Button>
-                          )}
-                        </div>
-                      </Card>
-                    </motion.div>
-                  );
-                }
-              )}
+                            <Button fullWidth>View Product</Button>
+                          </Link>
+                        ) : (
+                          <Button fullWidth disabled>
+                            Unavailable
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
 

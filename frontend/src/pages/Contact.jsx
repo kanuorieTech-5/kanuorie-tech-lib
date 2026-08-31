@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import toast from "react-hot-toast";
-import { Button, Card, SectionTitle,} from "../components/common";
-import { Input, } from "../components/ui";
-import { Newsletter, CTA,} from "../components/home";
+import { Button, Card, SectionTitle } from "../components/common";
+import { Input } from "../components/ui";
+import { Newsletter, CTA } from "../components/home";
 import { sendContactMessage } from "../services";
 
 export default function Contact() {
@@ -72,7 +72,6 @@ export default function Contact() {
     <>
       <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 py-28 text-white">
         <div className="mx-auto max-w-4xl px-6 text-center">
-
           <SectionTitle
             center
             light
@@ -80,7 +79,6 @@ export default function Contact() {
             title="Let's Build Something Amazing Together"
             subtitle="Whether you need software development, IT consulting, or want to learn with KanuorieTech, we'd love to hear from you."
           />
-
         </div>
       </section>
 
@@ -94,10 +92,7 @@ export default function Contact() {
             />
 
             <Card className="mt-10 p-8">
-              <form
-                onSubmit={submit}
-                className="space-y-6"
-              >
+              <form onSubmit={submit} className="space-y-6">
                 <Input
                   label="Name"
                   name="name"
@@ -133,11 +128,7 @@ export default function Contact() {
                   className="w-full rounded-2xl border border-slate-200 p-4 outline-none transition focus:border-blue-500"
                 />
 
-                <Button
-                  type="submit"
-                  loading={loading}
-                  fullWidth
-                >
+                <Button type="submit" loading={loading} fullWidth>
                   Send Message
                 </Button>
               </form>
@@ -147,46 +138,33 @@ export default function Contact() {
       </section>
       <section className="bg-slate-50 py-20">
         <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
-
           {contactInfo.map((item) => (
-            <Card
-              key={item.title}
-              className="p-8 text-center"
-            >
+            <Card key={item.title} className="p-8 text-center">
               <item.icon className="mx-auto mb-5 h-10 w-10 text-blue-600" />
 
-              <h3 className="font-semibold">
-                {item.title}
-              </h3>
+              <h3 className="font-semibold">{item.title}</h3>
 
-              <p className="mt-2 text-gray-600">
-                {item.value}
-              </p>
+              <p className="mt-2 text-gray-600">{item.value}</p>
             </Card>
           ))}
-
         </div>
       </section>
 
       <section className="py-24">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2">
-
           <div className="flex items-center">
             <Card className="w-full p-10">
-              <h2 className="text-3xl font-bold">
-                Why Contact KanuorieTech?
-              </h2>
+              <h2 className="text-3xl font-bold">Why Contact KanuorieTech?</h2>
 
               <p className="mt-6 leading-8 text-gray-600">
-                We partner with startups, businesses, and aspiring developers to create modern digital solutions and practical learning experiences.
+                We partner with startups, businesses, and aspiring developers to
+                create modern digital solutions and practical learning
+                experiences.
               </p>
 
               <div className="mt-10 space-y-6">
-
                 <div>
-                  <h3 className="font-semibold">
-                    ✔ Fast Response
-                  </h3>
+                  <h3 className="font-semibold">✔ Fast Response</h3>
 
                   <p className="text-gray-600">
                     We aim to reply within one business day.
@@ -194,9 +172,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold">
-                    ✔ Professional Support
-                  </h3>
+                  <h3 className="font-semibold">✔ Professional Support</h3>
 
                   <p className="text-gray-600">
                     Get guidance from experienced professionals.
@@ -204,19 +180,15 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold">
-                    ✔ Tailored Solutions
-                  </h3>
+                  <h3 className="font-semibold">✔ Tailored Solutions</h3>
 
                   <p className="text-gray-600">
                     Every project is planned around your goals and requirements.
                   </p>
                 </div>
-
               </div>
             </Card>
           </div>
-
         </div>
       </section>
 

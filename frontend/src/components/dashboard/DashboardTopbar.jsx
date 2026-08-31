@@ -9,10 +9,7 @@ export default function DashboardTopbar() {
       return "Dashboard";
     }
 
-    const segment = location.pathname
-      .split("/")
-      .filter(Boolean)
-      .pop();
+    const segment = location.pathname.split("/").filter(Boolean).pop();
 
     if (!segment) return "Admin";
 
@@ -72,9 +69,7 @@ export default function DashboardTopbar() {
                 Administrator
               </p>
 
-              <p className="text-xs text-slate-500">
-                Admin
-              </p>
+              <p className="text-xs text-slate-500">Admin</p>
             </div>
           </div>
         </div>

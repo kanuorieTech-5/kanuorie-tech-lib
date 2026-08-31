@@ -17,8 +17,7 @@ export default function ActivityTable({
     {
       key: "user",
       title: "User",
-      render: (activity) =>
-        activity.user?.name,
+      render: (activity) => activity.user?.name,
     },
     {
       key: "action",
@@ -31,10 +30,7 @@ export default function ActivityTable({
     {
       key: "createdAt",
       title: "Time",
-      render: (activity) =>
-        new Date(
-          activity.createdAt
-        ).toLocaleString(),
+      render: (activity) => new Date(activity.createdAt).toLocaleString(),
     },
   ];
 

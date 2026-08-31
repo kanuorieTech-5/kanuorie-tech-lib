@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/Logo.jpeg";
-export default function Logo({
-  size = "md",
-  showText = true,
-}) {
+export default function Logo({ size = "md", showText = true }) {
   const sizes = {
     sm: {
       logo: "h-8 w-8",
@@ -22,10 +19,7 @@ export default function Logo({
   const current = sizes[size] || sizes.md;
 
   return (
-    <Link
-      to="/"
-      className="flex items-center gap-3"
-    >
+    <Link to="/" className="flex items-center gap-3">
       <img
         src={logo}
         alt="KanuorieTech"
@@ -34,15 +28,11 @@ export default function Logo({
 
       {showText && (
         <div>
-          <h1
-            className={`font-bold text-slate-900 ${current.text}`}
-          >
+          <h1 className={`font-bold text-slate-900 ${current.text}`}>
             KanuorieTech
           </h1>
 
-          <p className="text-xs text-gray-500">
-            Learn • Build • Grow
-          </p>
+          <p className="text-xs text-gray-500">Learn • Build • Grow</p>
         </div>
       )}
     </Link>

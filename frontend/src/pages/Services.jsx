@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import {
-  Card,
-  Button,
-  Loader,
-  Pagination,
-} from "../components/common";
+import { Card, Button, Loader, Pagination } from "../components/common";
 
 import { SearchBar } from "../components/layout";
 
@@ -18,7 +13,7 @@ const PER_PAGE = 9;
 // const FALLBACK_IMAGE = "/images/service-placeholder.jpg";
 
 // const FALLBACK_DESCRIPTION =
-  "Learn more about this service and how it can help your business.";
+("Learn more about this service and how it can help your business.");
 
 const getServicesData = (response) => {
   if (Array.isArray(response)) {
@@ -97,9 +92,7 @@ export default function Services() {
   const categories = useMemo(() => {
     const uniqueCategories = [
       ...new Set(
-        services
-          .map((service) => service?.category?.trim())
-          .filter(Boolean)
+        services.map((service) => service?.category?.trim()).filter(Boolean),
       ),
     ];
 
@@ -110,40 +103,28 @@ export default function Services() {
     const query = search.trim().toLowerCase();
 
     return services.filter((service) => {
-      const title =
-        service?.title?.toLowerCase() || "";
+      const title = service?.title?.toLowerCase() || "";
 
-      const description =
-        service?.description?.toLowerCase() || "";
+      const description = service?.description?.toLowerCase() || "";
 
-      const serviceCategory =
-        service?.category || "";
+      const serviceCategory = service?.category || "";
 
       const matchesSearch =
-        !query ||
-        title.includes(query) ||
-        description.includes(query);
+        !query || title.includes(query) || description.includes(query);
 
       const matchesCategory =
-        category === "All" ||
-        serviceCategory === category;
+        category === "All" || serviceCategory === category;
 
       return matchesSearch && matchesCategory;
     });
   }, [services, search, category]);
 
- 
-  const totalPages = Math.ceil(
-    filteredServices.length / PER_PAGE
-  );
+  const totalPages = Math.ceil(filteredServices.length / PER_PAGE);
 
   const currentServices = useMemo(() => {
     const startIndex = (page - 1) * PER_PAGE;
 
-    return filteredServices.slice(
-      startIndex,
-      startIndex + PER_PAGE
-    );
+    return filteredServices.slice(startIndex, startIndex + PER_PAGE);
   }, [filteredServices, page]);
 
   useEffect(() => {
@@ -171,7 +152,6 @@ export default function Services() {
     <>
       <section className="bg-slate-950 py-16 text-white lg:py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-
           {/* HEADER */}
 
           <div className="mb-12">
@@ -184,16 +164,14 @@ export default function Services() {
             </h1>
 
             <p className="max-w-2xl text-lg leading-8 text-slate-400">
-              Discover the digital solutions and technology
-              services we provide to help businesses build,
-              grow, and succeed.
+              Discover the digital solutions and technology services we provide
+              to help businesses build, grow, and succeed.
             </p>
           </div>
 
           {/* FILTERS */}
 
           <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-center">
-
             <div className="flex-1">
               <SearchBar
                 value={search}
@@ -209,9 +187,7 @@ export default function Services() {
             <select
               id="service-category"
               value={category}
-              onChange={(event) =>
-                setCategory(event.target.value)
-              }
+              onChange={(event) => setCategory(event.target.value)}
               className="rounded-lg border border-white/10 bg-white/5
                 px-4 py-3 text-white outline-none transition
                 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
@@ -237,8 +213,7 @@ export default function Services() {
               </h2>
 
               <p className="text-slate-600">
-                Try changing your search or category
-                filter.
+                Try changing your search or category filter.
               </p>
 
               {(search || category !== "All") && (
@@ -256,7 +231,6 @@ export default function Services() {
             </Card>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
               {currentServices.map((service) => {
                 const serviceId = getServiceId(service);
 
@@ -266,12 +240,9 @@ export default function Services() {
                   return null;
                 }
 
-                const title =
-                  service?.title?.trim() ||
-                  "Technology Service";
+                const title = service?.title?.trim() || "Technology Service";
 
-                const description =
-                  getServiceDescription(service);
+                const description = getServiceDescription(service);
 
                 return (
                   <Card
@@ -320,16 +291,12 @@ export default function Services() {
                         className="mt-auto"
                         aria-label={`Learn more about ${title}`}
                       >
-                        <Button fullWidth>
-                          Learn More
-                        </Button>
+                        <Button fullWidth>Learn More</Button>
                       </Link>
-
                     </div>
                   </Card>
                 );
               })}
-
             </div>
           )}
 
@@ -344,7 +311,6 @@ export default function Services() {
               />
             </div>
           )}
-
         </div>
       </section>
 

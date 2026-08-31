@@ -1,15 +1,7 @@
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  Select,
-} from "../ui";
+import { Button, Card, Input, Select } from "../ui";
 
-export default function CheckoutForm({
-  loading = false,
-  onSubmit,
-}) {
+export default function CheckoutForm({ loading = false, onSubmit }) {
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -32,10 +24,7 @@ export default function CheckoutForm({
 
   return (
     <Card className="max-w-3xl p-8">
-      <form
-        onSubmit={submit}
-        className="space-y-6"
-      >
+      <form onSubmit={submit} className="space-y-6">
         <Input
           label="Full Name"
           name="fullName"
@@ -86,10 +75,7 @@ export default function CheckoutForm({
           ]}
         />
 
-        <Button
-          type="submit"
-          loading={loading}
-        >
+        <Button type="submit" loading={loading}>
           Complete Payment
         </Button>
       </form>

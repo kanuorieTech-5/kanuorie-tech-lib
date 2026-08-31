@@ -2,10 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { useAuth } from "../../contexts";
 
-export default function MobileMenu({
-  open,
-  onClose,
-}) {
+export default function MobileMenu({ open, onClose }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -31,12 +28,9 @@ export default function MobileMenu({
       aria-label="Mobile navigation menu"
     >
       <div className="absolute left-0 top-0 h-full w-72 bg-gray-300 shadow-xl">
-        
         {/* Header */}
         <div className="flex items-center justify-between border-b p-5">
-          <h2 className="text-xl font-bold">
-            Menu
-          </h2>
+          <h2 className="text-xl font-bold">Menu</h2>
 
           <button
             type="button"
@@ -50,7 +44,6 @@ export default function MobileMenu({
 
         {/* Navigation */}
         <nav className="flex flex-col">
-          
           <Link
             to="/"
             onClick={onClose}
@@ -131,7 +124,6 @@ export default function MobileMenu({
           >
             Logout
           </button>
-
         </nav>
       </div>
     </div>

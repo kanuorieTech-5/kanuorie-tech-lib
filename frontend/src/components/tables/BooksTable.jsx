@@ -41,28 +41,19 @@ export default function BooksTable({
       title: "Actions",
 
       render: (book) => (
-
         <div className="flex gap-2">
-
-          <Button
-            size="sm"
-            onClick={() => onEdit(book)}
-          >
+          <Button size="sm" onClick={() => onEdit(book)}>
             Edit
           </Button>
 
           <Button
             variant="destructive"
             size="sm"
-            onClick={() =>
-              onDelete(book._id)
-            }
+            onClick={() => onDelete(book._id)}
           >
             Delete
           </Button>
-
         </div>
-
       ),
     },
   ];

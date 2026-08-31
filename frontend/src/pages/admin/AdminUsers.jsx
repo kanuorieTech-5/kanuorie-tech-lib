@@ -9,21 +9,11 @@ import {
   Users,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-} from "../../components/common";
+import { Card, Button, Loader } from "../../components/common";
 
-import {
-  DashboardHeader,
-} from "../../components/dashboard";
+import { DashboardHeader } from "../../components/dashboard";
 
-import {
-  getAdminUsers,
-  updateUserRole,
-  deleteAdminUser,
-} from "../../services";
+import { getAdminUsers, updateUserRole, deleteAdminUser } from "../../services";
 
 const ROLES = ["All", "User", "Admin"];
 
@@ -41,9 +31,7 @@ export default function AdminUsers() {
 
   const [error, setError] = useState("");
 
-  const fetchUsers = async ({
-    refresh = false,
-  } = {}) => {
+  const fetchUsers = async ({ refresh = false } = {}) => {
     try {
       if (refresh) {
         setRefreshing(true);
@@ -64,27 +52,21 @@ export default function AdminUsers() {
        * { users: [] }
        */
 
-      const data =
-        Array.isArray(response)
-          ? response
-          : Array.isArray(response?.data)
+      const data = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
           ? response.data
           : Array.isArray(response?.data?.users)
-          ? response.data.users
-          : Array.isArray(response?.users)
-          ? response.users
-          : [];
+            ? response.data.users
+            : Array.isArray(response?.users)
+              ? response.users
+              : [];
 
       setUsers(data);
     } catch (err) {
-      console.error(
-        "Failed to load admin users:",
-        err
-      );
+      console.error("Failed to load admin users:", err);
 
-      const message =
-        err?.response?.data?.message ||
-        "Unable to load users.";
+      const message = err?.response?.data?.message || "Unable to load users.";
 
       setError(message);
 
@@ -105,18 +87,11 @@ export default function AdminUsers() {
     const query = search.trim().toLowerCase();
 
     return users.filter((user) => {
-      const name =
-        user.name ||
-        user.fullName ||
-        "";
+      const name = user.name || user.fullName || "";
 
-      const email =
-        user.email ||
-        "";
+      const email = user.email || "";
 
-      const userRole =
-        user.role ||
-        "User";
+      const userRole = user.role || "User";
 
       const matchesSearch =
         !query ||
@@ -124,25 +99,17 @@ export default function AdminUsers() {
         email.toLowerCase().includes(query);
 
       const matchesRole =
-        role === "All" ||
-        userRole.toLowerCase() ===
-          role.toLowerCase();
+        role === "All" || userRole.toLowerCase() === role.toLowerCase();
 
       return matchesSearch && matchesRole;
     });
   }, [users, search, role]);
 
-  const handleRoleChange = async (
-    userId,
-    newRole
-  ) => {
+  const handleRoleChange = async (userId, newRole) => {
     try {
       setUpdatingRoleId(userId);
 
-      await updateUserRole(
-        userId,
-        newRole
-      );
+      await updateUserRole(userId, newRole);
 
       setUsers((previous) =>
         previous.map((user) =>
@@ -151,22 +118,16 @@ export default function AdminUsers() {
                 ...user,
                 role: newRole,
               }
-            : user
-        )
+            : user,
+        ),
       );
 
-      toast.success(
-        "User role updated successfully."
-      );
+      toast.success("User role updated successfully.");
     } catch (err) {
-      console.error(
-        "Failed to update user role:",
-        err
-      );
+      console.error("Failed to update user role:", err);
 
       toast.error(
-        err?.response?.data?.message ||
-          "Failed to update user role."
+        err?.response?.data?.message || "Failed to update user role.",
       );
     } finally {
       setUpdatingRoleId(null);
@@ -174,19 +135,13 @@ export default function AdminUsers() {
   };
 
   const handleDelete = async (user) => {
-    const userId =
-      user._id || user.id;
+    const userId = user._id || user.id;
 
-    const name =
-      user.name ||
-      user.fullName ||
-      user.email ||
-      "this user";
+    const name = user.name || user.fullName || user.email || "this user";
 
-    const confirmed =
-      window.confirm(
-        `Are you sure you want to delete ${name}? This action cannot be undone.`
-      );
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${name}? This action cannot be undone.`,
+    );
 
     if (!confirmed) return;
 
@@ -196,26 +151,14 @@ export default function AdminUsers() {
       await deleteAdminUser(userId);
 
       setUsers((previous) =>
-        previous.filter(
-          (item) =>
-            (item._id || item.id) !==
-            userId
-        )
+        previous.filter((item) => (item._id || item.id) !== userId),
       );
 
-      toast.success(
-        "User deleted successfully."
-      );
+      toast.success("User deleted successfully.");
     } catch (err) {
-      console.error(
-        "Failed to delete user:",
-        err
-      );
+      console.error("Failed to delete user:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Failed to delete user."
-      );
+      toast.error(err?.response?.data?.message || "Failed to delete user.");
     } finally {
       setDeletingId(null);
     }
@@ -224,13 +167,10 @@ export default function AdminUsers() {
   const totalUsers = users.length;
 
   const adminCount = users.filter(
-    (user) =>
-      String(user.role || "User")
-        .toLowerCase() === "admin"
+    (user) => String(user.role || "User").toLowerCase() === "admin",
   ).length;
 
-  const regularUserCount =
-    totalUsers - adminCount;
+  const regularUserCount = totalUsers - adminCount;
 
   if (loading) {
     return (
@@ -242,7 +182,6 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-8">
-
       <DashboardHeader
         title="User Management"
         subtitle="Manage registered users, roles and account access."
@@ -253,14 +192,10 @@ export default function AdminUsers() {
       ========================= */}
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
         <Card className="p-6">
           <div className="flex items-center justify-between">
-
             <div>
-              <p className="text-sm font-medium text-slate-500">
-                Total Users
-              </p>
+              <p className="text-sm font-medium text-slate-500">Total Users</p>
 
               <p className="mt-2 text-3xl font-bold text-slate-900">
                 {totalUsers}
@@ -270,13 +205,11 @@ export default function AdminUsers() {
             <div className="rounded-xl bg-blue-100 p-3 text-blue-600">
               <Users size={24} />
             </div>
-
           </div>
         </Card>
 
         <Card className="p-6">
           <div className="flex items-center justify-between">
-
             <div>
               <p className="text-sm font-medium text-slate-500">
                 Administrators
@@ -290,13 +223,11 @@ export default function AdminUsers() {
             <div className="rounded-xl bg-purple-100 p-3 text-purple-600">
               <ShieldCheck size={24} />
             </div>
-
           </div>
         </Card>
 
         <Card className="p-6">
           <div className="flex items-center justify-between">
-
             <div>
               <p className="text-sm font-medium text-slate-500">
                 Regular Users
@@ -310,10 +241,8 @@ export default function AdminUsers() {
             <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600">
               <UserRound size={24} />
             </div>
-
           </div>
         </Card>
-
       </div>
 
       {/* =========================
@@ -321,17 +250,13 @@ export default function AdminUsers() {
       ========================= */}
 
       <Card className="overflow-hidden">
-
         {/* Toolbar */}
 
         <div className="border-b border-slate-200 p-5">
-
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-
             {/* Search */}
 
             <div className="relative w-full lg:max-w-md">
-
               <Search
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -340,40 +265,25 @@ export default function AdminUsers() {
               <input
                 type="search"
                 value={search}
-                onChange={(event) =>
-                  setSearch(
-                    event.target.value
-                  )
-                }
+                onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by name or email..."
                 className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-
               {/* Role */}
 
               <select
                 value={role}
-                onChange={(event) =>
-                  setRole(
-                    event.target.value
-                  )
-                }
+                onChange={(event) => setRole(event.target.value)}
                 className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
               >
-                {ROLES.map(
-                  (item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  )
-                )}
+                {ROLES.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
 
               {/* Refresh */}
@@ -389,22 +299,13 @@ export default function AdminUsers() {
               >
                 <RefreshCw
                   size={17}
-                  className={
-                    refreshing
-                      ? "animate-spin"
-                      : ""
-                  }
+                  className={refreshing ? "animate-spin" : ""}
                 />
 
-                <span className="ml-2">
-                  Refresh
-                </span>
+                <span className="ml-2">Refresh</span>
               </Button>
-
             </div>
-
           </div>
-
         </div>
 
         {/* Error */}
@@ -418,188 +319,106 @@ export default function AdminUsers() {
         {/* Empty */}
 
         {filteredUsers.length === 0 ? (
-
           <div className="px-6 py-20 text-center">
-
-            <Users
-              size={42}
-              className="mx-auto text-slate-300"
-            />
+            <Users size={42} className="mx-auto text-slate-300" />
 
             <h3 className="mt-4 text-lg font-semibold text-slate-900">
               No users found
             </h3>
 
             <p className="mt-2 text-sm text-slate-500">
-              Try adjusting your search or
-              role filter.
+              Try adjusting your search or role filter.
             </p>
-
           </div>
-
         ) : (
-
           <div className="overflow-x-auto">
-
             <table className="w-full min-w-[850px]">
-
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="px-6 py-4">User</th>
 
-                  <th className="px-6 py-4">
-                    User
-                  </th>
+                  <th className="px-6 py-4">Email</th>
 
-                  <th className="px-6 py-4">
-                    Email
-                  </th>
+                  <th className="px-6 py-4">Role</th>
 
-                  <th className="px-6 py-4">
-                    Role
-                  </th>
+                  <th className="px-6 py-4">Joined</th>
 
-                  <th className="px-6 py-4">
-                    Joined
-                  </th>
-
-                  <th className="px-6 py-4 text-right">
-                    Actions
-                  </th>
-
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
 
               <tbody>
+                {filteredUsers.map((user) => {
+                  const userId = user._id || user.id;
 
-                {filteredUsers.map(
-                  (user) => {
+                  const name = user.name || user.fullName || "Unnamed User";
 
-                    const userId =
-                      user._id ||
-                      user.id;
+                  const email = user.email || "No email";
 
-                    const name =
-                      user.name ||
-                      user.fullName ||
-                      "Unnamed User";
+                  const currentRole = user.role || "User";
 
-                    const email =
-                      user.email ||
-                      "No email";
-
-                    const currentRole =
-                      user.role ||
-                      "User";
-
-                    return (
-                      <tr
-                        key={userId}
-                        className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
-                      >
-
-                        <td className="px-6 py-5">
-
-                          <div className="flex items-center gap-3">
-
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700">
-                              {name
-                                .charAt(0)
-                                .toUpperCase()}
-                            </div>
-
-                            <span className="font-semibold text-slate-900">
-                              {name}
-                            </span>
-
+                  return (
+                    <tr
+                      key={userId}
+                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                    >
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700">
+                            {name.charAt(0).toUpperCase()}
                           </div>
 
-                        </td>
+                          <span className="font-semibold text-slate-900">
+                            {name}
+                          </span>
+                        </div>
+                      </td>
 
-                        <td className="px-6 py-5 text-sm text-slate-600">
-                          {email}
-                        </td>
+                      <td className="px-6 py-5 text-sm text-slate-600">
+                        {email}
+                      </td>
 
-                        <td className="px-6 py-5">
+                      <td className="px-6 py-5">
+                        <select
+                          value={currentRole}
+                          disabled={updatingRoleId === userId}
+                          onChange={(event) =>
+                            handleRoleChange(userId, event.target.value)
+                          }
+                          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500"
+                        >
+                          <option value="User">User</option>
 
-                          <select
-                            value={
-                              currentRole
-                            }
-                            disabled={
-                              updatingRoleId ===
-                              userId
-                            }
-                            onChange={(
-                              event
-                            ) =>
-                              handleRoleChange(
-                                userId,
-                                event.target.value
-                              )
-                            }
-                            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500"
-                          >
-                            <option value="User">
-                              User
-                            </option>
+                          <option value="Admin">Admin</option>
+                        </select>
+                      </td>
 
-                            <option value="Admin">
-                              Admin
-                            </option>
-                          </select>
+                      <td className="px-6 py-5 text-sm text-slate-500">
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : "—"}
+                      </td>
 
-                        </td>
+                      <td className="px-6 py-5 text-right">
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(user)}
+                          disabled={deletingId === userId}
+                          className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <Trash2 size={16} />
 
-                        <td className="px-6 py-5 text-sm text-slate-500">
-                          {user.createdAt
-                            ? new Date(
-                                user.createdAt
-                              ).toLocaleDateString()
-                            : "—"}
-                        </td>
-
-                        <td className="px-6 py-5 text-right">
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDelete(
-                                user
-                              )
-                            }
-                            disabled={
-                              deletingId ===
-                              userId
-                            }
-                            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            <Trash2
-                              size={16}
-                            />
-
-                            {deletingId ===
-                            userId
-                              ? "Deleting..."
-                              : "Delete"}
-                          </button>
-
-                        </td>
-
-                      </tr>
-                    );
-                  }
-                )}
-
+                          {deletingId === userId ? "Deleting..." : "Delete"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
-
             </table>
-
           </div>
-
         )}
-
       </Card>
-
     </div>
   );
 }

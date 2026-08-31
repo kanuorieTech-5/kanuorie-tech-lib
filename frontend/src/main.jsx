@@ -24,5 +24,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
-  </BrowserRouter>
+  </BrowserRouter>,
 );

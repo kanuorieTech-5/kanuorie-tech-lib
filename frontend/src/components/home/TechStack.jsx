@@ -86,8 +86,8 @@ export default function TechStack() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-            We leverage reliable, modern technologies and cloud platforms
-            to build scalable digital solutions.
+            We leverage reliable, modern technologies and cloud platforms to
+            build scalable digital solutions.
           </p>
         </motion.div>
 

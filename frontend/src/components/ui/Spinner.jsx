@@ -1,7 +1,4 @@
-export default function Spinner({
-  size = 24,
-  className = "",
-}) {
+export default function Spinner({ size = 24, className = "" }) {
   return (
     <svg
       className={`animate-spin ${className}`}
@@ -19,10 +16,7 @@ export default function Spinner({
         opacity="0.2"
       />
 
-      <path
-        fill="currentColor"
-        d="M22 12a10 10 0 00-10-10v4a6 6 0 016 6h4z"
-      />
+      <path fill="currentColor" d="M22 12a10 10 0 00-10-10v4a6 6 0 016 6h4z" />
     </svg>
   );
 }

@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import {
-  Card,
-  Button,
-  Loader,
-  SectionTitle,
-} from "../common";
+import { Card, Button, Loader, SectionTitle } from "../common";
 
 import {
   Code2,
@@ -52,12 +47,10 @@ const getServicesData = (response) => {
   return [];
 };
 
-const getServiceId = (service) =>
-  service?._id || service?.id || null;
+const getServiceId = (service) => service?._id || service?.id || null;
 
 const getServiceDescription = (service) => {
-  const description =
-    service?.description?.trim();
+  const description = service?.description?.trim();
 
   if (!description) {
     return FALLBACK_DESCRIPTION;
@@ -80,17 +73,13 @@ export default function ServicesPreview() {
       try {
         const response = await getServices();
 
-        const data =
-          getServicesData(response);
+        const data = getServicesData(response);
 
         if (mounted) {
           setServices(data);
         }
       } catch (error) {
-        console.error(
-          "Failed to load services:",
-          error
-        );
+        console.error("Failed to load services:", error);
 
         if (mounted) {
           setServices([]);
@@ -109,47 +98,29 @@ export default function ServicesPreview() {
     };
   }, []);
 
-  const displayedServices = services.filter(
-    (service) => getServiceId(service)
-  );
+  const displayedServices = services.filter((service) => getServiceId(service));
 
-  const maxIndex = Math.max(
-    displayedServices.length - VISIBLE,
-    0
-  );
+  const maxIndex = Math.max(displayedServices.length - VISIBLE, 0);
 
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   useEffect(() => {
-    if (
-      displayedServices.length <= VISIBLE
-    ) {
+    if (displayedServices.length <= VISIBLE) {
       return;
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex
-          ? 0
-          : previous + 1
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [
-    displayedServices.length,
-    maxIndex,
-  ]);
+  }, [displayedServices.length, maxIndex]);
 
   if (loading) {
     return (
@@ -164,7 +135,6 @@ export default function ServicesPreview() {
   return (
     <section className="bg-slate-900 py-24 text-white">
       <div className="px-6">
-
         <SectionTitle
           Badge="Our Services"
           title="Digital Solutions Built For Growth"
@@ -173,23 +143,17 @@ export default function ServicesPreview() {
 
         {displayedServices.length === 0 ? (
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-
             <Code2 className="mx-auto mb-5 h-10 w-10 text-cyan-400" />
 
-            <h3 className="text-xl font-bold">
-              Services Coming Soon
-            </h3>
+            <h3 className="text-xl font-bold">Services Coming Soon</h3>
 
             <p className="mx-auto mt-3 max-w-lg text-slate-400">
-              We're currently updating our
-              service offerings.
+              We're currently updating our service offerings.
             </p>
-
           </div>
         ) : (
           <>
             <div className="mt-16 overflow-hidden">
-
               <motion.div
                 className="flex"
                 animate={{
@@ -200,31 +164,24 @@ export default function ServicesPreview() {
                   ease: "easeInOut",
                 }}
               >
+                {displayedServices.map((service, index) => {
+                  const serviceId = getServiceId(service);
 
-                {displayedServices.map(
-                  (service, index) => {
-                    const serviceId =
-                      getServiceId(service);
+                  const Icon = SERVICE_ICONS[index % SERVICE_ICONS.length];
 
-                    const Icon =
-                      SERVICE_ICONS[
-                        index %
-                          SERVICE_ICONS.length
-                      ];
-
-                    return (
-                      <div
-                        key={serviceId}
-                        className="
+                  return (
+                    <div
+                      key={serviceId}
+                      className="
                           w-full
                           shrink-0
                           px-2
                           md:w-1/2
                           lg:w-1/3
                         "
-                      >
-                        <Card
-                          className="
+                    >
+                      <Card
+                        className="
                             flex
                             h-full
                             flex-col
@@ -232,43 +189,32 @@ export default function ServicesPreview() {
                             bg-white/5
                             backdrop-blur-xl
                           "
+                      >
+                        <Icon className="mb-6 h-10 w-10 text-cyan-400" />
+
+                        <h3 className="mb-4 text-2xl font-bold">
+                          {service.title || "Technology Service"}
+                        </h3>
+
+                        <p className="mb-8 flex-1 leading-7 text-slate-400">
+                          {getServiceDescription(service)}
+                        </p>
+
+                        <Link
+                          to={`/services/${serviceId}`}
+                          className="mt-auto inline-flex"
                         >
-
-                          <Icon className="mb-6 h-10 w-10 text-cyan-400" />
-
-                          <h3 className="mb-4 text-2xl font-bold">
-                            {service.title ||
-                              "Technology Service"}
-                          </h3>
-
-                          <p className="mb-8 flex-1 leading-7 text-slate-400">
-                            {getServiceDescription(
-                              service
-                            )}
-                          </p>
-
-                          <Link
-                            to={`/services/${serviceId}`}
-                            className="mt-auto inline-flex"
-                          >
-                            <Button>
-                              Learn More
-                            </Button>
-                          </Link>
-
-                        </Card>
-                      </div>
-                    );
-                  }
-                )}
-
+                          <Button>Learn More</Button>
+                        </Link>
+                      </Card>
+                    </div>
+                  );
+                })}
               </motion.div>
             </div>
 
-            {displayedServices.length >
-              VISIBLE && (
+            {displayedServices.length > VISIBLE && (
               <div className="mt-10 flex justify-center gap-4">
-
                 <button
                   type="button"
                   onClick={prevSlide}
@@ -302,23 +248,18 @@ export default function ServicesPreview() {
                 >
                   →
                 </button>
-
               </div>
             )}
-
           </>
         )}
 
         {services.length > 6 && (
           <div className="mt-12 text-center">
             <Link to="/services">
-              <Button variant="secondary">
-                View All Services
-              </Button>
+              <Button variant="secondary">View All Services</Button>
             </Link>
           </div>
         )}
-
       </div>
     </section>
   );

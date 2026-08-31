@@ -12,23 +12,17 @@ export default function Button({
   ...props
 }) {
   const variants = {
-    primary:
-      "bg-blue-600 text-white hover:bg-blue-700",
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
 
-    secondary:
-      "bg-slate-700 text-white hover:bg-slate-800",
+    secondary: "bg-slate-700 text-white hover:bg-slate-800",
 
-    outline:
-      "border border-gray-300 hover:bg-gray-100",
+    outline: "border border-gray-300 hover:bg-gray-100",
 
-    success:
-      "bg-green-600 text-white hover:bg-green-700",
+    success: "bg-green-600 text-white hover:bg-green-700",
 
-    danger:
-      "bg-red-600 text-white hover:bg-red-700",
+    danger: "bg-red-600 text-white hover:bg-red-700",
 
-    ghost:
-      "hover:bg-gray-100",
+    ghost: "hover:bg-gray-100",
   };
 
   const sizes = {
@@ -48,7 +42,7 @@ export default function Button({
         variants[variant],
         sizes[size],
         fullWidth && "w-full",
-        className
+        className,
       )}
       {...props}
     >

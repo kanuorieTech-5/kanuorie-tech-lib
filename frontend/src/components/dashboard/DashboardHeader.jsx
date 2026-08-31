@@ -10,9 +10,7 @@ export default function DashboardHeader({
     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="mb-2 text-sm font-medium text-blue-600">
-          {location.pathname.startsWith("/admin")
-            ? "Admin Panel"
-            : "Dashboard"}
+          {location.pathname.startsWith("/admin") ? "Admin Panel" : "Dashboard"}
         </p>
 
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -26,11 +24,7 @@ export default function DashboardHeader({
         )}
       </div>
 
-      {action && (
-        <div className="shrink-0">
-          {action}
-        </div>
-      )}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

@@ -9,16 +9,12 @@ export default function RecommendedResources({
   savingId,
   onSave,
 }) {
-
   if (!resources.length) return null;
 
   return (
     <section className="mb-20">
-
       <div className="mb-8 flex items-center justify-between">
-
         <div>
-
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
             <Sparkles size={16} />
             Recommended For You
@@ -29,9 +25,9 @@ export default function RecommendedResources({
           </h2>
 
           <p className="mt-2 max-w-2xl text-gray-600">
-            Based on the resources you've already saved, you may also like these.
+            Based on the resources you've already saved, you may also like
+            these.
           </p>
-
         </div>
 
         <Link
@@ -41,13 +37,10 @@ export default function RecommendedResources({
           Browse Library
           <ArrowRight size={18} />
         </Link>
-
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-
         {resources.slice(0, 4).map((resource) => (
-
           <ResourceCard
             key={resource.resourceId}
             resource={resource}
@@ -55,11 +48,8 @@ export default function RecommendedResources({
             saving={savingId === resource.resourceId}
             onSave={onSave}
           />
-
         ))}
-
       </div>
-
     </section>
   );
 }

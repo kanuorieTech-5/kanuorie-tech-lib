@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  Select,
-  TextArea,
-} from "../ui";
+import { Button, Card, Input, Select, TextArea } from "../ui";
 
 export default function AdminBookForm({
   initialData = {},
@@ -98,10 +92,7 @@ export default function AdminBookForm({
           onChange={handleChange}
         />
 
-        <Button
-          loading={loading}
-          type="submit"
-        >
+        <Button loading={loading} type="submit">
           Save Book
         </Button>
       </form>

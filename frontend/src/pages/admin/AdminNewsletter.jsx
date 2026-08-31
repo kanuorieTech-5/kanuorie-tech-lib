@@ -11,11 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-} from "../../components/common";
+import { Card, Button, Loader } from "../../components/common";
 
 import {
   getSubscribers,
@@ -54,18 +50,11 @@ export default function AdminNewsletter() {
        * response.data.data
        */
 
-      const data =
-        response?.data?.data ??
-        response?.data ??
-        response ??
-        [];
+      const data = response?.data?.data ?? response?.data ?? response ?? [];
 
       setSubscribers(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(
-        "Failed to load newsletter subscribers:",
-        err
-      );
+      console.error("Failed to load newsletter subscribers:", err);
 
       const message =
         err?.response?.data?.message ||
@@ -96,7 +85,7 @@ export default function AdminNewsletter() {
     }
 
     const confirmed = window.confirm(
-      `Are you sure you want to remove ${subscriber.email} from the newsletter?`
+      `Are you sure you want to remove ${subscriber.email} from the newsletter?`,
     );
 
     if (!confirmed) {
@@ -109,23 +98,17 @@ export default function AdminNewsletter() {
       await deleteSubscriber(id);
 
       setSubscribers((current) =>
-        current.filter(
-          (item) =>
-            (item?._id || item?.id) !== id
-        )
+        current.filter((item) => (item?._id || item?.id) !== id),
       );
 
       toast.success("Subscriber removed successfully.");
     } catch (err) {
-      console.error(
-        "Failed to delete subscriber:",
-        err
-      );
+      console.error("Failed to delete subscriber:", err);
 
       toast.error(
         err?.response?.data?.message ||
           err?.message ||
-          "Failed to delete subscriber."
+          "Failed to delete subscriber.",
       );
     } finally {
       setDeleting(null);
@@ -146,7 +129,7 @@ export default function AdminNewsletter() {
     return subscribers.filter((subscriber) =>
       String(subscriber?.email || "")
         .toLowerCase()
-        .includes(query)
+        .includes(query),
     );
   }, [subscribers, search]);
 
@@ -156,10 +139,7 @@ export default function AdminNewsletter() {
 
   const totalSubscribers = subscribers.length;
 
-  const latestSubscriber =
-    subscribers.length > 0
-      ? subscribers[0]
-      : null;
+  const latestSubscriber = subscribers.length > 0 ? subscribers[0] : null;
 
   /* ==========================================
      LOADING
@@ -187,9 +167,7 @@ export default function AdminNewsletter() {
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            Newsletter
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900">Newsletter</h1>
 
           <p className="mt-1 text-sm text-slate-500">
             Manage your newsletter subscribers.
@@ -198,19 +176,14 @@ export default function AdminNewsletter() {
 
         <Card className="border-red-200 bg-red-50 p-6">
           <div className="flex items-start gap-4">
-            <AlertCircle
-              className="mt-0.5 text-red-600"
-              size={24}
-            />
+            <AlertCircle className="mt-0.5 text-red-600" size={24} />
 
             <div>
               <h2 className="font-semibold text-red-700">
                 Unable to load subscribers
               </h2>
 
-              <p className="mt-1 text-sm text-red-600">
-                {error}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{error}</p>
 
               <Button
                 type="button"
@@ -228,7 +201,6 @@ export default function AdminNewsletter() {
 
   return (
     <section className="space-y-8">
-
       {/* ==========================================
           HEADER
       ========================================== */}
@@ -241,9 +213,7 @@ export default function AdminNewsletter() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Newsletter
-              </h1>
+              <h1 className="text-2xl font-bold text-slate-900">Newsletter</h1>
 
               <p className="text-sm text-slate-500">
                 Manage your newsletter subscribers.
@@ -260,9 +230,7 @@ export default function AdminNewsletter() {
         >
           <RefreshCw
             size={17}
-            className={`mr-2 ${
-              refreshing ? "animate-spin" : ""
-            }`}
+            className={`mr-2 ${refreshing ? "animate-spin" : ""}`}
           />
 
           {refreshing ? "Refreshing..." : "Refresh"}
@@ -274,7 +242,6 @@ export default function AdminNewsletter() {
       ========================================== */}
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
         <Card className="p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -328,7 +295,6 @@ export default function AdminNewsletter() {
             </div>
           </div>
         </Card>
-
       </div>
 
       {/* ==========================================
@@ -345,9 +311,7 @@ export default function AdminNewsletter() {
           <input
             type="search"
             value={search}
-            onChange={(event) =>
-              setSearch(event.target.value)
-            }
+            onChange={(event) => setSearch(event.target.value)}
             placeholder="Search subscribers..."
             className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
@@ -359,19 +323,14 @@ export default function AdminNewsletter() {
       ========================================== */}
 
       <Card className="overflow-hidden">
-
         <div className="border-b border-slate-200 px-6 py-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="font-semibold text-slate-900">
-                Subscribers
-              </h2>
+              <h2 className="font-semibold text-slate-900">Subscribers</h2>
 
               <p className="mt-1 text-sm text-slate-500">
                 {filteredSubscribers.length} subscriber
-                {filteredSubscribers.length !== 1
-                  ? "s"
-                  : ""}
+                {filteredSubscribers.length !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -384,9 +343,7 @@ export default function AdminNewsletter() {
             </div>
 
             <h3 className="mt-4 font-semibold text-slate-900">
-              {search
-                ? "No subscribers found"
-                : "No subscribers yet"}
+              {search ? "No subscribers found" : "No subscribers yet"}
             </h3>
 
             <p className="mt-2 text-sm text-slate-500">
@@ -398,7 +355,6 @@ export default function AdminNewsletter() {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full">
-
               <thead className="bg-slate-50">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -420,18 +376,11 @@ export default function AdminNewsletter() {
               </thead>
 
               <tbody className="divide-y divide-slate-100 bg-white">
-
                 {filteredSubscribers.map((subscriber) => {
-                  const id =
-                    subscriber?._id ||
-                    subscriber?.id;
+                  const id = subscriber?._id || subscriber?.id;
 
                   return (
-                    <tr
-                      key={id}
-                      className="transition hover:bg-slate-50"
-                    >
-
+                    <tr key={id} className="transition hover:bg-slate-50">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
@@ -440,7 +389,7 @@ export default function AdminNewsletter() {
 
                           <div>
                             <p className="font-medium text-slate-900">
-                              {subscriber?.email || "—"}
+                              {subscriber?.email || "ï¿½"}
                             </p>
                           </div>
                         </div>
@@ -455,18 +404,14 @@ export default function AdminNewsletter() {
 
                       <td className="px-6 py-4 text-sm text-slate-500">
                         {subscriber?.createdAt
-                          ? new Date(
-                              subscriber.createdAt
-                            ).toLocaleDateString()
-                          : "—"}
+                          ? new Date(subscriber.createdAt).toLocaleDateString()
+                          : "ï¿½"}
                       </td>
 
                       <td className="px-6 py-4 text-right">
                         <button
                           type="button"
-                          onClick={() =>
-                            handleDelete(subscriber)
-                          }
+                          onClick={() => handleDelete(subscriber)}
                           disabled={deleting === id}
                           className="inline-flex items-center rounded-lg p-2 text-red-500 transition hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                           title="Remove subscriber"
@@ -474,19 +419,14 @@ export default function AdminNewsletter() {
                           <Trash2 size={18} />
                         </button>
                       </td>
-
                     </tr>
                   );
                 })}
-
               </tbody>
-
             </table>
           </div>
         )}
-
       </Card>
-
     </section>
   );
 }
