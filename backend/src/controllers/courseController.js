@@ -243,12 +243,73 @@ const updateNotes = asyncHandler(async (req, res) => {
   );
 });
 
+const enrollCourse = asyncHandler(async (req, res) => {
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  if (!course.published) {
+    throw new ApiError(
+      400,
+      "This course is not currently available for enrollment."
+    );
+  }
+
+  // Check whether the user is already enrolled
+  const existingProgress = await Progress.findOne({
+    user: req.user._id,
+    course: course._id,
+  });
+
+  if (existingProgress) {
+    throw new ApiError(
+      409,
+      "You are already enrolled in this course."
+    );
+  }
+
+  // Create progress record for the enrolled user
+  const progress = await Progress.create({
+    user: req.user._id,
+    course: course._id,
+    percentage: 0,
+    status: "not_started",
+    currentLesson: 0,
+    completedLessons: [],
+    bookmarkedLessons: [],
+    watchTime: 0,
+    quizScore: 0,
+    notes: [],
+    certificateIssued: false,
+    completed: false,
+    completedAt: null,
+    lastAccessed: new Date(),
+    lastProgressUpdate: new Date(),
+  });
+
+  // Increment course enrollment count
+  course.enrollments += 1;
+  await course.save();
+
+  return ApiResponse.success(
+    res,
+    {
+      course,
+      progress,
+    },
+    "Successfully enrolled in course.",
+    201
+  );
+});
 module.exports = {
   saveCourse,
   getCourses,
   getCourse,
   updateCourse,
   deleteCourse,
+  enrollCourse,
   updateProgress,
   updateNotes,
 };
