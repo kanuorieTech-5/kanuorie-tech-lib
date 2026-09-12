@@ -86,20 +86,25 @@ class BlogService {
   /* =========================
      GET SINGLE BLOG
   ========================= */
-  async getById(id) {
-    const blog = await Blog.findById(id).populate(
-      "author",
-      "firstName lastName email"
-    );
+  async getById(identifier) {
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
 
-    if (blog) {
-      blog.views = (blog.views || 0) + 1;
-      await blog.save();
-    }
+  const query = isObjectId
+    ? { _id: identifier }
+    : { slug: identifier };
 
-    return blog;
+  const blog = await Blog.findOne(query).populate(
+    "author",
+    "firstName lastName email"
+  );
+
+  if (blog) {
+    blog.views = (blog.views || 0) + 1;
+    await blog.save();
   }
 
+  return blog;
+}
   /* =========================
      UPDATE BLOG
   ========================= */
