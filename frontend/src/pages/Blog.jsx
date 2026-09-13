@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, ArrowRight, BookOpen } from "lucide-react";
-
 import {
   Card,
   Button,
@@ -9,11 +8,8 @@ import {
   Pagination,
   SectionTitle,
 } from "../components/common";
-
 import { SearchBar } from "../components/layout";
-
 import { Newsletter, CTA } from "../components/home";
-
 import { getBlogs } from "../services";
 
 const POSTS_PER_PAGE = 9;
@@ -23,21 +19,23 @@ const FALLBACK_IMAGE = "/images/blog-placeholder.png";
 const FALLBACK_EXCERPT =
   "Discover the latest technology insights, tutorials and updates from KanuorieTech.";
 
-/* ==========================================
-   API RESPONSE
-========================================== */
-
 const getBlogsData = (response) => {
-  if (Array.isArray(response)) {
-    return response;
-  }
+  if (Array.isArray(response)) return response;
 
   if (Array.isArray(response?.data)) {
     return response.data;
   }
 
+  if (Array.isArray(response?.data?.items)) {
+    return response.data.items;
+  }
+
   if (Array.isArray(response?.data?.blogs)) {
     return response.data.blogs;
+  }
+
+  if (Array.isArray(response?.items)) {
+    return response.items;
   }
 
   if (Array.isArray(response?.blogs)) {
@@ -46,10 +44,6 @@ const getBlogsData = (response) => {
 
   return [];
 };
-
-/* ==========================================
-   HELPERS
-========================================== */
 
 const getBlogId = (blog) => {
   return blog?._id || blog?.id || null;
@@ -83,20 +77,12 @@ const formatDate = (date) => {
   }).format(parsedDate);
 };
 
-/* ==========================================
-   COMPONENT
-========================================== */
-
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-
-  /* ==========================================
-     LOAD BLOGS
-  ========================================== */
 
   useEffect(() => {
     let isMounted = true;
@@ -130,10 +116,6 @@ export default function Blog() {
     };
   }, []);
 
-  /* ==========================================
-     FILTER BLOGS
-  ========================================== */
-
   const filteredBlogs = useMemo(() => {
     const query = search.trim().toLowerCase();
 
@@ -156,15 +138,7 @@ export default function Blog() {
     });
   }, [blogs, search]);
 
-  /* ==========================================
-     FEATURED POST
-  ========================================== */
-
   const featuredPost = filteredBlogs[0] || null;
-
-  /* ==========================================
-     PAGINATION
-  ========================================== */
 
   const totalArticles = Math.max(filteredBlogs.length - 1, 0);
 
@@ -176,27 +150,15 @@ export default function Blog() {
     return filteredBlogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
   }, [filteredBlogs, page]);
 
-  /* ==========================================
-     RESET PAGE WHEN SEARCH CHANGES
-  ========================================== */
-
   useEffect(() => {
     setPage(1);
   }, [search]);
-
-  /* ==========================================
-     PROTECT AGAINST INVALID PAGE
-  ========================================== */
 
   useEffect(() => {
     if (totalPages > 0 && page > totalPages) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
-
-  /* ==========================================
-     LOADING
-  ========================================== */
 
   if (loading) {
     return (
@@ -216,16 +178,8 @@ export default function Blog() {
     );
   }
 
-  /* ==========================================
-     PAGE
-  ========================================== */
-
   return (
     <>
-      {/* ======================================
-          HERO
-      ====================================== */}
-
       <section
         className="
           relative
@@ -302,10 +256,6 @@ export default function Blog() {
         </div>
       </section>
 
-      {/* ======================================
-          SEARCH
-      ====================================== */}
-
       <section className="bg-white py-12 lg:py-14">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <label htmlFor="blog-search" className="sr-only">
@@ -320,10 +270,6 @@ export default function Blog() {
           />
         </div>
       </section>
-
-      {/* ======================================
-          FEATURED ARTICLE
-      ====================================== */}
 
       {featuredPost ? (
         <section className="bg-slate-50 py-20">
@@ -344,7 +290,7 @@ export default function Blog() {
 
               <div className="overflow-hidden">
                 <img
-                  src={featuredPost?.image || FALLBACK_IMAGE}
+                  src={featuredPost?.coverImage || FALLBACK_IMAGE}
                   alt={featuredPost?.title || "Featured article"}
                   className="
                     h-72
@@ -428,10 +374,6 @@ export default function Blog() {
         </section>
       )}
 
-      {/* ======================================
-          LATEST ARTICLES
-      ====================================== */}
-
       {currentBlogs.length > 0 && (
         <section className="bg-white py-24">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -465,7 +407,7 @@ export default function Blog() {
 
                     <div className="overflow-hidden">
                       <img
-                        src={blog?.image || FALLBACK_IMAGE}
+                        src={blog?.coverImage || FALLBACK_IMAGE}
                         alt={title}
                         loading="lazy"
                         decoding="async"
@@ -545,10 +487,6 @@ export default function Blog() {
         </section>
       )}
 
-      {/* ======================================
-          NO ADDITIONAL ARTICLES
-      ====================================== */}
-
       {featuredPost && currentBlogs.length === 0 && (
         <section className="bg-white pb-20">
           <div className="mx-auto max-w-4xl px-6 text-center">
@@ -560,17 +498,7 @@ export default function Blog() {
           </div>
         </section>
       )}
-
-      {/* ======================================
-          NEWSLETTER
-      ====================================== */}
-
       <Newsletter />
-
-      {/* ======================================
-          CTA
-      ====================================== */}
-
       <CTA />
     </>
   );

@@ -206,10 +206,6 @@ export default function Projects() {
 
   return (
     <>
-      {/* ========================================
-          HERO
-      ======================================== */}
-
       <section
         className="
           relative
@@ -255,8 +251,6 @@ export default function Projects() {
         <div
           className="
             relative
-            mx-auto
-            max-w-5xl
             px-6
             text-center
           "
@@ -274,7 +268,6 @@ export default function Projects() {
               duration: 0.5,
             }}
             className="
-              mx-auto
               inline-flex
               items-center
               gap-2
@@ -333,7 +326,6 @@ export default function Projects() {
             className="
               mx-auto
               mt-6
-              max-w-3xl
               text-base
               leading-7
               text-slate-300
@@ -361,7 +353,7 @@ export default function Projects() {
         "
         aria-labelledby="projects-heading"
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="">
           {/* Header */}
 
           <div className="mb-12">

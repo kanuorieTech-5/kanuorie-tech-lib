@@ -13,29 +13,38 @@ export default function BlogPreview() {
   useEffect(() => {
     let mounted = true;
 
-    const fetchBlogs = async () => {
+    const fetchFeaturedBlogs = async () => {
       try {
-        const response = await getBlogs();
+        // Ask the backend specifically for featured blogs
+        const response = await getBlogs({
+          featured: true,
+          limit: 3,
+        });
 
         /*
         ==========================================
         NORMALIZE API RESPONSE
         ==========================================
 
-        Possible API responses:
+        Backend response:
 
-        1. [...]
-        2. { data: [...] }
-        3. { data: { blogs: [...] } }
-        4. { blogs: [...] }
+        {
+          success: true,
+          data: {
+            items: [...],
+            pagination: {...}
+          }
+        }
         */
 
-        const data = Array.isArray(response)
-          ? response
-          : Array.isArray(response?.data)
-            ? response.data
-            : Array.isArray(response?.data?.blogs)
-              ? response.data.blogs
+        const result = response?.data;
+
+        const data = Array.isArray(result?.items)
+          ? result.items
+          : Array.isArray(result)
+            ? result
+            : Array.isArray(response?.items)
+              ? response.items
               : Array.isArray(response?.blogs)
                 ? response.blogs
                 : [];
@@ -44,7 +53,7 @@ export default function BlogPreview() {
           setBlogs(data);
         }
       } catch (error) {
-        console.error("Failed to load blogs:", error);
+        console.error("Failed to load featured blogs:", error);
 
         if (mounted) {
           setBlogs([]);
@@ -56,7 +65,7 @@ export default function BlogPreview() {
       }
     };
 
-    fetchBlogs();
+    fetchFeaturedBlogs();
 
     return () => {
       mounted = false;
@@ -72,23 +81,28 @@ export default function BlogPreview() {
   }
 
   return (
-    <section className="bg-slate-900 dark:bg-slate-900 text-gray-900 dark:text-white py-24">
+    <section className="bg-slate-900 py-24 text-gray-900 dark:bg-slate-900 dark:text-white">
       <div className="px-6">
         <SectionTitle
           Badge="Knowledge Hub"
-          title="Latest Technology Insights"
-          subtitle="Explore tutorials, company updates and industry insights from KanuorieTech."
+          title="Featured Technology Insights"
+          subtitle="Explore featured tutorials, company updates and industry insights from KanuorieTech."
         />
 
         {blogs.length === 0 ? (
           <p className="mt-12 text-center text-slate-400">
-            Articles coming soon.
+            Featured articles coming soon.
           </p>
         ) : (
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
-            {blogs.slice(0, 3).map((blog, index) => (
+            {blogs.map((blog, index) => (
               <motion.div
-                key={blog._id || blog.id || blog.slug || `blog-${index}`}
+                key={
+                  blog._id ||
+                  blog.id ||
+                  blog.slug ||
+                  `featured-blog-${index}`
+                }
                 initial={{
                   opacity: 0,
                   y: 30,
@@ -107,28 +121,43 @@ export default function BlogPreview() {
                 <Card className="overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl">
                   <img
                     src={
-                      blog.image ||
                       blog.coverImage ||
+                      blog.image ||
                       "/images/blog-placeholder.png"
                     }
                     alt={blog.title || "KanuorieTech article"}
                     className="mb-5 h-56 w-full rounded-2xl object-cover"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src =
+                        "/images/blog-placeholder.png";
+                    }}
                   />
 
-                  <h3 className="mb-4 text-xl font-bold text-white">
-                    {blog.title}
-                  </h3>
+                  <div className="px-1">
+                    {blog.category && (
+                      <span className="mb-3 inline-block text-sm font-medium text-blue-400">
+                        {blog.category}
+                      </span>
+                    )}
 
-                  <p className="mb-6 leading-7 text-slate-400">
-                    {blog.excerpt
-                      ? blog.excerpt.slice(0, 120)
-                      : "Read the latest insights from KanuorieTech."}
-                    ...
-                  </p>
+                    <h3 className="mb-4 text-xl font-bold text-white">
+                      {blog.title}
+                    </h3>
 
-                  <Link to={`/blog/${blog.slug || blog._id || blog.id}`}>
-                    <Button>Read More</Button>
-                  </Link>
+                    <p className="mb-6 leading-7 text-slate-400">
+                      {blog.excerpt
+                        ? blog.excerpt.slice(0, 120)
+                        : "Read the latest insights from KanuorieTech."}
+                      ...
+                    </p>
+
+                    <Link
+                      to={`/blog/${blog.slug || blog._id || blog.id}`}
+                    >
+                      <Button>Read More</Button>
+                    </Link>
+                  </div>
                 </Card>
               </motion.div>
             ))}

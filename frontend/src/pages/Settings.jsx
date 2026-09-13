@@ -32,7 +32,7 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function Settings() {
-  const { darkMode, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
@@ -178,7 +178,7 @@ export default function Settings() {
   const handleThemeToggle = async () => {
     toggleTheme();
 
-    const newTheme = darkMode ? "light" : "dark";
+    const newTheme = theme === "light" ? "dark" : "light";
 
     const updated = {
       ...settings,
@@ -309,18 +309,13 @@ export default function Settings() {
                 Dark Mode
               </span>
 
-              <input
-                type="checkbox"
-                checked={Boolean(darkMode)}
-                onChange={handleThemeToggle}
-                disabled={savingSettings}
-                className="peer sr-only"
-                aria-label="Toggle dark mode"
-              />
+              <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                <option value="system">System Default</option>
 
-              <span className="relative h-7 w-12 rounded-full bg-gray-300 transition-colors peer-checked:bg-blue-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-500/20 dark:bg-gray-700 dark:peer-checked:bg-blue-500">
-                <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
-              </span>
+                <option value="light">Light</option>
+
+                <option value="dark">Dark</option>
+              </select>
             </label>
           </div>
 

@@ -186,8 +186,7 @@ export default function CourseDetails() {
           );
 
           const otherCourses = availableCourses.filter(
-            (item) =>
-              !sameCategory.some((related) => related._id === item._id),
+            (item) => !sameCategory.some((related) => related._id === item._id),
           );
 
           setRelatedCourses(
@@ -243,7 +242,9 @@ export default function CourseDetails() {
 
   const totalLessons = useMemo(() => {
     return modules.reduce((total, module) => {
-      return total + (Array.isArray(module?.lessons) ? module.lessons.length : 0);
+      return (
+        total + (Array.isArray(module?.lessons) ? module.lessons.length : 0)
+      );
     }, 0);
   }, [modules]);
 
@@ -256,8 +257,7 @@ export default function CourseDetails() {
       return (
         total +
         module.lessons.reduce(
-          (lessonTotal, lesson) =>
-            lessonTotal + Number(lesson?.duration || 0),
+          (lessonTotal, lesson) => lessonTotal + Number(lesson?.duration || 0),
           0,
         )
       );
@@ -285,9 +285,7 @@ export default function CourseDetails() {
   }, [course]);
 
   const tags = useMemo(() => {
-    return Array.isArray(course?.tags)
-      ? course.tags.filter(Boolean)
-      : [];
+    return Array.isArray(course?.tags) ? course.tags.filter(Boolean) : [];
   }, [course]);
 
   const rating = Number(course?.rating || 0);
@@ -339,10 +337,7 @@ export default function CourseDetails() {
     } catch (error) {
       console.error("Course enrollment failed:", error);
 
-      const message = getApiMessage(
-        error,
-        "Unable to enroll in this course.",
-      );
+      const message = getApiMessage(error, "Unable to enroll in this course.");
 
       toast.error(message);
     } finally {
@@ -370,18 +365,15 @@ export default function CourseDetails() {
     return (
       <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
         <Card className="w-full max-w-lg text-center">
-          <BookOpen
-            size={56}
-            className="mx-auto mb-6 text-blue-600"
-          />
+          <BookOpen size={56} className="mx-auto mb-6 text-blue-600" />
 
           <h2 className="text-3xl font-bold text-slate-900">
             Course Not Found
           </h2>
 
           <p className="mt-4 leading-7 text-slate-600">
-            The course you're looking for doesn't exist, has been removed,
-            or is currently unavailable.
+            The course you're looking for doesn't exist, has been removed, or is
+            currently unavailable.
           </p>
 
           <Link to="/courses" className="mt-8 inline-block">
@@ -395,16 +387,8 @@ export default function CourseDetails() {
     );
   }
 
-  /* ==========================================
-     MAIN PAGE
-  ========================================== */
-
   return (
     <>
-      {/* ========================================
-          HERO
-      ======================================== */}
-
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -455,15 +439,10 @@ export default function CourseDetails() {
 
               <div className="mt-10 grid grid-cols-2 gap-5 sm:flex sm:flex-wrap sm:gap-8">
                 <div className="flex items-center gap-3">
-                  <Clock3
-                    size={20}
-                    className="shrink-0 text-blue-400"
-                  />
+                  <Clock3 size={20} className="shrink-0 text-blue-400" />
 
                   <div>
-                    <p className="text-xs text-slate-400">
-                      Duration
-                    </p>
+                    <p className="text-xs text-slate-400">Duration</p>
 
                     <span className="font-medium">
                       {formatCourseDuration(course.duration) || "8 Weeks"}
@@ -472,33 +451,22 @@ export default function CourseDetails() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <BookOpen
-                    size={20}
-                    className="shrink-0 text-blue-400"
-                  />
+                  <BookOpen size={20} className="shrink-0 text-blue-400" />
 
                   <div>
-                    <p className="text-xs text-slate-400">
-                      Curriculum
-                    </p>
+                    <p className="text-xs text-slate-400">Curriculum</p>
 
                     <span className="font-medium">
-                      {totalLessons}{" "}
-                      {totalLessons === 1 ? "Lesson" : "Lessons"}
+                      {totalLessons} {totalLessons === 1 ? "Lesson" : "Lessons"}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Users
-                    size={20}
-                    className="shrink-0 text-blue-400"
-                  />
+                  <Users size={20} className="shrink-0 text-blue-400" />
 
                   <div>
-                    <p className="text-xs text-slate-400">
-                      Students
-                    </p>
+                    <p className="text-xs text-slate-400">Students</p>
 
                     <span className="font-medium">
                       {enrollments.toLocaleString()}
@@ -514,9 +482,7 @@ export default function CourseDetails() {
                   />
 
                   <div>
-                    <p className="text-xs text-slate-400">
-                      Rating
-                    </p>
+                    <p className="text-xs text-slate-400">Rating</p>
 
                     <span className="font-medium">
                       {rating > 0 ? rating.toFixed(1) : "Not rated"}
@@ -539,108 +505,6 @@ export default function CourseDetails() {
                   ))}
                 </div>
               )}
-            </motion.div>
-
-            {/* RIGHT - ENROLLMENT CARD */}
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Card className="overflow-hidden p-0">
-                <div className="relative">
-                  <img
-                    src={getImage(course.image)}
-                    alt={course.title}
-                    className="h-56 w-full object-cover sm:h-72"
-                    onError={(event) => {
-                      event.currentTarget.onerror = null;
-                      event.currentTarget.src = COURSE_IMAGE_FALLBACK;
-                    }}
-                  />
-
-                  {course.featured && (
-                    <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-lg">
-                      Featured Course
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-6 p-6 sm:p-8">
-                  {/* Course access */}
-
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm text-slate-500">
-                        Course Access
-                      </p>
-
-                      <span className="text-2xl font-black text-blue-600">
-                        {course.premium ? "Premium" : "Free"}
-                      </span>
-                    </div>
-
-                    <Award
-                      className="text-yellow-500"
-                      size={30}
-                    />
-                  </div>
-
-                  <Button
-                    fullWidth
-                    loading={enrolling}
-                    onClick={handleEnroll}
-                    disabled={enrolling}
-                  >
-                    {enrolling ? "Enrolling..." : "Enroll Now"}
-                  </Button>
-
-                  <div className="border-t pt-6">
-                    <div className="space-y-4 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span>Instructor</span>
-                        <strong>{course.instructor || "KanuorieTech"}</strong>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Level</span>
-                        <strong>{course.level || "Beginner"}</strong>
-                      </div>
-
-                      <div className="flex items-center justify-between gap-4">
-                        <span>
-                          Language
-                        </span>
-                        <strong>
-                          {course.language || "English"}
-                        </strong>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span>Certificate</span>
-                        <strong>Yes</strong>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span>Access</span>
-                        <strong>Lifetime</strong>
-                      </div>
-
-                      {formattedDate && (
-                        <div className="flex items-center justify-between gap-4">
-                          <span>
-                            Added
-                          </span>
-
-                          <strong>
-                            {formattedDate}
-                          </strong>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Card>
             </motion.div>
           </div>
         </div>
@@ -669,18 +533,13 @@ export default function CourseDetails() {
                     size={22}
                   />
 
-                  <p className="leading-7 text-slate-700">
-                    {item}
-                  </p>
+                  <p className="leading-7 text-slate-700">{item}</p>
                 </Card>
               ))}
             </div>
           ) : (
             <Card className="mx-auto mt-12 max-w-3xl text-center lg:mt-16">
-              <BookOpen
-                className="mx-auto text-blue-500"
-                size={42}
-              />
+              <BookOpen className="mx-auto text-blue-500" size={42} />
 
               <p className="mt-4 text-slate-600">
                 Course learning outcomes will be added soon.
@@ -700,9 +559,7 @@ export default function CourseDetails() {
             title="Course Curriculum"
             subtitle={`${modules.length} ${
               modules.length === 1 ? "module" : "modules"
-            } • ${totalLessons} ${
-              totalLessons === 1 ? "lesson" : "lessons"
-            }`}
+            } • ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
           />
 
           {/* Curriculum summary */}
@@ -719,24 +576,18 @@ export default function CourseDetails() {
           {modules.length > 0 ? (
             <div className="mt-12 space-y-4 lg:mt-16">
               {modules.map((module, moduleIndex) => {
-                const moduleKey =
-                  module._id || `module-${moduleIndex}`;
+                const moduleKey = module._id || `module-${moduleIndex}`;
 
                 const lessons = Array.isArray(module.lessons)
                   ? [...module.lessons].sort(
-                      (a, b) =>
-                        Number(a?.order || 0) -
-                        Number(b?.order || 0),
+                      (a, b) => Number(a?.order || 0) - Number(b?.order || 0),
                     )
                   : [];
 
                 const isOpen = Boolean(openModules[moduleKey]);
 
                 return (
-                  <Card
-                    key={moduleKey}
-                    className="overflow-hidden p-0"
-                  >
+                  <Card key={moduleKey} className="overflow-hidden p-0">
                     {/* Module header */}
 
                     <button
@@ -752,15 +603,12 @@ export default function CourseDetails() {
 
                         <div className="min-w-0">
                           <h3 className="truncate text-base font-bold text-slate-900 sm:text-lg">
-                            {module.title ||
-                              `Module ${moduleIndex + 1}`}
+                            {module.title || `Module ${moduleIndex + 1}`}
                           </h3>
 
                           <p className="mt-1 text-sm text-slate-500">
                             {lessons.length}{" "}
-                            {lessons.length === 1
-                              ? "lesson"
-                              : "lessons"}
+                            {lessons.length === 1 ? "lesson" : "lessons"}
                           </p>
                         </div>
                       </div>
@@ -792,91 +640,74 @@ export default function CourseDetails() {
 
                         {lessons.length > 0 ? (
                           <div className="divide-y">
-                            {lessons.map(
-                              (lesson, lessonIndex) => (
-                                <div
-                                  key={
-                                    lesson._id ||
-                                    `${moduleKey}-lesson-${lessonIndex}`
-                                  }
-                                  className="flex items-center justify-between gap-5 px-5 py-5 sm:px-6"
-                                >
-                                  <div className="flex min-w-0 items-center gap-4">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
-                                      <PlayCircle
-                                        className="text-blue-600"
-                                        size={21}
-                                      />
-                                    </div>
-
-                                    <div className="min-w-0">
-                                      <h4 className="font-semibold text-slate-900">
-                                        {lessonIndex + 1}.{" "}
-                                        {lesson.title ||
-                                          "Untitled Lesson"}
-                                      </h4>
-
-                                      {lesson.description && (
-                                        <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">
-                                          {lesson.description}
-                                        </p>
-                                      )}
-
-                                      {Array.isArray(
-                                        lesson.resources,
-                                      ) &&
-                                        lesson.resources.length >
-                                          0 && (
-                                          <div className="mt-2 flex flex-wrap gap-3">
-                                            {lesson.resources.map(
-                                              (
-                                                resource,
-                                                resourceIndex,
-                                              ) => {
-                                                if (
-                                                  typeof resource !==
-                                                    "string" ||
-                                                  !resource.trim()
-                                                ) {
-                                                  return null;
-                                                }
-
-                                                return (
-                                                  <a
-                                                    key={`${resource}-${resourceIndex}`}
-                                                    href={resource}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
-                                                  >
-                                                    Resource{" "}
-                                                    {resourceIndex +
-                                                      1}
-                                                    <ExternalLink
-                                                      size={12}
-                                                    />
-                                                  </a>
-                                                );
-                                              },
-                                            )}
-                                          </div>
-                                        )}
-                                    </div>
+                            {lessons.map((lesson, lessonIndex) => (
+                              <div
+                                key={
+                                  lesson._id ||
+                                  `${moduleKey}-lesson-${lessonIndex}`
+                                }
+                                className="flex items-center justify-between gap-5 px-5 py-5 sm:px-6"
+                              >
+                                <div className="flex min-w-0 items-center gap-4">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
+                                    <PlayCircle
+                                      className="text-blue-600"
+                                      size={21}
+                                    />
                                   </div>
 
-                                  <span className="shrink-0 text-xs font-medium text-slate-500 sm:text-sm">
-                                    {formatLessonDuration(
-                                      lesson.duration,
+                                  <div className="min-w-0">
+                                    <h4 className="font-semibold text-slate-900">
+                                      {lessonIndex + 1}.{" "}
+                                      {lesson.title || "Untitled Lesson"}
+                                    </h4>
+
+                                    {lesson.description && (
+                                      <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">
+                                        {lesson.description}
+                                      </p>
                                     )}
-                                  </span>
+
+                                    {Array.isArray(lesson.resources) &&
+                                      lesson.resources.length > 0 && (
+                                        <div className="mt-2 flex flex-wrap gap-3">
+                                          {lesson.resources.map(
+                                            (resource, resourceIndex) => {
+                                              if (
+                                                typeof resource !== "string" ||
+                                                !resource.trim()
+                                              ) {
+                                                return null;
+                                              }
+
+                                              return (
+                                                <a
+                                                  key={`${resource}-${resourceIndex}`}
+                                                  href={resource}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                                >
+                                                  Resource {resourceIndex + 1}
+                                                  <ExternalLink size={12} />
+                                                </a>
+                                              );
+                                            },
+                                          )}
+                                        </div>
+                                      )}
+                                  </div>
                                 </div>
-                              ),
-                            )}
+
+                                <span className="shrink-0 text-xs font-medium text-slate-500 sm:text-sm">
+                                  {formatLessonDuration(lesson.duration)}
+                                </span>
+                              </div>
+                            ))}
                           </div>
                         ) : (
                           <div className="px-5 py-6 text-sm text-slate-500 sm:px-6">
-                            Lessons for this module will be added
-                            soon.
+                            Lessons for this module will be added soon.
                           </div>
                         )}
                       </div>
@@ -887,10 +718,7 @@ export default function CourseDetails() {
             </div>
           ) : (
             <Card className="mt-12 text-center lg:mt-16">
-              <BookOpen
-                className="mx-auto text-blue-500"
-                size={42}
-              />
+              <BookOpen className="mx-auto text-blue-500" size={42} />
 
               <h3 className="mt-5 text-xl font-bold text-slate-900">
                 Curriculum Coming Soon
@@ -928,10 +756,10 @@ export default function CourseDetails() {
               </h3>
 
               <p className="mt-4 leading-8 text-slate-600">
-                Experienced software engineer passionate about helping developers build practical skills through project-based learning.
-                Learn practical, real-world development skills
-                through structured lessons, projects, and
-                production-focused workflows.
+                Experienced software engineer passionate about helping
+                developers build practical skills through project-based
+                learning. Learn practical, real-world development skills through
+                structured lessons, projects, and production-focused workflows.
               </p>
             </div>
           </Card>
@@ -961,9 +789,7 @@ export default function CourseDetails() {
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700">
-                    {item}
-                  </span>
+                  <span className="leading-7 text-slate-700">{item}</span>
                 </Card>
               ))}
             </div>
@@ -975,18 +801,13 @@ export default function CourseDetails() {
                 "Reliable internet connection.",
                 "Willingness to learn and practice.",
               ].map((item) => (
-                <Card
-                  key={item}
-                  className="flex items-start gap-4"
-                >
+                <Card key={item} className="flex items-start gap-4">
                   <CheckCircle2
                     className="mt-0.5 shrink-0 text-green-500"
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700">
-                    {item}
-                  </span>
+                  <span className="leading-7 text-slate-700">{item}</span>
                 </Card>
               ))}
             </div>
@@ -1008,9 +829,7 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">
-                    Course Duration
-                  </p>
+                  <p className="text-sm text-slate-500">Course Duration</p>
 
                   <p className="mt-1 font-bold text-slate-900">
                     {formatCourseDuration(course.duration)}
@@ -1024,9 +843,7 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">
-                    Lessons
-                  </p>
+                  <p className="text-sm text-slate-500">Lessons</p>
 
                   <p className="mt-1 font-bold text-slate-900">
                     {totalLessons}
@@ -1040,9 +857,7 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">
-                    Enrolled Students
-                  </p>
+                  <p className="text-sm text-slate-500">Enrolled Students</p>
 
                   <p className="mt-1 font-bold text-slate-900">
                     {enrollments.toLocaleString()}
@@ -1052,16 +867,11 @@ export default function CourseDetails() {
 
               <div className="flex items-start gap-4">
                 <div className="rounded-xl bg-blue-50 p-3">
-                  <CalendarDays
-                    className="text-blue-600"
-                    size={22}
-                  />
+                  <CalendarDays className="text-blue-600" size={22} />
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">
-                    Course Added
-                  </p>
+                  <p className="text-sm text-slate-500">Course Added</p>
 
                   <p className="mt-1 font-bold text-slate-900">
                     {formattedDate || "Recently"}
@@ -1080,18 +890,15 @@ export default function CourseDetails() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <Card className="text-center">
-            <Award
-              className="mx-auto text-yellow-500"
-              size={60}
-            />
+            <Award className="mx-auto text-yellow-500" size={60} />
 
             <h2 className="mt-8 text-3xl font-black text-slate-900 sm:text-4xl">
               Earn Your Certificate
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600">
-              Complete the required course lessons and assessments
-              to receive your KanuorieTech Certificate of Completion.
+              Complete the required course lessons and assessments to receive
+              your KanuorieTech Certificate of Completion.
             </p>
           </Card>
         </div>
@@ -1111,11 +918,7 @@ export default function CourseDetails() {
 
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
               {relatedCourses.map((item) => (
-                <Card
-                  key={item._id}
-                  hover
-                  className="overflow-hidden p-0"
-                >
+                <Card key={item._id} hover className="overflow-hidden p-0">
                   <img
                     src={getImage(item.image)}
                     alt={item.title || "Course"}
@@ -1123,8 +926,7 @@ export default function CourseDetails() {
                     loading="lazy"
                     onError={(event) => {
                       event.currentTarget.onerror = null;
-                      event.currentTarget.src =
-                        COURSE_IMAGE_FALLBACK;
+                      event.currentTarget.src = COURSE_IMAGE_FALLBACK;
                     }}
                   />
 
@@ -1179,10 +981,7 @@ export default function CourseDetails() {
                     >
                       <Button fullWidth>
                         View Course
-                        <ArrowRight
-                          className="ml-2"
-                          size={18}
-                        />
+                        <ArrowRight className="ml-2" size={18} />
                       </Button>
                     </Link>
                   </div>

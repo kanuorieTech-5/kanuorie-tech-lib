@@ -1,6 +1,6 @@
 import API from "./axiosApi";
 
-export const uploadImage = async (file) => {
+export const uploadImage = async (file, folder = "") => {
   if (!file) {
     throw new Error("No image file selected.");
   }
@@ -8,6 +8,10 @@ export const uploadImage = async (file) => {
   const formData = new FormData();
 
   formData.append("image", file);
+
+  if (folder) {
+    formData.append("folder", folder);
+  }
 
   const { data } = await API.post("/upload/image", formData);
 

@@ -7,9 +7,11 @@ import {
   Users,
   Clock3,
   Star,
-  Filter,
   ArrowRight,
+  Award,
+  LockKeyhole,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import {
   Card,
@@ -23,26 +25,50 @@ import { SearchBar } from "../components/layout";
 
 import { Newsletter, CTA } from "../components/home";
 
-import { getCourses } from "../services";
+import { getCourses, enrollCourse } from "../services";
 
 const PER_PAGE = 9;
 
 const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
 
+const COURSE_IMAGE_FALLBACK =
+  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80";
+
+function getCourseImage(course) {
+  return course?.image || course?.thumbnail || COURSE_IMAGE_FALLBACK;
+}
+
+function getApiMessage(error, fallback = "Something went wrong.") {
+  return (
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.message ||
+    fallback
+  );
+}
+
 export default function Courses() {
+  const navigate = useNavigate();
+
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("All");
   const [page, setPage] = useState(1);
+
+  const [enrollingId, setEnrollingId] = useState(null);
+
   useEffect(() => {
     async function loadCourses() {
       try {
         const res = await getCourses();
-        setCourses(res.data || []);
+
+        setCourses(res?.data || []);
       } catch (error) {
-        console.error(error);
+        console.error("Failed to load courses:", error);
+
+        toast.error(getApiMessage(error, "Unable to load courses right now."));
       } finally {
         setLoading(false);
       }
@@ -53,9 +79,14 @@ export default function Courses() {
 
   const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
+      const searchTerm = search.trim().toLowerCase();
+
       const matchesSearch =
-        course.title?.toLowerCase().includes(search.toLowerCase()) ||
-        course.description?.toLowerCase().includes(search.toLowerCase());
+        !searchTerm ||
+        course.title?.toLowerCase().includes(searchTerm) ||
+        course.description?.toLowerCase().includes(searchTerm) ||
+        course.instructor?.toLowerCase().includes(searchTerm) ||
+        course.category?.toLowerCase().includes(searchTerm);
 
       const matchesDifficulty =
         difficulty === "All" || course.level === difficulty;
@@ -64,16 +95,81 @@ export default function Courses() {
     });
   }, [courses, search, difficulty]);
 
-  const featuredCourse = filteredCourses[0];
+  const featuredCourse = useMemo(() => {
+    return (
+      filteredCourses.find((course) => course.featured) ||
+      filteredCourses[0] ||
+      null
+    );
+  }, [filteredCourses]);
 
-  const totalPages = Math.ceil(
-    Math.max(filteredCourses.length - 1, 0) / PER_PAGE,
+  const catalogCourses = useMemo(() => {
+    if (!featuredCourse) return [];
+
+    return filteredCourses.filter(
+      (course) => course._id !== featuredCourse._id,
+    );
+  }, [filteredCourses, featuredCourse]);
+
+  const totalPages = Math.ceil(catalogCourses.length / PER_PAGE);
+
+  const currentCourses = catalogCourses.slice(
+    (page - 1) * PER_PAGE,
+    page * PER_PAGE,
   );
 
-  const currentCourses = filteredCourses.slice(
-    1 + (page - 1) * PER_PAGE,
-    1 + page * PER_PAGE,
-  );
+  const handleEnroll = async (course) => {
+    if (!course?._id || enrollingId) return;
+
+    setEnrollingId(course._id);
+
+    try {
+      await enrollCourse(course._id);
+
+      toast.success("Enrollment successful! Your course is now unlocked.");
+
+      navigate(`/courses/${course._id}`);
+    } catch (error) {
+      console.error("Enrollment failed:", error);
+
+      const status = error?.response?.status;
+
+      if (status === 401) {
+        toast.error("Please log in to enroll in this course.");
+
+        navigate("/login", {
+          state: {
+            from: `/courses/${course._id}`,
+          },
+        });
+
+        return;
+      }
+
+      if (status === 409) {
+        toast.success("You are already enrolled in this course.");
+
+        navigate(`/courses/${course._id}`);
+
+        return;
+      }
+
+      toast.error(
+        getApiMessage(
+          error,
+          "Unable to enroll in this course. Please try again.",
+        ),
+      );
+    } finally {
+      setEnrollingId(null);
+    }
+  };
+
+  const resetFilters = () => {
+    setSearch("");
+    setDifficulty("All");
+    setPage(1);
+  };
 
   if (loading) {
     return (
@@ -85,8 +181,9 @@ export default function Courses() {
 
   return (
     <>
-      {/* Hero */}
-
+      {/* ==========================================
+          HERO
+      ========================================== */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -125,96 +222,10 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* Search & Filters */}
-
-      <section className="bg-slate-200 py-14">
-        <div className=" px-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
-            <SearchBar
-              value={search}
-              onChange={setSearch}
-              placeholder="Search courses..."
-            />
-            <div className="flex flex-wrap gap-3">
-              {difficulties.map((level) => (
-                <button
-                  key={level}
-                  onClick={() => {
-                    setDifficulty(level);
-                    setPage(1);
-                  }}
-                  className={`rounded-full px-5 py-2 transition ${
-                    difficulty === level
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-100 hover:bg-slate-200"
-                  }`}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Course */}
-
-      {featuredCourse && (
-        <section className="bg-slate-200 py-24">
-          <div className="px-6">
-            <SectionTitle
-              title="Featured Course"
-              subtitle="Recommended for you"
-            />
-
-            <Card className="mt-14 overflow-hidden lg:grid lg:grid-cols-2">
-              <img
-                src={featuredCourse.thumbnail}
-                alt={featuredCourse.title}
-                className="h-full w-full object-cover"
-              />
-
-              <div className="p-10">
-                <div className="mb-6 flex flex-wrap gap-4">
-                  <span className="rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700">
-                    {featuredCourse.level || "Beginner"}
-                  </span>
-
-                  <span className="flex items-center gap-2 text-slate-500">
-                    <Clock3 size={18} />
-
-                    {featuredCourse.duration || "8 Weeks"}
-                  </span>
-
-                  <span className="flex items-center gap-2 text-yellow-500">
-                    <Star size={18} fill="currentColor" />
-
-                    {featuredCourse.rating || "5.0"}
-                  </span>
-                </div>
-
-                <h2 className="text-4xl font-black">{featuredCourse.title}</h2>
-
-                <p className="mt-6 leading-8 text-slate-600">
-                  {featuredCourse.description}
-                </p>
-
-                <div className="mt-10">
-                  <Link to={`/courses/${featuredCourse._id}`}>
-                    <Button>
-                      Start Learning
-                      <ArrowRight size={18} className="ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
-      )}
-      {/* Course Catalog */}
-
-      <section className="py-10 bg-slate-200">
+      {/* ==========================================
+          COURSE CATALOG
+      ========================================== */}
+      <section className="bg-slate-200 py-10">
         <div className="px-6">
           <SectionTitle
             title="Browse All Courses"
@@ -223,7 +234,305 @@ export default function Courses() {
             } available`}
           />
 
-          {currentCourses.length === 0 ? (
+          {/* Filters */}
+          <section className="bg-slate-200 py-1">
+            <div className="px-6">
+              <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
+                <SearchBar
+                  value={search}
+                  onChange={(value) => {
+                    setSearch(value);
+                    setPage(1);
+                  }}
+                  placeholder="Search courses..."
+                />
+
+                <div className="flex flex-wrap gap-3">
+                  {difficulties.map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => {
+                        setDifficulty(level);
+                        setPage(1);
+                      }}
+                      className={`rounded-full px-5 py-2 transition ${
+                        difficulty === level
+                          ? "bg-blue-600 text-white"
+                          : "bg-slate-100 hover:bg-slate-200"
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ==========================================
+              FEATURED COURSE
+          ========================================== */}
+          {featuredCourse && (
+            <section className="mt-16">
+              <SectionTitle
+                title="Featured Course"
+                subtitle="Recommended for you"
+              />
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="overflow-hidden p-0">
+                  <div className="grid lg:grid-cols-[1.15fr_.85fr]">
+                    {/* Image */}
+                    <div className="relative min-h-[320px]">
+                      <img
+                        src={getCourseImage(featuredCourse)}
+                        alt={featuredCourse.title}
+                        className="h-full min-h-[320px] w-full object-cover"
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src = COURSE_IMAGE_FALLBACK;
+                        }}
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+
+                      {featuredCourse.featured && (
+                        <div className="absolute left-5 top-5 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-slate-950 shadow-lg">
+                          Featured Course
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-6 left-6 right-6 text-white">
+                        <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold">
+                          {featuredCourse.level || "Beginner"}
+                        </span>
+
+                        <h3 className="mt-4 text-3xl font-black sm:text-4xl">
+                          {featuredCourse.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="space-y-6 p-6 sm:p-8">
+                      <div>
+                        <p className="leading-7 text-slate-600">
+                          {featuredCourse.description}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                          <Clock3 size={20} className="text-blue-600" />
+                          <p className="mt-2 text-sm text-slate-500">
+                            Duration
+                          </p>
+                          <strong className="text-slate-900">
+                            {featuredCourse.duration || "8 Weeks"}
+                          </strong>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                          <Star
+                            size={20}
+                            className="text-yellow-500"
+                            fill="currentColor"
+                          />
+                          <p className="mt-2 text-sm text-slate-500">Rating</p>
+                          <strong className="text-slate-900">
+                            {featuredCourse.rating || "5.0"}
+                          </strong>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                          <Users size={20} className="text-blue-600" />
+                          <p className="mt-2 text-sm text-slate-500">
+                            Students
+                          </p>
+                          <strong className="text-slate-900">
+                            {featuredCourse.students ||
+                              featuredCourse.enrollments ||
+                              0}
+                          </strong>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                          <Award size={20} className="text-yellow-500" />
+                          <p className="mt-2 text-sm text-slate-500">
+                            Certificate
+                          </p>
+                          <strong className="text-slate-900">Available</strong>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <p className="text-sm text-slate-500">
+                            Course Access
+                          </p>
+
+                          <span className="text-2xl font-black text-blue-600">
+                            {featuredCourse.premium ? "Premium" : "Free"}
+                          </span>
+                        </div>
+
+                        <span className="text-2xl font-black text-slate-900">
+                          {featuredCourse.price
+                            ? `₦${featuredCourse.price}`
+                            : "Free"}
+                        </span>
+                      </div>
+
+                      <Button
+                        fullWidth
+                        loading={enrollingId === featuredCourse._id}
+                        disabled={Boolean(enrollingId)}
+                        onClick={() => handleEnroll(featuredCourse)}
+                      >
+                        {enrollingId === featuredCourse._id
+                          ? "Enrolling..."
+                          : "Enroll Now"}
+                      </Button>
+
+                      <Link
+                        to={`/courses/${featuredCourse._id}`}
+                        className="block"
+                      >
+                        <Button
+                          fullWidth
+                          variant="outline"
+                          disabled={Boolean(enrollingId)}
+                        >
+                          <LockKeyhole size={18} />
+                          Already Enrolled? Continue Learning
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </section>
+          )}
+
+          {/* ==========================================
+              COURSE CARDS
+          ========================================== */}
+          {catalogCourses.length > 0 ? (
+            currentCourses.length > 0 ? (
+              <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                {currentCourses.map((course, index) => (
+                  <motion.div
+                    key={course._id}
+                    initial={{
+                      opacity: 0,
+                      y: 40,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
+                    }}
+                  >
+                    <Card hover className="overflow-hidden p-0">
+                      {/* Image */}
+                      <div className="relative">
+                        <img
+                          src={getCourseImage(course)}
+                          alt={course.title}
+                          className="h-60 w-full object-cover transition duration-500 hover:scale-105"
+                          onError={(event) => {
+                            event.currentTarget.onerror = null;
+                            event.currentTarget.src = COURSE_IMAGE_FALLBACK;
+                          }}
+                        />
+
+                        <span className="absolute left-4 top-4 rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
+                          {course.level || "Beginner"}
+                        </span>
+
+                        {course.featured && (
+                          <span className="absolute right-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6">
+                        <div className="mb-5 flex items-center justify-between text-sm text-slate-500">
+                          <span className="flex items-center gap-2">
+                            <Clock3 size={16} />
+                            {course.duration || "8 Weeks"}
+                          </span>
+
+                          <span className="flex items-center gap-1 text-yellow-500">
+                            <Star size={16} fill="currentColor" />
+                            {course.rating || "5.0"}
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-slate-900">
+                          {course.title}
+                        </h3>
+
+                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600">
+                          {course.description}
+                        </p>
+
+                        <div className="mt-6 flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-slate-500">
+                            <Users size={18} />
+
+                            <span>
+                              {course.students || course.enrollments || 0}{" "}
+                              Students
+                            </span>
+                          </div>
+
+                          <span className="text-lg font-bold text-blue-600">
+                            {course.price ? `₦${course.price}` : "Free"}
+                          </span>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                          <Button
+                            fullWidth
+                            loading={enrollingId === course._id}
+                            disabled={Boolean(enrollingId)}
+                            onClick={() => handleEnroll(course)}
+                          >
+                            {enrollingId === course._id
+                              ? "Enrolling..."
+                              : "Enroll Now"}
+                          </Button>
+
+                          <Link to={`/courses/${course._id}`} className="block">
+                            <Button
+                              fullWidth
+                              variant="outline"
+                              disabled={Boolean(enrollingId)}
+                            >
+                              View Course
+                              <ArrowRight size={18} className="ml-2" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            ) : null
+          ) : filteredCourses.length === 0 ? (
             <Card className="mt-16 py-10 text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
                 <Search className="text-blue-600" size={36} />
@@ -233,107 +542,18 @@ export default function Courses() {
                 No Courses Found
               </h3>
 
-              <p className="mx-auto mt-4 max-w-lg text-slate-600 leading-8">
+              <p className="mx-auto mt-4 max-w-lg leading-8 text-slate-600">
                 We couldn't find any courses matching your search. Try another
                 keyword or change the selected difficulty.
               </p>
 
-              <Button
-                className="mt-8"
-                onClick={() => {
-                  setSearch("");
-                  setDifficulty("All");
-                }}
-              >
+              <Button className="mt-8" onClick={resetFilters}>
                 Reset Filters
               </Button>
-              <Button className="mt-8 ml-4" onClick={() => setPage(1)}>
-                Go to First Page
-              </Button>
             </Card>
-          ) : (
-            <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {currentCourses.map((course, index) => (
-                <motion.div
-                  key={course._id}
-                  initial={{
-                    opacity: 0,
-                    y: 40,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.08,
-                  }}
-                >
-                  <Card hover className="overflow-hidden p-0">
-                    <div className="relative">
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        className="h-60 w-full object-cover transition duration-500 hover:scale-105"
-                      />
+          ) : null}
 
-                      <span className="absolute left-4 top-4 rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
-                        {course.level || "Beginner"}
-                      </span>
-                    </div>
-
-                    <div className="p-6">
-                      <div className="mb-5 flex items-center justify-between text-sm text-slate-500">
-                        <span className="flex items-center gap-2">
-                          <Clock3 size={16} />
-
-                          {course.duration || "8 Weeks"}
-                        </span>
-
-                        <span className="flex items-center gap-1 text-yellow-500">
-                          <Star size={16} fill="currentColor" />
-
-                          {course.rating || "5.0"}
-                        </span>
-                      </div>
-
-                      <h3 className="text-2xl font-bold text-slate-900">
-                        {course.title}
-                      </h3>
-
-                      <p className="mt-4 line-clamp-3 leading-7 text-slate-600">
-                        {course.description}
-                      </p>
-
-                      <div className="mt-6 flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-slate-500">
-                          <Users size={18} />
-
-                          <span>{course.students || 0} Students</span>
-                        </div>
-
-                        <span className="text-lg font-bold text-blue-600">
-                          {course.price ? `₦${course.price}` : "Free"}
-                        </span>
-                      </div>
-
-                      <Link
-                        to={`/courses/${course._id}`}
-                        className="mt-8 block"
-                      >
-                        <Button fullWidth>
-                          View Course
-                          <ArrowRight size={18} className="ml-2" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-20 flex justify-center">
               <Pagination
@@ -346,8 +566,9 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* Learning Benefits */}
-
+      {/* ==========================================
+          LEARNING BENEFITS
+      ========================================== */}
       <section className="bg-slate-50 py-24">
         <div className="px-6">
           <SectionTitle
@@ -389,9 +610,7 @@ export default function Courses() {
           </div>
         </div>
       </section>
-
       <Newsletter />
-
       <CTA />
     </>
   );

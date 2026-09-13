@@ -9,7 +9,6 @@ export default function BlogDetails() {
   const { id } = useParams();
 
   const [blog, setBlog] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +18,7 @@ export default function BlogDetails() {
 
         setBlog(res.data);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load blog:", err);
       } finally {
         setLoading(false);
       }
@@ -28,24 +27,37 @@ export default function BlogDetails() {
     fetchBlog();
   }, [id]);
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!blog) {
     return <div className="py-24 text-center">Blog post not found.</div>;
   }
 
+  const authorName =
+    typeof blog.author === "object"
+      ? blog.author?.fullName ||
+        `${blog.author?.firstName || ""} ${
+          blog.author?.lastName || ""
+        }`.trim() ||
+        "KanuorieTech"
+      : blog.author || "KanuorieTech";
+
   return (
     <section className="mx-auto max-w-5xl px-6 py-20">
       <img
-        src={blog.image}
-        alt={blog.title}
+        src={blog.coverImage || "/images/blog-placeholder.png"}
+        alt={blog.title || "Blog article"}
         className="mb-10 h-[450px] w-full rounded-xl object-cover shadow-xl"
+        onError={(event) => {
+          event.currentTarget.onerror = null;
+          event.currentTarget.src = "/images/blog-placeholder.png";
+        }}
       />
-
       <h1 className="mb-4 text-5xl font-bold">{blog.title}</h1>
-
       <p className="mb-10 text-gray-500">
-        By {blog.author}
+        By {authorName}
         {blog.createdAt && (
           <>
             {" • "}
