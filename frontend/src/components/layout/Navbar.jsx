@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <>
       <header className="border-b bg-gray-300 dark:border-gray-800 dark:bg-gray-950">
-        <div className="mx-auto flex items-center gap-6 px-6 py-4">
+        <div className="mx-auto flex w-full items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
           {/* Logo */}
           <Logo />
 
@@ -47,9 +47,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-3">
-            {/* <ThemeToggle /> */}
-
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {user && <NotificationBell />}
 
             {user ? (
@@ -76,7 +74,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden ml-30 bg-gray-100 rounded-lg"
+              className="rounded-lg bg-gray-100 p-2 lg:hidden dark:bg-gray-800"
               aria-label="Open menu"
             >
               <Menu size={24} />
@@ -85,7 +83,10 @@ export default function Navbar() {
         </div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+      />
     </>
   );
 }
