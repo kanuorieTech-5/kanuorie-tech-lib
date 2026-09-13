@@ -9,10 +9,6 @@ const app = express();
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
-/* ==========================================
-   ENVIRONMENT VALIDATION
-========================================== */
-
 const requiredEnv = [
   "MONGO_URI",
   "JWT_SECRET",
@@ -27,52 +23,34 @@ requiredEnv.forEach((key) => {
   }
 });
 
-/* ==========================================
-   ROUTES
-========================================== */
-
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
-
 const bookRoutes = require("./routes/bookRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const progressRoutes = require("./routes/progressRoutes");
-
 const productRoutes = require("./routes/productRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
-
 const blogRoutes = require("./routes/blogRoutes");
 const faqRoutes = require("./routes/faqRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const newsletterRoutes = require("./routes/newsletterRoutes");
-
 const notificationRoutes = require("./routes/notificationRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
-
-/* ==========================================
-   MIDDLEWARE
-========================================== */
-
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 
-/* ==========================================
-   CORS
-========================================== */
-
-const allowedOrigins = process.env.CLIENT_URL
+const allowedOrigins = (process.env.CLIENT_URL || "")
   .split(",")
   .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
-/* ==========================================
-   SECURITY
-========================================== */
+
+console.log("Allowed CORS origins:", allowedOrigins);
 
 app.use(
   helmet({
@@ -127,9 +105,6 @@ app.use(
     optionsSuccessStatus: 204,
   })
 );
-/* ==========================================
-   BODY PARSERS
-========================================== */
 
 app.use(
   express.json({
@@ -143,10 +118,6 @@ app.use(
     limit: "10mb",
   })
 );
-
-/* ==========================================
-   LOGGING
-========================================== */
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));

@@ -1,4 +1,5 @@
 const express = require("express");
+
 const {
   saveCourse,
   getCourses,
@@ -9,37 +10,48 @@ const {
   updateProgress,
   updateNotes,
 } = require("../controllers/courseController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
+
 const router = express.Router();
+
+/* ==========================================
+   COURSE CATALOG
+========================================== */
 
 router
   .route("/")
   .get(getCourses)
   .post(protect, adminOnly, saveCourse);
 
-  router.post(
-  "/:id/enroll",
-  protect,
-  enrollCourse
-);
+/* ==========================================
+   ENROLL IN COURSE
+========================================== */
+
+router.post("/:id/enroll", protect, enrollCourse);
+
+/* ==========================================
+   COURSE DETAILS
+   ENROLLED USERS ONLY
+========================================== */
 
 router
   .route("/:id")
-  .get(getCourse)
+  .get(protect, getCourse)
   .put(protect, adminOnly, updateCourse)
   .delete(protect, adminOnly, deleteCourse);
 
-router.put(
-  "/:id/progress",
-  protect,
-  updateProgress
-);
+/* ==========================================
+   COURSE PROGRESS
+========================================== */
 
-router.put(
-  "/:id/notes",
-  protect,
-  updateNotes
-);
+router.put("/:id/progress", protect, updateProgress);
+
+/* ==========================================
+   COURSE NOTES
+========================================== */
+
+router.put("/:id/notes", protect, updateNotes);
 
 module.exports = router;

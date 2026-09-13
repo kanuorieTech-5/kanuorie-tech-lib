@@ -80,14 +80,15 @@ const getCourses = asyncHandler(async (req, res) => {
   }
 
   const [courses, total] = await Promise.all([
-    Course.find(filter)
-      .populate("createdBy", "name email")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
+  Course.find(filter)
+    .select("-modules")
+    .populate("createdBy", "name email")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit),
 
-    Course.countDocuments(filter),
-  ]);
+  Course.countDocuments(filter),
+]);
 
   return ApiResponse.success(
     res,
@@ -105,6 +106,7 @@ const getCourses = asyncHandler(async (req, res) => {
 
 /* ==========================================
    GET SINGLE COURSE
+   ENROLLED USERS ONLY
 ========================================== */
 
 const getCourse = asyncHandler(async (req, res) => {
@@ -121,6 +123,19 @@ const getCourse = asyncHandler(async (req, res) => {
 
   if (!course) {
     throw new ApiError(404, "Course not found.");
+  }
+
+  // Only enrolled users can access the full course
+  const enrollment = await Progress.findOne({
+    user: req.user._id,
+    course: course._id,
+  });
+
+  if (!enrollment) {
+    throw new ApiError(
+      403,
+      "You must be enrolled in this course to access the course details and curriculum."
+    );
   }
 
   return ApiResponse.success(
