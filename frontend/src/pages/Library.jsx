@@ -13,7 +13,7 @@ import {
 
 import { Newsletter, CTA } from "../components/home";
 
-import { getBooks, getCourses, saveCourse } from "../services";
+import { getBooks, getAdminCourses, saveCourse } from "../services";
 
 import defaultResources from "../data/resources";
 
@@ -113,7 +113,7 @@ export default function Library() {
 
   const fetchSavedCourses = async () => {
     try {
-      const response = await getCourses();
+      const response = await getAdminCourses();
 
       /*
       API may return:

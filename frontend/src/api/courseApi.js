@@ -5,10 +5,20 @@ import API from "./axiosApi";
 ========================================== */
 
 /**
- * Get all courses
+ * Get all public courses
  */
 export const getCourses = async () => {
   const { data } = await API.get("/courses");
+  return data;
+};
+
+/**
+ * Get all courses for admin management
+ * Includes modules and lessons
+ * Admin only
+ */
+export const getAdminCourses = async () => {
+  const { data } = await API.get("/courses/admin");
   return data;
 };
 
@@ -89,6 +99,7 @@ export const updateCourseNotes = async (id, notes) => {
 
 export default {
   getCourses,
+  getAdminCourses,
   getCourse,
   saveCourse,
   updateCourse,

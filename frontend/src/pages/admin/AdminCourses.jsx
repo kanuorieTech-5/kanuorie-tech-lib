@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import {
-  getCourses,
+  getAdminCourses,
   createCourse,
   updateCourse,
   deleteCourse,
@@ -137,7 +137,7 @@ export default function AdminCourses() {
       setLoading(true);
       setError("");
 
-      const response = await getCourses();
+      const response = await getAdminCourses();
 
       const data = Array.isArray(response)
         ? response

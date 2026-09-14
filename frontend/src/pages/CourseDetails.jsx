@@ -364,25 +364,53 @@ export default function CourseDetails() {
   if (!course) {
     return (
       <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
-        <Card className="w-full max-w-lg text-center">
-          <BookOpen size={56} className="mx-auto mb-6 text-blue-600" />
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_.8fr] lg:gap-16">
+            {/* LEFT */}
 
-          <h2 className="text-3xl font-bold text-slate-900">
-            Course Not Found
-          </h2>
+            <motion.div
+              initial={{ opacity: 0, y: 35 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge>{course.level || "Beginner"}</Badge>
 
-          <p className="mt-4 leading-7 text-slate-600">
-            The course you're looking for doesn't exist, has been removed, or is
-            currently unavailable.
-          </p>
+                {course.category && (
+                  <span className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-slate-200">
+                    {course.category}
+                  </span>
+                )}
 
-          <Link to="/courses" className="mt-8 inline-block">
-            <Button>
-              <ArrowLeft className="mr-2" size={18} />
-              Back To Courses
-            </Button>
-          </Link>
-        </Card>
+                {course.premium && (
+                  <span className="rounded-full bg-yellow-500/20 px-4 py-2 text-sm font-semibold text-yellow-300">
+                    Premium
+                  </span>
+                )}
+              </div>
+
+              <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+                {course.title}
+              </h1>
+
+              <p className="mt-8 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+                {course.description}
+              </p>
+
+              {/* Tags */}
+              {tags.length > 0 && (
+                <div className="mt-10 flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </div>
       </section>
     );
   }
@@ -435,64 +463,7 @@ export default function CourseDetails() {
                 {course.description}
               </p>
 
-              {/* Course stats */}
-
-              <div className="mt-10 grid grid-cols-2 gap-5 sm:flex sm:flex-wrap sm:gap-8">
-                <div className="flex items-center gap-3">
-                  <Clock3 size={20} className="shrink-0 text-blue-400" />
-
-                  <div>
-                    <p className="text-xs text-slate-400">Duration</p>
-
-                    <span className="font-medium">
-                      {formatCourseDuration(course.duration) || "8 Weeks"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <BookOpen size={20} className="shrink-0 text-blue-400" />
-
-                  <div>
-                    <p className="text-xs text-slate-400">Curriculum</p>
-
-                    <span className="font-medium">
-                      {totalLessons} {totalLessons === 1 ? "Lesson" : "Lessons"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Users size={20} className="shrink-0 text-blue-400" />
-
-                  <div>
-                    <p className="text-xs text-slate-400">Students</p>
-
-                    <span className="font-medium">
-                      {enrollments.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Star
-                    size={20}
-                    fill="currentColor"
-                    className="shrink-0 text-yellow-400"
-                  />
-
-                  <div>
-                    <p className="text-xs text-slate-400">Rating</p>
-
-                    <span className="font-medium">
-                      {rating > 0 ? rating.toFixed(1) : "Not rated"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
               {/* Tags */}
-
               {tags.length > 0 && (
                 <div className="mt-10 flex flex-wrap gap-2">
                   {tags.map((tag) => (
@@ -509,12 +480,129 @@ export default function CourseDetails() {
           </div>
         </div>
       </section>
+      
+      {/* ========================================
+          COURSE INFORMATION
+      ======================================== */}
+
+      <section className="py-10 sm:py-10">
+        <div className="mx-auto max-w-5xl px-6">
+          <Card>
+            <div className="grid gap-8 sm:grid-cols-2">
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-blue-50 p-3">
+                  <Clock3 className="text-blue-600" size={22} />
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">Course Duration</p>
+
+                  <p className="mt-1 font-bold text-slate-900">
+                    {formatCourseDuration(course.duration)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-blue-50 p-3">
+                  <BookOpen className="text-blue-600" size={22} />
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">Lessons</p>
+
+                  <p className="mt-1 font-bold text-slate-900">
+                    {totalLessons}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-blue-50 p-3">
+                  <Users className="text-blue-600" size={22} />
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">Enrolled Students</p>
+
+                  <p className="mt-1 font-bold text-slate-900">
+                    {enrollments.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-blue-50 p-3">
+                  <CalendarDays className="text-blue-600" size={22} />
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">Course Added</p>
+
+                  <p className="mt-1 font-bold text-slate-900">
+                    {formattedDate || "Recently"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* ========================================
+          REQUIREMENTS
+      ======================================== */}
+
+      <section className="bg-slate-50 py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionTitle
+            title="Requirements"
+            subtitle="What you need before starting."
+          />
+
+          {prerequisites.length > 0 ? (
+            <div className="mt-12 space-y-4 lg:mt-16">
+              {prerequisites.map((item, index) => (
+                <Card
+                  key={`${item}-${index}`}
+                  className="flex items-start gap-4"
+                >
+                  <CheckCircle2
+                    className="mt-0.5 shrink-0 text-green-500"
+                    size={20}
+                  />
+
+                  <span className="leading-7 text-slate-700">{item}</span>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-16">
+              {[
+                "Basic computer skills.",
+                "Laptop or desktop computer.",
+                "Reliable internet connection.",
+                "Willingness to learn and practice.",
+              ].map((item) => (
+                <Card key={item} className="flex items-start gap-4">
+                  <CheckCircle2
+                    className="mt-0.5 shrink-0 text-green-500"
+                    size={20}
+                  />
+
+                  <span className="leading-7 text-slate-700">{item}</span>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ========================================
           WHAT YOU'LL LEARN
       ======================================== */}
 
-      <section className="py-20 sm:py-24">
+      <section className="py-10 sm:py-10">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="What You'll Learn"
@@ -733,6 +821,27 @@ export default function CourseDetails() {
       </section>
 
       {/* ========================================
+          CERTIFICATE
+      ======================================== */}
+
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-5xl px-6">
+          <Card className="text-center">
+            <Award className="mx-auto text-yellow-500" size={60} />
+
+            <h2 className="mt-8 text-3xl font-black text-slate-900 sm:text-4xl">
+              Earn Your Certificate
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600">
+              Complete the required course lessons and assessments to receive
+              your KanuorieTech Certificate of Completion.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* ========================================
           INSTRUCTOR
       ======================================== */}
 
@@ -762,144 +871,6 @@ export default function CourseDetails() {
                 structured lessons, projects, and production-focused workflows.
               </p>
             </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* ========================================
-          REQUIREMENTS
-      ======================================== */}
-
-      <section className="bg-slate-50 py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <SectionTitle
-            title="Requirements"
-            subtitle="What you need before starting."
-          />
-
-          {prerequisites.length > 0 ? (
-            <div className="mt-12 space-y-4 lg:mt-16">
-              {prerequisites.map((item, index) => (
-                <Card
-                  key={`${item}-${index}`}
-                  className="flex items-start gap-4"
-                >
-                  <CheckCircle2
-                    className="mt-0.5 shrink-0 text-green-500"
-                    size={20}
-                  />
-
-                  <span className="leading-7 text-slate-700">{item}</span>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-16">
-              {[
-                "Basic computer skills.",
-                "Laptop or desktop computer.",
-                "Reliable internet connection.",
-                "Willingness to learn and practice.",
-              ].map((item) => (
-                <Card key={item} className="flex items-start gap-4">
-                  <CheckCircle2
-                    className="mt-0.5 shrink-0 text-green-500"
-                    size={20}
-                  />
-
-                  <span className="leading-7 text-slate-700">{item}</span>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ========================================
-          COURSE INFORMATION
-      ======================================== */}
-
-      <section className="py-20 sm:py-24">
-        <div className="mx-auto max-w-5xl px-6">
-          <Card>
-            <div className="grid gap-8 sm:grid-cols-2">
-              <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-blue-50 p-3">
-                  <Clock3 className="text-blue-600" size={22} />
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-500">Course Duration</p>
-
-                  <p className="mt-1 font-bold text-slate-900">
-                    {formatCourseDuration(course.duration)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-blue-50 p-3">
-                  <BookOpen className="text-blue-600" size={22} />
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-500">Lessons</p>
-
-                  <p className="mt-1 font-bold text-slate-900">
-                    {totalLessons}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-blue-50 p-3">
-                  <Users className="text-blue-600" size={22} />
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-500">Enrolled Students</p>
-
-                  <p className="mt-1 font-bold text-slate-900">
-                    {enrollments.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="rounded-xl bg-blue-50 p-3">
-                  <CalendarDays className="text-blue-600" size={22} />
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-500">Course Added</p>
-
-                  <p className="mt-1 font-bold text-slate-900">
-                    {formattedDate || "Recently"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* ========================================
-          CERTIFICATE
-      ======================================== */}
-
-      <section className="py-20 sm:py-24">
-        <div className="mx-auto max-w-5xl px-6">
-          <Card className="text-center">
-            <Award className="mx-auto text-yellow-500" size={60} />
-
-            <h2 className="mt-8 text-3xl font-black text-slate-900 sm:text-4xl">
-              Earn Your Certificate
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600">
-              Complete the required course lessons and assessments to receive
-              your KanuorieTech Certificate of Completion.
-            </p>
           </Card>
         </div>
       </section>
