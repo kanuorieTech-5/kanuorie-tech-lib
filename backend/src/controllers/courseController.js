@@ -24,7 +24,8 @@ const saveCourse = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
-   GET ALL COURSES
+   GET PUBLIC COURSE CATALOG
+   Curriculum is intentionally excluded.
 ========================================== */
 
 const getCourses = asyncHandler(async (req, res) => {
@@ -80,15 +81,15 @@ const getCourses = asyncHandler(async (req, res) => {
   }
 
   const [courses, total] = await Promise.all([
-  Course.find(filter)
-    .select("-modules")
-    .populate("createdBy", "name email")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit),
+    Course.find(filter)
+      .select("-modules")
+      .populate("createdBy", "name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
 
-  Course.countDocuments(filter),
-]);
+    Course.countDocuments(filter),
+  ]);
 
   return ApiResponse.success(
     res,
@@ -105,8 +106,93 @@ const getCourses = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
+   GET ADMIN COURSE CATALOG
+   Admins receive full curriculum.
+========================================== */
+
+const getAdminCourses = asyncHandler(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 50;
+  const skip = (page - 1) * limit;
+
+  const filter = {};
+
+  if (req.query.category) {
+    filter.category = req.query.category;
+  }
+
+  if (req.query.featured) {
+    filter.featured = req.query.featured === "true";
+  }
+
+  if (req.query.premium) {
+    filter.premium = req.query.premium === "true";
+  }
+
+  if (req.query.level) {
+    filter.level = req.query.level;
+  }
+
+  if (req.query.published) {
+    filter.published = req.query.published === "true";
+  }
+
+  if (req.query.search) {
+    filter.$or = [
+      {
+        title: {
+          $regex: req.query.search,
+          $options: "i",
+        },
+      },
+      {
+        description: {
+          $regex: req.query.search,
+          $options: "i",
+        },
+      },
+      {
+        instructor: {
+          $regex: req.query.search,
+          $options: "i",
+        },
+      },
+      {
+        tags: {
+          $regex: req.query.search,
+          $options: "i",
+        },
+      },
+    ];
+  }
+
+  const [courses, total] = await Promise.all([
+    Course.find(filter)
+      .populate("createdBy", "name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Course.countDocuments(filter),
+  ]);
+
+  return ApiResponse.success(
+    res,
+    courses,
+    "Admin courses retrieved successfully.",
+    200,
+    {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    }
+  );
+});
+
+/* ==========================================
    GET SINGLE COURSE
-   ENROLLED USERS ONLY
+   Enrolled users only.
 ========================================== */
 
 const getCourse = asyncHandler(async (req, res) => {
@@ -125,7 +211,6 @@ const getCourse = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Course not found.");
   }
 
-  // Only enrolled users can access the full course
   const enrollment = await Progress.findOne({
     user: req.user._id,
     course: course._id,
@@ -150,22 +235,68 @@ const getCourse = asyncHandler(async (req, res) => {
 ========================================== */
 
 const updateCourse = asyncHandler(async (req, res) => {
-  const course = await Course.findByIdAndUpdate(
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  /*
+   * Build the update explicitly.
+   *
+   * This prevents unexpected request properties from
+   * replacing course data.
+   */
+
+  const allowedFields = [
+    "title",
+    "description",
+    "category",
+    "image",
+    "link",
+    "instructor",
+    "level",
+    "language",
+    "duration",
+    "featured",
+    "premium",
+    "published",
+    "tags",
+    "prerequisites",
+    "outcomes",
+    "modules",
+  ];
+
+  const updateData = {};
+
+  for (const field of allowedFields) {
+    if (Object.prototype.hasOwnProperty.call(req.body, field)) {
+      updateData[field] = req.body[field];
+    }
+  }
+
+  /*
+   * IMPORTANT:
+   *
+   * If modules are not included in the request,
+   * preserve the existing curriculum.
+   *
+   * An explicitly supplied [] is still allowed because
+   * the admin may intentionally remove all modules.
+   */
+
+  const updatedCourse = await Course.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    updateData,
     {
       new: true,
       runValidators: true,
     }
   );
 
-  if (!course) {
-    throw new ApiError(404, "Course not found.");
-  }
-
   return ApiResponse.success(
     res,
-    course,
+    updatedCourse,
     "Course updated successfully."
   );
 });
@@ -196,7 +327,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
-   UPDATE COURSE PROGRESS
+   UPDATE PROGRESS
 ========================================== */
 
 const updateProgress = asyncHandler(async (req, res) => {
@@ -231,7 +362,7 @@ const updateProgress = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
-   UPDATE COURSE NOTES
+   UPDATE NOTES
 ========================================== */
 
 const updateNotes = asyncHandler(async (req, res) => {
@@ -258,6 +389,10 @@ const updateNotes = asyncHandler(async (req, res) => {
   );
 });
 
+/* ==========================================
+   ENROLL
+========================================== */
+
 const enrollCourse = asyncHandler(async (req, res) => {
   const course = await Course.findById(req.params.id);
 
@@ -272,7 +407,6 @@ const enrollCourse = asyncHandler(async (req, res) => {
     );
   }
 
-  // Check whether the user is already enrolled
   const existingProgress = await Progress.findOne({
     user: req.user._id,
     course: course._id,
@@ -285,7 +419,6 @@ const enrollCourse = asyncHandler(async (req, res) => {
     );
   }
 
-  // Create progress record for the enrolled user
   const progress = await Progress.create({
     user: req.user._id,
     course: course._id,
@@ -304,8 +437,8 @@ const enrollCourse = asyncHandler(async (req, res) => {
     lastProgressUpdate: new Date(),
   });
 
-  // Increment course enrollment count
   course.enrollments += 1;
+
   await course.save();
 
   return ApiResponse.success(
@@ -318,9 +451,15 @@ const enrollCourse = asyncHandler(async (req, res) => {
     201
   );
 });
+
+/* ==========================================
+   EXPORTS
+========================================== */
+
 module.exports = {
   saveCourse,
   getCourses,
+  getAdminCourses,
   getCourse,
   updateCourse,
   deleteCourse,

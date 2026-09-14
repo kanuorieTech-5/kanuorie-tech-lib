@@ -3,6 +3,7 @@ const express = require("express");
 const {
   saveCourse,
   getCourses,
+  getAdminCourses,
   getCourse,
   updateCourse,
   deleteCourse,
@@ -17,7 +18,7 @@ const adminOnly = require("../middleware/admin");
 const router = express.Router();
 
 /* ==========================================
-   COURSE CATALOG
+   PUBLIC COURSE CATALOG
 ========================================== */
 
 router
@@ -26,10 +27,27 @@ router
   .post(protect, adminOnly, saveCourse);
 
 /* ==========================================
+   ADMIN COURSE CATALOG
+   Full curriculum available to admins.
+   MUST COME BEFORE /:id
+========================================== */
+
+router.get(
+  "/admin",
+  protect,
+  adminOnly,
+  getAdminCourses
+);
+
+/* ==========================================
    ENROLL IN COURSE
 ========================================== */
 
-router.post("/:id/enroll", protect, enrollCourse);
+router.post(
+  "/:id/enroll",
+  protect,
+  enrollCourse
+);
 
 /* ==========================================
    COURSE DETAILS
@@ -46,12 +64,20 @@ router
    COURSE PROGRESS
 ========================================== */
 
-router.put("/:id/progress", protect, updateProgress);
+router.put(
+  "/:id/progress",
+  protect,
+  updateProgress
+);
 
 /* ==========================================
    COURSE NOTES
 ========================================== */
 
-router.put("/:id/notes", protect, updateNotes);
+router.put(
+  "/:id/notes",
+  protect,
+  updateNotes
+);
 
 module.exports = router;
