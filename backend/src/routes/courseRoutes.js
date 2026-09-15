@@ -8,6 +8,7 @@ const {
   updateCourse,
   deleteCourse,
   enrollCourse,
+  completeLesson,
   updateProgress,
   updateNotes,
 } = require("../controllers/courseController");
@@ -47,6 +48,16 @@ router.post(
   "/:id/enroll",
   protect,
   enrollCourse
+);
+
+/* ==========================================
+   COMPLETE LESSON
+========================================== */
+
+router.put(
+  "/:id/lessons/:lessonId",
+  protect,
+  completeLesson
 );
 
 /* ==========================================

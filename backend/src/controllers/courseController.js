@@ -211,12 +211,14 @@ const getCourse = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Course not found.");
   }
 
-  const enrollment = await Progress.findOne({
+  const progress = await Progress.findOne({
     user: req.user._id,
     course: course._id,
   });
 
-  if (!enrollment) {
+  // Course details/curriculum are protected.
+  // A learner must be enrolled before accessing them.
+  if (!progress) {
     throw new ApiError(
       403,
       "You must be enrolled in this course to access the course details and curriculum."
@@ -225,7 +227,10 @@ const getCourse = asyncHandler(async (req, res) => {
 
   return ApiResponse.success(
     res,
-    course,
+    {
+      course,
+      progress,
+    },
     "Course retrieved successfully."
   );
 });
@@ -235,11 +240,6 @@ const getCourse = asyncHandler(async (req, res) => {
 ========================================== */
 
 const updateCourse = asyncHandler(async (req, res) => {
-  console.log(
-    "UPDATE COURSE MODULES:",
-    JSON.stringify(req.body.modules, null, 2)
-  );
-
   const course = await Course.findById(req.params.id);
   if (!course) {
     throw new ApiError(404, "Course not found.");
@@ -331,15 +331,153 @@ const deleteCourse = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
-   UPDATE PROGRESS
+   COMPLETE LESSON
 ========================================== */
 
-const updateProgress = asyncHandler(async (req, res) => {
-  const { percentage } = req.body;
+const completeLesson = asyncHandler(async (req, res) => {
+  const { id: courseId, lessonId } = req.params;
+
+  /* ------------------------------------------
+     FIND COURSE
+  ------------------------------------------ */
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  /* ------------------------------------------
+     FIND USER PROGRESS
+  ------------------------------------------ */
 
   const progress = await Progress.findOne({
     user: req.user._id,
-    course: req.params.id,
+    course: course._id,
+  });
+
+  if (!progress) {
+    throw new ApiError(
+      404,
+      "Progress record not found. Please enroll in this course first."
+    );
+  }
+
+  /* ------------------------------------------
+     FIND LESSON INSIDE COURSE
+  ------------------------------------------ */
+
+  let lessonExists = false;
+
+  for (const module of course.modules || []) {
+    const lesson = (module.lessons || []).find(
+      (item) => item._id.toString() === lessonId
+    );
+
+    if (lesson) {
+      lessonExists = true;
+      break;
+    }
+  }
+
+  if (!lessonExists) {
+    throw new ApiError(
+      404,
+      "Lesson not found in this course."
+    );
+  }
+
+  /* ------------------------------------------
+     PREVENT DUPLICATE COMPLETION
+  ------------------------------------------ */
+
+  const alreadyCompleted = progress.completedLessons.some(
+    (completedLessonId) =>
+      completedLessonId.toString() === lessonId
+  );
+
+  if (!alreadyCompleted) {
+    progress.completedLessons.push(lessonId);
+  }
+
+  /* ------------------------------------------
+     CALCULATE TOTAL LESSONS
+  ------------------------------------------ */
+
+  const allLessons = [];
+
+  for (const module of course.modules || []) {
+    for (const lesson of module.lessons || []) {
+      allLessons.push(lesson);
+    }
+  }
+
+  const totalLessons = allLessons.length;
+
+  const completedLessonCount =
+    progress.completedLessons.length;
+
+  /* ------------------------------------------
+     CALCULATE PERCENTAGE ON SERVER
+  ------------------------------------------ */
+
+  const percentage =
+    totalLessons > 0
+      ? Math.round(
+          (completedLessonCount / totalLessons) * 100
+        )
+      : 0;
+
+  progress.percentage = percentage;
+
+  /* ------------------------------------------
+     UPDATE STATUS
+  ------------------------------------------ */
+
+  if (percentage >= 100) {
+    progress.status = "completed";
+    progress.completed = true;
+
+    if (!progress.completedAt) {
+      progress.completedAt = new Date();
+    }
+  } else if (percentage > 0) {
+    progress.status = "in_progress";
+    progress.completed = false;
+    progress.completedAt = null;
+  } else {
+    progress.status = "not_started";
+    progress.completed = false;
+    progress.completedAt = null;
+  }
+
+  progress.lastAccessed = new Date();
+
+  await progress.save();
+
+  return ApiResponse.success(
+    res,
+    progress,
+    "Lesson completed successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE PROGRESS
+   Progress is calculated from completed lessons.
+   Clients cannot manually set the percentage.
+========================================== */
+
+const updateProgress = asyncHandler(async (req, res) => {
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  const progress = await Progress.findOne({
+    user: req.user._id,
+    course: course._id,
   });
 
   if (!progress) {
@@ -349,19 +487,31 @@ const updateProgress = asyncHandler(async (req, res) => {
     );
   }
 
-  progress.percentage = percentage;
-  progress.completed = percentage >= 100;
+  const totalLessons = (course.modules || []).reduce(
+    (total, module) =>
+      total + (module.lessons || []).length,
+    0
+  );
 
-  if (percentage >= 100) {
-    progress.completedAt = new Date();
-  }
+  const completedLessonCount =
+    progress.completedLessons.length;
+
+  const percentage =
+    totalLessons > 0
+      ? Math.round(
+          (completedLessonCount / totalLessons) * 100
+        )
+      : 0;
+
+  progress.percentage = percentage;
+  progress.lastAccessed = new Date();
 
   await progress.save();
 
   return ApiResponse.success(
     res,
     progress,
-    "Progress updated successfully."
+    "Progress recalculated successfully."
   );
 });
 
@@ -468,6 +618,7 @@ module.exports = {
   updateCourse,
   deleteCourse,
   enrollCourse,
+  completeLesson,
   updateProgress,
   updateNotes,
 };

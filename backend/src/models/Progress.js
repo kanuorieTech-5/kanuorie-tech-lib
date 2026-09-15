@@ -69,15 +69,11 @@ const progressSchema = new mongoose.Schema(
 
     completedLessons: [
       {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
       },
     ],
 
-    bookmarkedLessons: [
-      {
-        type: Number,
-      },
-    ],
+    bookmarkedLessons: [{ type: Number }],
 
     watchTime: {
       type: Number,
