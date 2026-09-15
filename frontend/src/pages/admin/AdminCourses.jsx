@@ -40,11 +40,23 @@ const emptyLesson = {
    EMPTY MODULE
 ========================================== */
 
+const emptyAssessment = {
+  type: "exercise",
+  title: "",
+  description: "",
+  instructions: "",
+  requirements: [],
+  resources: [],
+  submissionType: "url",
+  required: true,
+};
+
 const emptyModule = {
   title: "",
   description: "",
   order: 1,
   lessons: [],
+  assessment: null,
 };
 
 /* ==========================================
@@ -256,24 +268,41 @@ export default function AdminCourses() {
     setEditingId(course._id);
 
     const normalizedModules = Array.isArray(course.modules)
-      ? course.modules.map((module, moduleIndex) => ({
-          ...emptyModule,
-          ...module,
-          order: moduleIndex + 1,
+    ? course.modules.map((module, moduleIndex) => ({
+        ...emptyModule,
+        ...module,
 
-          lessons: Array.isArray(module.lessons)
-            ? module.lessons.map((lesson, lessonIndex) => ({
-                ...emptyLesson,
-                ...lesson,
-                order: lessonIndex + 1,
+        order: moduleIndex + 1,
 
-                resources: Array.isArray(lesson.resources)
-                  ? lesson.resources
-                  : [],
-              }))
-            : [],
-        }))
-      : [];
+        assessment: module.assessment
+          ? {
+              ...emptyAssessment,
+              ...module.assessment,
+
+              requirements: Array.isArray(module.assessment.requirements)
+                ? module.assessment.requirements
+                : [],
+
+              resources: Array.isArray(module.assessment.resources)
+                ? module.assessment.resources
+                : [],
+            }
+          : null,
+
+        lessons: Array.isArray(module.lessons)
+          ? module.lessons.map((lesson, lessonIndex) => ({
+              ...emptyLesson,
+              ...lesson,
+
+              order: lessonIndex + 1,
+
+              resources: Array.isArray(lesson.resources)
+                ? lesson.resources
+                : [],
+            }))
+          : [],
+      }))
+    : [];
 
     setForm({
       ...emptyCourse,
@@ -353,6 +382,96 @@ export default function AdminCourses() {
       modules[moduleIndex] = {
         ...modules[moduleIndex],
         [field]: value,
+      };
+
+      return {
+        ...previous,
+        modules,
+      };
+    });
+  };
+  /* ==========================================
+    ENABLE MODULE ASSESSMENT
+  ========================================== */
+
+  const enableModuleAssessment = (moduleIndex) => {
+    setForm((previous) => {
+      const modules = [...previous.modules];
+
+      if (!modules[moduleIndex]) {
+        return previous;
+      }
+
+      modules[moduleIndex] = {
+        ...modules[moduleIndex],
+        assessment: {
+          ...emptyAssessment,
+        },
+      };
+
+      return {
+        ...previous,
+        modules,
+      };
+    });
+  };
+
+  /* ==========================================
+    REMOVE MODULE ASSESSMENT
+  ========================================== */
+
+  const removeModuleAssessment = (moduleIndex) => {
+    const confirmed = window.confirm(
+      "Remove this exercise/project from the module?",
+    );
+
+    if (!confirmed) return;
+
+    setForm((previous) => {
+      const modules = [...previous.modules];
+
+      if (!modules[moduleIndex]) {
+        return previous;
+      }
+
+      modules[moduleIndex] = {
+        ...modules[moduleIndex],
+        assessment: null,
+      };
+
+      return {
+        ...previous,
+        modules,
+      };
+    });
+  };
+
+  /* ==========================================
+    UPDATE MODULE ASSESSMENT
+  ========================================== */
+
+  const updateModuleAssessment = (
+    moduleIndex,
+    field,
+    value,
+  ) => {
+    setForm((previous) => {
+      const modules = [...previous.modules];
+
+      const module = modules[moduleIndex];
+
+      if (!module) {
+        return previous;
+      }
+
+      const assessment = {
+        ...(module.assessment || emptyAssessment),
+        [field]: value,
+      };
+
+      modules[moduleIndex] = {
+        ...module,
+        assessment,
       };
 
       return {
@@ -541,30 +660,71 @@ export default function AdminCourses() {
        */
 
       const normalizedModules = Array.isArray(form.modules)
-        ? form.modules.map((module, moduleIndex) => ({
-            title: module.title?.trim() || "",
-            description: module.description?.trim() || "",
-            order: moduleIndex + 1,
+      ? form.modules.map((module, moduleIndex) => ({
+          title: module.title?.trim() || "",
+          description: module.description?.trim() || "",
+          order: moduleIndex + 1,
 
-            lessons: Array.isArray(module.lessons)
-              ? module.lessons.map((lesson, lessonIndex) => ({
-                  title: lesson.title?.trim() || "",
-                  description: lesson.description?.trim() || "",
-                  videoUrl: lesson.videoUrl?.trim() || "",
+          lessons: Array.isArray(module.lessons)
+            ? module.lessons.map((lesson, lessonIndex) => ({
+                title: lesson.title?.trim() || "",
+                description: lesson.description?.trim() || "",
+                videoUrl: lesson.videoUrl?.trim() || "",
 
-                  duration: Number(lesson.duration) || 0,
+                duration: Number(lesson.duration) || 0,
 
-                  order: lessonIndex + 1,
+                order: lessonIndex + 1,
 
-                  resources: Array.isArray(lesson.resources)
-                    ? lesson.resources
-                        .map((resource) => String(resource).trim())
+                resources: Array.isArray(lesson.resources)
+                  ? lesson.resources
+                      .map((resource) => String(resource).trim())
+                      .filter(Boolean)
+                  : [],
+              }))
+            : [],
+
+          assessment: module.assessment
+            ? {
+                type:
+                  module.assessment.type === "project"
+                    ? "project"
+                    : "exercise",
+
+                title:
+                  module.assessment.title?.trim() || "",
+
+                description:
+                  module.assessment.description?.trim() || "",
+
+                instructions:
+                  module.assessment.instructions?.trim() || "",
+
+                requirements:
+                  Array.isArray(module.assessment.requirements)
+                    ? module.assessment.requirements
+                        .map((item) => String(item).trim())
                         .filter(Boolean)
                     : [],
-                }))
-              : [],
-          }))
-        : [];
+
+                resources:
+                  Array.isArray(module.assessment.resources)
+                    ? module.assessment.resources
+                        .map((item) => String(item).trim())
+                        .filter(Boolean)
+                    : [],
+
+                submissionType:
+                  ["text", "url", "file", "none"].includes(
+                    module.assessment.submissionType,
+                  )
+                    ? module.assessment.submissionType
+                    : "url",
+
+                required: Boolean(module.assessment.required),
+              }
+            : null,
+        }))
+      : [];
 
       const payload = {
         title: form.title.trim(),
@@ -1365,6 +1525,163 @@ export default function AdminCourses() {
                                   ))
                                 )}
                               </div>
+                              {/* MODULE ASSESSMENT */}
+
+<div className="space-y-4 border-t border-slate-200 pt-6">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h4 className="font-bold text-slate-800">
+        Module Exercise / Project
+      </h4>
+
+      <p className="text-xs text-slate-500">
+        Give learners a practical task to complete after this module.
+      </p>
+    </div>
+
+    {!module.assessment ? (
+      <button
+        type="button"
+        onClick={() =>
+          enableModuleAssessment(moduleIndex)
+        }
+        className="inline-flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-100"
+      >
+        <Plus size={16} />
+        Add Exercise / Project
+      </button>
+    ) : (
+      <button
+        type="button"
+        onClick={() =>
+          removeModuleAssessment(moduleIndex)
+        }
+        className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+      >
+        <Trash2 size={16} />
+        Remove Assessment
+      </button>
+    )}
+  </div>
+
+  {module.assessment && (
+    <div className="space-y-5 rounded-2xl border border-blue-200 bg-blue-50/40 p-5">
+      <div className="grid gap-4 md:grid-cols-2">
+        <SelectField
+          label="Assessment Type"
+          value={module.assessment.type}
+          onChange={(value) =>
+            updateModuleAssessment(
+              moduleIndex,
+              "type",
+              value,
+            )
+          }
+          options={["exercise", "project"]}
+        />
+
+        <SelectField
+          label="Submission Type"
+          value={module.assessment.submissionType}
+          onChange={(value) =>
+            updateModuleAssessment(
+              moduleIndex,
+              "submissionType",
+              value,
+            )
+          }
+          options={["text", "url", "file", "none"]}
+        />
+      </div>
+
+      <Field
+        label="Exercise / Project Title"
+        required
+        value={module.assessment.title}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "title",
+            value,
+          )
+        }
+        placeholder="e.g. Build a React Counter"
+      />
+
+      <TextAreaField
+        label="Description"
+        value={module.assessment.description}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "description",
+            value,
+          )
+        }
+        placeholder="Explain the purpose of this exercise or project..."
+        rows={3}
+      />
+
+      <TextAreaField
+        label="Instructions"
+        value={module.assessment.instructions}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "instructions",
+            value,
+          )
+        }
+        placeholder="Tell learners exactly what they need to build or complete..."
+        rows={5}
+      />
+
+      <Field
+        label="Requirements"
+        value={module.assessment.requirements.join(", ")}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "requirements",
+            value
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean),
+          )
+        }
+        placeholder="Use React, Create components, Add state management"
+      />
+
+      <Field
+        label="Resources"
+        value={module.assessment.resources.join(", ")}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "resources",
+            value
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean),
+          )
+        }
+        placeholder="https://react.dev, https://..."
+      />
+
+      <Toggle
+        label="Required to complete module"
+        checked={module.assessment.required}
+        onChange={(value) =>
+          updateModuleAssessment(
+            moduleIndex,
+            "required",
+            value,
+          )
+        }
+      />
+    </div>
+  )}
+</div>
                             </div>
                           )}
                         </div>
