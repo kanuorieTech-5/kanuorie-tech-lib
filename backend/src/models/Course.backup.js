@@ -50,66 +50,6 @@ const lessonSchema = new mongoose.Schema(
 );
 
 /* ==========================================
-   MODULE ASSESSMENT SCHEMA
-========================================== */
-
-const assessmentSchema = new mongoose.Schema(
-  {
-    type: {
-      type: String,
-      enum: ["exercise", "project"],
-      default: "exercise",
-    },
-
-    title: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    description: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    instructions: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    requirements: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
-
-    resources: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
-
-    submissionType: {
-      type: String,
-      enum: ["text", "url", "file", "none"],
-      default: "url",
-    },
-
-    required: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  {
-    _id: true,
-  }
-);
-
-/* ==========================================
    MODULE SCHEMA
 ========================================== */
 
@@ -136,11 +76,6 @@ const moduleSchema = new mongoose.Schema(
     lessons: {
       type: [lessonSchema],
       default: [],
-    },
-
-    assessment: {
-      type: assessmentSchema,
-      default: null,
     },
   },
   {
@@ -294,7 +229,6 @@ const courseSchema = new mongoose.Schema(
       },
     ],
 
-    
     /* ----------------------------------------
        COURSE CURRICULUM
 

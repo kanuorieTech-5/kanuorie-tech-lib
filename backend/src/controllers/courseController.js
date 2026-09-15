@@ -235,8 +235,12 @@ const getCourse = asyncHandler(async (req, res) => {
 ========================================== */
 
 const updateCourse = asyncHandler(async (req, res) => {
-  const course = await Course.findById(req.params.id);
+  console.log(
+    "UPDATE COURSE MODULES:",
+    JSON.stringify(req.body.modules, null, 2)
+  );
 
+  const course = await Course.findById(req.params.id);
   if (!course) {
     throw new ApiError(404, "Course not found.");
   }
