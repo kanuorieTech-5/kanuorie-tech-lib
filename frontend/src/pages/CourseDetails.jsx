@@ -32,7 +32,6 @@ import { Newsletter, CTA } from "../components/home";
 
 import {
   getCourse,
-  enrollCourse,
   getCourses,
   completeLesson,
 } from "../services";
@@ -125,7 +124,6 @@ export default function CourseDetails() {
   const [relatedCourses, setRelatedCourses] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [enrolling, setEnrolling] = useState(false);
   const [completingLesson, setCompletingLesson] = useState(null);
 
   const [openModules, setOpenModules] = useState({});
@@ -328,15 +326,8 @@ export default function CourseDetails() {
   const completedLessonsCount =
     completedLessonIds.size;
 
-  const calculatedProgress = totalLessons
-    ? Math.round(
-        (completedLessonsCount / totalLessons) *
-          100,
-      )
-    : Number(progress?.percentage || 0);
-
   const progressPercentage = Math.min(
-    Math.max(calculatedProgress, 0),
+    Math.max(Number(progress?.percentage || 0), 0),
     100,
   );
 
@@ -356,59 +347,6 @@ export default function CourseDetails() {
       ...previous,
       [moduleKey]: !previous[moduleKey],
     }));
-  };
-
-  /* =======================================================
-     ENROLL
-  ======================================================= */
-
-  const handleEnroll = async () => {
-    if (!id || enrolling) {
-      return;
-    }
-
-    try {
-      setEnrolling(true);
-
-      const response = await enrollCourse(id);
-
-      const enrollmentProgress =
-        response?.data?.progress || null;
-
-      if (enrollmentProgress) {
-        setProgress(enrollmentProgress);
-      }
-
-      toast.success(
-        "Successfully enrolled in this course!",
-      );
-
-      setCourse((previous) => {
-        if (!previous) {
-          return previous;
-        }
-
-        return {
-          ...previous,
-          enrollments:
-            Number(previous.enrollments || 0) + 1,
-        };
-      });
-    } catch (error) {
-      console.error(
-        "Course enrollment failed:",
-        error,
-      );
-
-      toast.error(
-        getApiMessage(
-          error,
-          "Unable to enroll in this course.",
-        ),
-      );
-    } finally {
-      setEnrolling(false);
-    }
   };
 
   /* =======================================================
@@ -490,9 +428,9 @@ export default function CourseDetails() {
           </h1>
 
           <p className="mx-auto mt-4 max-w-xl leading-7 text-slate-600">
-            We couldn't load this course. You may need
-            to enroll first, or the course may no longer
-            be available.
+            Enrollment required!
+            You need to enroll in this course to access
+            the curriculum.
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -502,7 +440,7 @@ export default function CourseDetails() {
                   className="mr-2"
                   size={18}
                 />
-                Back to Courses
+                View All Courses
               </Button>
             </Link>
           </div>
@@ -1146,8 +1084,8 @@ export default function CourseDetails() {
                                       : false;
 
                                   const isCompleting =
-                                    completingLesson ===
-                                    lessonId;
+                                    completingLesson &&
+                                    String(completingLesson) === String(lessonId);
 
                                   return (
                                     <div
