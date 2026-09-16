@@ -88,6 +88,16 @@ export const completeLesson = async (courseId, lessonId) => {
   return data;
 };
 
+export const updateCurrentLesson = async (
+  courseId,
+  lessonId
+) => {
+  const { data } = await API.put(
+    `/courses/${courseId}/current-lesson/${lessonId}`
+  );
+
+  return data;
+};
 /**
  * Update course notes
  */
@@ -107,5 +117,6 @@ export default {
   enrollCourse,
   updateCourseProgress,
   completeLesson,
+  updateCurrentLesson,
   updateCourseNotes,
 };

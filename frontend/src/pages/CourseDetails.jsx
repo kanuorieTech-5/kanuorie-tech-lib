@@ -34,6 +34,7 @@ import {
   getCourse,
   getCourses,
   completeLesson,
+  updateCurrentLesson,
 } from "../services";
 
 const COURSE_IMAGE_FALLBACK = "/images/course-placeholder.png";
@@ -315,7 +316,7 @@ export default function CourseDetails() {
       : [];
   }, [course]);
 
-  const completedLessonIds = useMemo(() => {
+ const completedLessonIds = useMemo(() => {
     return new Set(
       (progress?.completedLessons || []).map(
         (lessonId) => String(lessonId),
@@ -325,6 +326,10 @@ export default function CourseDetails() {
 
   const completedLessonsCount =
     completedLessonIds.size;
+
+  const currentLessonId = progress?.currentLesson
+    ? String(progress.currentLesson)
+    : null;
 
   const progressPercentage = Math.min(
     Math.max(Number(progress?.percentage || 0), 0),
@@ -397,6 +402,45 @@ export default function CourseDetails() {
       setCompletingLesson(null);
     }
   };
+  /* =======================================================
+   SET CURRENT LESSON
+======================================================= */
+
+const handleSetCurrentLesson = async (lessonId) => {
+  if (!lessonId || completingLesson) {
+    return;
+  }
+
+  if (String(currentLessonId) === String(lessonId)) {
+    return;
+  }
+
+  try {
+    const response = await updateCurrentLesson(
+      id,
+      lessonId,
+    );
+
+    const updatedProgress =
+      response?.data || null;
+
+    if (updatedProgress) {
+      setProgress(updatedProgress);
+    }
+  } catch (error) {
+    console.error(
+      "Update current lesson error:",
+      error,
+    );
+
+    toast.error(
+      getApiMessage(
+        error,
+        "Unable to save your current lesson.",
+      ),
+    );
+  }
+};
 
   /* =======================================================
      LOADING STATE
@@ -1077,15 +1121,18 @@ export default function CourseDetails() {
                                   const isCompleted =
                                     lessonId
                                       ? completedLessonIds.has(
-                                          String(
-                                            lessonId,
-                                          ),
+                                          String(lessonId),
                                         )
                                       : false;
 
+                                  const isCurrent =
+                                    lessonId &&
+                                    currentLessonId === String(lessonId);
+
                                   const isCompleting =
                                     completingLesson &&
-                                    String(completingLesson) === String(lessonId);
+                                    String(completingLesson) ===
+                                      String(lessonId);
 
                                   return (
                                     <div
@@ -1093,10 +1140,17 @@ export default function CourseDetails() {
                                         lessonId ||
                                         `${moduleKey}-lesson-${lessonIndex}`
                                       }
-                                      className={`px-5 py-5 transition sm:px-6 ${
-                                        isCompleted
-                                          ? "bg-green-50/40"
-                                          : "bg-white"
+                                      onClick={() => {
+                                        if (lessonId) {
+                                          handleSetCurrentLesson(lessonId);
+                                        }
+                                      }}
+                                      className={`cursor-pointer border-l-4 px-5 py-5 transition sm:px-6 ${
+                                        isCurrent
+                                          ? "border-blue-600 bg-blue-50/70"
+                                          : isCompleted
+                                            ? "border-green-500 bg-green-50/40"
+                                            : "border-transparent bg-white hover:bg-slate-50"
                                       }`}
                                     >
                                       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -1137,9 +1191,15 @@ export default function CourseDetails() {
                                                   "Untitled Lesson"}
                                               </h4>
 
-                                              {isCompleted && (
+                                             {isCompleted && (
                                                 <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
                                                   Completed
+                                                </span>
+                                              )}
+
+                                              {isCurrent && !isCompleted && (
+                                                <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
+                                                  Current Lesson
                                                 </span>
                                               )}
                                             </div>

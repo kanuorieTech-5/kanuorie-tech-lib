@@ -62,10 +62,7 @@ const progressSchema = new mongoose.Schema(
       default: "not_started",
     },
 
-    currentLesson: {
-      type: Number,
-      default: 0,
-    },
+    currentLesson: mongoose.Schema.Types.ObjectId,
 
     completedLessons: [
       {

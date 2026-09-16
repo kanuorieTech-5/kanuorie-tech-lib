@@ -364,53 +364,60 @@ const completeLesson = asyncHandler(async (req, res) => {
   }
 
   /* ------------------------------------------
-     FIND LESSON INSIDE COURSE
+     BUILD ORDERED LESSON LIST
   ------------------------------------------ */
 
-  let lessonExists = false;
+  const allLessons = [];
 
-  for (const module of course.modules || []) {
-    const lesson = (module.lessons || []).find(
-      (item) => item._id.toString() === lessonId
+  const sortedModules = [...(course.modules || [])].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
+
+  for (const module of sortedModules) {
+    const sortedLessons = [...(module.lessons || [])].sort(
+      (a, b) => (a.order || 0) - (b.order || 0)
     );
 
-    if (lesson) {
-      lessonExists = true;
-      break;
+    for (const lesson of sortedLessons) {
+      allLessons.push(lesson);
     }
   }
 
-  if (!lessonExists) {
+  /* ------------------------------------------
+     FIND CURRENT LESSON
+  ------------------------------------------ */
+
+  const lessonIndex = allLessons.findIndex(
+    (lesson) =>
+      lesson._id.toString() === lessonId
+  );
+
+  if (lessonIndex === -1) {
     throw new ApiError(
       404,
       "Lesson not found in this course."
     );
   }
 
+  const lesson = allLessons[lessonIndex];
+
   /* ------------------------------------------
      PREVENT DUPLICATE COMPLETION
   ------------------------------------------ */
 
-  const alreadyCompleted = progress.completedLessons.some(
-    (completedLessonId) =>
-      completedLessonId.toString() === lessonId
-  );
+  const alreadyCompleted =
+    progress.completedLessons.some(
+      (completedLessonId) =>
+        completedLessonId.toString() === lessonId
+    );
 
   if (!alreadyCompleted) {
-    progress.completedLessons.push(lessonId);
+    progress.completedLessons.push(lesson._id);
   }
 
   /* ------------------------------------------
      CALCULATE TOTAL LESSONS
   ------------------------------------------ */
-
-  const allLessons = [];
-
-  for (const module of course.modules || []) {
-    for (const lesson of module.lessons || []) {
-      allLessons.push(lesson);
-    }
-  }
 
   const totalLessons = allLessons.length;
 
@@ -429,6 +436,33 @@ const completeLesson = asyncHandler(async (req, res) => {
       : 0;
 
   progress.percentage = percentage;
+
+  /* ------------------------------------------
+     FIND NEXT INCOMPLETE LESSON
+  ------------------------------------------ */
+
+  const completedIds = new Set(
+    progress.completedLessons.map(
+      (completedLessonId) =>
+        completedLessonId.toString()
+    )
+  );
+
+  const nextIncompleteLesson = allLessons.find(
+    (courseLesson) =>
+      !completedIds.has(courseLesson._id.toString())
+  );
+
+  /* ------------------------------------------
+     UPDATE CURRENT LESSON
+  ------------------------------------------ */
+
+  if (nextIncompleteLesson) {
+    progress.currentLesson =
+      nextIncompleteLesson._id;
+  } else {
+    progress.currentLesson = null;
+  }
 
   /* ------------------------------------------
      UPDATE STATUS
@@ -459,6 +493,81 @@ const completeLesson = asyncHandler(async (req, res) => {
     res,
     progress,
     "Lesson completed successfully."
+  );
+});
+
+/* ==========================================
+   UPDATE CURRENT LESSON
+   Records the lesson the learner is currently viewing.
+========================================== */
+
+const updateCurrentLesson = asyncHandler(async (req, res) => {
+  const { id: courseId, lessonId } = req.params;
+
+  /* ------------------------------------------
+     FIND COURSE
+  ------------------------------------------ */
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new ApiError(404, "Course not found.");
+  }
+
+  /* ------------------------------------------
+     FIND USER PROGRESS
+  ------------------------------------------ */
+
+  const progress = await Progress.findOne({
+    user: req.user._id,
+    course: course._id,
+  });
+
+  if (!progress) {
+    throw new ApiError(
+      404,
+      "Progress record not found. Please enroll in this course first."
+    );
+  }
+
+  /* ------------------------------------------
+     VERIFY LESSON EXISTS
+  ------------------------------------------ */
+
+  let lessonExists = false;
+
+  for (const module of course.modules || []) {
+    const lesson = (module.lessons || []).find(
+      (item) =>
+        item._id.toString() === lessonId
+    );
+
+    if (lesson) {
+      lessonExists = true;
+      break;
+    }
+  }
+
+  if (!lessonExists) {
+    throw new ApiError(
+      404,
+      "Lesson not found in this course."
+    );
+  }
+
+  /* ------------------------------------------
+     UPDATE CURRENT LESSON
+  ------------------------------------------ */
+
+  progress.currentLesson = lessonId;
+  progress.lastAccessed = new Date();
+
+  await progress.save();
+
+  return ApiResponse.success(
+    res,
+    progress,
+    "Current lesson updated successfully."
   );
 });
 
@@ -573,12 +682,37 @@ const enrollCourse = asyncHandler(async (req, res) => {
     );
   }
 
+  /* ------------------------------------------
+     FIND FIRST LESSON
+  ------------------------------------------ */
+
+  const sortedModules = [...(course.modules || [])].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
+
+  let firstLesson = null;
+
+  for (const module of sortedModules) {
+    const sortedLessons = [...(module.lessons || [])].sort(
+      (a, b) => (a.order || 0) - (b.order || 0)
+    );
+
+    if (sortedLessons.length > 0) {
+      firstLesson = sortedLessons[0];
+      break;
+    }
+  }
+
+  /* ------------------------------------------
+     CREATE PROGRESS
+  ------------------------------------------ */
+
   const progress = await Progress.create({
     user: req.user._id,
     course: course._id,
     percentage: 0,
     status: "not_started",
-    currentLesson: 0,
+    currentLesson: firstLesson ? firstLesson._id : null,
     completedLessons: [],
     bookmarkedLessons: [],
     watchTime: 0,
@@ -590,6 +724,10 @@ const enrollCourse = asyncHandler(async (req, res) => {
     lastAccessed: new Date(),
     lastProgressUpdate: new Date(),
   });
+
+  /* ------------------------------------------
+     UPDATE ENROLLMENT COUNT
+  ------------------------------------------ */
 
   course.enrollments += 1;
 
@@ -609,7 +747,6 @@ const enrollCourse = asyncHandler(async (req, res) => {
 /* ==========================================
    EXPORTS
 ========================================== */
-
 module.exports = {
   saveCourse,
   getCourses,
@@ -619,6 +756,7 @@ module.exports = {
   deleteCourse,
   enrollCourse,
   completeLesson,
+  updateCurrentLesson,
   updateProgress,
   updateNotes,
 };
