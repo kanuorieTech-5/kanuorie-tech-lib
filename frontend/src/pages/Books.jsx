@@ -17,6 +17,7 @@ import {
 import { Card, Button, Loader, Badge } from "../components/common";
 import { getCourses, enrollCourse } from "../services/course.service";
 import { getProgress } from "../services/progress.service";
+import { getSavedResources, removeSavedResource } from "../services/library.service";
 import { useAuth } from "../contexts";
 
 /* ==========================================
@@ -342,6 +343,114 @@ function EmptyLearningState() {
 ========================================== */
 
 function SavedResourcesSection({ isAuthenticated }) {
+  const [savedResources, setSavedResources] = useState([]);
+  const [loading, setLoading] = useState(isAuthenticated);
+  const [removingId, setRemovingId] = useState(null);
+  const [error, setError] = useState("");
+
+  const loadSavedResources = async () => {
+    if (!isAuthenticated) {
+      setSavedResources([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getSavedResources();
+
+      const items =
+        response?.data?.items ||
+        response?.data?.resources ||
+        response?.items ||
+        [];
+
+      setSavedResources(
+        Array.isArray(items) ? items : [],
+      );
+    } catch (err) {
+      console.error(
+        "Failed to load saved resources:",
+        err,
+      );
+
+      setSavedResources([]);
+
+      setError(
+        err?.response?.data?.message ||
+          "We couldn't load your saved resources.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSavedResources();
+
+    const handleLibraryUpdate = () => {
+      loadSavedResources();
+    };
+
+    window.addEventListener(
+      "library-update",
+      handleLibraryUpdate,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "library-update",
+        handleLibraryUpdate,
+      );
+    };
+  }, [isAuthenticated]);
+
+  const handleRemove = async (resource) => {
+    if (!resource?.resourceId) return;
+
+    const key = `${resource.resourceType}:${resource.resourceId}`;
+
+    try {
+      setRemovingId(key);
+      setError("");
+
+      await removeSavedResource(
+        resource.resourceId,
+        resource.resourceType,
+      );
+
+      setSavedResources((current) =>
+        current.filter(
+          (item) =>
+            !(
+              String(item?.resourceId) ===
+                String(resource.resourceId) &&
+              item?.resourceType ===
+                resource.resourceType
+            ),
+        ),
+      );
+
+      window.dispatchEvent(
+        new Event("library-update"),
+      );
+    } catch (err) {
+      console.error(
+        "Failed to remove saved resource:",
+        err,
+      );
+
+      setError(
+        err?.response?.data?.message ||
+          "We couldn't remove this saved resource.",
+      );
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
   return (
     <section className="py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -349,6 +458,7 @@ function SavedResourcesSection({ isAuthenticated }) {
           <div>
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
               <Bookmark size={20} />
+
               <span className="text-sm font-semibold uppercase tracking-wider">
                 Personal Library
               </span>
@@ -362,29 +472,237 @@ function SavedResourcesSection({ isAuthenticated }) {
               Keep useful learning resources close by for later.
             </p>
           </div>
+
+          {isAuthenticated && savedResources.length > 0 && (
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              {savedResources.length}{" "}
+              {savedResources.length === 1
+                ? "resource"
+                : "resources"}
+            </span>
+          )}
         </div>
 
-        <Card className="border-dashed py-12 text-center">
-          <Library
-            size={42}
-            className="mx-auto text-slate-400 dark:text-slate-600"
-          />
+        {!isAuthenticated ? (
+          <Card className="border-dashed py-12 text-center">
+            <Library
+              size={42}
+              className="mx-auto text-slate-400 dark:text-slate-600"
+            />
 
-          <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
-            No saved resources yet
-          </h3>
+            <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+              Log in to view your saved resources
+            </h3>
 
-          <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
-            {isAuthenticated
-              ? "Your saved-resource collection will appear here when saving resources is enabled for your account."
-              : "Log in to manage your personal learning library."}
-          </p>
-        </Card>
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Your saved resources are private to your account.
+            </p>
+
+            <Link to="/login">
+              <Button className="mt-6">
+                Log In
+                <ArrowRight className="ml-2" size={17} />
+              </Button>
+            </Link>
+          </Card>
+        ) : loading ? (
+          <div className="flex min-h-[220px] items-center justify-center">
+            <Loader />
+          </div>
+        ) : error ? (
+          <Card className="border-red-200 bg-red-50 py-12 text-center dark:border-red-900/50 dark:bg-red-950/20">
+            <Library
+              size={42}
+              className="mx-auto text-red-400"
+            />
+
+            <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+              Unable to load saved resources
+            </h3>
+
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-red-600 dark:text-red-300">
+              {error}
+            </p>
+
+            <Button
+              className="mt-6"
+              onClick={loadSavedResources}
+            >
+              Try Again
+            </Button>
+          </Card>
+        ) : savedResources.length === 0 ? (
+          <Card className="border-dashed py-12 text-center">
+            <Library
+              size={42}
+              className="mx-auto text-slate-400 dark:text-slate-600"
+            />
+
+            <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+              No saved resources yet
+            </h3>
+
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Save useful courses, books, and learning resources
+              from the Library page and they will appear here.
+            </p>
+
+            <Link to="/library">
+              <Button className="mt-6">
+                Browse Library
+                <ArrowRight className="ml-2" size={17} />
+              </Button>
+            </Link>
+          </Card>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {savedResources.map((resource) => {
+              const resourceId = String(
+                resource?.resourceId || "",
+              );
+
+              const resourceType =
+                resource?.resourceType || "external";
+
+              const key = `${resourceType}:${resourceId}`;
+
+              const title =
+                resource?.title || "Untitled Resource";
+
+              const description =
+                resource?.description ||
+                "Saved learning resource.";
+
+              const category =
+                resource?.category || "General";
+
+              const image =
+                resource?.image ||
+                "/images/course-placeholder.png";
+
+              const link = resource?.link || "";
+
+              const isRemoving =
+                removingId === key;
+
+              const isCourse =
+                resourceType === "course";
+
+              const isBook =
+                resourceType === "book";
+
+              return (
+                <motion.div
+                  key={key}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full"
+                >
+                  <Card className="flex h-full flex-col overflow-hidden p-0">
+                    <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                      <img
+                        src={image}
+                        alt={title}
+                        className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                        onError={(event) => {
+                          event.currentTarget.src =
+                            "/images/course-placeholder.png";
+                        }}
+                      />
+
+                      <div className="absolute left-4 top-4">
+                        <Badge>
+                          {category}
+                        </Badge>
+                      </div>
+
+                      <div className="absolute right-4 top-4">
+                        <Badge>
+                          {isCourse
+                            ? "Course"
+                            : isBook
+                              ? "Book"
+                              : "Resource"}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="line-clamp-2 text-xl font-bold text-slate-900 dark:text-white">
+                        {title}
+                      </h3>
+
+                      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                        {description}
+                      </p>
+
+                      <div className="mt-6 flex gap-3">
+                        {link ? (
+                          <a
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1"
+                          >
+                            <Button className="w-full">
+                              Open Resource
+                              <ArrowRight
+                                className="ml-2"
+                                size={17}
+                              />
+                            </Button>
+                          </a>
+                        ) : isCourse ? (
+                          <Link
+                            to={`/courses/${resourceId}`}
+                            className="flex-1"
+                          >
+                            <Button className="w-full">
+                              View Course
+                              <ArrowRight
+                                className="ml-2"
+                                size={17}
+                              />
+                            </Button>
+                          </Link>
+                        ) : isBook ? (
+                          <Link
+                            to={`/books/${resourceId}`}
+                            className="flex-1"
+                          >
+                            <Button className="w-full">
+                              View Book
+                              <ArrowRight
+                                className="ml-2"
+                                size={17}
+                              />
+                            </Button>
+                          </Link>
+                        ) : null}
+
+                        <Button
+                          variant="outline"
+                          disabled={isRemoving}
+                          onClick={() =>
+                            handleRemove(resource)
+                          }
+                        >
+                          {isRemoving
+                            ? "Removing..."
+                            : "Remove"}
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 }
-
 /* ==========================================
    MAIN PAGE
 ========================================== */

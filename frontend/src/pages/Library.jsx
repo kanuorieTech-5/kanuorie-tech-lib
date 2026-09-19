@@ -806,21 +806,11 @@ export default function Library() {
   return (
     <main>
       <LibraryHero />
-
-      {/* ======================================
-          TOAST
-      ====================================== */}
-
       {toast && (
         <div className="fixed right-5 top-5 z-50 max-w-sm rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl">
           {toast}
         </div>
       )}
-
-      {/* ======================================
-          RECOMMENDED RESOURCES
-      ====================================== */}
-
       {recommendedResources.length >
         0 && (
         <RecommendedResources
@@ -871,10 +861,6 @@ export default function Library() {
           </div>
         </div>
       </section>
-
-      {/* ======================================
-          RESOURCE GRID
-      ====================================== */}
 
       <section className="mx-auto bg-slate-200 px-6">
         {loading ? (
