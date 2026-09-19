@@ -811,19 +811,7 @@ export default function Library() {
           {toast}
         </div>
       )}
-      {recommendedResources.length >
-        0 && (
-        <RecommendedResources
-          resources={
-            recommendedResources
-          }
-          savedIds={
-            Array.from(savedKeys)
-          }
-          savingId={savingKey}
-          onSave={handleSave}
-        />
-      )}
+     
 
       {/* ======================================
           SEARCH + FILTER
@@ -979,6 +967,21 @@ export default function Library() {
           </div>
         )}
       </section>
+
+       {recommendedResources.length >
+        0 && (
+        <RecommendedResources
+          resources={
+            recommendedResources
+          }
+          savedIds={
+            Array.from(savedKeys)
+          }
+          savingId={savingKey}
+          onSave={handleSave}
+          onRemove={handleRemove}
+        />
+      )}
 
       <Newsletter />
 

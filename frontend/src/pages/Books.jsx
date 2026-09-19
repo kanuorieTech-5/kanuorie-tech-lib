@@ -1000,7 +1000,7 @@ export default function Books() {
               <a href="#my-learning">
                 <Button>
                   <GraduationCap className="mr-2" size={18} />
-                  My Learning
+                  My Learning 
                 </Button>
               </a>
 
@@ -1034,7 +1034,7 @@ export default function Books() {
             </div>
 
             <h2 className="mt-2 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl">
-              My Learning
+              Enrolled Courses
             </h2>
 
             <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
@@ -1163,7 +1163,7 @@ export default function Books() {
             </div>
 
             <h2 className="mt-2 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl">
-              Explore Courses
+              Explore More Courses
             </h2>
 
             <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
@@ -1171,66 +1171,6 @@ export default function Books() {
               your next learning opportunity.
             </p>
           </div>
-
-          {/* SEARCH + FILTERS */}
-
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60 sm:p-5">
-            <div className="relative">
-              <Search
-                size={19}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
-
-              <input
-                type="text"
-                value={search}
-                onChange={(event) =>
-                  setSearch(event.target.value)
-                }
-                placeholder="Search courses..."
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500"
-              />
-            </div>
-
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-              <select
-                value={category}
-                onChange={(event) =>
-                  setCategory(event.target.value)
-                }
-                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              >
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item === "All"
-                      ? "All Categories"
-                      : item}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={level}
-                onChange={(event) =>
-                  setLevel(event.target.value)
-                }
-                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              >
-                <option value="All">All Levels</option>
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">
-                  Intermediate
-                </option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-          </div>
-
-          {error && (
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
-              {error}
-            </div>
-          )}
 
           {/* COURSE RESULTS */}
 

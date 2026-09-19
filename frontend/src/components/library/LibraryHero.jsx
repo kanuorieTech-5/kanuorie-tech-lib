@@ -42,7 +42,7 @@ export default function LibraryHero() {
                 size="lg"
                 className="border-white text-white hover:bg-white hover:text-slate-900"
               >
-                +Saved Books
+                Continue Learning
               </Button>
             </Link>
           </div>
