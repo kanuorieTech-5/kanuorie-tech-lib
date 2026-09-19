@@ -319,7 +319,7 @@ export default function AdminUsers() {
         {/* Empty */}
 
         {filteredUsers.length === 0 ? (
-          <div className="px-6 py-20 text-center">
+          <div className="px-6 py-10 text-center">
             <Users size={42} className="mx-auto text-slate-300" />
 
             <h3 className="mt-4 text-lg font-semibold text-slate-900">

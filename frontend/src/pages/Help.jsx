@@ -47,7 +47,7 @@ export default function Help() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
       {/* HERO */}
-      <section className="bg-slate-950 py-24 text-white">
+      <section className="bg-slate-950 py-10 text-white dark:bg-slate-900">
         <div className="mx-auto max-w-7xl px-6 text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10">
             <HelpCircle className="h-9 w-9 text-cyan-400" aria-hidden="true" />
@@ -65,7 +65,7 @@ export default function Help() {
       </section>
 
       {/* HELP CATEGORIES */}
-      <section className="bg-slate-50 py-20 dark:bg-slate-950">
+      <section className="bg-slate-50 py-10 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             Badge="Help Center"
@@ -123,7 +123,7 @@ export default function Help() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-white py-20 dark:bg-slate-900">
+      <section className="bg-white py-10 dark:bg-slate-900">
         <div className="mx-auto max-w-4xl px-6">
           <SectionTitle
             Badge="Frequently Asked Questions"
@@ -157,7 +157,7 @@ export default function Help() {
       </section>
 
       {/* CONTACT CTA */}
-      <section className="bg-slate-950 py-20 text-white">
+      <section className="bg-slate-950 py-10 text-white">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10">
             <Mail className="h-7 w-7 text-cyan-400" aria-hidden="true" />

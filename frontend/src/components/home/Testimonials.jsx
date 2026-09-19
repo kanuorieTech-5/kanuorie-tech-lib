@@ -140,23 +140,17 @@ export default function Testimonials() {
     );
   };
 
-  /*
-  ==========================================
-  LOADING
-  ==========================================
-  */
-
   if (loading) {
     return (
-      <section className="py-20">
+      <section className="py-10">
         <Loader />
       </section>
     );
   }
 
   return (
-    <section className="bg-slate-900 py-20 text-white">
-      <div className="mx-auto px-6">
+    <section className="bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white">
+      <div className="mx-auto px-6 text-center">
         <SectionTitle
           title="What Our Clients Say"
           subtitle="Real experiences from people and businesses we've worked with."

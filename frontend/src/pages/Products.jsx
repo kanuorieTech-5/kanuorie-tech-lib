@@ -156,7 +156,7 @@ export default function Products() {
           from-slate-950
           via-slate-900
           to-blue-950
-          py-20
+          py-10
           text-white
           lg:py-28
         "

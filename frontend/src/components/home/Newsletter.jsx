@@ -33,37 +33,21 @@ export default function Newsletter() {
 
   return (
     <section
-      className="
-      bg-slate-900
-      py-24
-    "
+      className=" bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white"
     >
       <div
-        className="
-        px-6
-        text-center
-      "
+        className="px-6 text-center"
       >
         <SectionTitle
           Badge="Stay Connected"
-
           title="Get Technology Updates Delivered"
-
           subtitle="Receive new courses, digital resources, articles and company updates from KanuorieTech."
         />
 
         <form
           onSubmit={submit}
 
-          className="
-            mx-auto
-            mt-10
-            flex
-            max-w-xl
-            flex-col
-            gap-4
-            sm:flex-row
-          "
+          className="mx-auto mt-10 flex max-w-xl flex-col gap-4 sm:flex-row"
         >
           <input
             type="email"
@@ -76,17 +60,7 @@ export default function Newsletter() {
 
             placeholder="Enter your email"
 
-            className="
-              flex-1
-              rounded-2xl
-              border
-              border-white/20
-              bg-white
-              px-5
-              py-4
-              text-slate-900
-              outline-none
-            "
+            className="flex-1 rounded-2xl border border-white/20 bg-white px-5 py-4 text-slate-900 outline-none"
           />
 
           <Button
@@ -100,11 +74,7 @@ export default function Newsletter() {
 
         {message && (
           <p
-            className="
-            mt-5
-            text-sm
-            text-white
-          "
+            className="mt-5 text-sm text-white"
           >
             {message}
           </p>

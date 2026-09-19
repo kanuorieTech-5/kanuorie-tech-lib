@@ -47,14 +47,14 @@ export default function Team() {
 
   if (loading) {
     return (
-      <section className="flex min-h-[50vh] items-center justify-center px-6 py-20">
+      <section className="flex min-h-[50vh] items-center justify-center px-6 py-10">
         <Loader />
       </section>
     );
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-20">
+    <section className="mx-auto max-w-7xl px-6 py-10">
       {/* Header */}
       <div className="mx-auto mb-14 max-w-3xl text-center">
         <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-600">

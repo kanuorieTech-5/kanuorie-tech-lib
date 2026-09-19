@@ -148,11 +148,11 @@ export default function Features() {
   }, [currentIndex, maxIndex]);
 
   return (
-    <section className="bg-slate-900 py-24">
+    <section className="bg-slate-900 py-10 text-white">
       <div className="px-6 text-center text-white">
         <SectionTitle
           center
-          badge="Why Choose Us"
+          Badge="Why Choose Us"
           title="Building Technology That Creates Impact"
           subtitle="We combine innovation, expertise and practical solutions to help businesses and learners grow."
         />

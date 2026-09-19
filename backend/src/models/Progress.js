@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 const noteSchema = new mongoose.Schema(
   {
     lesson: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Lesson",
       required: true,
     },
 
@@ -70,7 +71,7 @@ const progressSchema = new mongoose.Schema(
       },
     ],
 
-    bookmarkedLessons: [{ type: Number }],
+    bookmarkedLessons: [{ type: mongoose.Schema.Types.ObjectId }],
 
     watchTime: {
       type: Number,

@@ -53,7 +53,7 @@ export default function ProjectDetails() {
 
   if (!project) {
     return (
-      <section className="mx-auto max-w-4xl px-6 py-20 lg:px-8">
+      <section className="mx-auto max-w-4xl px-6 py-10 lg:px-8">
         <Card className="p-10 text-center sm:p-14">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
             <Layers3 size={30} />

@@ -12,11 +12,13 @@ const FAQ = require("./FAQ");
 const Blog = require("./Blog");
 const Contact = require("./Contact");
 const Newsletter = require("./Newsletter");
+const SavedResource = require("./SavedResource");
 
 module.exports = {
   User,
   Book,
   Course,
+  SavedResource,
   Progress,
   Notification,
   Product,

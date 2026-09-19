@@ -974,7 +974,7 @@ export default function AdminCourses() {
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
           </div>
         ) : filteredCourses.length === 0 ? (
-          <div className="px-6 py-20 text-center">
+          <div className="px-6 py-10 text-center">
             <BookOpen size={45} className="mx-auto text-slate-300" />
 
             <h3 className="mt-5 text-lg font-bold text-slate-800">

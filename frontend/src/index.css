@@ -29,3 +29,21 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+/* =========================================
+   KANUORIETECH SERVICE TICKER
+========================================= */
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 30s linear infinite;
+}

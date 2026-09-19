@@ -49,7 +49,7 @@ export default function ProductsPreview() {
    */
   if (loading) {
     return (
-      <section className="bg-slate-900 py-24">
+      <section className="bg-slate-900 py-10">
         <div className="mx-auto flex max-w-7xl justify-center px-6">
           <Loader />
         </div>
@@ -58,8 +58,8 @@ export default function ProductsPreview() {
   }
 
   return (
-    <section className="bg-slate-900 py-24">
-      <div className=" px-6">
+    <section className="bg-slate-900 py-10">
+      <div className=" px-6 text-center">
         <SectionTitle
           Badge="Digital Products"
           title="Tools Built To Help You Grow"

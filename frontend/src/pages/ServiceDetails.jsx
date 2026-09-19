@@ -50,7 +50,7 @@ export default function ServiceDetails() {
 
   if (!service) {
     return (
-      <section className="mx-auto max-w-4xl px-6 py-20">
+      <section className="mx-auto max-w-4xl px-6 py-10">
         <Card className="p-12 text-center">
           <h1 className="mb-4 text-3xl font-bold">Service not found</h1>
 

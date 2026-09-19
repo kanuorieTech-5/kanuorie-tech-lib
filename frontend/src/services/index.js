@@ -16,3 +16,4 @@ export * from "./upload.service";
 export * from "./contact.service";
 export * from "./admin.service";
 export * from "./profile.service";
+export * from "./library.service";

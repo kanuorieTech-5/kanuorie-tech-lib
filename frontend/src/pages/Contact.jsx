@@ -136,7 +136,7 @@ export default function Contact() {
           </div>
         </div>
       </section>
-      <section className="bg-slate-50 py-20">
+      <section className="bg-slate-50 py-10">
         <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
           {contactInfo.map((item) => (
             <Card key={item.title} className="p-8 text-center">
@@ -150,8 +150,8 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="py-24">
-        <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2">
+      <section className="py-10 lg:py-20">
+        <div className="mx-auto grid gap-16 px-6 lg:grid-cols-2">
           <div className="flex items-center">
             <Card className="w-full p-10">
               <h2 className="text-3xl font-bold">Why Contact KanuorieTech?</h2>

@@ -188,7 +188,7 @@ export default function Blog() {
           from-slate-950
           via-slate-900
           to-blue-950
-          py-24
+          py-10
           text-white
           lg:py-28
         "
@@ -272,7 +272,7 @@ export default function Blog() {
       </section>
 
       {featuredPost ? (
-        <section className="bg-slate-50 py-20">
+        <section className="bg-slate-50 py-10">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <SectionTitle title="Featured Article" subtitle="Editor's pick" />
 
@@ -349,7 +349,7 @@ export default function Blog() {
           </div>
         </section>
       ) : (
-        <section className="bg-slate-50 py-20">
+        <section className="bg-slate-50 py-10">
           <div className="mx-auto max-w-4xl px-6">
             <Card className="p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900">
@@ -375,7 +375,7 @@ export default function Blog() {
       )}
 
       {currentBlogs.length > 0 && (
-        <section className="bg-white py-24">
+        <section className="bg-white py-10 text-white dark:bg-slate-900 dark:text-white">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <SectionTitle
               title="Latest Articles"

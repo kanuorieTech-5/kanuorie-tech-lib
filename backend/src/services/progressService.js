@@ -1,29 +1,119 @@
 const Progress = require("../models/Progress");
 const Course = require("../models/Course");
 
+/* ==========================================
+   PROGRESS SERVICE
+========================================== */
+
 class ProgressService {
-  /* =========================
-     GET USER PROGRESS
-  ========================= */
-  async getUserProgress(userId) {
-    return await Progress.find({ user: userId })
-      .populate("course")
-      .sort({ updatedAt: -1 });
+  /* ==========================================
+     FORMAT A PROGRESS RECORD
+
+     Keeps curriculum/modules out of the
+     Learning Hub response while providing
+     the total lesson count needed to display:
+
+       8 / 20 lessons completed
+  ========================================== */
+
+  async formatProgress(progress) {
+    if (!progress) {
+      return null;
+    }
+
+    const course = progress.course;
+
+    if (!course) {
+      return null;
+    }
+
+    const totalLessons = (course.modules || []).reduce(
+      (total, module) =>
+        total + (module.lessons || []).length,
+      0
+    );
+
+    return {
+      _id: progress._id,
+      user: progress.user,
+      course: {
+        _id: course._id,
+        title: course.title,
+        description: course.description,
+        image: course.image,
+        category: course.category,
+        level: course.level,
+        duration: course.duration,
+        language: course.language,
+        instructor: course.instructor,
+        published: course.published,
+        featured: course.featured,
+        premium: course.premium,
+      },
+      percentage: progress.percentage,
+      status: progress.status,
+      completed: progress.completed,
+      completedLessons: progress.completedLessons || [],
+      totalLessons,
+      currentLesson: progress.currentLesson || null,
+      lastAccessed: progress.lastAccessed,
+      completedAt: progress.completedAt,
+      lastProgressUpdate: progress.lastProgressUpdate,
+      createdAt: progress.createdAt,
+      updatedAt: progress.updatedAt,
+    };
   }
 
-  /* =========================
-     GET COURSE PROGRESS
-  ========================= */
+  /* ==========================================
+     GET ALL PROGRESS FOR A USER
+
+     Only the authenticated user's enrolled
+     courses are returned.
+  ========================================== */
+
+  async getUserProgress(userId) {
+    const progressRecords = await Progress.find({
+      user: userId,
+    })
+      .populate({
+        path: "course",
+        select:
+          "title description image category level duration language instructor published featured premium modules",
+      })
+      .sort({
+        lastAccessed: -1,
+      });
+
+    const formatted = await Promise.all(
+      progressRecords.map((progress) =>
+        this.formatProgress(progress)
+      )
+    );
+
+    return formatted.filter(Boolean);
+  }
+
+  /* ==========================================
+     GET PROGRESS FOR ONE COURSE
+  ========================================== */
+
   async getCourseProgress(userId, courseId) {
-    return await Progress.findOne({
+    const progress = await Progress.findOne({
       user: userId,
       course: courseId,
-    }).populate("course");
+    }).populate({
+      path: "course",
+      select:
+        "title description image category level duration language instructor published featured premium modules",
+    });
+
+    return this.formatProgress(progress);
   }
 
-  /* =========================
-     CREATE OR UPDATE PROGRESS
-  ========================= */
+  /* ==========================================
+     UPDATE PROGRESS
+  ========================================== */
+
   async updateProgress(userId, courseId, percentage) {
     let progress = await Progress.findOne({
       user: userId,
@@ -38,24 +128,29 @@ class ProgressService {
         completed: percentage >= 100,
         lastAccessed: new Date(),
       });
+    } else {
+      progress.percentage = percentage;
+      progress.completed = percentage >= 100;
+      progress.lastAccessed = new Date();
 
-      return progress.populate("course");
+      await progress.save();
     }
 
-    progress.percentage = percentage;
-    progress.completed = percentage >= 100;
-    progress.lastAccessed = new Date();
+    await progress.populate({
+      path: "course",
+      select:
+        "title description image category level duration language instructor published featured premium modules",
+    });
 
-    await progress.save();
-
-    return progress.populate("course");
+    return this.formatProgress(progress);
   }
 
-  /* =========================
+  /* ==========================================
      COMPLETE COURSE
-  ========================= */
+  ========================================== */
+
   async completeCourse(userId, courseId) {
-    return await Progress.findOneAndUpdate(
+    const progress = await Progress.findOneAndUpdate(
       {
         user: userId,
         course: courseId,
@@ -70,14 +165,21 @@ class ProgressService {
         new: true,
         upsert: true,
       }
-    ).populate("course");
+    ).populate({
+      path: "course",
+      select:
+        "title description image category level duration language instructor published featured premium modules",
+    });
+
+    return this.formatProgress(progress);
   }
 
-  /* =========================
-     RESET COURSE
-  ========================= */
+  /* ==========================================
+     RESET PROGRESS
+  ========================================== */
+
   async resetProgress(userId, courseId) {
-    return await Progress.findOneAndUpdate(
+    const progress = await Progress.findOneAndUpdate(
       {
         user: userId,
         course: courseId,
@@ -91,41 +193,74 @@ class ProgressService {
       {
         new: true,
       }
-    );
+    ).populate({
+      path: "course",
+      select:
+        "title description image category level duration language instructor published featured premium modules",
+    });
+
+    return this.formatProgress(progress);
   }
 
-  /* =========================
+  /* ==========================================
      CONTINUE LEARNING
-  ========================= */
+  ========================================== */
+
   async getContinueLearning(userId) {
-    return await Progress.find({
+    const progressRecords = await Progress.find({
       user: userId,
       completed: false,
     })
-      .populate("course")
+      .populate({
+        path: "course",
+        select:
+          "title description image category level duration language instructor published featured premium modules",
+      })
       .sort({
         lastAccessed: -1,
       })
       .limit(10);
+
+    const formatted = await Promise.all(
+      progressRecords.map((progress) =>
+        this.formatProgress(progress)
+      )
+    );
+
+    return formatted.filter(Boolean);
   }
 
-  /* =========================
+  /* ==========================================
      COMPLETED COURSES
-  ========================= */
+  ========================================== */
+
   async getCompletedCourses(userId) {
-    return await Progress.find({
+    const progressRecords = await Progress.find({
       user: userId,
       completed: true,
     })
-      .populate("course")
+      .populate({
+        path: "course",
+        select:
+          "title description image category level duration language instructor published featured premium modules",
+      })
       .sort({
         completedAt: -1,
       });
+
+    const formatted = await Promise.all(
+      progressRecords.map((progress) =>
+        this.formatProgress(progress)
+      )
+    );
+
+    return formatted.filter(Boolean);
   }
 
-  /* =========================
+  /* ==========================================
      DELETE PROGRESS
-  ========================= */
+  ========================================== */
+
   async deleteProgress(userId, courseId) {
     return await Progress.findOneAndDelete({
       user: userId,
@@ -133,9 +268,10 @@ class ProgressService {
     });
   }
 
-  /* =========================
+  /* ==========================================
      USER STATISTICS
-  ========================= */
+  ========================================== */
+
   async getStatistics(userId) {
     const totalCourses = await Progress.countDocuments({
       user: userId,

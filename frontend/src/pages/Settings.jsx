@@ -32,13 +32,20 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme();
+  const {
+    theme,
+    setTheme,
+    darkMode,
+  } = useTheme();
 
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settings, setSettings] =
+    useState(DEFAULT_SETTINGS);
 
-  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [loadingSettings, setLoadingSettings] =
+    useState(true);
 
-  const [savingSettings, setSavingSettings] = useState(false);
+  const [savingSettings, setSavingSettings] =
+    useState(false);
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -46,13 +53,15 @@ export default function Settings() {
     confirmPassword: "",
   });
 
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
+  const [showPasswords, setShowPasswords] =
+    useState({
+      current: false,
+      new: false,
+      confirm: false,
+    });
 
-  const [changingPassword, setChangingPassword] = useState(false);
+  const [changingPassword, setChangingPassword] =
+    useState(false);
 
   /* ==========================================
      LOAD SETTINGS
@@ -66,7 +75,7 @@ export default function Settings() {
         const user = response?.data || response;
 
         if (user?.settings) {
-          setSettings({
+          const mergedSettings = {
             ...DEFAULT_SETTINGS,
             ...user.settings,
 
@@ -79,12 +88,19 @@ export default function Settings() {
               ...DEFAULT_SETTINGS.emailPreferences,
               ...user.settings.emailPreferences,
             },
-          });
+          };
+
+          setSettings(mergedSettings);
         }
       } catch (error) {
-        console.error("Failed to load settings:", error);
+        console.error(
+          "Failed to load settings:",
+          error,
+        );
 
-        toast.error("Unable to load your settings.");
+        toast.error(
+          "Unable to load your settings.",
+        );
       } finally {
         setLoadingSettings(false);
       }
@@ -94,16 +110,18 @@ export default function Settings() {
   }, []);
 
   /* ==========================================
-     SAVE SETTINGS
+     SAVE NON-THEME SETTINGS
   ========================================== */
 
   const saveSettings = async (updatedSettings) => {
     try {
       setSavingSettings(true);
 
-      const response = await updateSettings(updatedSettings);
+      const response =
+        await updateSettings(updatedSettings);
 
-      const savedUser = response?.data || response;
+      const savedUser =
+        response?.data || response;
 
       if (savedUser?.settings) {
         setSettings((prev) => ({
@@ -122,14 +140,49 @@ export default function Settings() {
         }));
       }
 
-      toast.success("Settings updated successfully.");
+      toast.success(
+        "Settings updated successfully.",
+      );
     } catch (error) {
-      console.error("Failed to save settings:", error);
+      console.error(
+        "Failed to save settings:",
+        error,
+      );
 
-      toast.error(error?.response?.data?.message || "Unable to save settings.");
+      toast.error(
+        error?.response?.data?.message ||
+          "Unable to save settings.",
+      );
     } finally {
       setSavingSettings(false);
     }
+  };
+
+  /* ==========================================
+     CHANGE THEME
+  ========================================== */
+
+  const handleThemeChange = async (event) => {
+    const newTheme = event.target.value;
+
+    /*
+     * ThemeContext handles:
+     *
+     * 1. Updating the UI immediately
+     * 2. Updating localStorage
+     * 3. Saving the theme to the backend
+     */
+    await setTheme(newTheme);
+
+    /*
+     * Keep Settings local state synchronized.
+     */
+    setSettings((prev) => ({
+      ...prev,
+      theme: newTheme,
+    }));
+
+    toast.success("Theme preference updated.");
   };
 
   /* ==========================================
@@ -154,7 +207,9 @@ export default function Settings() {
   ========================================== */
 
   const toggleEmailPreference = (key) => {
-    // Security emails should always remain enabled.
+    /*
+     * Security emails should always remain enabled.
+     */
     if (key === "security") {
       return;
     }
@@ -169,25 +224,6 @@ export default function Settings() {
 
     setSettings(updated);
     saveSettings(updated);
-  };
-
-  /* ==========================================
-     DARK MODE
-  ========================================== */
-
-  const handleThemeToggle = async () => {
-    toggleTheme();
-
-    const newTheme = theme === "light" ? "dark" : "light";
-
-    const updated = {
-      ...settings,
-      theme: newTheme,
-    };
-
-    setSettings(updated);
-
-    await saveSettings(updated);
   };
 
   /* ==========================================
@@ -208,25 +244,41 @@ export default function Settings() {
   const handleChangePassword = async (event) => {
     event.preventDefault();
 
-    const { currentPassword, newPassword, confirmPassword } = passwords;
+    const {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    } = passwords;
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error("Please complete all password fields.");
+    if (
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword
+    ) {
+      toast.error(
+        "Please complete all password fields.",
+      );
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters.");
+      toast.error(
+        "New password must be at least 6 characters.",
+      );
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match.");
+      toast.error(
+        "New passwords do not match.",
+      );
       return;
     }
 
     if (currentPassword === newPassword) {
-      toast.error("New password must be different from your current password.");
+      toast.error(
+        "New password must be different from your current password.",
+      );
       return;
     }
 
@@ -238,7 +290,9 @@ export default function Settings() {
         newPassword,
       });
 
-      toast.success("Password changed successfully.");
+      toast.success(
+        "Password changed successfully.",
+      );
 
       setPasswords({
         currentPassword: "",
@@ -246,10 +300,14 @@ export default function Settings() {
         confirmPassword: "",
       });
     } catch (error) {
-      console.error("Failed to change password:", error);
+      console.error(
+        "Failed to change password:",
+        error,
+      );
 
       toast.error(
-        error?.response?.data?.message || "Unable to change password.",
+        error?.response?.data?.message ||
+          "Unable to change password.",
       );
     } finally {
       setChangingPassword(false);
@@ -263,13 +321,26 @@ export default function Settings() {
   if (loadingSettings) {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-4xl items-center justify-center px-6">
-        <p className="text-gray-500 dark:text-gray-400">Loading settings...</p>
+        <p className="text-gray-500 dark:text-gray-400">
+          Loading settings...
+        </p>
       </section>
     );
   }
 
+  /* ==========================================
+     CURRENT THEME LABEL
+  ========================================== */
+
+  const currentThemeLabel =
+    theme === "dark"
+      ? "Dark"
+      : theme === "light"
+        ? "Light"
+        : "System Default";
+
   return (
-    <section className="mx-auto max-w-4xl px-6 py-16 lg:px-8 lg:py-20">
+    <section className="mx-auto px-6 py-10 lg:px-8 lg:py-20">
       {/* HEADER */}
 
       <div className="mb-10">
@@ -282,8 +353,8 @@ export default function Settings() {
         </h1>
 
         <p className="mt-3 max-w-2xl leading-7 text-gray-600 dark:text-gray-400">
-          Manage your account preferences and personalize your KanuorieTech
-          experience.
+          Manage your account preferences and
+          personalize your KanuorieTech experience.
         </p>
       </div>
 
@@ -293,6 +364,8 @@ export default function Settings() {
 
       <Card className="mb-6 overflow-hidden border-gray-200 bg-white dark:border-white/10 dark:bg-white/5">
         <div className="divide-y divide-gray-200 dark:divide-white/10">
+          {/* Theme selector */}
+
           <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -300,24 +373,39 @@ export default function Settings() {
               </h2>
 
               <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                Choose whether KanuorieTech uses light or dark mode.
+                Choose whether KanuorieTech uses
+                light, dark, or your system's default
+                appearance.
               </p>
             </div>
 
-            <label className="inline-flex cursor-pointer items-center gap-3">
+            <label className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Dark Mode
+                Theme
               </span>
 
-              <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                <option value="system">System Default</option>
+              <select
+                value={theme}
+                onChange={handleThemeChange}
+                disabled={savingSettings}
+                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-slate-900 dark:text-white"
+              >
+                <option value="system">
+                  System Default
+                </option>
 
-                <option value="light">Light</option>
+                <option value="light">
+                  Light
+                </option>
 
-                <option value="dark">Dark</option>
+                <option value="dark">
+                  Dark
+                </option>
               </select>
             </label>
           </div>
+
+          {/* Current theme */}
 
           <div className="flex items-center justify-between gap-4 p-6 sm:p-8">
             <div>
@@ -331,7 +419,26 @@ export default function Settings() {
             </div>
 
             <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
-              {darkMode ? "Dark" : "Light"}
+              {currentThemeLabel}
+            </span>
+          </div>
+
+          {/* Active appearance */}
+
+          <div className="flex items-center justify-between gap-4 p-6 sm:p-8">
+            <div>
+              <h2 className="font-semibold text-gray-900 dark:text-white">
+                Active Appearance
+              </h2>
+
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                The appearance currently applied to
+                the application.
+              </p>
+            </div>
+
+            <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-white/10 dark:text-gray-300">
+              {darkMode ? "Dark Mode" : "Light Mode"}
             </span>
           </div>
         </div>
@@ -351,7 +458,8 @@ export default function Settings() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Choose which notifications you want to receive.
+              Choose which notifications you want to
+              receive.
             </p>
           </div>
         </div>
@@ -361,35 +469,45 @@ export default function Settings() {
             label="Course updates"
             description="Get notified about course activity and updates."
             checked={settings.notifications.courses}
-            onChange={() => toggleNotification("courses")}
+            onChange={() =>
+              toggleNotification("courses")
+            }
           />
 
           <SettingToggle
             label="New resources"
             description="Receive notifications when new books and learning resources are added."
             checked={settings.notifications.resources}
-            onChange={() => toggleNotification("resources")}
+            onChange={() =>
+              toggleNotification("resources")
+            }
           />
 
           <SettingToggle
             label="Product updates"
             description="Stay informed about new KanuorieTech products."
             checked={settings.notifications.products}
-            onChange={() => toggleNotification("products")}
+            onChange={() =>
+              toggleNotification("products")
+            }
           />
 
           <SettingToggle
             label="Account notifications"
             description="Important notifications about your account."
             checked={settings.notifications.account}
-            onChange={() => toggleNotification("account")}
+            onChange={() =>
+              toggleNotification("account")
+            }
           />
 
           <SettingToggle
             label="Promotional notifications"
             description="Receive promotional announcements and special offers."
             checked={settings.notifications.promotions}
-            onChange={() => toggleNotification("promotions")}
+            onChange={() =>
+              toggleNotification("promotions")
+            }
           />
         </div>
       </Card>
@@ -408,7 +526,8 @@ export default function Settings() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Control which emails KanuorieTech sends to you.
+              Control which emails KanuorieTech sends
+              to you.
             </p>
           </div>
         </div>
@@ -417,7 +536,9 @@ export default function Settings() {
           <SettingToggle
             label="Security & account emails"
             description="Important security and account-related messages."
-            checked={settings.emailPreferences.security}
+            checked={
+              settings.emailPreferences.security
+            }
             onChange={() => {}}
             disabled
           />
@@ -425,36 +546,56 @@ export default function Settings() {
           <SettingToggle
             label="Course updates"
             description="Receive course-related emails."
-            checked={settings.emailPreferences.courses}
-            onChange={() => toggleEmailPreference("courses")}
+            checked={
+              settings.emailPreferences.courses
+            }
+            onChange={() =>
+              toggleEmailPreference("courses")
+            }
           />
 
           <SettingToggle
             label="New resources"
             description="Receive emails about new books and learning resources."
-            checked={settings.emailPreferences.resources}
-            onChange={() => toggleEmailPreference("resources")}
+            checked={
+              settings.emailPreferences.resources
+            }
+            onChange={() =>
+              toggleEmailPreference("resources")
+            }
           />
 
           <SettingToggle
             label="Product updates"
             description="Receive emails about KanuorieTech products."
-            checked={settings.emailPreferences.products}
-            onChange={() => toggleEmailPreference("products")}
+            checked={
+              settings.emailPreferences.products
+            }
+            onChange={() =>
+              toggleEmailPreference("products")
+            }
           />
 
           <SettingToggle
             label="Newsletter"
             description="Receive the KanuorieTech newsletter."
-            checked={settings.emailPreferences.newsletter}
-            onChange={() => toggleEmailPreference("newsletter")}
+            checked={
+              settings.emailPreferences.newsletter
+            }
+            onChange={() =>
+              toggleEmailPreference("newsletter")
+            }
           />
 
           <SettingToggle
             label="Promotional emails"
             description="Receive promotional and marketing emails."
-            checked={settings.emailPreferences.promotions}
-            onChange={() => toggleEmailPreference("promotions")}
+            checked={
+              settings.emailPreferences.promotions
+            }
+            onChange={() =>
+              toggleEmailPreference("promotions")
+            }
           />
         </div>
       </Card>
@@ -478,7 +619,10 @@ export default function Settings() {
           </div>
         </div>
 
-        <form onSubmit={handleChangePassword} className="space-y-6 p-6 sm:p-8">
+        <form
+          onSubmit={handleChangePassword}
+          className="space-y-6 p-6 sm:p-8"
+        >
           <PasswordInput
             label="Current Password"
             name="currentPassword"
@@ -522,7 +666,10 @@ export default function Settings() {
           />
 
           <div className="flex justify-end">
-            <Button type="submit" loading={changingPassword}>
+            <Button
+              type="submit"
+              loading={changingPassword}
+            >
               Change Password
             </Button>
           </div>
@@ -546,7 +693,9 @@ function SettingToggle({
   return (
     <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
       <div>
-        <h3 className="font-medium text-gray-900 dark:text-white">{label}</h3>
+        <h3 className="font-medium text-gray-900 dark:text-white">
+          {label}
+        </h3>
 
         <p className="mt-1 max-w-xl text-sm leading-6 text-gray-500 dark:text-gray-400">
           {description}
@@ -555,7 +704,9 @@ function SettingToggle({
 
       <label
         className={`inline-flex shrink-0 items-center gap-3 ${
-          disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+          disabled
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer"
         }`}
       >
         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -582,7 +733,14 @@ function SettingToggle({
    PASSWORD INPUT
 ========================================== */
 
-function PasswordInput({ label, name, value, onChange, visible, onToggle }) {
+function PasswordInput({
+  label,
+  name,
+  value,
+  onChange,
+  visible,
+  onToggle,
+}) {
   return (
     <div>
       <label
@@ -608,9 +766,17 @@ function PasswordInput({ label, name, value, onChange, visible, onToggle }) {
           type="button"
           onClick={onToggle}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-200"
-          aria-label={visible ? `Hide ${label}` : `Show ${label}`}
+          aria-label={
+            visible
+              ? `Hide ${label}`
+              : `Show ${label}`
+          }
         >
-          {visible ? <EyeOff size={19} /> : <Eye size={19} />}
+          {visible ? (
+            <EyeOff size={19} />
+          ) : (
+            <Eye size={19} />
+          )}
         </button>
       </div>
     </div>

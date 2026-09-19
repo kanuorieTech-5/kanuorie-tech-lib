@@ -45,7 +45,7 @@ export default function BlogDetails() {
       : blog.author || "KanuorieTech";
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20">
+    <section className="mx-auto max-w-5xl px-6 py-10">
       <img
         src={blog.coverImage || "/images/blog-placeholder.png"}
         alt={blog.title || "Blog article"}

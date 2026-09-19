@@ -195,7 +195,7 @@ export default function TeamPreview() {
 
   if (loading) {
     return (
-      <section className="bg-slate-200 py-24">
+      <section className="bg-slate-200 py-10">
         <div className="mx-auto flex max-w-7xl justify-center px-6">
           <Loader />
         </div>
@@ -203,15 +203,9 @@ export default function TeamPreview() {
     );
   }
 
-  /*
-  ==========================================
-  RENDER
-  ==========================================
-  */
-
   return (
-    <section className="bg-slate-900 py-24 text-white">
-      <div className="px-6">
+    <section className="bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white">
+      <div className="px-6 text-center text-white">
         <SectionTitle
           Badge="Our Team"
           title="Meet The People Behind KanuorieTech"
@@ -269,15 +263,7 @@ export default function TeamPreview() {
                     }}
                   >
                     <Card
-                      className="
-                          h-full
-                          overflow-hidden
-                          border-white/10
-                          bg-white/5
-                          p-0
-                          text-center
-                          backdrop-blur-xl
-                        "
+                      className="h-full overflow-hidden border-white/10 bg-white/5 p-0 text-center backdrop-blur-xl"
                     >
                       <img
                         src={member.image || "/images/team-placeholder.png"}
@@ -288,17 +274,9 @@ export default function TeamPreview() {
                               }`
                             : "KanuorieTech team member"
                         }
-                        className="
-                            h-64
-                            w-full
-                            object-cover
-                            transition-transform
-                            duration-500
-                            hover:scale-105
-                          "
+                        className="h-64 w-fullobject-cover transition-transform duration-500 hover:scale-105"
                         loading="lazy"
                       />
-
                       <div className="p-6">
                         <h3 className="text-xl font-bold text-white">
                           {member.name}
@@ -331,27 +309,9 @@ export default function TeamPreview() {
                 type="button"
                 onClick={prevSlide}
                 aria-label="Previous team members"
-                className="
-                  absolute
-                  left-0
-                  top-1/2
-                  z-10
-                  flex
-                  h-11
-                  w-11
-                  -translate-y-1/2
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-slate-900/80
-                  text-white
-                  shadow-lg
-                  backdrop-blur
-                  transition
-                  hover:bg-cyan-500
-                "
+                className="absolute left-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center
+                  justify-center rounded-full border border-white/10 bg-slate-900/80 text-white shadow-lg 
+                  backdrop-blur transition hover:bg-cyan-500"
               >
                 <ChevronLeft size={22} />
               </button>
@@ -362,27 +322,9 @@ export default function TeamPreview() {
                 type="button"
                 onClick={nextSlide}
                 aria-label="Next team members"
-                className="
-                  absolute
-                  right-0
-                  top-1/2
-                  z-10
-                  flex
-                  h-11
-                  w-11
-                  -translate-y-1/2
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-slate-900/80
-                  text-white
-                  shadow-lg
-                  backdrop-blur
-                  transition
-                  hover:bg-cyan-500
-                "
+                className="absolute right-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2
+                  items-center justify-center rounded-full border border-white/10
+                  bg-slate-900/80 text-white shadow-lg backdrop-blur transition hover:bg-cyan-500"
               >
                 <ChevronRight size={22} />
               </button>

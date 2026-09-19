@@ -137,7 +137,7 @@ export default function About() {
       {/* =====================================================
           COMPANY OVERVIEW
       ===================================================== */}
-      <section className="bg-slate-50 py-24 text-white">
+      <section className="bg-slate-50 py-10 text-white dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mb-16 text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
@@ -155,7 +155,7 @@ export default function About() {
           </div>
 
           {/* COMPANY STATS */}
-          <div className="mb-20">{/* <Stats /> */}</div>
+          <div className="mb-10">{/* <Stats /> */}</div>
 
           {/* DOCUMENTATION */}
           <article className="space-y-10 text-lg leading-9 text-slate-900">
@@ -424,7 +424,7 @@ export default function About() {
       {/* =====================================================
           MISSION & VISION
       ===================================================== */}
-      <section className="bg-slate-50 py-24">
+      <section className="bg-slate-50 py-10 text-white dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
@@ -486,7 +486,7 @@ export default function About() {
       {/* =====================================================
           CORE VALUES
       ===================================================== */}
-      <section className="bg-slate-950 py-24 text-white">
+      <section className="bg-slate-950 py-10 text-white dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
@@ -539,7 +539,7 @@ export default function About() {
       {/* =====================================================
           FUTURE
       ===================================================== */}
-      <section className="bg-white py-24">
+      <section className="bg-white py-10 text-white dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>

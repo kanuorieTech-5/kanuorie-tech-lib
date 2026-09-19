@@ -18,5 +18,6 @@ router.use("/contact", require("./contactRoutes"));
 router.use("/notifications", require("./notificationRoutes"));
 router.use("/upload", require("./uploadRoutes"));
 router.use("/admin", require("./adminRoutes"));
+router.use("/library", require("./libraryRoutes"));
 
 module.exports = router;

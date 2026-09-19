@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -18,6 +18,12 @@ import {
   Loader2,
   Trophy,
   ClipboardCheck,
+  StickyNote,
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Save,
 } from "lucide-react";
 
 import {
@@ -123,11 +129,14 @@ export default function CourseDetails() {
   const [course, setCourse] = useState(null);
   const [progress, setProgress] = useState(null);
   const [relatedCourses, setRelatedCourses] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [completingLesson, setCompletingLesson] = useState(null);
-
   const [openModules, setOpenModules] = useState({});
+  const [openNoteLessonId, setOpenNoteLessonId] =
+    useState(null);
+  const [noteDraft, setNoteDraft] = useState("");
+  const [lessonNotes, setLessonNotes] = useState({});
+  const currentLessonRef = useRef(null);
 
   /* =======================================================
      LOAD COURSE
@@ -166,18 +175,50 @@ export default function CourseDetails() {
           return;
         }
 
-        /* -----------------------------------------------
-           OPEN FIRST MODULE BY DEFAULT
+       /* -----------------------------------------------
+          OPEN CURRENT LESSON'S MODULE BY DEFAULT
+          Falls back to the first module.
         ------------------------------------------------ */
 
-        const firstModule = fetchedCourse.modules?.[0];
+        const courseModules = Array.isArray(
+          fetchedCourse.modules,
+        )
+          ? fetchedCourse.modules
+          : [];
 
-        if (firstModule) {
-          setOpenModules({
-            [firstModule._id || firstModule.order || 0]: true,
-          });
+        const fetchedCurrentLessonId =
+          fetchedProgress?.currentLesson
+            ? String(fetchedProgress.currentLesson)
+            : null;
+
+        let currentModule = null;
+
+        if (fetchedCurrentLessonId) {
+          currentModule = courseModules.find(
+            (module) =>
+              Array.isArray(module?.lessons) &&
+              module.lessons.some(
+                (lesson) =>
+                  String(lesson?._id) ===
+                  fetchedCurrentLessonId,
+              ),
+          );
         }
 
+        const firstModule = courseModules[0];
+
+        const moduleToOpen =
+          currentModule || firstModule;
+
+        if (moduleToOpen) {
+          setOpenModules({
+            [
+              moduleToOpen._id ||
+                moduleToOpen.order ||
+                0
+            ]: true,
+          });
+        }
         /* -----------------------------------------------
            RELATED COURSES
 
@@ -331,10 +372,87 @@ export default function CourseDetails() {
     ? String(progress.currentLesson)
     : null;
 
+  const allLessons = useMemo(() => {
+  const lessons = [];
+
+  modules.forEach((module) => {
+    if (!Array.isArray(module?.lessons)) {
+      return;
+    }
+
+    module.lessons.forEach((lesson) => {
+      if (lesson?._id) {
+        lessons.push({
+          ...lesson,
+          moduleId: module?._id,
+          moduleTitle: module?.title,
+          moduleOrder: module?.order,
+        });
+      }
+    });
+  });
+
+  return lessons.sort((a, b) => {
+    const moduleOrderA = Number(a.moduleOrder || 0);
+    const moduleOrderB = Number(b.moduleOrder || 0);
+
+    if (moduleOrderA !== moduleOrderB) {
+      return moduleOrderA - moduleOrderB;
+    }
+
+    return Number(a.order || 0) - Number(b.order || 0);
+  });
+}, [modules]);
+
+const currentLessonIndex = useMemo(() => {
+  if (!currentLessonId) {
+    return -1;
+  }
+
+  return allLessons.findIndex(
+    (lesson) =>
+      String(lesson._id) === currentLessonId,
+  );
+}, [allLessons, currentLessonId]);
+
+const previousLesson =
+  currentLessonIndex > 0
+    ? allLessons[currentLessonIndex - 1]
+    : null;
+
+const nextLesson =
+  currentLessonIndex >= 0 &&
+  currentLessonIndex < allLessons.length - 1
+    ? allLessons[currentLessonIndex + 1]
+    : null;
+
   const progressPercentage = Math.min(
     Math.max(Number(progress?.percentage || 0), 0),
     100,
   );
+
+  let currentLessonDetails = null;
+
+if (currentLessonId) {
+  for (const module of modules) {
+    const lesson = Array.isArray(module?.lessons)
+      ? module.lessons.find(
+          (item) =>
+            String(item?._id) ===
+            currentLessonId,
+        )
+      : null;
+
+    if (lesson) {
+      currentLessonDetails = {
+        lesson,
+        module,
+      };
+
+      break;
+    }
+  }
+}
 
   const rating = Number(course?.rating || 0);
   const enrollments = Number(course?.enrollments || 0);
@@ -405,9 +523,8 @@ export default function CourseDetails() {
   /* =======================================================
    SET CURRENT LESSON
 ======================================================= */
-
 const handleSetCurrentLesson = async (lessonId) => {
-  if (!lessonId || completingLesson) {
+  if (!lessonId) {
     return;
   }
 
@@ -442,6 +559,143 @@ const handleSetCurrentLesson = async (lessonId) => {
   }
 };
 
+const handlePreviousLesson = async () => {
+  if (!previousLesson?._id) {
+    return;
+  }
+
+  await handleSetCurrentLesson(
+    previousLesson._id,
+  );
+
+  const moduleKey =
+    previousLesson.moduleId ||
+    previousLesson.moduleOrder ||
+    0;
+
+  setOpenModules((previous) => ({
+    ...previous,
+    [moduleKey]: true,
+  }));
+};
+
+const handleNextLesson = async () => {
+  if (!nextLesson?._id) {
+    return;
+  }
+
+  await handleSetCurrentLesson(
+    nextLesson._id,
+  );
+
+  const moduleKey =
+    nextLesson.moduleId ||
+    nextLesson.moduleOrder ||
+    0;
+
+  setOpenModules((previous) => ({
+    ...previous,
+    [moduleKey]: true,
+  }));
+};
+
+/* =======================================================
+   LESSON NOTES — UI ONLY
+======================================================= */
+
+const handleOpenNote = (lessonId) => {
+  if (!lessonId) {
+    return;
+  }
+
+  const existingNote =
+    lessonNotes[String(lessonId)] || "";
+
+  setOpenNoteLessonId(String(lessonId));
+  setNoteDraft(existingNote);
+};
+
+const handleCancelNote = () => {
+  setOpenNoteLessonId(null);
+  setNoteDraft("");
+};
+
+const handleSaveNote = (lessonId) => {
+  if (!lessonId) {
+    return;
+  }
+
+  const trimmedNote = noteDraft.trim();
+
+  if (!trimmedNote) {
+    toast.error("Please enter a note first.");
+    return;
+  }
+
+  setLessonNotes((previous) => ({
+    ...previous,
+    [String(lessonId)]: trimmedNote,
+  }));
+
+  setOpenNoteLessonId(null);
+  setNoteDraft("");
+
+  toast.success("Note saved.");
+};
+
+const handleDeleteNote = (lessonId) => {
+  if (!lessonId) {
+    return;
+  }
+
+  setLessonNotes((previous) => {
+    const updated = {
+      ...previous,
+    };
+
+    delete updated[String(lessonId)];
+
+    return updated;
+  });
+
+  if (
+    openNoteLessonId === String(lessonId)
+  ) {
+    setOpenNoteLessonId(null);
+    setNoteDraft("");
+  }
+
+  toast.success("Note removed.");
+};
+  /* =======================================================
+     RESUME CURRENT LESSON
+  ======================================================= */
+
+ const handleResumeLesson = () => {
+  if (!currentLessonDetails?.lesson?._id) {
+    return;
+  }
+
+  const moduleKey =
+    currentLessonDetails.module?._id ||
+    currentLessonDetails.module?.order ||
+    0;
+
+  setOpenModules((previous) => ({
+    ...previous,
+    [moduleKey]: true,
+  }));
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      currentLessonRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  });
+};
+
   /* =======================================================
      LOADING STATE
   ======================================================= */
@@ -460,7 +714,7 @@ const handleSetCurrentLesson = async (lessonId) => {
 
   if (!course) {
     return (
-      <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
+      <section className="flex min-h-[70vh] items-center justify-center px-6 py-10">
         <Card className="w-full max-w-2xl text-center">
           <BookOpen
             className="mx-auto text-blue-500"
@@ -768,7 +1022,7 @@ const handleSetCurrentLesson = async (lessonId) => {
           REQUIREMENTS
       ================================================== */}
 
-      <section className="bg-slate-50 py-20 sm:py-24">
+      <section className="bg-slate-50 py-10 sm:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="Requirements"
@@ -873,7 +1127,7 @@ const handleSetCurrentLesson = async (lessonId) => {
           COURSE CURRICULUM
       ================================================== */}
 
-      <section className="bg-slate-50 py-20 sm:py-24">
+      <section className="bg-slate-50 py-10 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <SectionTitle
             title="Course Curriculum"
@@ -888,10 +1142,55 @@ const handleSetCurrentLesson = async (lessonId) => {
             }`}
           />
 
+          {/* CONTINUE LEARNING */}
+
+          {currentLessonDetails &&
+            progressPercentage < 100 && (
+              <div className="mt-8 overflow-hidden rounded-3xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-cyan-50 shadow-sm">
+                <div className="p-5 sm:p-6">
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
+                        <PlayCircle size={24} />
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                          Continue Learning
+                        </p>
+
+                        <h3 className="mt-1 text-lg font-black text-slate-900 sm:text-xl">
+                          {currentLessonDetails.lesson.title ||
+                            "Current Lesson"}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-slate-500">
+                          {currentLessonDetails.module?.title ||
+                            "Course Curriculum"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      onClick={handleResumeLesson}
+                      className="w-full sm:w-auto"
+                    >
+                      <PlayCircle
+                        className="mr-2"
+                        size={18}
+                      />
+                      Resume Lesson
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
           {/* CURRICULUM SUMMARY */}
 
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-5">
               <div>
                 <p className="text-sm font-semibold text-slate-500">
                   Your course progress
@@ -1136,6 +1435,11 @@ const handleSetCurrentLesson = async (lessonId) => {
 
                                   return (
                                     <div
+                                      ref={
+                                        isCurrent
+                                          ? currentLessonRef
+                                          : null
+                                      }
                                       key={
                                         lessonId ||
                                         `${moduleKey}-lesson-${lessonIndex}`
@@ -1153,7 +1457,7 @@ const handleSetCurrentLesson = async (lessonId) => {
                                             : "border-transparent bg-white hover:bg-slate-50"
                                       }`}
                                     >
-                                      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                                      <div className="flex flex-col gap-5">
                                         <div className="flex min-w-0 items-start gap-4">
                                           <div
                                             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
@@ -1288,6 +1592,167 @@ const handleSetCurrentLesson = async (lessonId) => {
                                                   )}
                                                 </div>
                                               )}
+                                                                                          {/* LESSON NOTE */}
+
+                                            <div className="mt-5 border-t border-slate-200 pt-4">
+                                              {openNoteLessonId ===
+                                              String(lessonId) ? (
+                                                <div
+                                                  className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
+                                                  onClick={(event) =>
+                                                    event.stopPropagation()
+                                                  }
+                                                >
+                                                  <div className="flex items-center gap-2">
+                                                    <StickyNote
+                                                      size={18}
+                                                      className="text-blue-600"
+                                                    />
+
+                                                    <p className="text-sm font-bold text-slate-900">
+                                                      Lesson Note
+                                                    </p>
+                                                  </div>
+
+                                                  <textarea
+                                                    value={noteDraft}
+                                                    onChange={(event) =>
+                                                      setNoteDraft(
+                                                        event.target.value,
+                                                      )
+                                                    }
+                                                    onClick={(event) =>
+                                                      event.stopPropagation()
+                                                    }
+                                                    rows={4}
+                                                    placeholder="Write something you want to remember about this lesson..."
+                                                    className="mt-3 w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                                  />
+
+                                                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                                                    <Button
+                                                      type="button"
+                                                      onClick={(event) => {
+                                                        event.stopPropagation();
+
+                                                        handleSaveNote(
+                                                          lessonId,
+                                                        );
+                                                      }}
+                                                    >
+                                                      <Save
+                                                        className="mr-2"
+                                                        size={16}
+                                                      />
+                                                      Save Note
+                                                    </Button>
+
+                                                    <button
+                                                      type="button"
+                                                      onClick={(event) => {
+                                                        event.stopPropagation();
+
+                                                        handleCancelNote();
+                                                      }}
+                                                      className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                                                    >
+                                                      <X size={16} />
+                                                      Cancel
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              ) : lessonNotes[
+                                                  String(lessonId)
+                                                ] ? (
+                                                <div
+                                                  className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4"
+                                                  onClick={(event) =>
+                                                    event.stopPropagation()
+                                                  }
+                                                >
+                                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                    <div className="flex min-w-0 items-start gap-3">
+                                                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+                                                        <StickyNote
+                                                          size={17}
+                                                          className="text-amber-600"
+                                                        />
+                                                      </div>
+
+                                                      <div className="min-w-0">
+                                                        <p className="text-xs font-bold uppercase tracking-wide text-amber-700">
+                                                          My Note
+                                                        </p>
+
+                                                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                                                          {
+                                                            lessonNotes[
+                                                              String(
+                                                                lessonId,
+                                                              )
+                                                            ]
+                                                          }
+                                                        </p>
+                                                      </div>
+                                                    </div>
+
+                                                    <div className="flex shrink-0 items-center gap-2">
+                                                      <button
+                                                        type="button"
+                                                        onClick={(event) => {
+                                                          event.stopPropagation();
+
+                                                          handleOpenNote(
+                                                            lessonId,
+                                                          );
+                                                        }}
+                                                        className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                                                      >
+                                                        <Pencil
+                                                          size={14}
+                                                        />
+                                                        Edit
+                                                      </button>
+
+                                                      <button
+                                                        type="button"
+                                                        onClick={(event) => {
+                                                          event.stopPropagation();
+
+                                                          handleDeleteNote(
+                                                            lessonId,
+                                                          );
+                                                        }}
+                                                        className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
+                                                      >
+                                                        <Trash2
+                                                          size={14}
+                                                        />
+                                                        Delete
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ) : (
+                                                <button
+                                                  type="button"
+                                                  onClick={(event) => {
+                                                    event.stopPropagation();
+
+                                                    handleOpenNote(
+                                                      lessonId,
+                                                    );
+                                                  }}
+                                                  className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                                                >
+                                                  <Plus size={17} />
+                                                  <StickyNote
+                                                    size={16}
+                                                  />
+                                                  Add Note
+                                                </button>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
 
@@ -1417,6 +1882,57 @@ const handleSetCurrentLesson = async (lessonId) => {
                   );
                 },
               )}
+              {allLessons.length > 0 && (
+  <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+    <Button
+      type="button"
+      variant="outline"
+      disabled={!previousLesson}
+      onClick={handlePreviousLesson}
+      className="w-full sm:w-auto"
+    >
+      <ArrowLeft
+        className="mr-2"
+        size={18}
+      />
+
+      <span>
+        {previousLesson
+          ? "Previous Lesson"
+          : "First Lesson"}
+      </span>
+    </Button>
+
+    <div className="text-center">
+      {currentLessonIndex >= 0 && (
+        <p className="text-xs font-semibold text-slate-500">
+          Lesson {currentLessonIndex + 1} of{" "}
+          {allLessons.length}
+        </p>
+      )}
+    </div>
+
+    <Button
+      type="button"
+      disabled={!nextLesson}
+      onClick={handleNextLesson}
+      className="w-full sm:w-auto"
+    >
+      <span>
+        {nextLesson
+          ? "Next Lesson"
+          : "Course Complete"}
+      </span>
+
+      {nextLesson && (
+        <ArrowRight
+          className="ml-2"
+          size={18}
+        />
+      )}
+    </Button>
+  </div>
+)}
             </div>
           ) : (
             <Card className="mt-12 text-center lg:mt-16">
@@ -1442,7 +1958,7 @@ const handleSetCurrentLesson = async (lessonId) => {
           CERTIFICATE
       ================================================== */}
 
-      <section className="py-20 sm:py-24">
+      <section className="py-10 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <Card className="text-center">
             <Award
@@ -1482,7 +1998,7 @@ const handleSetCurrentLesson = async (lessonId) => {
           INSTRUCTOR
       ================================================== */}
 
-      <section className="py-20 sm:py-24">
+      <section className="py-10 sm:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="Meet Your Instructor"
@@ -1523,7 +2039,7 @@ const handleSetCurrentLesson = async (lessonId) => {
       ================================================== */}
 
       {relatedCourses.length > 0 && (
-        <section className="bg-slate-50 py-20 sm:py-24">
+        <section className="bg-slate-50 py-10 sm:py-24">
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               title="Related Courses"

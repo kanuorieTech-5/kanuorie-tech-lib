@@ -52,7 +52,7 @@ export default function FAQ() {
           HERO
       ========================================== */}
 
-      <section className="border-b border-gray-200 bg-slate-50 py-20 dark:border-white/10 dark:bg-slate-900">
+      <section className="border-b border-gray-200 bg-slate-50 py-10 dark:border-white/10 dark:bg-slate-900">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
             <HelpCircle size={30} />
@@ -78,7 +78,7 @@ export default function FAQ() {
           FAQ CONTENT
       ========================================== */}
 
-      <section className="mx-auto max-w-4xl px-6 py-16 lg:py-20">
+      <section className="mx-auto max-w-4xl px-6 py-16 lg:py-10">
         {faqs.length === 0 ? (
           <Card className="border-gray-200 bg-white p-12 text-center dark:border-white/10 dark:bg-white/5">
             <HelpCircle className="mx-auto mb-5 h-12 w-12 text-gray-400" />

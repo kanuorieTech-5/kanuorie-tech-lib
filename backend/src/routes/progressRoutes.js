@@ -2,27 +2,25 @@ const express = require("express");
 
 const router = express.Router();
 
-const {
-  updateProgress,
-  updateNotes,
-} = require("../controllers/courseController");
-
 const protect = require("../middleware/auth");
 
+const {
+  getUserProgress,
+  getCourseProgress,
+} = require("../controllers/progressController");
+
 /* ==========================================
-   COURSE PROGRESS ROUTES
+   GET ALL PROGRESS FOR LOGGED-IN USER
+   GET /api/v1/progress
 ========================================== */
 
-router.put(
-  "/:id/progress",
-  protect,
-  updateProgress
-);
+router.get("/", protect, getUserProgress);
 
-router.put(
-  "/:id/notes",
-  protect,
-  updateNotes
-);
+/* ==========================================
+   GET PROGRESS FOR ONE COURSE
+   GET /api/v1/progress/:id
+========================================== */
+
+router.get("/:id", protect, getCourseProgress);
 
 module.exports = router;

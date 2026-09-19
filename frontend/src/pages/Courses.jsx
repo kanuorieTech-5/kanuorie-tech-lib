@@ -181,9 +181,6 @@ export default function Courses() {
 
   return (
     <>
-      {/* ==========================================
-          HERO
-      ========================================== */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -225,7 +222,7 @@ export default function Courses() {
       {/* ==========================================
           COURSE CATALOG
       ========================================== */}
-      <section className="bg-slate-200 py-10">
+      <section className="bg-slate-200 py-10 lg:py-20 text-slate-900 dark:bg-slate-900 dark:text-white">
         <div className="px-6">
           <SectionTitle
             title="Browse All Courses"
@@ -408,7 +405,7 @@ export default function Courses() {
                           disabled={Boolean(enrollingId)}
                         >
                           <LockKeyhole size={18} />
-                          Already Enrolled? Continue Learning
+                            Continue Learning
                         </Button>
                       </Link>
                     </div>
@@ -569,7 +566,7 @@ export default function Courses() {
       {/* ==========================================
           LEARNING BENEFITS
       ========================================== */}
-      <section className="bg-slate-50 py-24">
+      <section className="bg-slate-50 py-10 lg:py-20">
         <div className="px-6">
           <SectionTitle
             title="Why Learn With KanuorieTech?"

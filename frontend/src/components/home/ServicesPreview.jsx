@@ -124,7 +124,7 @@ export default function ServicesPreview() {
 
   if (loading) {
     return (
-      <section className="bg-slate-900 py-24">
+      <section className="bg-slate-900 py-10 text-white">
         <div className="flex justify-center">
           <Loader />
         </div>
@@ -133,8 +133,8 @@ export default function ServicesPreview() {
   }
 
   return (
-    <section className="bg-slate-900 py-24 text-white">
-      <div className="px-6">
+    <section className="bg-slate-900 py-10 text-white">
+      <div className="px-6 text-center">
         <SectionTitle
           Badge="Our Services"
           title="Digital Solutions Built For Growth"

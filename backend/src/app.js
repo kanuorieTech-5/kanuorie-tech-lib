@@ -40,6 +40,7 @@ const newsletterRoutes = require("./routes/newsletterRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const libraryRoutes = require("./routes/libraryRoutes");
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
@@ -181,6 +182,8 @@ app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/books`, bookRoutes);
 
 app.use(`${API}/courses`, courseRoutes);
+
+app.use(`${API}/library`, libraryRoutes);
 
 app.use(`${API}/progress`, progressRoutes);
 

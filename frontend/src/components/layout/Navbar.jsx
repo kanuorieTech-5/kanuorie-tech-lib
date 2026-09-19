@@ -5,7 +5,6 @@ import { Menu } from "lucide-react";
 import {
   Logo,
   SearchBar,
-  // ThemeToggle,
   NotificationBell,
   UserDropdown,
   MobileMenu,
@@ -15,6 +14,7 @@ import { useAuth } from "../../contexts";
 
 export default function Navbar() {
   const { user } = useAuth();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -28,8 +28,8 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-6 lg:flex">
             <Link to="/">Home</Link>
-            <Link to="/library">📚</Link>
-            <Link to="/courses">🎓</Link>
+            <Link to="/library">Library</Link>
+            <Link to="/courses">Courses</Link>
             <Link to="/products">Products</Link>
             <Link to="/projects">Projects</Link>
             <Link to="/services">Services</Link>
@@ -47,12 +47,17 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+            {/* Notifications - logged in users */}
             {user && <NotificationBell />}
 
-            {user ? (
-              <UserDropdown />
-            ) : (
+            {/* Admin User Dropdown - desktop only */}
+            {user?.role === "admin" && (
+              <UserDropdown className="hidden lg:block" />
+            )}
+
+            {/* Login / Register - logged out users only */}
+            {!user && (
               <>
                 <Link
                   to="/login"
@@ -83,6 +88,7 @@ export default function Navbar() {
         </div>
       </header>
 
+      {/* Mobile Menu */}
       <MobileMenu
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}

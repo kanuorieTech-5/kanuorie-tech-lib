@@ -11,6 +11,7 @@ export * from "./adminApi";
 export * from "./bookApi";
 export * from "./courseApi";
 export * from "./progressApi";
+export * from "./libraryApi";
 
 // Business
 export * from "./productApi";

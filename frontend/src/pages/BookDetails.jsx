@@ -208,7 +208,7 @@ export default function BookDetails() {
 
   if (error || !book) {
     return (
-      <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
+      <section className="flex min-h-[70vh] items-center justify-center px-6 py-10">
         <Card className="w-full max-w-lg p-10 text-center">
           <BookOpen size={56} className="mx-auto text-blue-600" />
 
@@ -500,7 +500,7 @@ export default function BookDetails() {
           WHAT YOU'LL LEARN
       ====================================================== */}
 
-      <section className="bg-slate-50 py-24">
+      <section className="bg-slate-50 ">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="What You'll Learn"
@@ -525,7 +525,7 @@ export default function BookDetails() {
           TABLE OF CONTENTS
       ====================================================== */}
 
-      <section className="py-24">
+      <section className="py-10 lg:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="Table of Contents"
@@ -557,7 +557,7 @@ export default function BookDetails() {
           SPECIFICATIONS
       ====================================================== */}
 
-      <section className="bg-slate-50 py-24">
+      <section className="bg-slate-50 py-10 lg:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="Specifications"
@@ -580,7 +580,7 @@ export default function BookDetails() {
           AUTHOR
       ====================================================== */}
 
-      <section className="py-24">
+      <section className="py-10 lg:py-20 bg-slate-50">
         <div className="mx-auto max-w-7xl px-6">
           <SectionTitle
             title="About the Author"
@@ -626,7 +626,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       {fallbackRelatedBooks.length > 0 && (
-        <section className="bg-slate-50 py-24">
+        <section className="bg-slate-50 py-10 lg:py-20">
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               title="Related Books"
@@ -711,7 +711,7 @@ export default function BookDetails() {
           FINAL READER CTA
       ====================================================== */}
 
-      <section className="py-24">
+      <section className="py-10 lg:py-20">
         <div className="mx-auto max-w-5xl px-6">
           <Card className="overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 p-0 text-white">
             <div className="px-6 py-16 text-center sm:px-10">

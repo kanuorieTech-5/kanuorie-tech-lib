@@ -20,7 +20,7 @@ export default function CTA() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-700 via-blue-800 to-slate-900 py-24">
+    <section className="relative overflow-hidden bg-gradient-to-r from-blue-700 via-blue-800 to-slate-900 py-10">
       {/* Background Glow */}
 
       <div className="absolute inset-0 opacity-10">

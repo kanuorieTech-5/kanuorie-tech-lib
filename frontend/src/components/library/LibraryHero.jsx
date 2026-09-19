@@ -42,7 +42,7 @@ export default function LibraryHero() {
                 size="lg"
                 className="border-white text-white hover:bg-white hover:text-slate-900"
               >
-                Browse Library
+                +Saved Books
               </Button>
             </Link>
           </div>
@@ -52,19 +52,11 @@ export default function LibraryHero() {
 
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-            <BookOpen className="mb-6 h-10 w-10 text-blue-400" />
-
-            <h3 className="text-3xl font-bold text-white">500+</h3>
-
-            <p className="mt-2 text-slate-300">Learning Resources</p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
             <GraduationCap className="mb-6 h-10 w-10 text-cyan-400" />
 
             <h3 className="text-3xl font-bold text-white">Beginner → Expert</h3>
 
-            <p className="mt-2 text-slate-300">Structured Learning</p>
+            <p className="mt-2 text-slate-300">Structured Learning Resources at Every Level</p>
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl sm:col-span-2">

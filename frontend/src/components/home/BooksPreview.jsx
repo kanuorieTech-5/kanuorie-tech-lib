@@ -99,8 +99,8 @@ export default function BooksPreview() {
   }, []);
 
   return (
-    <section className="bg-slate-900 dark:bg-slate-900 py-1">
-      <div className="px-6">
+    <section className="bg-slate-900 dark:bg-slate-900 py-15">
+      <div className="px-6 text-center text-white">
         <SectionTitle
           Badge="Digital Library"
           title="Explore Premium Digital Resources"

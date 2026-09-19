@@ -9,7 +9,7 @@ export default function Notifications() {
   } = useNotification();
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20">
+    <section className="mx-auto max-w-5xl px-6 py-10">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between gap-4">
         <div>
