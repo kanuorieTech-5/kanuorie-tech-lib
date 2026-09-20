@@ -3,6 +3,10 @@ const createSlug = require("../helpers/slugify");
 
 const productSchema = new mongoose.Schema(
   {
+    /* ==========================================
+       BASIC INFORMATION
+    ========================================== */
+
     name: {
       type: String,
       required: true,
@@ -33,26 +37,74 @@ const productSchema = new mongoose.Schema(
     image: {
       type: String,
       default: "",
+      trim: true,
     },
 
     gallery: [
       {
         type: String,
+        trim: true,
       },
     ],
+
+    /* ==========================================
+       CATEGORY
+    ========================================== */
 
     category: {
       type: String,
       enum: [
-        "Template",
-        "Software",
-        "Course",
-        "Ebook",
-        "Service",
+        "Development",
+        "AI",
+        "Database",
+        "Design",
+        "DevOps",
+        "Productivity",
+        "Business",
+        "Cloud",
+        "Security",
         "API",
         "Other",
       ],
       default: "Other",
+      index: true,
+    },
+
+    /* ==========================================
+       PRODUCT LINKS
+    ========================================== */
+
+    websiteUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    documentationUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    githubUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    /* ==========================================
+       PRICING
+    ========================================== */
+
+    pricingType: {
+      type: String,
+      enum: [
+        "Free",
+        "Freemium",
+        "Paid",
+        "Open Source",
+      ],
+      default: "Free",
       index: true,
     },
 
@@ -69,6 +121,21 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
+    /* ==========================================
+       CLASSIFICATION
+    ========================================== */
+
+    technologies: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    /* ==========================================
+       PUBLISHING
+    ========================================== */
+
     featured: {
       type: Boolean,
       default: false,
@@ -81,36 +148,9 @@ const productSchema = new mongoose.Schema(
       index: true,
     },
 
-    downloadUrl: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    demoUrl: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    githubUrl: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    technologies: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
-
-    downloads: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    /* ==========================================
+       ANALYTICS
+    ========================================== */
 
     views: {
       type: Number,
@@ -130,6 +170,10 @@ const productSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+
+    /* ==========================================
+       OWNERSHIP / CURATION
+    ========================================== */
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -155,7 +199,7 @@ productSchema.pre("save", function (next) {
 });
 
 /* ==========================================
-   INDEXES
+   SEARCH INDEX
 ========================================== */
 
 productSchema.index({
@@ -163,6 +207,10 @@ productSchema.index({
   description: "text",
   excerpt: "text",
 });
+
+/* ==========================================
+   FILTER / SORT INDEX
+========================================== */
 
 productSchema.index({
   featured: 1,

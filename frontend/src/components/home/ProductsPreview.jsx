@@ -1,55 +1,105 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Github,
+  Globe,
+  Sparkles,
+} from "lucide-react";
 
-import { Card, Button, Loader, SectionTitle } from "../common";
-
+import {
+  Card,
+  Button,
+  Loader,
+  SectionTitle,
+} from "../common";
 import { getProducts } from "../../services";
+
+const PRODUCT_PLACEHOLDER =
+  "/images/product-placeholder.png";
+
+const getProductsData = (response) => {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (Array.isArray(response?.data)) {
+    return response.data;
+  }
+
+  if (Array.isArray(response?.data?.products)) {
+    return response.data.products;
+  }
+
+  if (Array.isArray(response?.products)) {
+    return response.products;
+  }
+
+  return [];
+};
+
+const getPricingLabel = (product) => {
+  const pricingType =
+    product?.pricingType || "Free";
+
+  const price = Number(product?.price);
+
+  if (
+    pricingType === "Paid" &&
+    Number.isFinite(price) &&
+    price > 0
+  ) {
+    return `${product?.currency || "USD"} ${price.toLocaleString()}`;
+  }
+
+  return pricingType;
+};
 
 export default function ProductsPreview() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    let mounted = true;
+
+    const loadProducts = async () => {
       try {
-        const response = await getProducts();
+        const response = await getProducts({
+          limit: 8,
+        });
 
-        /*
-         * Support the common API response formats:
-         *
-         * 1. { data: [...] }
-         * 2. [...]
-         * 3. { data: { products: [...] } }
-         */
+        const data = getProductsData(response);
 
-        const data = Array.isArray(response)
-          ? response
-          : Array.isArray(response?.data)
-            ? response.data
-            : Array.isArray(response?.data?.products)
-              ? response.data.products
-              : [];
-
-        setProducts(data);
+        if (mounted) {
+          setProducts(data);
+        }
       } catch (error) {
-        console.error("Failed to load products:", error);
+        console.error(
+          "Failed to load products:",
+          error,
+        );
 
-        setProducts([]);
+        if (mounted) {
+          setProducts([]);
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchProducts();
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  /*
-   * Loading state
-   */
   if (loading) {
     return (
-      <section className="bg-slate-900 py-10">
+      <section className="bg-slate-950 py-16">
         <div className="mx-auto flex max-w-7xl justify-center px-6">
           <Loader />
         </div>
@@ -58,100 +108,475 @@ export default function ProductsPreview() {
   }
 
   return (
-    <section className="bg-slate-900 py-10">
-      <div className=" px-6 text-center">
-        <SectionTitle
-          Badge="Digital Products"
-          title="Tools Built To Help You Grow"
-          subtitle="Explore premium digital resources, templates and products created by KanuorieTech."
-        />
+    <section
+      className="
+        relative
+        overflow-hidden
+        bg-slate-950
+        py-16
+        text-white
+        lg:py-24
+      "
+    >
+      {/* Background glow */}
+
+      <div
+        className="
+          absolute
+          left-1/2
+          top-0
+          h-96
+          w-96
+          -translate-x-1/2
+          rounded-full
+          bg-blue-500/10
+          blur-3xl
+        "
+        aria-hidden="true"
+      />
+
+      <div
+        className="
+          absolute
+          bottom-0
+          right-0
+          h-72
+          w-72
+          rounded-full
+          bg-yellow-400/5
+          blur-3xl
+        "
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        {/* Header */}
+
+        <div className="mb-12">
+          <SectionTitle
+            Badge="Developer & Business Products"
+            title="Tools Worth Knowing"
+            subtitle="Explore a curated collection of technologies, platforms and software that developers and businesses can use to build, launch and grow."
+          />
+        </div>
+
+        {/* Empty state */}
 
         {products.length === 0 ? (
-          <div className="mt-16 rounded-3xl border border-white/10 bg-white/5 px-6 py-16 text-center backdrop-blur-xl">
-            <p className="text-slate-400">Products coming soon.</p>
+          <div
+            className="
+              rounded-3xl
+              border
+              border-white/10
+              bg-white/5
+              px-6
+              py-16
+              text-center
+              backdrop-blur-xl
+            "
+          >
+            <Sparkles
+              className="
+                mx-auto
+                mb-5
+                h-10
+                w-10
+                text-blue-400
+              "
+            />
+
+            <h3 className="mb-3 text-2xl font-bold">
+              Product Hub coming soon
+            </h3>
+
+            <p className="mx-auto max-w-xl text-slate-400">
+              We're building a curated directory
+              of useful tools and technologies for
+              developers, creators and businesses.
+            </p>
           </div>
         ) : (
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {products.slice(0, 4).map((product, index) => (
-              <motion.div
-                key={product._id || product.id}
-                initial={{
-                  opacity: 0,
-                  y: 30,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                }}
-                viewport={{
-                  once: true,
-                  amount: 0.2,
-                }}
-              >
-                <Card
+          <>
+            {/* Product grid */}
+
+            <div
+              className="
+                grid
+                gap-6
+                sm:grid-cols-2
+                lg:grid-cols-4
+              "
+            >
+              {products
+                .slice(0, 4)
+                .map((product, index) => {
+                  const productId =
+                    product?._id ||
+                    product?.id;
+
+                  return (
+                    <motion.div
+                      key={
+                        productId ||
+                        `product-${index}`
+                      }
+                      initial={{
+                        opacity: 0,
+                        y: 25,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.45,
+                        delay: Math.min(
+                          index * 0.08,
+                          0.3,
+                        ),
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.15,
+                      }}
+                      className="h-full"
+                    >
+                      <Card
+                        className="
+                          group
+                          flex
+                          h-full
+                          flex-col
+                          overflow-hidden
+                          border-white/10
+                          bg-white/5
+                          p-0
+                          text-white
+                          backdrop-blur-xl
+                          transition
+                          duration-300
+                          hover:-translate-y-1
+                          hover:border-blue-400/30
+                          hover:shadow-2xl
+                        "
+                      >
+                        {/* Image */}
+
+                        <Link
+                          to={
+                            productId
+                              ? `/products/${productId}`
+                              : "/products"
+                          }
+                          className="relative block overflow-hidden"
+                        >
+                          <img
+                            src={
+                              product?.image ||
+                              PRODUCT_PLACEHOLDER
+                            }
+                            alt={
+                              product?.name ||
+                              "Developer tool"
+                            }
+                            loading="lazy"
+                            className="
+                              h-52
+                              w-full
+                              object-cover
+                              transition
+                              duration-500
+                              group-hover:scale-105
+                            "
+                            onError={(
+                              event,
+                            ) => {
+                              if (
+                                event.currentTarget.src.includes(
+                                  PRODUCT_PLACEHOLDER,
+                                )
+                              ) {
+                                return;
+                              }
+
+                              event.currentTarget.src =
+                                PRODUCT_PLACEHOLDER;
+                            }}
+                          />
+
+                          {product?.featured && (
+                            <span
+                              className="
+                                absolute
+                                left-4
+                                top-4
+                                rounded-full
+                                bg-yellow-400
+                                px-3
+                                py-1
+                                text-xs
+                                font-bold
+                                text-slate-950
+                              "
+                            >
+                              Featured
+                            </span>
+                          )}
+                        </Link>
+
+                        {/* Content */}
+
+                        <div
+                          className="
+                            flex
+                            flex-1
+                            flex-col
+                            p-5
+                          "
+                        >
+                          {/* Category */}
+
+                          <div
+                            className="
+                              mb-3
+                              flex
+                              items-center
+                              justify-between
+                              gap-3
+                            "
+                          >
+                            <span
+                              className="
+                                rounded-full
+                                bg-blue-500/10
+                                px-3
+                                py-1
+                                text-xs
+                                font-semibold
+                                text-blue-300
+                              "
+                            >
+                              {product?.category ||
+                                "Other"}
+                            </span>
+
+                            <span
+                              className="
+                                text-xs
+                                font-bold
+                                text-emerald-400
+                              "
+                            >
+                              {getPricingLabel(
+                                product,
+                              )}
+                            </span>
+                          </div>
+
+                          {/* Name */}
+
+                          <Link
+                            to={
+                              productId
+                                ? `/products/${productId}`
+                                : "/products"
+                            }
+                          >
+                            <h3
+                              className="
+                                line-clamp-2
+                                text-xl
+                                font-bold
+                                transition
+                                group-hover:text-blue-400
+                              "
+                            >
+                              {product?.name ||
+                                "Developer Tool"}
+                            </h3>
+                          </Link>
+
+                          {/* Description */}
+
+                          <p
+                            className="
+                              mt-3
+                              line-clamp-3
+                              text-sm
+                              leading-6
+                              text-slate-400
+                            "
+                          >
+                            {product?.excerpt ||
+                              product?.description ||
+                              "A useful technology for modern digital work."}
+                          </p>
+
+                          {/* Technologies */}
+
+                          {Array.isArray(
+                            product?.technologies,
+                          ) &&
+                            product.technologies
+                              .length > 0 && (
+                              <div
+                                className="
+                                  mt-4
+                                  flex
+                                  flex-wrap
+                                  gap-2
+                                "
+                              >
+                                {product.technologies
+                                  .slice(0, 2)
+                                  .map(
+                                    (
+                                      technology,
+                                    ) => (
+                                      <span
+                                        key={
+                                          technology
+                                        }
+                                        className="
+                                          rounded-full
+                                          bg-white/5
+                                          px-2.5
+                                          py-1
+                                          text-xs
+                                          text-slate-400
+                                        "
+                                      >
+                                        {
+                                          technology
+                                        }
+                                      </span>
+                                    ),
+                                  )}
+                              </div>
+                            )}
+
+                          {/* Actions */}
+
+                          <div
+                            className="
+                              mt-auto
+                              flex
+                              items-center
+                              gap-2
+                              pt-5
+                            "
+                          >
+                            <Link
+                              to={
+                                productId
+                                  ? `/products/${productId}`
+                                  : "/products"
+                              }
+                              className="flex-1"
+                            >
+                              <Button
+                                fullWidth
+                                size="sm"
+                              >
+                                Explore
+                                <ArrowUpRight
+                                  size={15}
+                                  className="ml-1"
+                                />
+                              </Button>
+                            </Link>
+
+                            {product?.websiteUrl && (
+                              <a
+                                href={
+                                  product.websiteUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Visit ${product.name} website`}
+                                title="Official Website"
+                                className="
+                                  flex
+                                  h-9
+                                  w-9
+                                  shrink-0
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  border
+                                  border-white/10
+                                  text-slate-400
+                                  transition
+                                  hover:border-blue-400
+                                  hover:text-blue-400
+                                "
+                              >
+                                <Globe
+                                  size={16}
+                                />
+                              </a>
+                            )}
+
+                            {product?.githubUrl && (
+                              <a
+                                href={
+                                  product.githubUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${product.name} GitHub`}
+                                title="GitHub"
+                                className="
+                                  flex
+                                  h-9
+                                  w-9
+                                  shrink-0
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  border
+                                  border-white/10
+                                  text-slate-400
+                                  transition
+                                  hover:border-white/30
+                                  hover:text-white
+                                "
+                              >
+                                <Github
+                                  size={16}
+                                />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
+            </div>
+
+            {/* View all */}
+
+            <div className="mt-12 text-center">
+              <Link to="/products">
+                <Button
+                  variant="outline"
                   className="
-                    h-full
-                    overflow-hidden
-                    border-white/10
+                    border-white/20
                     bg-white/5
-                    backdrop-blur-xl
+                    text-white
+                    hover:bg-white/10
                   "
                 >
-                  <img
-                    src={
-                      product.image ||
-                      product.coverImage ||
-                      "/images/product-placeholder.png"
-                    }
-                    alt={product.title || "Digital product"}
-                    className="
-                      mb-5
-                      h-56
-                      w-full
-                      rounded-2xl
-                      object-cover
-                    "
-                    loading="lazy"
-                    onError={(event) => {
-                      event.currentTarget.src =
-                        "/images/product-placeholder.png";
-                    }}
+                  Explore Product Hub
+                  <ArrowUpRight
+                    size={16}
+                    className="ml-2"
                   />
-
-                  <div className="flex h-[calc(100%-14rem)] flex-col">
-                    <h3 className="mb-3 text-xl font-semibold text-white">
-                      {product.title}
-                    </h3>
-
-                    <p className="mb-5 line-clamp-3 leading-6 text-slate-400">
-                      {product.description ||
-                        "Premium digital products designed for modern users."}
-                    </p>
-
-                    <p className="mb-6 mt-auto text-lg font-bold text-cyan-400">
-                      ₦{Number(product.price || 0).toLocaleString()}
-                    </p>
-
-                    <Link to={`/products/${product._id || product.id}`}>
-                      <Button fullWidth>View Product</Button>
-                    </Link>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        )}
-
-        {products.length > 4 && (
-          <div className="mt-12 text-center">
-            <Link to="/products">
-              <Button variant="secondary">View All Products</Button>
-            </Link>
-          </div>
+                </Button>
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </section>

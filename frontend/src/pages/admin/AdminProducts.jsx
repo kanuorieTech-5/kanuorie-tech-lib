@@ -4,32 +4,46 @@ import {
   Search,
   Pencil,
   Trash2,
+  X,
+  Save,
+  ExternalLink,
   Star,
   Eye,
   EyeOff,
-  Package,
-  RefreshCw,
-  X,
+  BookOpen,
+  Sparkles,
+  Globe,
+  Github,
+  FileText,
 } from "lucide-react";
 import toast from "react-hot-toast";
-
-import { Card, Button, Loader, SectionTitle } from "../../components/common";
 
 import {
   getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../../services";
+} from "../../api/productApi";
 
 const CATEGORIES = [
-  "Template",
-  "Software",
-  "Course",
-  "Ebook",
-  "Service",
+  "Development",
+  "AI",
+  "Database",
+  "Design",
+  "DevOps",
+  "Productivity",
+  "Business",
+  "Cloud",
+  "Security",
   "API",
   "Other",
+];
+
+const PRICING_TYPES = [
+  "Free",
+  "Freemium",
+  "Paid",
+  "Open Source",
 ];
 
 const EMPTY_FORM = {
@@ -37,61 +51,112 @@ const EMPTY_FORM = {
   excerpt: "",
   description: "",
   image: "",
-  category: "Other",
+  category: "Development",
+
+  websiteUrl: "",
+  documentationUrl: "",
+  githubUrl: "",
+
+  pricingType: "Free",
   price: 0,
   currency: "USD",
+
+  technologies: "",
+
   featured: false,
   published: true,
-  downloadUrl: "",
-  demoUrl: "",
-  githubUrl: "",
-  technologies: "",
 };
+
+/* ==========================================
+   FORM FIELD
+========================================== */
+
+function FormField({
+  label,
+  required = false,
+  children,
+  hint,
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        {label}
+
+        {required && (
+          <span className="ml-1 text-red-500">*</span>
+        )}
+      </label>
+
+      {children}
+
+      {hint && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {hint}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/* ==========================================
+   INPUT CLASS
+========================================== */
+
+const inputClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+
+/* ==========================================
+   ADMIN PRODUCTS
+========================================== */
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
-
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [status, setStatus] = useState("All");
+  const [categoryFilter, setCategoryFilter] =
+    useState("All");
+  const [statusFilter, setStatusFilter] =
+    useState("All");
 
-  const [showModal, setShowModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const [form, setForm] = useState(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+
+  /* ==========================================
+     LOAD PRODUCTS
+  ========================================== */
 
   const loadProducts = async () => {
     try {
       setLoading(true);
-      setError("");
 
       const response = await getProducts({
         limit: 100,
       });
 
-      /*
-       * Backend response:
-       *
-       * {
-       *   data: {
-       *     products: [],
-       *     pagination: {}
-       *   }
-       * }
-       */
+      const items =
+        response?.data?.products ??
+        response?.data ??
+        response?.products ??
+        [];
 
-      const data = response?.data?.products ?? response?.products ?? [];
+      setProducts(
+        Array.isArray(items) ? items : []
+      );
+    } catch (error) {
+      console.error(
+        "Failed to load products:",
+        error
+      );
 
-      setProducts(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Failed to load products:", err);
+      toast.error(
+        "Failed to load products."
+      );
 
-      setError(err?.response?.data?.message || "Unable to load products.");
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -101,98 +166,187 @@ export default function AdminProducts() {
     loadProducts();
   }, []);
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const searchValue = search.trim().toLowerCase();
+  /* ==========================================
+     FILTER PRODUCTS
+  ========================================== */
 
+  const filteredProducts = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    return products.filter((product) => {
       const matchesSearch =
-        !searchValue ||
-        product.name?.toLowerCase().includes(searchValue) ||
-        product.description?.toLowerCase().includes(searchValue) ||
-        product.excerpt?.toLowerCase().includes(searchValue);
+        !query ||
+        product.name
+          ?.toLowerCase()
+          .includes(query) ||
+        product.description
+          ?.toLowerCase()
+          .includes(query) ||
+        product.excerpt
+          ?.toLowerCase()
+          .includes(query) ||
+        product.category
+          ?.toLowerCase()
+          .includes(query);
 
       const matchesCategory =
-        category === "All" || product.category === category;
+        categoryFilter === "All" ||
+        product.category === categoryFilter;
 
       const matchesStatus =
-        status === "All" ||
-        (status === "Published" && product.published === true) ||
-        (status === "Unpublished" && product.published === false) ||
-        (status === "Featured" && product.featured === true);
+        statusFilter === "All" ||
+        (statusFilter === "Published" &&
+          product.published) ||
+        (statusFilter === "Draft" &&
+          !product.published) ||
+        (statusFilter === "Featured" &&
+          product.featured);
 
-      return matchesSearch && matchesCategory && matchesStatus;
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesStatus
+      );
     });
-  }, [products, search, category, status]);
+  }, [
+    products,
+    search,
+    categoryFilter,
+    statusFilter,
+  ]);
+
+  /* ==========================================
+     STATISTICS
+  ========================================== */
 
   const stats = useMemo(() => {
+    const total = products.length;
+
+    const published = products.filter(
+      (product) => product.published
+    ).length;
+
+    const featured = products.filter(
+      (product) => product.featured
+    ).length;
+
+    const categories = new Set(
+      products.map(
+        (product) => product.category
+      )
+    ).size;
+
     return {
-      total: products.length,
-
-      published: products.filter((product) => product.published).length,
-
-      unpublished: products.filter((product) => !product.published).length,
-
-      featured: products.filter((product) => product.featured).length,
+      total,
+      published,
+      featured,
+      categories,
     };
   }, [products]);
 
-  const handleCreate = () => {
-    setEditingProduct(null);
+  /* ==========================================
+     OPEN CREATE MODAL
+  ========================================== */
+
+  const openCreate = () => {
+    setEditingId(null);
     setForm(EMPTY_FORM);
-    setShowModal(true);
+    setModalOpen(true);
   };
 
+  /* ==========================================
+     OPEN EDIT MODAL
+  ========================================== */
+
   const handleEdit = (product) => {
-    setEditingProduct(product);
+    setEditingId(product._id);
 
     setForm({
       name: product.name || "",
       excerpt: product.excerpt || "",
       description: product.description || "",
       image: product.image || "",
-      category: product.category || "Other",
-      price: product.price ?? 0,
-      currency: product.currency || "USD",
-      featured: Boolean(product.featured),
-      published: product.published !== false,
-      downloadUrl: product.downloadUrl || "",
-      demoUrl: product.demoUrl || "",
-      githubUrl: product.githubUrl || "",
-      technologies: Array.isArray(product.technologies)
+      category:
+        product.category || "Development",
+
+      websiteUrl:
+        product.websiteUrl || "",
+      documentationUrl:
+        product.documentationUrl || "",
+      githubUrl:
+        product.githubUrl || "",
+
+      pricingType:
+        product.pricingType || "Free",
+
+      price:
+        product.price ?? 0,
+
+      currency:
+        product.currency || "USD",
+
+      technologies: Array.isArray(
+        product.technologies
+      )
         ? product.technologies.join(", ")
         : "",
+
+      featured:
+        Boolean(product.featured),
+
+      published:
+        product.published !== false,
     });
 
-    setShowModal(true);
+    setModalOpen(true);
   };
 
-  const closeModal = () => {
-    if (saving) return;
-
-    setShowModal(false);
-    setEditingProduct(null);
-    setForm(EMPTY_FORM);
-  };
+  /* ==========================================
+     FORM CHANGE
+  ========================================== */
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
+    const {
+      name,
+      value,
+      type,
+      checked,
+    } = event.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
+    setForm((current) => ({
+      ...current,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : value,
     }));
   };
+
+  /* ==========================================
+     SUBMIT
+  ========================================== */
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!form.name.trim()) {
-      toast.error("Product name is required.");
+      toast.error(
+        "Product name is required."
+      );
       return;
     }
 
     if (!form.description.trim()) {
-      toast.error("Product description is required.");
+      toast.error(
+        "Product description is required."
+      );
+      return;
+    }
+
+    if (!form.websiteUrl.trim()) {
+      toast.error(
+        "Official website URL is required."
+      );
       return;
     }
 
@@ -201,598 +355,1077 @@ export default function AdminProducts() {
 
       const payload = {
         name: form.name.trim(),
-        excerpt: form.excerpt.trim(),
-        description: form.description.trim(),
-        image: form.image.trim(),
-        category: form.category,
-        price: Number(form.price) || 0,
-        currency: form.currency.trim().toUpperCase() || "USD",
-        featured: Boolean(form.featured),
-        published: Boolean(form.published),
-        downloadUrl: form.downloadUrl.trim(),
-        demoUrl: form.demoUrl.trim(),
-        githubUrl: form.githubUrl.trim(),
 
-        technologies: form.technologies
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
+        excerpt:
+          form.excerpt.trim(),
+
+        description:
+          form.description.trim(),
+
+        image:
+          form.image.trim(),
+
+        category:
+          form.category,
+
+        websiteUrl:
+          form.websiteUrl.trim(),
+
+        documentationUrl:
+          form.documentationUrl.trim(),
+
+        githubUrl:
+          form.githubUrl.trim(),
+
+        pricingType:
+          form.pricingType,
+
+        price:
+          Number(form.price) || 0,
+
+        currency:
+          form.currency
+            .trim()
+            .toUpperCase() || "USD",
+
+        technologies:
+          form.technologies
+            .split(",")
+            .map((item) =>
+              item.trim()
+            )
+            .filter(Boolean),
+
+        featured:
+          Boolean(form.featured),
+
+        published:
+          Boolean(form.published),
       };
 
-      if (editingProduct) {
-        const response = await updateProduct(editingProduct._id, payload);
-
-        const updated = response?.data ?? response?.product ?? response;
-
-        setProducts((prev) =>
-          prev.map((item) =>
-            item._id === editingProduct._id ? updated : item,
-          ),
+      if (editingId) {
+        await updateProduct(
+          editingId,
+          payload
         );
 
-        toast.success("Product updated successfully.");
+        toast.success(
+          "Product updated successfully."
+        );
       } else {
-        const response = await createProduct(payload);
+        await createProduct(
+          payload
+        );
 
-        const created = response?.data ?? response?.product ?? response;
-
-        setProducts((prev) => [created, ...prev]);
-
-        toast.success("Product created successfully.");
+        toast.success(
+          "Product added successfully."
+        );
       }
 
-      closeModal();
-    } catch (err) {
-      console.error("Failed to save product:", err);
+      setModalOpen(false);
+      setEditingId(null);
+      setForm(EMPTY_FORM);
 
-      toast.error(err?.response?.data?.message || "Failed to save product.");
+      await loadProducts();
+    } catch (error) {
+      console.error(
+        "Failed to save product:",
+        error
+      );
+
+      const message =
+        error?.response?.data?.message ||
+        "Failed to save product.";
+
+      toast.error(message);
     } finally {
       setSaving(false);
     }
   };
 
+  /* ==========================================
+     DELETE
+  ========================================== */
+
   const handleDelete = async (product) => {
-    const confirmed = window.confirm(
-      `Delete "${product.name}"? This action cannot be undone.`,
-    );
+    const confirmed =
+      window.confirm(
+        `Delete "${product.name}"?`
+      );
 
     if (!confirmed) return;
 
     try {
-      await deleteProduct(product._id);
+      await deleteProduct(
+        product._id
+      );
 
-      setProducts((prev) => prev.filter((item) => item._id !== product._id));
+      toast.success(
+        "Product deleted successfully."
+      );
 
-      toast.success("Product deleted successfully.");
-    } catch (err) {
-      console.error("Failed to delete product:", err);
+      await loadProducts();
+    } catch (error) {
+      console.error(
+        "Failed to delete product:",
+        error
+      );
 
-      toast.error(err?.response?.data?.message || "Failed to delete product.");
+      toast.error(
+        "Failed to delete product."
+      );
     }
   };
 
-  if (loading) {
-    return (
-      <section className="py-12">
-        <div className="flex min-h-[400px] items-center justify-center">
-          <Loader />
-        </div>
-      </section>
+  /* ==========================================
+     FORMAT PRICE
+  ========================================== */
+
+  const formatPrice = (product) => {
+    if (
+      product.pricingType === "Free" ||
+      product.pricingType ===
+        "Open Source"
+    ) {
+      return product.pricingType;
+    }
+
+    const price = Number(
+      product.price
     );
-  }
 
-  if (error) {
-    return (
-      <section className="py-12">
-        <Card className="border-red-200 bg-red-50 p-8">
-          <h2 className="text-xl font-bold text-red-700">
-            Products unavailable
-          </h2>
+    if (!price) {
+      return "Contact / See website";
+    }
 
-          <p className="mt-2 text-sm text-red-600">{error}</p>
+    return `${product.currency || "USD"} ${price.toLocaleString()}`;
+  };
 
-          <button
-            type="button"
-            onClick={loadProducts}
-            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
-          >
-            <RefreshCw size={16} />
-            Try Again
-          </button>
-        </Card>
-      </section>
-    );
-  }
+  /* ==========================================
+     PAGE
+  ========================================== */
 
   return (
-    <section className="space-y-8 py-6">
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+    <div className="space-y-8 p-4 sm:p-6 lg:p-8">
+      {/* ======================================
+          HEADER
+      ====================================== */}
+
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <SectionTitle
-            Badge="Admin"
-            title="Products"
-            subtitle="Create, manage and publish your digital products."
-          />
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-blue-600">
+            <Sparkles size={16} />
+
+            Developer & Business Products
+          </div>
+
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Products Hub
+          </h1>
+
+          <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
+            Curate useful tools, platforms,
+            software and services for
+            developers and businesses.
+          </p>
         </div>
 
-        <Button
-          onClick={handleCreate}
-          className="inline-flex items-center gap-2"
+        <button
+          type="button"
+          onClick={openCreate}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
         >
           <Plus size={18} />
+
           Add Product
-        </Button>
+        </button>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {/* ======================================
+          STATISTICS
+      ====================================== */}
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          icon={<Package size={22} />}
+          icon={<BookOpen size={20} />}
           label="Total Products"
           value={stats.total}
         />
 
         <StatCard
-          icon={<Eye size={22} />}
+          icon={<Eye size={20} />}
           label="Published"
           value={stats.published}
         />
 
         <StatCard
-          icon={<EyeOff size={22} />}
-          label="Unpublished"
-          value={stats.unpublished}
-        />
-
-        <StatCard
-          icon={<Star size={22} />}
+          icon={<Star size={20} />}
           label="Featured"
           value={stats.featured}
         />
+
+        <StatCard
+          icon={<Sparkles size={20} />}
+          label="Categories"
+          value={stats.categories}
+        />
       </div>
 
-      <Card className="p-5">
-        <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px]">
+      {/* ======================================
+          FILTERS
+      ====================================== */}
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-950">
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto_auto]">
+          {/* SEARCH */}
+
           <div className="relative">
             <Search
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             />
 
             <input
               type="search"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) =>
+                setSearch(
+                  event.target.value
+                )
+              }
               placeholder="Search products..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+              className={`${inputClass} pl-11`}
             />
           </div>
 
-          <select
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-cyan-400"
-          >
-            <option value="All">All Categories</option>
+          {/* CATEGORY */}
 
-            {CATEGORIES.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
+          <select
+            value={categoryFilter}
+            onChange={(event) =>
+              setCategoryFilter(
+                event.target.value
+              )
+            }
+            className={inputClass}
+          >
+            <option value="All">
+              All Categories
+            </option>
+
+            {CATEGORIES.map(
+              (category) => (
+                <option
+                  key={category}
+                  value={category}
+                >
+                  {category}
+                </option>
+              )
+            )}
           </select>
 
+          {/* STATUS */}
+
           <select
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-cyan-400"
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(
+                event.target.value
+              )
+            }
+            className={inputClass}
           >
-            <option value="All">All Status</option>
-            <option value="Published">Published</option>
-            <option value="Unpublished">Unpublished</option>
-            <option value="Featured">Featured</option>
+            <option value="All">
+              All Status
+            </option>
+
+            <option value="Published">
+              Published
+            </option>
+
+            <option value="Draft">
+              Draft
+            </option>
+
+            <option value="Featured">
+              Featured
+            </option>
           </select>
         </div>
-      </Card>
+      </div>
 
-      <Card className="overflow-hidden">
+      {/* ======================================
+          PRODUCTS TABLE
+      ====================================== */}
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-950">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="border-b border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                <TableHead>
                   Product
-                </th>
+                </TableHead>
 
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                <TableHead>
                   Category
-                </th>
+                </TableHead>
 
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                  Price
-                </th>
+                <TableHead>
+                  Pricing
+                </TableHead>
 
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                <TableHead>
                   Status
-                </th>
+                </TableHead>
 
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                  Stats
-                </th>
+                <TableHead>
+                  Views
+                </TableHead>
 
-                <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-slate-500">
+                <TableHead>
                   Actions
-                </th>
+                </TableHead>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-100">
-              {filteredProducts.length === 0 ? (
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+              {loading ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-16 text-center">
-                    <Package size={40} className="mx-auto text-slate-300" />
+                  <td
+                    colSpan="6"
+                    className="px-6 py-16 text-center text-sm text-slate-500"
+                  >
+                    Loading products...
+                  </td>
+                </tr>
+              ) : filteredProducts.length ===
+                0 ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="px-6 py-16 text-center"
+                  >
+                    <div className="flex flex-col items-center">
+                      <BookOpen
+                        size={40}
+                        className="mb-4 text-slate-300"
+                      />
 
-                    <p className="mt-4 font-semibold text-slate-700">
-                      No products found
-                    </p>
+                      <h3 className="font-semibold text-slate-900 dark:text-white">
+                        No products found
+                      </h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      Try adjusting your search or filters.
-                    </p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Add your first
+                        developer or
+                        business product.
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ) : (
-                filteredProducts.map((product) => (
-                  <tr
-                    key={product._id}
-                    className="transition hover:bg-slate-50"
-                  >
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={
-                            product.image || "/images/product-placeholder.png"
-                          }
-                          alt={product.name}
-                          className="h-14 w-14 rounded-xl object-cover"
-                        />
+                filteredProducts.map(
+                  (product) => (
+                    <tr
+                      key={product._id}
+                      className="transition hover:bg-slate-50 dark:hover:bg-white/[0.03]"
+                    >
+                      {/* PRODUCT */}
 
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="truncate font-bold text-slate-900">
-                              {product.name}
-                            </h3>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={
+                              product.image ||
+                              "/images/product-placeholder.png"
+                            }
+                            alt={
+                              product.name
+                            }
+                            className="h-12 w-12 rounded-xl border border-slate-200 object-cover dark:border-white/10"
+                          />
 
-                            {product.featured && (
-                              <Star
-                                size={15}
-                                className="fill-yellow-400 text-yellow-400"
-                              />
-                            )}
+                          <div className="min-w-0">
+                            <p className="truncate font-semibold text-slate-900 dark:text-white">
+                              {
+                                product.name
+                              }
+                            </p>
+
+                            <p className="max-w-xs truncate text-xs text-slate-500">
+                              {
+                                product.excerpt ||
+                                product.description
+                              }
+                            </p>
                           </div>
-
-                          <p className="mt-1 max-w-xs truncate text-sm text-slate-500">
-                            {product.excerpt || product.description}
-                          </p>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="px-6 py-5">
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                        {product.category}
-                      </span>
-                    </td>
+                      {/* CATEGORY */}
 
-                    <td className="px-6 py-5 font-bold text-slate-900">
-                      {product.currency || "USD"}{" "}
-                      {Number(product.price || 0).toLocaleString()}
-                    </td>
+                      <td className="px-6 py-4">
+                        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
+                          {
+                            product.category
+                          }
+                        </span>
+                      </td>
 
-                    <td className="px-6 py-5">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          product.published
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        {product.published ? "Published" : "Unpublished"}
-                      </span>
-                    </td>
+                      {/* PRICING */}
 
-                    <td className="px-6 py-5">
-                      <div className="text-xs text-slate-500">
-                        <p>{product.views || 0} views</p>
+                      <td className="px-6 py-4">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                            {formatPrice(
+                              product
+                            )}
+                          </p>
 
-                        <p className="mt-1">
-                          {product.downloads || 0} downloads
-                        </p>
-                      </div>
-                    </td>
+                          {product.pricingType && (
+                            <p className="text-xs text-slate-500">
+                              {
+                                product.pricingType
+                              }
+                            </p>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="px-6 py-5">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleEdit(product)}
-                          className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-600"
-                          title="Edit product"
-                        >
-                          <Pencil size={17} />
-                        </button>
+                      {/* STATUS */}
 
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(product)}
-                          className="rounded-lg border border-red-200 p-2 text-red-500 transition hover:bg-red-50"
-                          title="Delete product"
-                        >
-                          <Trash2 size={17} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-1">
+                          <span
+                            className={`inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                              product.published
+                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
+                                : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300"
+                            }`}
+                          >
+                            {product.published ? (
+                              <>
+                                <Eye
+                                  size={12}
+                                />
+                                Published
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff
+                                  size={12}
+                                />
+                                Draft
+                              </>
+                            )}
+                          </span>
+
+                          {product.featured && (
+                            <span className="inline-flex w-fit items-center gap-1 text-xs font-medium text-amber-600">
+                              <Star
+                                size={12}
+                                fill="currentColor"
+                              />
+                              Featured
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* VIEWS */}
+
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                        {Number(
+                          product.views || 0
+                        ).toLocaleString()}
+                      </td>
+
+                      {/* ACTIONS */}
+
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          {product.websiteUrl && (
+                            <a
+                              href={
+                                product.websiteUrl
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="Visit website"
+                              className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
+                            >
+                              <ExternalLink
+                                size={16}
+                              />
+                            </a>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleEdit(
+                                product
+                              )
+                            }
+                            title="Edit"
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
+                          >
+                            <Pencil
+                              size={16}
+                            />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDelete(
+                                product
+                              )
+                            }
+                            title="Delete"
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
+                          >
+                            <Trash2
+                              size={16}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )
               )}
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
+      {/* ======================================
+          MODAL
+      ====================================== */}
+
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+          <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-950">
+            {/* MODAL HEADER */}
+
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 dark:border-white/10">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">
-                  {editingProduct ? "Edit Product" : "Create Product"}
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {editingId
+                    ? "Edit Product"
+                    : "Add Product"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  {editingProduct
-                    ? "Update the product information."
-                    : "Add a new digital product to KanuorieTech."}
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  Add a useful developer or
+                  business product to the
+                  KanuorieTech hub.
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={closeModal}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                onClick={() =>
+                  setModalOpen(false)
+                }
+                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 p-6">
-              <div className="grid gap-5 md:grid-cols-2">
-                <FormField
-                  label="Product Name"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. React Admin Dashboard"
-                />
+            {/* FORM */}
 
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Category
-                  </label>
+            <form
+              onSubmit={handleSubmit}
+              className="overflow-y-auto p-6"
+            >
+              <div className="space-y-8">
+                {/* ==================================
+                    BASIC INFORMATION
+                ================================== */}
 
-                  <select
-                    name="category"
-                    value={form.category}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-400"
+                <FormSection
+                  icon={<BookOpen size={18} />}
+                  title="Basic Information"
+                  description="Describe the tool, platform or service."
+                >
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div className="md:col-span-2">
+                      <FormField
+                        label="Product Name"
+                        required
+                      >
+                        <input
+                          name="name"
+                          value={
+                            form.name
+                          }
+                          onChange={
+                            handleChange
+                          }
+                          placeholder="e.g. Visual Studio Code"
+                          className={
+                            inputClass
+                          }
+                          required
+                        />
+                      </FormField>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <FormField
+                        label="Excerpt"
+                        hint="Short summary used on product cards."
+                      >
+                        <input
+                          name="excerpt"
+                          value={
+                            form.excerpt
+                          }
+                          onChange={
+                            handleChange
+                          }
+                          placeholder="A powerful code editor for modern development."
+                          maxLength={250}
+                          className={
+                            inputClass
+                          }
+                        />
+                      </FormField>
+                    </div>
+
+                    <FormField
+                      label="Category"
+                      required
+                    >
+                      <select
+                        name="category"
+                        value={
+                          form.category
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        className={
+                          inputClass
+                        }
+                      >
+                        {CATEGORIES.map(
+                          (category) => (
+                            <option
+                              key={
+                                category
+                              }
+                              value={
+                                category
+                              }
+                            >
+                              {category}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </FormField>
+
+                    <FormField
+                      label="Logo / Image URL"
+                      hint="Use a publicly accessible image URL."
+                    >
+                      <input
+                        type="url"
+                        name="image"
+                        value={
+                          form.image
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        placeholder="https://..."
+                        className={
+                          inputClass
+                        }
+                      />
+                    </FormField>
+
+                    <div className="md:col-span-2">
+                      <FormField
+                        label="Description"
+                        required
+                        hint="Explain what the product does and who it is useful for."
+                      >
+                        <textarea
+                          name="description"
+                          value={
+                            form.description
+                          }
+                          onChange={
+                            handleChange
+                          }
+                          placeholder="Describe the product, its purpose and its main use cases..."
+                          rows={5}
+                          className={`${inputClass} resize-y`}
+                          required
+                        />
+                      </FormField>
+                    </div>
+                  </div>
+                </FormSection>
+
+                {/* ==================================
+                    LINKS
+                ================================== */}
+
+                <FormSection
+                  icon={<Globe size={18} />}
+                  title="Product Links"
+                  description="Help visitors access the official product resources."
+                >
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <FormField
+                      label="Official Website"
+                      required
+                      hint="The main official product website."
+                    >
+                      <input
+                        type="url"
+                        name="websiteUrl"
+                        value={
+                          form.websiteUrl
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        placeholder="https://example.com"
+                        className={
+                          inputClass
+                        }
+                        required
+                      />
+                    </FormField>
+
+                    <FormField
+                      label="Documentation URL"
+                      hint="Official documentation, if available."
+                    >
+                      <input
+                        type="url"
+                        name="documentationUrl"
+                        value={
+                          form.documentationUrl
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        placeholder="https://docs.example.com"
+                        className={
+                          inputClass
+                        }
+                      />
+                    </FormField>
+
+                    <FormField
+                      label="GitHub URL"
+                      hint="Useful for open-source projects."
+                    >
+                      <input
+                        type="url"
+                        name="githubUrl"
+                        value={
+                          form.githubUrl
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        placeholder="https://github.com/..."
+                        className={
+                          inputClass
+                        }
+                      />
+                    </FormField>
+                  </div>
+                </FormSection>
+
+                {/* ==================================
+                    PRICING
+                ================================== */}
+
+                <FormSection
+                  icon={<Sparkles size={18} />}
+                  title="Pricing"
+                  description="Describe how the product is priced."
+                >
+                  <div className="grid gap-5 md:grid-cols-3">
+                    <FormField
+                      label="Pricing Type"
+                      required
+                    >
+                      <select
+                        name="pricingType"
+                        value={
+                          form.pricingType
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        className={
+                          inputClass
+                        }
+                      >
+                        {PRICING_TYPES.map(
+                          (type) => (
+                            <option
+                              key={type}
+                              value={type}
+                            >
+                              {type}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </FormField>
+
+                    <FormField
+                      label="Starting Price"
+                      hint="Use 0 when there is no applicable starting price."
+                    >
+                      <input
+                        type="number"
+                        name="price"
+                        min="0"
+                        step="0.01"
+                        value={
+                          form.price
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        className={
+                          inputClass
+                        }
+                      />
+                    </FormField>
+
+                    <FormField label="Currency">
+                      <input
+                        name="currency"
+                        value={
+                          form.currency
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        placeholder="USD"
+                        maxLength={3}
+                        className={
+                          inputClass
+                        }
+                      />
+                    </FormField>
+                  </div>
+                </FormSection>
+
+                {/* ==================================
+                    CLASSIFICATION
+                ================================== */}
+
+                <FormSection
+                  icon={<FileText size={18} />}
+                  title="Classification"
+                  description="Add technologies, platforms or keywords."
+                >
+                  <FormField
+                    label="Technologies / Tags"
+                    hint="Separate each tag with a comma. Example: JavaScript, React, Git, Open Source"
                   >
-                    {CATEGORIES.map((item) => (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    <input
+                      name="technologies"
+                      value={
+                        form.technologies
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      placeholder="JavaScript, React, Git"
+                      className={
+                        inputClass
+                      }
+                    />
+                  </FormField>
+                </FormSection>
+
+                {/* ==================================
+                    PUBLISHING
+                ================================== */}
+
+                <FormSection
+                  icon={<Star size={18} />}
+                  title="Publishing"
+                  description="Control how this product appears publicly."
+                >
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+                      <input
+                        type="checkbox"
+                        name="featured"
+                        checked={
+                          form.featured
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          Featured Product
+                        </p>
+
+                        <p className="text-xs text-slate-500">
+                          Highlight this
+                          product in
+                          featured sections.
+                        </p>
+                      </div>
+                    </label>
+
+                    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+                      <input
+                        type="checkbox"
+                        name="published"
+                        checked={
+                          form.published
+                        }
+                        onChange={
+                          handleChange
+                        }
+                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          Published
+                        </p>
+
+                        <p className="text-xs text-slate-500">
+                          Make this product
+                          visible on the
+                          public hub.
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </FormSection>
               </div>
 
-              <FormField
-                label="Excerpt"
-                name="excerpt"
-                value={form.excerpt}
-                onChange={handleChange}
-                placeholder="Short product summary"
-                maxLength={250}
-              />
+              {/* ==================================
+                  ACTIONS
+              ================================== */}
 
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Description *
-                </label>
-
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  rows={6}
-                  required
-                  placeholder="Describe the product..."
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <FormField
-                label="Image URL"
-                name="image"
-                value={form.image}
-                onChange={handleChange}
-                placeholder="https://..."
-              />
-
-              <div className="grid gap-5 md:grid-cols-3">
-                <FormField
-                  label="Price"
-                  name="price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.price}
-                  onChange={handleChange}
-                />
-
-                <FormField
-                  label="Currency"
-                  name="currency"
-                  value={form.currency}
-                  onChange={handleChange}
-                  placeholder="USD"
-                />
-
-                <FormField
-                  label="Download URL"
-                  name="downloadUrl"
-                  value={form.downloadUrl}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                />
-              </div>
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <FormField
-                  label="Demo URL"
-                  name="demoUrl"
-                  value={form.demoUrl}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                />
-
-                <FormField
-                  label="GitHub URL"
-                  name="githubUrl"
-                  value={form.githubUrl}
-                  onChange={handleChange}
-                  placeholder="https://github.com/..."
-                />
-              </div>
-
-              <FormField
-                label="Technologies"
-                name="technologies"
-                value={form.technologies}
-                onChange={handleChange}
-                placeholder="React, Node.js, MongoDB"
-              />
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    checked={form.featured}
-                    onChange={handleChange}
-                    className="h-4 w-4"
-                  />
-
-                  <span>
-                    <span className="block font-semibold text-slate-800">
-                      Featured Product
-                    </span>
-
-                    <span className="text-xs text-slate-500">
-                      Display this product in featured sections.
-                    </span>
-                  </span>
-                </label>
-
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4">
-                  <input
-                    type="checkbox"
-                    name="published"
-                    checked={form.published}
-                    onChange={handleChange}
-                    className="h-4 w-4"
-                  />
-
-                  <span>
-                    <span className="block font-semibold text-slate-800">
-                      Published
-                    </span>
-
-                    <span className="text-xs text-slate-500">
-                      Make this product visible publicly.
-                    </span>
-                  </span>
-                </label>
-              </div>
-
-              <div className="flex justify-end gap-3 border-t border-slate-200 pt-6">
+              <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end dark:border-white/10">
                 <button
                   type="button"
-                  onClick={closeModal}
-                  disabled={saving}
-                  className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                  onClick={() =>
+                    setModalOpen(false)
+                  }
+                  className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
                 >
                   Cancel
                 </button>
 
-                <Button type="submit" disabled={saving}>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Save size={17} />
+
                   {saving
                     ? "Saving..."
-                    : editingProduct
+                    : editingId
                       ? "Update Product"
-                      : "Create Product"}
-                </Button>
+                      : "Add Product"}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
-function StatCard({ icon, label, value }) {
-  return (
-    <Card className="p-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
+/* ==========================================
+   STAT CARD
+========================================== */
 
-          <p className="mt-2 text-3xl font-black text-slate-900">{value}</p>
-        </div>
-
-        <div className="rounded-xl bg-cyan-50 p-3 text-cyan-600">{icon}</div>
-      </div>
-    </Card>
-  );
-}
-
-function FormField({
+function StatCard({
+  icon,
   label,
-  name,
   value,
-  onChange,
-  type = "text",
-  placeholder,
-  required = false,
-  ...props
 }) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-semibold text-slate-700">
-        {label}
-        {required && <span className="ml-1 text-red-500">*</span>}
-      </label>
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-slate-950">
+      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+        {icon}
+      </div>
 
-      <input
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-        {...props}
-      />
+      <p className="text-sm text-slate-500 dark:text-slate-400">
+        {label}
+      </p>
+
+      <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
+        {value.toLocaleString()}
+      </p>
     </div>
+  );
+}
+
+/* ==========================================
+   TABLE HEAD
+========================================== */
+
+function TableHead({ children }) {
+  return (
+    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      {children}
+    </th>
+  );
+}
+
+/* ==========================================
+   FORM SECTION
+========================================== */
+
+function FormSection({
+  icon,
+  title,
+  description,
+  children,
+}) {
+  return (
+    <section>
+      <div className="mb-5 flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+          {icon}
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-slate-900 dark:text-white">
+            {title}
+          </h3>
+
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      {children}
+    </section>
   );
 }

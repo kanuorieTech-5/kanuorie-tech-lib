@@ -1,15 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BookOpen, Search } from "lucide-react";
-import { Card, Button, Loader, Pagination } from "../components/common";
+import {
+  ArrowUpRight,
+  BookOpen,
+  Github,
+  Globe,
+  Search,
+} from "lucide-react";
+
+import {
+  Card,
+  Button,
+  Loader,
+  Pagination,
+} from "../components/common";
 import { SearchBar } from "../components/layout";
 import { getProducts } from "../services";
 import { CTA, Newsletter } from "../components/home";
 
 const PER_PAGE = 12;
 
-const PRODUCT_PLACEHOLDER = "/images/product-placeholder.jpg";
+const PRODUCT_PLACEHOLDER =
+  "/images/product-placeholder.png";
+
+const CATEGORIES = [
+  "All",
+  "Development",
+  "AI",
+  "Database",
+  "Design",
+  "DevOps",
+  "Productivity",
+  "Business",
+  "Cloud",
+  "Security",
+  "API",
+  "Other",
+];
 
 const getProductsData = (response) => {
   if (Array.isArray(response)) {
@@ -35,10 +63,37 @@ const getProductId = (product) => {
   return product?._id || product?.id || null;
 };
 
-const getProductPrice = (product) => {
+const getPricingLabel = (product) => {
+  const pricingType =
+    product?.pricingType || "Free";
+
   const price = Number(product?.price);
 
-  return Number.isFinite(price) && price >= 0 ? price : null;
+  if (
+    pricingType === "Paid" &&
+    Number.isFinite(price) &&
+    price > 0
+  ) {
+    return `${product?.currency || "USD"} ${price.toLocaleString()}`;
+  }
+
+  return pricingType;
+};
+
+const getPricingClass = (pricingType) => {
+  if (pricingType === "Paid") {
+    return "text-blue-600";
+  }
+
+  if (pricingType === "Freemium") {
+    return "text-purple-600";
+  }
+
+  if (pricingType === "Open Source") {
+    return "text-orange-600";
+  }
+
+  return "text-emerald-600";
 };
 
 export default function Products() {
@@ -57,19 +112,32 @@ export default function Products() {
         setLoading(true);
         setError("");
 
-        const response = await getProducts();
+        const response = await getProducts({
+          page,
+          limit: 12,
+          published: true,
+          ...(category !== "All" && {
+            category,
+          }),
+          ...(search.trim() && {
+            search: search.trim(),
+          }),
+        });
         const data = getProductsData(response);
 
         if (mounted) {
           setProducts(data);
         }
       } catch (err) {
-        console.error("Failed to load products:", err);
+        console.error(
+          "Failed to load products:",
+          err,
+        );
 
         if (mounted) {
           setProducts([]);
           setError(
-            "We couldn't load the products right now. Please try again.",
+            "We couldn't load the product directory right now. Please try again.",
           );
         }
       } finally {
@@ -86,43 +154,74 @@ export default function Products() {
     };
   }, []);
 
-  const categories = useMemo(() => {
-    const uniqueCategories = [
-      ...new Set(
-        products.map((product) => product?.category?.trim()).filter(Boolean),
-      ),
-    ];
+  const availableCategories = useMemo(() => {
+    const existingCategories = new Set(
+      products
+        .map((product) => product?.category)
+        .filter(Boolean),
+    );
 
-    return ["All", ...uniqueCategories];
+    return CATEGORIES.filter(
+      (item) =>
+        item === "All" ||
+        existingCategories.has(item),
+    );
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = search
+      .trim()
+      .toLowerCase();
 
     return products.filter((product) => {
-      const title = product?.title?.toLowerCase() || "";
+      const name =
+        product?.name?.toLowerCase() || "";
 
-      const description = product?.description?.toLowerCase() || "";
+      const excerpt =
+        product?.excerpt?.toLowerCase() || "";
 
-      const productCategory = product?.category || "";
+      const description =
+        product?.description?.toLowerCase() || "";
+
+      const technologies = Array.isArray(
+        product?.technologies,
+      )
+        ? product.technologies.join(" ").toLowerCase()
+        : "";
+
+      const productCategory =
+        product?.category || "";
 
       const matchesSearch =
-        !query || title.includes(query) || description.includes(query);
+        !query ||
+        name.includes(query) ||
+        excerpt.includes(query) ||
+        description.includes(query) ||
+        technologies.includes(query);
 
       const matchesCategory =
-        category === "All" || productCategory === category;
+        category === "All" ||
+        productCategory === category;
 
-      return matchesSearch && matchesCategory;
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
     });
   }, [products, search, category]);
 
-  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredProducts.length / PER_PAGE,
+  );
 
   const paginatedProducts = useMemo(() => {
-    const start = (page - 1) * PER_PAGE;
-    const end = start + PER_PAGE;
+    const start =
+      (page - 1) * PER_PAGE;
 
-    return filteredProducts.slice(start, end);
+    return filteredProducts.slice(
+      start,
+      start + PER_PAGE,
+    );
   }, [filteredProducts, page]);
 
   useEffect(() => {
@@ -130,7 +229,10 @@ export default function Products() {
   }, [search, category]);
 
   useEffect(() => {
-    if (totalPages > 0 && page > totalPages) {
+    if (
+      totalPages > 0 &&
+      page > totalPages
+    ) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
@@ -148,6 +250,10 @@ export default function Products() {
 
   return (
     <>
+      {/* =====================================================
+          HERO
+      ===================================================== */}
+
       <section
         className="
           relative
@@ -156,13 +262,11 @@ export default function Products() {
           from-slate-950
           via-slate-900
           to-blue-950
-          py-10
+          py-20
           text-white
           lg:py-28
         "
       >
-        {/* Background grid */}
-
         <div
           className="
             absolute
@@ -173,18 +277,30 @@ export default function Products() {
           aria-hidden="true"
         />
 
-        {/* Decorative glow */}
-
         <div
           className="
             absolute
             left-1/2
             top-0
-            h-72
-            w-72
+            h-96
+            w-96
             -translate-x-1/2
             rounded-full
             bg-blue-500/10
+            blur-3xl
+          "
+          aria-hidden="true"
+        />
+
+        <div
+          className="
+            absolute
+            bottom-0
+            right-0
+            h-72
+            w-72
+            rounded-full
+            bg-yellow-400/5
             blur-3xl
           "
           aria-hidden="true"
@@ -225,10 +341,15 @@ export default function Products() {
               text-sm
               font-medium
               text-blue-400
+              backdrop-blur-xl
             "
           >
-            <BookOpen size={16} aria-hidden="true" />
-            Digital Products
+            <BookOpen
+              size={16}
+              aria-hidden="true"
+            />
+
+            Developer & Business Products
           </motion.div>
 
           <motion.h1
@@ -253,7 +374,11 @@ export default function Products() {
               lg:text-7xl
             "
           >
-            Tools Built To Help You <span className="text-blue-400">Grow</span>
+            Discover the{" "}
+            <span className="text-blue-400">
+              Tools
+            </span>{" "}
+            Behind Modern Digital Work
           </motion.h1>
 
           <motion.p
@@ -278,11 +403,20 @@ export default function Products() {
               sm:leading-8
             "
           >
-            Explore premium digital resources, templates and technology products
-            created by KanuorieTech to help you learn, build and grow.
+            Explore a curated directory of
+            developer tools, AI platforms,
+            databases, design software, cloud
+            services and business technologies
+            that can help you build, launch and
+            grow.
           </motion.p>
         </div>
       </section>
+
+      {/* =====================================================
+          PRODUCT DIRECTORY
+      ===================================================== */}
+
       <section
         className="
           bg-slate-50
@@ -296,7 +430,23 @@ export default function Products() {
         <div className="mx-auto max-w-7xl">
           {/* Header */}
 
-          <div className="mb-12">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="mb-12"
+          >
             <p
               className="
                 mb-3
@@ -307,7 +457,7 @@ export default function Products() {
                 text-blue-600
               "
             >
-              Our Products
+              KanuorieTech Product Hub
             </p>
 
             <h2
@@ -321,12 +471,13 @@ export default function Products() {
                 md:text-5xl
               "
             >
-              Explore Our Digital Products
+              Find the right tools for
+              your work
             </h2>
 
             <p
               className="
-                max-w-2xl
+                max-w-3xl
                 text-base
                 leading-7
                 text-slate-600
@@ -334,10 +485,12 @@ export default function Products() {
                 lg:leading-8
               "
             >
-              Discover digital tools and resources designed to support your
-              learning, productivity and digital growth.
+              Browse useful technologies
+              across development, AI, design,
+              databases, cloud, productivity
+              and business.
             </p>
-          </div>
+          </motion.div>
 
           {/* Filters */}
 
@@ -355,16 +508,14 @@ export default function Products() {
               <SearchBar
                 value={search}
                 onChange={setSearch}
-                placeholder="Search products..."
+                placeholder="Search tools, platforms, technologies..."
               />
             </div>
 
-            <div className="md:w-56">
+            <div className="md:w-60">
               <label
                 htmlFor="product-category"
-                className="
-                  sr-only
-                "
+                className="sr-only"
               >
                 Filter products by category
               </label>
@@ -372,16 +523,21 @@ export default function Products() {
               <select
                 id="product-category"
                 value={category}
-                onChange={(event) => setCategory(event.target.value)}
+                onChange={(event) =>
+                  setCategory(
+                    event.target.value,
+                  )
+                }
                 className="
                   w-full
-                  rounded-lg
+                  rounded-xl
                   border
                   border-slate-300
                   bg-white
                   px-4
                   py-3
                   text-slate-900
+                  shadow-sm
                   outline-none
                   transition
                   focus:border-blue-500
@@ -389,11 +545,16 @@ export default function Products() {
                   focus:ring-blue-100
                 "
               >
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
+                {availableCategories.map(
+                  (item) => (
+                    <option
+                      key={item}
+                      value={item}
+                    >
+                      {item}
+                    </option>
+                  ),
+                )}
               </select>
             </div>
           </div>
@@ -420,12 +581,48 @@ export default function Products() {
 
           {/* Results */}
 
-          <div aria-live="polite" className="mb-6 text-sm text-slate-500">
-            {filteredProducts.length > 0
-              ? `${filteredProducts.length} ${
-                  filteredProducts.length === 1 ? "product" : "products"
-                } found`
-              : "No products found"}
+          <div
+            aria-live="polite"
+            className="
+              mb-6
+              flex
+              flex-wrap
+              items-center
+              justify-between
+              gap-3
+              text-sm
+              text-slate-500
+            "
+          >
+            <span>
+              {filteredProducts.length > 0
+                ? `${filteredProducts.length} ${
+                    filteredProducts.length ===
+                    1
+                      ? "tool"
+                      : "tools"
+                  } found`
+                : "No tools found"}
+            </span>
+
+            {(search ||
+              category !== "All") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setCategory("All");
+                }}
+                className="
+                  font-semibold
+                  text-blue-600
+                  transition
+                  hover:text-blue-700
+                "
+              >
+                Clear filters
+              </button>
+            )}
           </div>
 
           {/* Products */}
@@ -451,30 +648,13 @@ export default function Products() {
                   text-slate-900
                 "
               >
-                No products found
+                No tools found
               </h2>
 
               <p className="text-slate-600">
-                Try changing your search or category filter.
+                Try another search term or
+                choose a different category.
               </p>
-
-              {(search || category !== "All") && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearch("");
-                    setCategory("All");
-                  }}
-                  className="
-                    mt-6
-                    font-semibold
-                    text-blue-600
-                    hover:text-blue-700
-                  "
-                >
-                  Clear filters
-                </button>
-              )}
             </Card>
           ) : (
             <div
@@ -486,34 +666,45 @@ export default function Products() {
                 xl:grid-cols-4
               "
             >
-              {paginatedProducts.map((product, index) => {
-                const productId = getProductId(product);
+              {paginatedProducts.map(
+                (product, index) => {
+                  const productId =
+                    getProductId(product);
 
-                const price = getProductPrice(product);
+                  const pricingType =
+                    product?.pricingType ||
+                    "Free";
 
-                return (
-                  <motion.div
-                    key={productId || `product-${index}`}
-                    initial={{
-                      opacity: 0,
-                      y: 25,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      duration: 0.45,
-                      delay: Math.min(index * 0.06, 0.3),
-                    }}
-                    viewport={{
-                      once: true,
-                      amount: 0.15,
-                    }}
-                    className="h-full"
-                  >
-                    <Card
-                      className="
+                  return (
+                    <motion.div
+                      key={
+                        productId ||
+                        `product-${index}`
+                      }
+                      initial={{
+                        opacity: 0,
+                        y: 25,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.45,
+                        delay: Math.min(
+                          index * 0.06,
+                          0.3,
+                        ),
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.15,
+                      }}
+                      className="h-full"
+                    >
+                      <Card
+                        className="
+                          group
                           flex
                           h-full
                           flex-col
@@ -524,131 +715,315 @@ export default function Products() {
                           transition
                           duration-300
                           hover:-translate-y-1
-                          hover:shadow-xl
+                          hover:shadow-2xl
                         "
-                    >
-                      {/* Image */}
+                      >
+                        {/* Image */}
 
-                      <div className="overflow-hidden">
-                        <img
-                          src={
-                            product?.image ||
-                            product?.coverImage ||
-                            PRODUCT_PLACEHOLDER
+                        <Link
+                          to={
+                            productId
+                              ? `/products/${productId}`
+                              : "#"
                           }
-                          alt={product?.title || "Digital product"}
-                          loading="lazy"
-                          className="
+                          className="relative block overflow-hidden"
+                        >
+                          <img
+                            src={
+                              product?.image ||
+                              PRODUCT_PLACEHOLDER
+                            }
+                            alt={
+                              product?.name ||
+                              "Developer tool"
+                            }
+                            loading="lazy"
+                            className="
                               h-56
                               w-full
                               object-cover
                               transition-transform
                               duration-500
-                              hover:scale-105
+                              group-hover:scale-105
                             "
-                          onError={(event) => {
-                            if (
-                              event.currentTarget.src.includes(
-                                PRODUCT_PLACEHOLDER,
-                              )
-                            ) {
-                              return;
-                            }
+                            onError={(
+                              event,
+                            ) => {
+                              if (
+                                event
+                                  .currentTarget
+                                  .src.includes(
+                                    PRODUCT_PLACEHOLDER,
+                                  )
+                              ) {
+                                return;
+                              }
 
-                            event.currentTarget.src = PRODUCT_PLACEHOLDER;
-                          }}
-                        />
-                      </div>
+                              event.currentTarget.src =
+                                PRODUCT_PLACEHOLDER;
+                            }}
+                          />
 
-                      {/* Content */}
+                          {product?.featured && (
+                            <span
+                              className="
+                                absolute
+                                left-4
+                                top-4
+                                rounded-full
+                                bg-yellow-400
+                                px-3
+                                py-1
+                                text-xs
+                                font-bold
+                                text-slate-950
+                                shadow-lg
+                              "
+                            >
+                              Featured
+                            </span>
+                          )}
+                        </Link>
 
-                      <div
-                        className="
+                        {/* Content */}
+
+                        <div
+                          className="
                             flex
                             flex-1
                             flex-col
-                            p-6
+                            p-5
                           "
-                      >
-                        {/* Category */}
+                        >
+                          {/* Category + pricing */}
 
-                        {product?.category && (
+                          <div
+                            className="
+                              mb-3
+                              flex
+                              items-center
+                              justify-between
+                              gap-3
+                            "
+                          >
+                            <span
+                              className="
+                                rounded-full
+                                bg-blue-50
+                                px-3
+                                py-1
+                                text-xs
+                                font-semibold
+                                text-blue-700
+                              "
+                            >
+                              {product?.category ||
+                                "Other"}
+                            </span>
+
+                            <span
+                              className={`text-xs font-bold ${getPricingClass(
+                                pricingType,
+                              )}`}
+                            >
+                              {getPricingLabel(
+                                product,
+                              )}
+                            </span>
+                          </div>
+
+                          {/* Name */}
+
+                          <Link
+                            to={
+                              productId
+                                ? `/products/${productId}`
+                                : "#"
+                            }
+                          >
+                            <h3
+                              className="
+                                line-clamp-2
+                                text-xl
+                                font-bold
+                                text-slate-900
+                                transition
+                                group-hover:text-blue-600
+                              "
+                            >
+                              {product?.name ||
+                                "Developer Tool"}
+                            </h3>
+                          </Link>
+
+                          {/* Description */}
+
                           <p
                             className="
-                                mb-2
-                                text-sm
-                                font-semibold
-                                text-blue-600
-                              "
-                          >
-                            {product.category}
-                          </p>
-                        )}
-
-                        {/* Title */}
-
-                        <h3
-                          className="
-                              mb-3
-                              text-xl
-                              font-bold
-                              text-slate-900
-                            "
-                        >
-                          {product?.title || "Digital Product"}
-                        </h3>
-
-                        {/* Description */}
-
-                        <p
-                          className="
-                              mb-6
+                              mt-3
                               line-clamp-3
+                              text-sm
                               leading-6
                               text-slate-600
                             "
-                        >
-                          {product?.description ||
-                            "View this product for more information."}
-                        </p>
-
-                        {/* Price */}
-
-                        <p
-                          className="
-                              mb-6
-                              mt-auto
-                              text-2xl
-                              font-bold
-                              text-blue-600
-                            "
-                        >
-                          {price !== null
-                            ? `₦${price.toLocaleString("en-NG")}`
-                            : "Price unavailable"}
-                        </p>
-
-                        {/* Action */}
-
-                        {productId ? (
-                          <Link
-                            to={`/products/${productId}`}
-                            className="mt-auto"
                           >
-                            <Button fullWidth>View Product</Button>
-                          </Link>
-                        ) : (
-                          <Button fullWidth disabled>
-                            Unavailable
-                          </Button>
-                        )}
-                      </div>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+                            {product?.excerpt ||
+                              product?.description ||
+                              "A useful technology for developers and businesses."}
+                          </p>
+
+                          {/* Technologies */}
+
+                          {Array.isArray(
+                            product?.technologies,
+                          ) &&
+                            product.technologies
+                              .length > 0 && (
+                              <div
+                                className="
+                                  mt-4
+                                  flex
+                                  flex-wrap
+                                  gap-2
+                                "
+                              >
+                                {product.technologies
+                                  .slice(0, 3)
+                                  .map(
+                                    (
+                                      technology,
+                                    ) => (
+                                      <span
+                                        key={
+                                          technology
+                                        }
+                                        className="
+                                          rounded-full
+                                          bg-slate-100
+                                          px-2.5
+                                          py-1
+                                          text-xs
+                                          text-slate-600
+                                        "
+                                      >
+                                        {
+                                          technology
+                                        }
+                                      </span>
+                                    ),
+                                  )}
+                              </div>
+                            )}
+
+                          {/* Actions */}
+
+                          <div
+                            className="
+                              mt-auto
+                              flex
+                              items-center
+                              gap-2
+                              pt-5
+                            "
+                          >
+                            {productId ? (
+                              <Link
+                                to={`/products/${productId}`}
+                                className="flex-1"
+                              >
+                                <Button
+                                  fullWidth
+                                  size="sm"
+                                >
+                                  Explore
+                                  <ArrowUpRight
+                                    size={15}
+                                    className="ml-1"
+                                  />
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Button
+                                fullWidth
+                                size="sm"
+                                disabled
+                              >
+                                Unavailable
+                              </Button>
+                            )}
+
+                            {product?.websiteUrl && (
+                              <a
+                                href={
+                                  product.websiteUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Visit ${product.name} website`}
+                                title="Official Website"
+                                className="
+                                  flex
+                                  h-9
+                                  w-9
+                                  shrink-0
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  border
+                                  border-slate-200
+                                  text-slate-500
+                                  transition
+                                  hover:border-blue-500
+                                  hover:text-blue-600
+                                "
+                              >
+                                <Globe
+                                  size={16}
+                                />
+                              </a>
+                            )}
+
+                            {product?.githubUrl && (
+                              <a
+                                href={
+                                  product.githubUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${product.name} GitHub`}
+                                title="GitHub"
+                                className="
+                                  flex
+                                  h-9
+                                  w-9
+                                  shrink-0
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  border
+                                  border-slate-200
+                                  text-slate-500
+                                  transition
+                                  hover:border-slate-500
+                                  hover:text-slate-900
+                                "
+                              >
+                                <Github
+                                  size={16}
+                                />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    </motion.div>
+                  );
+                },
+              )}
             </div>
           )}
+
+          {/* Pagination */}
 
           {totalPages > 1 && (
             <div className="mt-12">
