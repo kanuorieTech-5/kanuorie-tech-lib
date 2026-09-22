@@ -1516,6 +1516,28 @@ const handleDeleteNote = (lessonId) => {
                                               </p>
                                             )}
 
+                                            {lesson.lessonContent && (
+                                              <div
+                                                className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                                                onClick={(event) => event.stopPropagation()}
+                                              >
+                                                <div className="mb-3 flex items-center gap-2">
+                                                  <BookOpen
+                                                    size={18}
+                                                    className="text-blue-600"
+                                                  />
+
+                                                  <h5 className="font-bold text-slate-900">
+                                                    Lesson Content:
+                                                  </h5>
+                                                </div>
+
+                                                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                                                  {lesson.lessonContent}
+                                                </div>
+                                              </div>
+                                            )}
+
                                             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
                                               <span className="inline-flex items-center gap-1.5">
                                                 <Clock3
@@ -1592,8 +1614,8 @@ const handleDeleteNote = (lessonId) => {
                                                   )}
                                                 </div>
                                               )}
-                                                                                          {/* LESSON NOTE */}
 
+                                             {/* LESSON NOTE */}
                                             <div className="mt-5 border-t border-slate-200 pt-4">
                                               {openNoteLessonId ===
                                               String(lessonId) ? (
@@ -1824,58 +1846,82 @@ const handleDeleteNote = (lessonId) => {
                           {/* MODULE ASSESSMENT */}
 
                           {assessment && (
-                            <div className="border-t bg-gradient-to-br from-blue-50 to-slate-50 px-5 py-6 sm:px-6">
-                              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                                <div className="flex items-start gap-4">
-                                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100">
-                                    <ClipboardCheck
-                                      className="text-blue-600"
-                                      size={22}
-                                    />
-                                  </div>
+  <div className="border-t bg-gradient-to-br from-blue-50 to-slate-50 px-5 py-6 sm:px-6">
+    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex items-start gap-4">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100">
+          <ClipboardCheck
+            className="text-blue-600"
+            size={22}
+          />
+        </div>
 
-                                  <div>
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <h4 className="font-bold text-slate-900">
-                                        {assessment.title ||
-                                          "Module Assessment"}
-                                      </h4>
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <h4 className="font-bold text-slate-900">
+              {assessment.title || "Module Assessment"}
+            </h4>
 
-                                      <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
-                                        {assessment.type ===
-                                        "project"
-                                          ? "Project"
-                                          : "Exercise"}
-                                      </span>
-                                    </div>
+            <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
+              {assessment.type === "project"
+                ? "Project"
+                : "Exercise"}
+            </span>
+          </div>
 
-                                    {assessment.description && (
-                                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                                        {
-                                          assessment.description
-                                        }
-                                      </p>
-                                    )}
+          {assessment.description && (
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              {assessment.description}
+            </p>
+          )}
 
-                                    {assessment.required && (
-                                      <p className="mt-3 text-xs font-semibold text-slate-500">
-                                        Required for course completion
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
+          {assessment.required && (
+            <p className="mt-3 text-xs font-semibold text-slate-500">
+              Required for course completion
+            </p>
+          )}
 
-                                <div className="shrink-0">
-                                  <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-500">
-                                    <ClipboardCheck
-                                      size={17}
-                                    />
-                                    Assessment
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+          {/* Submission Type */}
+          {assessment.submissionType &&
+            assessment.submissionType !== "none" && (
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-slate-500">
+                  Submission Type:
+                </span>
+
+                <span className="inline-flex items-center rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs font-bold capitalize text-blue-700">
+                  {assessment.submissionType === "url"
+                    ? "URL"
+                    : assessment.submissionType}
+                </span>
+              </div>
+            )}
+
+          {/* Assessment Resource */}
+          {assessment.resource && (
+            <div className="mt-4">
+              <a
+                href={assessment.resource}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:underline"
+              >
+                View assessment resource
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="shrink-0">
+        <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-500">
+          <ClipboardCheck size={17} />
+          Assessment
+        </span>
+      </div>
+    </div>
+  </div>
+)}
                         </div>
                       )}
                     </Card>
@@ -1883,58 +1929,58 @@ const handleDeleteNote = (lessonId) => {
                 },
               )}
               {allLessons.length > 0 && (
-  <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-    <Button
-      type="button"
-      variant="outline"
-      disabled={!previousLesson}
-      onClick={handlePreviousLesson}
-      className="w-full sm:w-auto"
-    >
-      <ArrowLeft
-        className="mr-2"
-        size={18}
-      />
+                <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={!previousLesson}
+                    onClick={handlePreviousLesson}
+                    className="w-full sm:w-auto"
+                  >
+                    <ArrowLeft
+                      className="mr-2"
+                      size={18}
+                    />
 
-      <span>
-        {previousLesson
-          ? "Previous Lesson"
-          : "First Lesson"}
-      </span>
-    </Button>
+                    <span>
+                      {previousLesson
+                        ? "Previous Lesson"
+                        : "First Lesson"}
+                    </span>
+                  </Button>
 
-    <div className="text-center">
-      {currentLessonIndex >= 0 && (
-        <p className="text-xs font-semibold text-slate-500">
-          Lesson {currentLessonIndex + 1} of{" "}
-          {allLessons.length}
-        </p>
-      )}
-    </div>
+                  <div className="text-center">
+                    {currentLessonIndex >= 0 && (
+                      <p className="text-xs font-semibold text-slate-500">
+                        Lesson {currentLessonIndex + 1} of{" "}
+                        {allLessons.length}
+                      </p>
+                    )}
+                  </div>
 
-    <Button
-      type="button"
-      disabled={!nextLesson}
-      onClick={handleNextLesson}
-      className="w-full sm:w-auto"
-    >
-      <span>
-        {nextLesson
-          ? "Next Lesson"
-          : "Course Complete"}
-      </span>
+                  <Button
+                    type="button"
+                    disabled={!nextLesson}
+                    onClick={handleNextLesson}
+                    className="w-full sm:w-auto"
+                  >
+                    <span>
+                      {nextLesson
+                        ? "Next Lesson"
+                        : "Course Complete"}
+                    </span>
 
-      {nextLesson && (
-        <ArrowRight
-          className="ml-2"
-          size={18}
-        />
-      )}
-    </Button>
-  </div>
-)}
-            </div>
-          ) : (
+                    {nextLesson && (
+                      <ArrowRight
+                        className="ml-2"
+                        size={18}
+                      />
+                    )}
+                  </Button>
+                </div>
+              )}
+              </div>
+            ) : (
             <Card className="mt-12 text-center lg:mt-16">
               <BookOpen
                 className="mx-auto text-blue-500"
@@ -1982,7 +2028,7 @@ const handleDeleteNote = (lessonId) => {
                   <Trophy size={20} />
                   Lesson requirements completed
                 </div>
-
+            
                 <p className="mt-2 text-sm leading-6 text-yellow-700">
                   Your remaining assessments and final
                   course requirements will determine
@@ -2121,10 +2167,6 @@ const handleDeleteNote = (lessonId) => {
           </div>
         </section>
       )}
-
-      {/* ==================================================
-          NEWSLETTER / CTA
-      ================================================== */}
 
       <Newsletter />
 

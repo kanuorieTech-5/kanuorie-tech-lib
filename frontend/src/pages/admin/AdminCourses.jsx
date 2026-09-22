@@ -30,6 +30,7 @@ import {
 const emptyLesson = {
   title: "",
   description: "",
+  lessonContent: "",
   videoUrl: "",
   duration: 0,
   order: 1,
@@ -669,6 +670,7 @@ export default function AdminCourses() {
             ? module.lessons.map((lesson, lessonIndex) => ({
                 title: lesson.title?.trim() || "",
                 description: lesson.description?.trim() || "",
+                lessonContent: lesson.lessonContent || "",
                 videoUrl: lesson.videoUrl?.trim() || "",
 
                 duration: Number(lesson.duration) || 0,
@@ -1518,6 +1520,22 @@ export default function AdminCourses() {
                                             }
                                             placeholder="Explain what this lesson covers..."
                                             rows={3}
+                                          />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                          <TextAreaField
+                                            label="Lesson Content:"
+                                            value={lesson.lessonContent}
+                                            onChange={(value) =>
+                                              updateModuleLesson(
+                                                moduleIndex,
+                                                lessonIndex,
+                                                "lessonContent",
+                                                value,
+                                              )
+                                            }
+                                            placeholder="Write the full lesson content here. You can explain concepts, provide examples, instructions, code snippets, tips, and practical explanations..."
+                                            rows={12}
                                           />
                                         </div>
                                       </div>
