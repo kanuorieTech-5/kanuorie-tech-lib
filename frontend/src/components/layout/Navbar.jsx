@@ -2,13 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 
-import {
-  Logo,
-  SearchBar,
-  NotificationBell,
-  UserDropdown,
-  MobileMenu,
-} from ".";
+import { Logo, SearchBar, NotificationBell, UserDropdown, MobileMenu } from ".";
 
 import { useAuth } from "../../contexts";
 
@@ -89,10 +83,7 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-      />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
     </>
   );
 }

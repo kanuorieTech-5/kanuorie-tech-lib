@@ -32,12 +32,8 @@ export default function Newsletter() {
   };
 
   return (
-    <section
-      className=" bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white"
-    >
-      <div
-        className="px-6 text-center"
-      >
+    <section className=" bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white">
+      <div className="px-6 text-center">
         <SectionTitle
           Badge="Stay Connected"
           title="Get Technology Updates Delivered"
@@ -72,13 +68,7 @@ export default function Newsletter() {
           </Button>
         </form>
 
-        {message && (
-          <p
-            className="mt-5 text-sm text-white"
-          >
-            {message}
-          </p>
-        )}
+        {message && <p className="mt-5 text-sm text-white">{message}</p>}
       </div>
     </section>
   );

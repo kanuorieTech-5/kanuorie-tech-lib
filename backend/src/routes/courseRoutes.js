@@ -9,11 +9,12 @@ const {
   deleteCourse,
   enrollCourse,
   completeLesson,
+  submitAssessment,
+  completeModule,
   updateCurrentLesson,
   updateProgress,
   updateNotes,
 } = require("../controllers/courseController");
-
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -60,6 +61,27 @@ router.put(
   protect,
   completeLesson
 );
+
+/* ==========================================
+   SUBMIT MODULE ASSESSMENT
+========================================== */
+
+router.post(
+  "/:id/modules/:moduleId/assessment",
+  protect,
+  submitAssessment
+);
+
+/* ==========================================
+   COMPLETE MODULE
+========================================== */
+
+router.put(
+  "/:id/modules/:moduleId/complete",
+  protect,
+  completeModule
+);
+
 /* ==========================================
    UPDATE CURRENT LESSON
 ========================================== */

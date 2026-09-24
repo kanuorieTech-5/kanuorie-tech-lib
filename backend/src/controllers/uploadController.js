@@ -4,7 +4,7 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 
 /* ==========================================
-   UPLOAD FILE
+   IMAGE / FILE UPLOAD
 ========================================== */
 
 const uploadImage = asyncHandler(async (req, res) => {
@@ -53,6 +53,41 @@ const uploadImage = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
+   ASSESSMENT FILE UPLOAD
+========================================== */
+
+const uploadAssessmentFile = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(400, "Please select an assessment file to upload.");
+  }
+
+  const folder = "kanuorietech/assessments";
+
+  const dataURI = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+    "base64"
+  )}`;
+
+  const result = await cloudinary.uploader.upload(dataURI, {
+    folder,
+    resource_type: "auto",
+  });
+
+  return ApiResponse.success(
+    res,
+    {
+      url: result.secure_url,
+      publicId: result.public_id,
+      originalName: req.file.originalname,
+      format: result.format,
+      bytes: result.bytes,
+      resourceType: result.resource_type,
+      createdAt: result.created_at,
+    },
+    "Assessment file uploaded successfully."
+  );
+});
+
+/* ==========================================
    DELETE FILE
 ========================================== */
 
@@ -79,6 +114,7 @@ const deleteImage = asyncHandler(async (req, res) => {
 ========================================== */
 
 module.exports = {
-   uploadImage,
-   deleteImage,
+  uploadImage,
+  uploadAssessmentFile,
+  deleteImage,
 };

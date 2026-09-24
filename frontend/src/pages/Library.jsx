@@ -67,28 +67,15 @@ const formatExternalResources = () => {
   return defaultResources.map((resource, index) => ({
     ...resource,
 
-    resourceId: String(
-      resource.id ?? resource._id ?? index
-    ),
+    resourceId: String(resource.id ?? resource._id ?? index),
 
-    resourceType:
-      RESOURCE_TYPES.EXTERNAL,
+    resourceType: RESOURCE_TYPES.EXTERNAL,
 
-    description:
-      resource.description ??
-      resource.desc ??
-      "",
+    description: resource.description ?? resource.desc ?? "",
 
-    image:
-      resource.image ??
-      resource.img ??
-      resource.coverImage ??
-      "",
+    image: resource.image ?? resource.img ?? resource.coverImage ?? "",
 
-    link:
-      resource.link ??
-      resource.url ??
-      "",
+    link: resource.link ?? resource.url ?? "",
   }));
 };
 
@@ -97,38 +84,20 @@ const formatExternalResources = () => {
 ========================================== */
 
 const formatBooks = (response) => {
-  const books = extractArray(response, [
-    "books",
-    "items",
-  ]);
+  const books = extractArray(response, ["books", "items"]);
 
   return books.map((book, index) => ({
     ...book,
 
-    resourceId: String(
-      book._id ??
-      book.id ??
-      `book-${index}`
-    ),
+    resourceId: String(book._id ?? book.id ?? `book-${index}`),
 
-    resourceType:
-      RESOURCE_TYPES.BOOK,
+    resourceType: RESOURCE_TYPES.BOOK,
 
-    description:
-      book.description ??
-      book.desc ??
-      "",
+    description: book.description ?? book.desc ?? "",
 
-    image:
-      book.image ??
-      book.coverImage ??
-      book.img ??
-      "",
+    image: book.image ?? book.coverImage ?? book.img ?? "",
 
-    link:
-      book.link ??
-      book.url ??
-      "",
+    link: book.link ?? book.url ?? "",
   }));
 };
 
@@ -137,39 +106,20 @@ const formatBooks = (response) => {
 ========================================== */
 
 const formatCourses = (response) => {
-  const courses = extractArray(response, [
-    "courses",
-    "items",
-  ]);
+  const courses = extractArray(response, ["courses", "items"]);
 
   return courses.map((course, index) => ({
     ...course,
 
-    resourceId: String(
-      course._id ??
-      course.id ??
-      `course-${index}`
-    ),
+    resourceId: String(course._id ?? course.id ?? `course-${index}`),
 
-    resourceType:
-      RESOURCE_TYPES.COURSE,
+    resourceType: RESOURCE_TYPES.COURSE,
 
-    description:
-      course.description ??
-      course.desc ??
-      course.excerpt ??
-      "",
+    description: course.description ?? course.desc ?? course.excerpt ?? "",
 
-    image:
-      course.image ??
-      course.coverImage ??
-      course.thumbnail ??
-      "",
+    image: course.image ?? course.coverImage ?? course.thumbnail ?? "",
 
-    link:
-      course.link ??
-      course.url ??
-      "",
+    link: course.link ?? course.url ?? "",
   }));
 };
 
@@ -178,24 +128,17 @@ const formatCourses = (response) => {
 ========================================== */
 
 const formatSavedResources = (response) => {
-  return extractArray(response, [
-    "items",
-    "resources",
-    "savedResources",
-  ]).map((resource) => ({
-    ...resource,
+  return extractArray(response, ["items", "resources", "savedResources"]).map(
+    (resource) => ({
+      ...resource,
 
-    resourceId: String(
-      resource.resourceId ??
-      resource._id ??
-      resource.id ??
-      ""
-    ),
+      resourceId: String(
+        resource.resourceId ?? resource._id ?? resource.id ?? "",
+      ),
 
-    resourceType:
-      resource.resourceType ??
-      RESOURCE_TYPES.EXTERNAL,
-  }));
+      resourceType: resource.resourceType ?? RESOURCE_TYPES.EXTERNAL,
+    }),
+  );
 };
 
 /* ==========================================
@@ -239,26 +182,19 @@ export default function Library() {
 
   const [resources, setResources] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
-  const [category, setCategory] =
-    useState("All");
+  const [category, setCategory] = useState("All");
 
-  const [savedResources, setSavedResources] =
-    useState([]);
+  const [savedResources, setSavedResources] = useState([]);
 
-  const [savingKey, setSavingKey] =
-    useState(null);
+  const [savingKey, setSavingKey] = useState(null);
 
-  const [toast, setToast] =
-    useState("");
+  const [toast, setToast] = useState("");
 
-  const [page, setPage] =
-    useState(1);
+  const [page, setPage] = useState(1);
 
   /* ========================================
      LOAD LIBRARY
@@ -272,60 +208,45 @@ export default function Library() {
     setLoading(true);
 
     try {
-      const [
-        booksResponse,
-        coursesResponse,
-        savedResponse,
-      ] = await Promise.all([
-        getBooks().catch((error) => {
-          console.error(
-            "Failed to load books:",
-            error
-          );
+      const [booksResponse, coursesResponse, savedResponse] = await Promise.all(
+        [
+          getBooks().catch((error) => {
+            console.error("Failed to load books:", error);
 
-          return null;
-        }),
+            return null;
+          }),
 
-        getCourses().catch((error) => {
-          console.error(
-            "Failed to load courses:",
-            error
-          );
+          getCourses().catch((error) => {
+            console.error("Failed to load courses:", error);
 
-          return null;
-        }),
+            return null;
+          }),
 
-        getSavedResources().catch((error) => {
-          /*
-           * A logged-out visitor will normally
-           * receive 401 from this protected
-           * endpoint. That should not prevent
-           * the public Library from loading.
-           */
+          getSavedResources().catch((error) => {
+            /*
+             * A logged-out visitor will normally
+             * receive 401 from this protected
+             * endpoint. That should not prevent
+             * the public Library from loading.
+             */
 
-          console.info(
-            "Saved resources unavailable:",
-            error?.response?.status ||
-              error?.message
-          );
+            console.info(
+              "Saved resources unavailable:",
+              error?.response?.status || error?.message,
+            );
 
-          return null;
-        }),
-      ]);
+            return null;
+          }),
+        ],
+      );
 
-      const externalResources =
-        formatExternalResources();
+      const externalResources = formatExternalResources();
 
-      const books =
-        formatBooks(booksResponse);
+      const books = formatBooks(booksResponse);
 
-      const courses =
-        formatCourses(coursesResponse);
+      const courses = formatCourses(coursesResponse);
 
-      const saved =
-        formatSavedResources(
-          savedResponse
-        );
+      const saved = formatSavedResources(savedResponse);
 
       /* ======================================
          COMBINE PUBLIC RESOURCES
@@ -336,11 +257,7 @@ export default function Library() {
          courses
       ====================================== */
 
-      const combined = [
-        ...externalResources,
-        ...books,
-        ...courses,
-      ];
+      const combined = [...externalResources, ...books, ...courses];
 
       /* ======================================
          REMOVE DUPLICATES
@@ -355,22 +272,17 @@ export default function Library() {
           combined.map((resource) => [
             `${resource.resourceType}:${resource.resourceId}`,
             resource,
-          ])
-        ).values()
+          ]),
+        ).values(),
       );
 
       setResources(unique);
 
       setSavedResources(saved);
     } catch (error) {
-      console.error(
-        "Library loading error:",
-        error
-      );
+      console.error("Library loading error:", error);
 
-      setResources(
-        formatExternalResources()
-      );
+      setResources(formatExternalResources());
 
       setSavedResources([]);
     } finally {
@@ -397,10 +309,8 @@ export default function Library() {
   const savedKeys = useMemo(() => {
     return new Set(
       savedResources
-        .map((resource) =>
-          getResourceKey(resource)
-        )
-        .filter(Boolean)
+        .map((resource) => getResourceKey(resource))
+        .filter(Boolean),
     );
   }, [savedResources]);
 
@@ -409,93 +319,60 @@ export default function Library() {
   ========================================== */
 
   const filteredResources = useMemo(() => {
-    const normalizedSearch =
-      search.trim().toLowerCase();
+    const normalizedSearch = search.trim().toLowerCase();
 
     return resources.filter((resource) => {
-      const title =
-        resource.title
-          ?.toLowerCase() || "";
+      const title = resource.title?.toLowerCase() || "";
 
-      const description =
-        (
-          resource.description ??
-          resource.desc ??
-          ""
-        ).toLowerCase();
+      const description = (
+        resource.description ??
+        resource.desc ??
+        ""
+      ).toLowerCase();
 
-      const resourceCategory =
-        resource.category ||
-        "General";
+      const resourceCategory = resource.category || "General";
 
       const matchesSearch =
         !normalizedSearch ||
-        title.includes(
-          normalizedSearch
-        ) ||
-        description.includes(
-          normalizedSearch
-        );
+        title.includes(normalizedSearch) ||
+        description.includes(normalizedSearch);
 
       const matchesCategory =
-        category === "All" ||
-        resourceCategory === category;
+        category === "All" || resourceCategory === category;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
-  }, [
-    resources,
-    search,
-    category,
-  ]);
+  }, [resources, search, category]);
 
   /* ==========================================
      RECOMMENDED RESOURCES
   ========================================== */
 
-  const recommendedResources =
-    useMemo(() => {
-      if (!savedResources.length) {
-        return [];
-      }
+  const recommendedResources = useMemo(() => {
+    if (!savedResources.length) {
+      return [];
+    }
 
-      const savedCategories = [
-        ...new Set(
-          savedResources
-            .map(
-              (resource) =>
-                resource.category ||
-                "General"
-            )
-            .filter(Boolean)
-        ),
-      ];
+    const savedCategories = [
+      ...new Set(
+        savedResources
+          .map((resource) => resource.category || "General")
+          .filter(Boolean),
+      ),
+    ];
 
-      return resources
-        .filter((resource) => {
-          const resourceCategory =
-            resource.category ||
-            "General";
+    return resources
+      .filter((resource) => {
+        const resourceCategory = resource.category || "General";
 
-          const key =
-            getResourceKey(resource);
+        const key = getResourceKey(resource);
 
-          return (
-            savedCategories.includes(
-              resourceCategory
-            ) &&
-            !savedKeys.has(key)
-          );
-        })
-        .slice(0, 6);
-    }, [
-      resources,
-      savedResources,
-      savedKeys,
-    ]);
+        return (
+          savedCategories.includes(resourceCategory) && !savedKeys.has(key)
+        );
+      })
+      .slice(0, 6);
+  }, [resources, savedResources, savedKeys]);
 
   /* ==========================================
      PAGINATION
@@ -503,35 +380,23 @@ export default function Library() {
 
   const totalPages = Math.max(
     1,
-    Math.ceil(
-      filteredResources.length /
-        BOOKS_PER_PAGE
-    )
+    Math.ceil(filteredResources.length / BOOKS_PER_PAGE),
   );
 
-  const paginatedResources =
-    filteredResources.slice(
-      (page - 1) *
-        BOOKS_PER_PAGE,
-      page *
-        BOOKS_PER_PAGE
-    );
+  const paginatedResources = filteredResources.slice(
+    (page - 1) * BOOKS_PER_PAGE,
+    page * BOOKS_PER_PAGE,
+  );
 
   /* ==========================================
      RESET INVALID PAGE
   ========================================== */
 
   useEffect(() => {
-    if (
-      page > totalPages &&
-      totalPages > 0
-    ) {
+    if (page > totalPages && totalPages > 0) {
       setPage(totalPages);
     }
-  }, [
-    page,
-    totalPages,
-  ]);
+  }, [page, totalPages]);
 
   /* ==========================================
      RESET PAGE WHEN FILTER CHANGES
@@ -539,25 +404,17 @@ export default function Library() {
 
   useEffect(() => {
     setPage(1);
-  }, [
-    search,
-    category,
-  ]);
+  }, [search, category]);
 
   /* ==========================================
      SAVE RESOURCE
   ========================================== */
 
-  const handleSave = async (
-    resource
-  ) => {
-    const key =
-      getResourceKey(resource);
+  const handleSave = async (resource) => {
+    const key = getResourceKey(resource);
 
     if (!key) {
-      setToast(
-        "Unable to save this resource."
-      );
+      setToast("Unable to save this resource.");
 
       return;
     }
@@ -567,9 +424,7 @@ export default function Library() {
     ====================================== */
 
     if (savedKeys.has(key)) {
-      setToast(
-        "This resource is already saved."
-      );
+      setToast("This resource is already saved.");
 
       return;
     }
@@ -578,9 +433,7 @@ export default function Library() {
        RESOURCE TYPE
     ====================================== */
 
-    const resourceType =
-      resource.resourceType ||
-      RESOURCE_TYPES.EXTERNAL;
+    const resourceType = resource.resourceType || RESOURCE_TYPES.EXTERNAL;
 
     try {
       setSavingKey(key);
@@ -596,89 +449,50 @@ export default function Library() {
       ==================================== */
 
       const payload = {
-        resourceId:
-          String(
-            resource.resourceId
-          ),
+        resourceId: String(resource.resourceId),
 
         resourceType,
 
-        title:
-          resource.title || "Untitled Resource",
+        title: resource.title || "Untitled Resource",
 
-        description:
-          resource.description ??
-          resource.desc ??
-          "",
+        description: resource.description ?? resource.desc ?? "",
 
-        category:
-          resource.category ||
-          "General",
+        category: resource.category || "General",
 
-        image:
-          resource.image ??
-          resource.img ??
-          resource.coverImage ??
-          "",
+        image: resource.image ?? resource.img ?? resource.coverImage ?? "",
 
-        link:
-          resource.link ??
-          resource.url ??
-          "",
+        link: resource.link ?? resource.url ?? "",
       };
 
-      const response =
-        await saveResource(
-          payload
-        );
+      const response = await saveResource(payload);
 
-      const saved =
-        response?.data?.resource ||
-        response?.resource ||
-        null;
+      const saved = response?.data?.resource || response?.resource || null;
 
       const savedItem = {
         ...(saved || payload),
 
-        resourceId: String(
-          saved?.resourceId ??
-          payload.resourceId
-        ),
+        resourceId: String(saved?.resourceId ?? payload.resourceId),
 
-        resourceType:
-          saved?.resourceType ??
-          payload.resourceType,
+        resourceType: saved?.resourceType ?? payload.resourceType,
       };
 
       /* ====================================
          UPDATE LOCAL STATE
       ==================================== */
 
-      setSavedResources(
-        (previous) => {
-          const alreadyExists =
-            previous.some(
-              (item) =>
-                getResourceKey(item) ===
-                getResourceKey(
-                  savedItem
-                )
-            );
+      setSavedResources((previous) => {
+        const alreadyExists = previous.some(
+          (item) => getResourceKey(item) === getResourceKey(savedItem),
+        );
 
-          if (alreadyExists) {
-            return previous;
-          }
-
-          return [
-            savedItem,
-            ...previous,
-          ];
+        if (alreadyExists) {
+          return previous;
         }
-      );
 
-      setToast(
-        "Saved to your Library ✓"
-      );
+        return [savedItem, ...previous];
+      });
+
+      setToast("Saved to your Library ✓");
 
       /*
        * Kept only for compatibility with
@@ -686,30 +500,18 @@ export default function Library() {
        *
        * Backend remains the source of truth.
        */
-      window.dispatchEvent(
-        new Event("library-update")
-      );
+      window.dispatchEvent(new Event("library-update"));
     } catch (error) {
-      console.error(
-        "Failed to save resource:",
-        error
-      );
+      console.error("Failed to save resource:", error);
 
-      const status =
-        error?.response?.status;
+      const status = error?.response?.status;
 
-      const message =
-        error?.response?.data?.message;
+      const message = error?.response?.data?.message;
 
       if (status === 401) {
-        setToast(
-          "Please log in to save resources."
-        );
+        setToast("Please log in to save resources.");
       } else {
-        setToast(
-          message ||
-            "Failed to save resource."
-        );
+        setToast(message || "Failed to save resource.");
       }
     } finally {
       setSavingKey(null);
@@ -720,11 +522,8 @@ export default function Library() {
      UNSAVE RESOURCE
   ========================================== */
 
-  const handleRemove = async (
-    resource
-  ) => {
-    const key =
-      getResourceKey(resource);
+  const handleRemove = async (resource) => {
+    const key = getResourceKey(resource);
 
     if (!key) {
       return;
@@ -733,48 +532,26 @@ export default function Library() {
     try {
       setSavingKey(key);
 
-      await removeSavedResource(
-        resource.resourceId,
-        resource.resourceType
+      await removeSavedResource(resource.resourceId, resource.resourceType);
+
+      setSavedResources((previous) =>
+        previous.filter((item) => getResourceKey(item) !== key),
       );
 
-      setSavedResources(
-        (previous) =>
-          previous.filter(
-            (item) =>
-              getResourceKey(item) !==
-              key
-          )
-      );
+      setToast("Removed from your Library.");
 
-      setToast(
-        "Removed from your Library."
-      );
-
-      window.dispatchEvent(
-        new Event("library-update")
-      );
+      window.dispatchEvent(new Event("library-update"));
     } catch (error) {
-      console.error(
-        "Failed to remove saved resource:",
-        error
-      );
+      console.error("Failed to remove saved resource:", error);
 
-      const status =
-        error?.response?.status;
+      const status = error?.response?.status;
 
-      const message =
-        error?.response?.data?.message;
+      const message = error?.response?.data?.message;
 
       if (status === 401) {
-        setToast(
-          "Please log in to manage saved resources."
-        );
+        setToast("Please log in to manage saved resources.");
       } else {
-        setToast(
-          message ||
-            "Failed to remove resource."
-        );
+        setToast(message || "Failed to remove resource.");
       }
     } finally {
       setSavingKey(null);
@@ -790,13 +567,11 @@ export default function Library() {
       return;
     }
 
-    const timer =
-      setTimeout(() => {
-        setToast("");
-      }, 3000);
+    const timer = setTimeout(() => {
+      setToast("");
+    }, 3000);
 
-    return () =>
-      clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [toast]);
 
   /* ==========================================
@@ -811,7 +586,6 @@ export default function Library() {
           {toast}
         </div>
       )}
-     
 
       {/* ======================================
           SEARCH + FILTER
@@ -819,15 +593,11 @@ export default function Library() {
 
       <section className="bg-slate-200 py-10">
         <div className="px-6">
-          <h1 className="text-4xl font-bold">
-            Digital Library
-          </h1>
+          <h1 className="text-4xl font-bold">Digital Library</h1>
 
           <p className="mt-4 max-w-2xl text-gray-600">
-            Explore curated books,
-            tutorials, courses, and
-            resources designed for
-            modern developers.
+            Explore curated books, tutorials, courses, and resources designed
+            for modern developers.
           </p>
 
           <div className="mt-8 flex flex-col gap-4 md:flex-row">
@@ -856,21 +626,14 @@ export default function Library() {
             <div className="text-center">
               <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
 
-              <p className="mt-4 text-sm text-gray-600">
-                Loading library...
-              </p>
+              <p className="mt-4 text-sm text-gray-600">Loading library...</p>
             </div>
           </div>
-        ) : paginatedResources.length >
-          0 ? (
+        ) : paginatedResources.length > 0 ? (
           <>
             <ResourceGrid
-              resources={
-                paginatedResources
-              }
-              savedIds={
-                Array.from(savedKeys)
-              }
+              resources={paginatedResources}
+              savedIds={Array.from(savedKeys)}
               savingId={savingKey}
               onSave={handleSave}
               onRemove={handleRemove}
@@ -889,13 +652,7 @@ export default function Library() {
                   type="button"
                   disabled={page <= 1}
                   onClick={() => {
-                    setPage(
-                      (currentPage) =>
-                        Math.max(
-                          currentPage - 1,
-                          1
-                        )
-                    );
+                    setPage((currentPage) => Math.max(currentPage - 1, 1));
 
                     window.scrollTo({
                       top: 0,
@@ -908,22 +665,15 @@ export default function Library() {
                 </button>
 
                 <span className="min-w-[100px] text-center text-sm text-gray-600">
-                  Page {page} of{" "}
-                  {totalPages}
+                  Page {page} of {totalPages}
                 </span>
 
                 <button
                   type="button"
-                  disabled={
-                    page >= totalPages
-                  }
+                  disabled={page >= totalPages}
                   onClick={() => {
-                    setPage(
-                      (currentPage) =>
-                        Math.min(
-                          currentPage + 1,
-                          totalPages
-                        )
+                    setPage((currentPage) =>
+                      Math.min(currentPage + 1, totalPages),
                     );
 
                     window.scrollTo({
@@ -940,19 +690,14 @@ export default function Library() {
           </>
         ) : (
           <div className="rounded-2xl border bg-white px-6 py-16 text-center shadow-sm">
-            <h2 className="text-2xl font-bold">
-              No resources found
-            </h2>
+            <h2 className="text-2xl font-bold">No resources found</h2>
 
             <p className="mx-auto mt-3 max-w-md text-gray-600">
-              We couldn't find any
-              resources matching your
-              search or selected
+              We couldn't find any resources matching your search or selected
               category.
             </p>
 
-            {(search ||
-              category !== "All") && (
+            {(search || category !== "All") && (
               <button
                 type="button"
                 onClick={() => {
@@ -968,15 +713,10 @@ export default function Library() {
         )}
       </section>
 
-       {recommendedResources.length >
-        0 && (
+      {recommendedResources.length > 0 && (
         <RecommendedResources
-          resources={
-            recommendedResources
-          }
-          savedIds={
-            Array.from(savedKeys)
-          }
+          resources={recommendedResources}
+          savedIds={Array.from(savedKeys)}
           savingId={savingKey}
           onSave={handleSave}
           onRemove={handleRemove}

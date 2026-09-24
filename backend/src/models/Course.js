@@ -5,54 +5,42 @@ const slugify = require("../helpers/slugify");
    LESSON SCHEMA
 ========================================== */
 
-const lessonSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    description: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    lessonContent: {
-      type: String,
-      default: "",
-    },
-
-    videoUrl: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    duration: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    order: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    resources: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+const lessonSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
   },
-  {
-    _id: true,
-  }
-);
+
+  description: {
+    type: String,
+    default: "",
+  },
+
+  lessonContent: {
+    type: String,
+    default: "",
+  },
+
+  videoUrl: {
+    type: String,
+    default: "",
+  },
+
+  duration: {
+    type: Number,
+    default: 0,
+  },
+
+  order: {
+    type: Number,
+    default: 1,
+  },
+
+  resources: {
+    type: [String],
+    default: [],
+  },
+});
 
 /* ==========================================
    MODULE ASSESSMENT SCHEMA

@@ -1,28 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  BookOpen,
-  Github,
-  Globe,
-  Search,
-} from "lucide-react";
+import { ArrowUpRight, BookOpen, Github, Globe, Search } from "lucide-react";
 
-import {
-  Card,
-  Button,
-  Loader,
-  Pagination,
-} from "../components/common";
+import { Card, Button, Loader, Pagination } from "../components/common";
 import { SearchBar } from "../components/layout";
 import { getProducts } from "../services";
 import { CTA, Newsletter } from "../components/home";
 
 const PER_PAGE = 12;
 
-const PRODUCT_PLACEHOLDER =
-  "/images/product-placeholder.png";
+const PRODUCT_PLACEHOLDER = "/images/product-placeholder.png";
 
 const CATEGORIES = [
   "All",
@@ -64,16 +52,11 @@ const getProductId = (product) => {
 };
 
 const getPricingLabel = (product) => {
-  const pricingType =
-    product?.pricingType || "Free";
+  const pricingType = product?.pricingType || "Free";
 
   const price = Number(product?.price);
 
-  if (
-    pricingType === "Paid" &&
-    Number.isFinite(price) &&
-    price > 0
-  ) {
+  if (pricingType === "Paid" && Number.isFinite(price) && price > 0) {
     return `${product?.currency || "USD"} ${price.toLocaleString()}`;
   }
 
@@ -113,15 +96,8 @@ export default function Products() {
         setError("");
 
         const response = await getProducts({
-          page,
-          limit: 12,
+          limit: 100,
           published: true,
-          ...(category !== "All" && {
-            category,
-          }),
-          ...(search.trim() && {
-            search: search.trim(),
-          }),
         });
         const data = getProductsData(response);
 
@@ -129,10 +105,7 @@ export default function Products() {
           setProducts(data);
         }
       } catch (err) {
-        console.error(
-          "Failed to load products:",
-          err,
-        );
+        console.error("Failed to load products:", err);
 
         if (mounted) {
           setProducts([]);
@@ -156,41 +129,29 @@ export default function Products() {
 
   const availableCategories = useMemo(() => {
     const existingCategories = new Set(
-      products
-        .map((product) => product?.category)
-        .filter(Boolean),
+      products.map((product) => product?.category).filter(Boolean),
     );
 
     return CATEGORIES.filter(
-      (item) =>
-        item === "All" ||
-        existingCategories.has(item),
+      (item) => item === "All" || existingCategories.has(item),
     );
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    const query = search
-      .trim()
-      .toLowerCase();
+    const query = search.trim().toLowerCase();
 
     return products.filter((product) => {
-      const name =
-        product?.name?.toLowerCase() || "";
+      const name = product?.name?.toLowerCase() || "";
 
-      const excerpt =
-        product?.excerpt?.toLowerCase() || "";
+      const excerpt = product?.excerpt?.toLowerCase() || "";
 
-      const description =
-        product?.description?.toLowerCase() || "";
+      const description = product?.description?.toLowerCase() || "";
 
-      const technologies = Array.isArray(
-        product?.technologies,
-      )
+      const technologies = Array.isArray(product?.technologies)
         ? product.technologies.join(" ").toLowerCase()
         : "";
 
-      const productCategory =
-        product?.category || "";
+      const productCategory = product?.category || "";
 
       const matchesSearch =
         !query ||
@@ -200,28 +161,18 @@ export default function Products() {
         technologies.includes(query);
 
       const matchesCategory =
-        category === "All" ||
-        productCategory === category;
+        category === "All" || productCategory === category;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
   }, [products, search, category]);
 
-  const totalPages = Math.ceil(
-    filteredProducts.length / PER_PAGE,
-  );
+  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
 
   const paginatedProducts = useMemo(() => {
-    const start =
-      (page - 1) * PER_PAGE;
+    const start = (page - 1) * PER_PAGE;
 
-    return filteredProducts.slice(
-      start,
-      start + PER_PAGE,
-    );
+    return filteredProducts.slice(start, start + PER_PAGE);
   }, [filteredProducts, page]);
 
   useEffect(() => {
@@ -229,14 +180,19 @@ export default function Products() {
   }, [search, category]);
 
   useEffect(() => {
-    if (
-      totalPages > 0 &&
-      page > totalPages
-    ) {
+    if (totalPages > 0 && page > totalPages) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [page]);
+  
   if (loading) {
     return (
       <section
@@ -344,11 +300,7 @@ export default function Products() {
               backdrop-blur-xl
             "
           >
-            <BookOpen
-              size={16}
-              aria-hidden="true"
-            />
-
+            <BookOpen size={16} aria-hidden="true" />
             Developer & Business Products
           </motion.div>
 
@@ -374,11 +326,8 @@ export default function Products() {
               lg:text-7xl
             "
           >
-            Discover the{" "}
-            <span className="text-blue-400">
-              Tools
-            </span>{" "}
-            Behind Modern Digital Work
+            Discover the <span className="text-blue-400">Tools</span> Behind
+            Modern Digital Work
           </motion.h1>
 
           <motion.p
@@ -403,12 +352,9 @@ export default function Products() {
               sm:leading-8
             "
           >
-            Explore a curated directory of
-            developer tools, AI platforms,
-            databases, design software, cloud
-            services and business technologies
-            that can help you build, launch and
-            grow.
+            Explore a curated directory of developer tools, AI platforms,
+            databases, design software, cloud services and business technologies
+            that can help you build, launch and grow.
           </motion.p>
         </div>
       </section>
@@ -471,8 +417,7 @@ export default function Products() {
                 md:text-5xl
               "
             >
-              Find the right tools for
-              your work
+              Find the right tools for your work
             </h2>
 
             <p
@@ -485,10 +430,8 @@ export default function Products() {
                 lg:leading-8
               "
             >
-              Browse useful technologies
-              across development, AI, design,
-              databases, cloud, productivity
-              and business.
+              Browse useful technologies across development, AI, design,
+              databases, cloud, productivity and business.
             </p>
           </motion.div>
 
@@ -513,21 +456,14 @@ export default function Products() {
             </div>
 
             <div className="md:w-60">
-              <label
-                htmlFor="product-category"
-                className="sr-only"
-              >
+              <label htmlFor="product-category" className="sr-only">
                 Filter products by category
               </label>
 
               <select
                 id="product-category"
                 value={category}
-                onChange={(event) =>
-                  setCategory(
-                    event.target.value,
-                  )
-                }
+                onChange={(event) => setCategory(event.target.value)}
                 className="
                   w-full
                   rounded-xl
@@ -545,16 +481,11 @@ export default function Products() {
                   focus:ring-blue-100
                 "
               >
-                {availableCategories.map(
-                  (item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  ),
-                )}
+                {availableCategories.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -597,16 +528,12 @@ export default function Products() {
             <span>
               {filteredProducts.length > 0
                 ? `${filteredProducts.length} ${
-                    filteredProducts.length ===
-                    1
-                      ? "tool"
-                      : "tools"
+                    filteredProducts.length === 1 ? "tool" : "tools"
                   } found`
                 : "No tools found"}
             </span>
 
-            {(search ||
-              category !== "All") && (
+            {(search || category !== "All") && (
               <button
                 type="button"
                 onClick={() => {
@@ -652,8 +579,7 @@ export default function Products() {
               </h2>
 
               <p className="text-slate-600">
-                Try another search term or
-                choose a different category.
+                Try another search term or choose a different category.
               </p>
             </Card>
           ) : (
@@ -666,44 +592,34 @@ export default function Products() {
                 xl:grid-cols-4
               "
             >
-              {paginatedProducts.map(
-                (product, index) => {
-                  const productId =
-                    getProductId(product);
+              {paginatedProducts.map((product, index) => {
+                const productId = getProductId(product);
 
-                  const pricingType =
-                    product?.pricingType ||
-                    "Free";
+                const pricingType = product?.pricingType || "Free";
 
-                  return (
-                    <motion.div
-                      key={
-                        productId ||
-                        `product-${index}`
-                      }
-                      initial={{
-                        opacity: 0,
-                        y: 25,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.45,
-                        delay: Math.min(
-                          index * 0.06,
-                          0.3,
-                        ),
-                      }}
-                      viewport={{
-                        once: true,
-                        amount: 0.15,
-                      }}
-                      className="h-full"
-                    >
-                      <Card
-                        className="
+                return (
+                  <motion.div
+                    key={productId || `product-${index}`}
+                    initial={{
+                      opacity: 0,
+                      y: 25,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      delay: Math.min(index * 0.06, 0.3),
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.15,
+                    }}
+                    className="h-full"
+                  >
+                    <Card
+                      className="
                           group
                           flex
                           h-full
@@ -717,28 +633,18 @@ export default function Products() {
                           hover:-translate-y-1
                           hover:shadow-2xl
                         "
-                      >
-                        {/* Image */}
+                    >
+                      {/* Image */}
 
-                        <Link
-                          to={
-                            productId
-                              ? `/products/${productId}`
-                              : "#"
-                          }
-                          className="relative block overflow-hidden"
-                        >
-                          <img
-                            src={
-                              product?.image ||
-                              PRODUCT_PLACEHOLDER
-                            }
-                            alt={
-                              product?.name ||
-                              "Developer tool"
-                            }
-                            loading="lazy"
-                            className="
+                      <Link
+                        to={productId ? `/products/${productId}` : "#"}
+                        className="relative block overflow-hidden"
+                      >
+                        <img
+                          src={product?.image || PRODUCT_PLACEHOLDER}
+                          alt={product?.name || "Developer tool"}
+                          loading="lazy"
+                          className="
                               h-56
                               w-full
                               object-cover
@@ -746,27 +652,22 @@ export default function Products() {
                               duration-500
                               group-hover:scale-105
                             "
-                            onError={(
-                              event,
-                            ) => {
-                              if (
-                                event
-                                  .currentTarget
-                                  .src.includes(
-                                    PRODUCT_PLACEHOLDER,
-                                  )
-                              ) {
-                                return;
-                              }
+                          onError={(event) => {
+                            if (
+                              event.currentTarget.src.includes(
+                                PRODUCT_PLACEHOLDER,
+                              )
+                            ) {
+                              return;
+                            }
 
-                              event.currentTarget.src =
-                                PRODUCT_PLACEHOLDER;
-                            }}
-                          />
+                            event.currentTarget.src = PRODUCT_PLACEHOLDER;
+                          }}
+                        />
 
-                          {product?.featured && (
-                            <span
-                              className="
+                        {product?.featured && (
+                          <span
+                            className="
                                 absolute
                                 left-4
                                 top-4
@@ -779,35 +680,35 @@ export default function Products() {
                                 text-slate-950
                                 shadow-lg
                               "
-                            >
-                              Featured
-                            </span>
-                          )}
-                        </Link>
+                          >
+                            Featured
+                          </span>
+                        )}
+                      </Link>
 
-                        {/* Content */}
+                      {/* Content */}
 
-                        <div
-                          className="
+                      <div
+                        className="
                             flex
                             flex-1
                             flex-col
                             p-5
                           "
-                        >
-                          {/* Category + pricing */}
+                      >
+                        {/* Category + pricing */}
 
-                          <div
-                            className="
+                        <div
+                          className="
                               mb-3
                               flex
                               items-center
                               justify-between
                               gap-3
                             "
-                          >
-                            <span
-                              className="
+                        >
+                          <span
+                            className="
                                 rounded-full
                                 bg-blue-50
                                 px-3
@@ -816,33 +717,24 @@ export default function Products() {
                                 font-semibold
                                 text-blue-700
                               "
-                            >
-                              {product?.category ||
-                                "Other"}
-                            </span>
-
-                            <span
-                              className={`text-xs font-bold ${getPricingClass(
-                                pricingType,
-                              )}`}
-                            >
-                              {getPricingLabel(
-                                product,
-                              )}
-                            </span>
-                          </div>
-
-                          {/* Name */}
-
-                          <Link
-                            to={
-                              productId
-                                ? `/products/${productId}`
-                                : "#"
-                            }
                           >
-                            <h3
-                              className="
+                            {product?.category || "Other"}
+                          </span>
+
+                          <span
+                            className={`text-xs font-bold ${getPricingClass(
+                              pricingType,
+                            )}`}
+                          >
+                            {getPricingLabel(product)}
+                          </span>
+                        </div>
+
+                        {/* Name */}
+
+                        <Link to={productId ? `/products/${productId}` : "#"}>
+                          <h3
+                            className="
                                 line-clamp-2
                                 text-xl
                                 font-bold
@@ -850,54 +742,45 @@ export default function Products() {
                                 transition
                                 group-hover:text-blue-600
                               "
-                            >
-                              {product?.name ||
-                                "Developer Tool"}
-                            </h3>
-                          </Link>
+                          >
+                            {product?.name || "Developer Tool"}
+                          </h3>
+                        </Link>
 
-                          {/* Description */}
+                        {/* Description */}
 
-                          <p
-                            className="
+                        <p
+                          className="
                               mt-3
                               line-clamp-3
                               text-sm
                               leading-6
                               text-slate-600
                             "
-                          >
-                            {product?.excerpt ||
-                              product?.description ||
-                              "A useful technology for developers and businesses."}
-                          </p>
+                        >
+                          {product?.excerpt ||
+                            product?.description ||
+                            "A useful technology for developers and businesses."}
+                        </p>
 
-                          {/* Technologies */}
+                        {/* Technologies */}
 
-                          {Array.isArray(
-                            product?.technologies,
-                          ) &&
-                            product.technologies
-                              .length > 0 && (
-                              <div
-                                className="
+                        {Array.isArray(product?.technologies) &&
+                          product.technologies.length > 0 && (
+                            <div
+                              className="
                                   mt-4
                                   flex
                                   flex-wrap
                                   gap-2
                                 "
-                              >
-                                {product.technologies
-                                  .slice(0, 3)
-                                  .map(
-                                    (
-                                      technology,
-                                    ) => (
-                                      <span
-                                        key={
-                                          technology
-                                        }
-                                        className="
+                            >
+                              {product.technologies
+                                .slice(0, 3)
+                                .map((technology) => (
+                                  <span
+                                    key={technology}
+                                    className="
                                           rounded-full
                                           bg-slate-100
                                           px-2.5
@@ -905,63 +788,48 @@ export default function Products() {
                                           text-xs
                                           text-slate-600
                                         "
-                                      >
-                                        {
-                                          technology
-                                        }
-                                      </span>
-                                    ),
-                                  )}
-                              </div>
-                            )}
+                                  >
+                                    {technology}
+                                  </span>
+                                ))}
+                            </div>
+                          )}
 
-                          {/* Actions */}
+                        {/* Actions */}
 
-                          <div
-                            className="
+                        <div
+                          className="
                               mt-auto
                               flex
                               items-center
                               gap-2
                               pt-5
                             "
-                          >
-                            {productId ? (
-                              <Link
-                                to={`/products/${productId}`}
-                                className="flex-1"
-                              >
-                                <Button
-                                  fullWidth
-                                  size="sm"
-                                >
-                                  Explore
-                                  <ArrowUpRight
-                                    size={15}
-                                    className="ml-1"
-                                  />
-                                </Button>
-                              </Link>
-                            ) : (
-                              <Button
-                                fullWidth
-                                size="sm"
-                                disabled
-                              >
-                                Unavailable
+                        >
+                          {productId ? (
+                            <Link
+                              to={`/products/${productId}`}
+                              className="flex-1"
+                            >
+                              <Button fullWidth size="sm">
+                                Explore
+                                <ArrowUpRight size={15} className="ml-1" />
                               </Button>
-                            )}
+                            </Link>
+                          ) : (
+                            <Button fullWidth size="sm" disabled>
+                              Unavailable
+                            </Button>
+                          )}
 
-                            {product?.websiteUrl && (
-                              <a
-                                href={
-                                  product.websiteUrl
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`Visit ${product.name} website`}
-                                title="Official Website"
-                                className="
+                          {product?.websiteUrl && (
+                            <a
+                              href={product.websiteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Visit ${product.name} website`}
+                              title="Official Website"
+                              className="
                                   flex
                                   h-9
                                   w-9
@@ -976,23 +844,19 @@ export default function Products() {
                                   hover:border-blue-500
                                   hover:text-blue-600
                                 "
-                              >
-                                <Globe
-                                  size={16}
-                                />
-                              </a>
-                            )}
+                            >
+                              <Globe size={16} />
+                            </a>
+                          )}
 
-                            {product?.githubUrl && (
-                              <a
-                                href={
-                                  product.githubUrl
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`${product.name} GitHub`}
-                                title="GitHub"
-                                className="
+                          {product?.githubUrl && (
+                            <a
+                              href={product.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${product.name} GitHub`}
+                              title="GitHub"
+                              className="
                                   flex
                                   h-9
                                   w-9
@@ -1007,19 +871,16 @@ export default function Products() {
                                   hover:border-slate-500
                                   hover:text-slate-900
                                 "
-                              >
-                                <Github
-                                  size={16}
-                                />
-                              </a>
-                            )}
-                          </div>
+                            >
+                              <Github size={16} />
+                            </a>
+                          )}
                         </div>
-                      </Card>
-                    </motion.div>
-                  );
-                },
-              )}
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
 
@@ -1028,7 +889,7 @@ export default function Products() {
           {totalPages > 1 && (
             <div className="mt-12">
               <Pagination
-                page={page}
+                currentPage={page}
                 totalPages={totalPages}
                 onPageChange={setPage}
               />

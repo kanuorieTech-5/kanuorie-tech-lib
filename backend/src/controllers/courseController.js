@@ -497,6 +497,368 @@ const completeLesson = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
+   SUBMIT MODULE ASSESSMENT
+========================================== */
+
+const submitAssessment = asyncHandler(
+  async (req, res) => {
+    const { id: courseId, moduleId } =
+      req.params;
+
+    const {
+      submissionType,
+      text = "",
+      url = "",
+      fileUrl = "",
+    } = req.body;
+
+    /* ----------------------------------------
+       FIND COURSE
+    ---------------------------------------- */
+
+    const course = await Course.findById(
+      courseId
+    );
+
+    if (!course) {
+      throw new ApiError(
+        404,
+        "Course not found."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND USER PROGRESS
+    ---------------------------------------- */
+
+    const progress = await Progress.findOne({
+      user: req.user._id,
+      course: course._id,
+    });
+
+    if (!progress) {
+      throw new ApiError(
+        404,
+        "Progress record not found. Please enroll in this course first."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND MODULE
+    ---------------------------------------- */
+
+    const module = course.modules.id(moduleId);
+
+    if (!module) {
+      throw new ApiError(
+        404,
+        "Course module not found."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND ASSESSMENT
+    ---------------------------------------- */
+
+    const assessment = module.assessment;
+
+    if (!assessment) {
+      throw new ApiError(
+        404,
+        "This module does not have an assessment."
+      );
+    }
+
+    /* ----------------------------------------
+       VALIDATE SUBMISSION TYPE
+    ---------------------------------------- */
+
+    const allowedTypes = [
+      "text",
+      "url",
+      "file",
+    ];
+
+    if (
+      !allowedTypes.includes(
+        submissionType
+      )
+    ) {
+      throw new ApiError(
+        400,
+        "Invalid assessment submission type."
+      );
+    }
+
+    if (
+      assessment.submissionType !==
+      submissionType
+    ) {
+      throw new ApiError(
+        400,
+        `This assessment requires a ${assessment.submissionType} submission.`
+      );
+    }
+
+    /* ----------------------------------------
+       VALIDATE SUBMISSION CONTENT
+    ---------------------------------------- */
+
+    if (
+      submissionType === "text" &&
+      !String(text).trim()
+    ) {
+      throw new ApiError(
+        400,
+        "Please enter your assessment response."
+      );
+    }
+
+    if (
+      submissionType === "url" &&
+      !String(url).trim()
+    ) {
+      throw new ApiError(
+        400,
+        "Please provide your project URL."
+      );
+    }
+
+    if (
+      submissionType === "file" &&
+      !String(fileUrl).trim()
+    ) {
+      throw new ApiError(
+        400,
+        "Please upload your assessment file."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND EXISTING SUBMISSION
+    ---------------------------------------- */
+
+    const existingSubmission =
+      progress.assessmentSubmissions.find(
+        (submission) =>
+          String(submission.module) ===
+            String(module._id) &&
+          String(submission.assessment) ===
+            String(assessment._id)
+      );
+
+    if (existingSubmission) {
+      existingSubmission.submissionType =
+        submissionType;
+
+      existingSubmission.text =
+        submissionType === "text"
+          ? String(text).trim()
+          : "";
+
+      existingSubmission.url =
+        submissionType === "url"
+          ? String(url).trim()
+          : "";
+
+      existingSubmission.fileUrl =
+        submissionType === "file"
+          ? String(fileUrl).trim()
+          : "";
+
+      existingSubmission.status =
+        "submitted";
+
+      existingSubmission.submittedAt =
+        new Date();
+
+      existingSubmission.reviewedAt = null;
+    } else {
+      progress.assessmentSubmissions.push({
+        module: module._id,
+        assessment: assessment._id,
+        submissionType,
+
+        text:
+          submissionType === "text"
+            ? String(text).trim()
+            : "",
+
+        url:
+          submissionType === "url"
+            ? String(url).trim()
+            : "",
+
+        fileUrl:
+          submissionType === "file"
+            ? String(fileUrl).trim()
+            : "",
+
+        status: "submitted",
+        submittedAt: new Date(),
+      });
+    }
+
+    progress.lastAccessed = new Date();
+
+    await progress.save();
+
+    return ApiResponse.success(
+      res,
+      progress,
+      "Assessment submitted successfully."
+    );
+  }
+);
+
+/* ==========================================
+   COMPLETE MODULE
+   Requires all module lessons to be completed
+   and required assessment to be submitted.
+========================================== */
+
+const completeModule = asyncHandler(
+  async (req, res) => {
+    const { id: courseId, moduleId } =
+      req.params;
+
+    /* ----------------------------------------
+       FIND COURSE
+    ---------------------------------------- */
+
+    const course = await Course.findById(
+      courseId
+    );
+
+    if (!course) {
+      throw new ApiError(
+        404,
+        "Course not found."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND PROGRESS
+    ---------------------------------------- */
+
+    const progress = await Progress.findOne({
+      user: req.user._id,
+      course: course._id,
+    });
+
+    if (!progress) {
+      throw new ApiError(
+        404,
+        "Progress record not found. Please enroll in this course first."
+      );
+    }
+
+    /* ----------------------------------------
+       FIND MODULE
+    ---------------------------------------- */
+
+    const module = course.modules.id(moduleId);
+
+    if (!module) {
+      throw new ApiError(
+        404,
+        "Course module not found."
+      );
+    }
+
+    /* ----------------------------------------
+       CHECK ALL LESSONS
+    ---------------------------------------- */
+
+    const lessons = Array.isArray(
+      module.lessons
+    )
+      ? module.lessons
+      : [];
+
+    const completedLessonIds =
+      new Set(
+        progress.completedLessons.map(
+          (lessonId) =>
+            String(lessonId)
+        )
+      );
+
+    const incompleteLessons =
+      lessons.filter(
+        (lesson) =>
+          !completedLessonIds.has(
+            String(lesson._id)
+          )
+      );
+
+    if (incompleteLessons.length > 0) {
+      throw new ApiError(
+        400,
+        "Please complete all lessons in this module before completing the module."
+      );
+    }
+
+    /* ----------------------------------------
+       CHECK REQUIRED ASSESSMENT
+    ---------------------------------------- */
+
+    const assessment =
+      module.assessment;
+
+    if (
+      assessment &&
+      assessment.required &&
+      assessment.submissionType !== "none"
+    ) {
+      const submission =
+        progress.assessmentSubmissions.find(
+          (item) =>
+            String(item.module) ===
+              String(module._id) &&
+            String(item.assessment) ===
+              String(assessment._id)
+        );
+
+      if (!submission) {
+        throw new ApiError(
+          400,
+          "Please submit the module assessment before completing this module."
+        );
+      }
+    }
+
+    /* ----------------------------------------
+       PREVENT DUPLICATE MODULE COMPLETION
+    ---------------------------------------- */
+
+    const alreadyCompleted =
+      progress.completedModules.some(
+        (moduleId) =>
+          String(moduleId) ===
+          String(module._id)
+      );
+
+    if (!alreadyCompleted) {
+      progress.completedModules.push(
+        module._id
+      );
+    }
+
+    progress.lastAccessed =
+      new Date();
+
+    await progress.save();
+
+    return ApiResponse.success(
+      res,
+      progress,
+      "Module completed successfully."
+    );
+  }
+);
+
+/* ==========================================
    UPDATE CURRENT LESSON
    Records the lesson the learner is currently viewing.
 ========================================== */
@@ -756,6 +1118,8 @@ module.exports = {
   deleteCourse,
   enrollCourse,
   completeLesson,
+  submitAssessment,
+  completeModule,
   updateCurrentLesson,
   updateProgress,
   updateNotes,

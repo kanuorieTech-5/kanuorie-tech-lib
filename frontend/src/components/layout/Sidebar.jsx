@@ -6,6 +6,13 @@ import {
   Settings,
   Bell,
   Home,
+  PlayCircle,
+  Award,
+  Bookmark,
+  Users,
+  Handshake,
+  LifeBuoy,
+  WalletCards,
 } from "lucide-react";
 
 const links = [
@@ -23,6 +30,41 @@ const links = [
     name: "Courses",
     path: "/courses",
     icon: GraduationCap,
+  },
+  {
+    name: "My Learning",
+    path: "/my-learning",
+    icon: PlayCircle,
+  },
+  {
+    name: "Certificates",
+    path: "/certificates",
+    icon: Award,
+  },
+  {
+    name: "Saved Resources",
+    path: "/Learning",
+    icon: Bookmark,
+  },
+  {
+    name: "Community",
+    path: "/community",
+    icon: Users,
+  },
+  {
+    name: "Affiliate",
+    path: "/affiliate",
+    icon: Handshake,
+  },
+  {
+    name: "Accounts & Payments",
+    path: "/payments",
+    icon: WalletCards,
+  },
+  {
+    name: "Help & Support",
+    path: "/help",
+    icon: LifeBuoy,
   },
   {
     name: "Profile",
@@ -55,12 +97,13 @@ export default function Sidebar() {
                 to={item.path}
                 className={({ isActive }) =>
                   `mb-2 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
-                    isActive ? "bg-blue-600 text-white" : "hover:bg-gray-100"
+                    isActive
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-100"
                   }`
                 }
               >
                 <Icon size={20} />
-
                 {item.name}
               </NavLink>
             );

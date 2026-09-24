@@ -4,7 +4,6 @@ import AboutPreview from "../components/home/AboutPreview";
 import ImageSlider from "../components/home/ImageSlider";
 import Features from "../components/home/Features";
 import PlatformFeatures from "../components/home/FeaturesSlider";
-import TeamPreview from "../components/home/TeamPreview";
 import ServicesPreview from "../components/home/ServicesPreview";
 import ProjectsPreview from "../components/home/ProjectsPreview";
 import CoursesPreview from "../components/home/CoursesPreview";
@@ -46,8 +45,6 @@ export default function Home() {
       <Testimonials />
 
       <TechStack />
-
-      <TeamPreview />
 
       <Newsletter />
 

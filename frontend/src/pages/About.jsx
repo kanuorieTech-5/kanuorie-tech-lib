@@ -12,7 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import { Stats, TechStack, CTA, Newsletter } from "../components/home";
+import { Stats, CTA, Newsletter, TeamPreview } from "../components/home";
 
 const values = [
   {
@@ -589,7 +589,7 @@ export default function About() {
       {/* =====================================================
           TECHNOLOGY STACK
       ===================================================== */}
-      <TechStack />
+      <TeamPreview />
 
       {/* =====================================================
           NEWSLETTER

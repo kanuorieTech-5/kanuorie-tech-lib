@@ -88,12 +88,32 @@ export const completeLesson = async (courseId, lessonId) => {
   return data;
 };
 
-export const updateCurrentLesson = async (
-  courseId,
-  lessonId
-) => {
+export const updateCurrentLesson = async (courseId, lessonId) => {
   const { data } = await API.put(
-    `/courses/${courseId}/current-lesson/${lessonId}`
+    `/courses/${courseId}/current-lesson/${lessonId}`,
+  );
+
+  return data;
+};
+
+/**
+ * Submit a module assessment
+ */
+export const submitAssessment = async (courseId, moduleId, submissionData) => {
+  const { data } = await API.post(
+    `/courses/${courseId}/modules/${moduleId}/assessment`,
+    submissionData,
+  );
+
+  return data;
+};
+
+/**
+ * Complete a module
+ */
+export const completeModule = async (courseId, moduleId) => {
+  const { data } = await API.put(
+    `/courses/${courseId}/modules/${moduleId}/complete`,
   );
 
   return data;
@@ -117,6 +137,8 @@ export default {
   enrollCourse,
   updateCourseProgress,
   completeLesson,
+  submitAssessment,
+  completeModule,
   updateCurrentLesson,
   updateCourseNotes,
 };

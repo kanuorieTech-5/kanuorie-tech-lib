@@ -26,6 +26,7 @@ import { SearchBar } from "../components/layout";
 import { Newsletter, CTA } from "../components/home";
 
 import { getCourses, enrollCourse } from "../services";
+import { FaMoneyBill } from "react-icons/fa";
 
 const PER_PAGE = 9;
 
@@ -86,7 +87,8 @@ export default function Courses() {
         course.title?.toLowerCase().includes(searchTerm) ||
         course.description?.toLowerCase().includes(searchTerm) ||
         course.instructor?.toLowerCase().includes(searchTerm) ||
-        course.category?.toLowerCase().includes(searchTerm);
+        course.category?.toLowerCase().includes(searchTerm) ||
+        course.level?.toLowerCase().includes(searchTerm);
 
       const matchesDifficulty =
         difficulty === "All" || course.level === difficulty;
@@ -346,15 +348,18 @@ export default function Courses() {
                         </div>
 
                         <div className="rounded-2xl bg-slate-50 p-4">
-                          <Users size={20} className="text-blue-600" />
-                          <p className="mt-2 text-sm text-slate-500">
-                            Students
+                          <FaMoneyBill
+                            size={20}
+                            className="text-yellow-500"
+                            fill="currentColor"
+                          />
+                          <p className="text-sm text-slate-500">
+                            Course Access
                           </p>
-                          <strong className="text-slate-900">
-                            {featuredCourse.students ||
-                              featuredCourse.enrollments ||
-                              0}
-                          </strong>
+
+                          <span className="text-2xl font-black text-blue-600">
+                            {featuredCourse.premium ? "Premium" : "Free"}
+                          </span>
                         </div>
 
                         <div className="rounded-2xl bg-slate-50 p-4">
@@ -367,20 +372,10 @@ export default function Courses() {
                       </div>
 
                       <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-sm text-slate-500">
-                            Course Access
-                          </p>
-
-                          <span className="text-2xl font-black text-blue-600">
-                            {featuredCourse.premium ? "Premium" : "Free"}
-                          </span>
-                        </div>
-
                         <span className="text-2xl font-black text-slate-900">
                           {featuredCourse.price
                             ? `₦${featuredCourse.price}`
-                            : "Free"}
+                            : "#0"}
                         </span>
                       </div>
 
@@ -405,7 +400,7 @@ export default function Courses() {
                           disabled={Boolean(enrollingId)}
                         >
                           <LockKeyhole size={18} />
-                            Continue Learning
+                          Continue Learning
                         </Button>
                       </Link>
                     </div>

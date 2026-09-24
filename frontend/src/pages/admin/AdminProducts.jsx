@@ -39,12 +39,7 @@ const CATEGORIES = [
   "Other",
 ];
 
-const PRICING_TYPES = [
-  "Free",
-  "Freemium",
-  "Paid",
-  "Open Source",
-];
+const PRICING_TYPES = ["Free", "Freemium", "Paid", "Open Source"];
 
 const EMPTY_FORM = {
   name: "",
@@ -71,28 +66,19 @@ const EMPTY_FORM = {
    FORM FIELD
 ========================================== */
 
-function FormField({
-  label,
-  required = false,
-  children,
-  hint,
-}) {
+function FormField({ label, required = false, children, hint }) {
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
         {label}
 
-        {required && (
-          <span className="ml-1 text-red-500">*</span>
-        )}
+        {required && <span className="ml-1 text-red-500">*</span>}
       </label>
 
       {children}
 
       {hint && (
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          {hint}
-        </p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{hint}</p>
       )}
     </div>
   );
@@ -114,10 +100,8 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] =
-    useState("All");
-  const [statusFilter, setStatusFilter] =
-    useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -138,23 +122,13 @@ export default function AdminProducts() {
       });
 
       const items =
-        response?.data?.products ??
-        response?.data ??
-        response?.products ??
-        [];
+        response?.data?.products ?? response?.data ?? response?.products ?? [];
 
-      setProducts(
-        Array.isArray(items) ? items : []
-      );
+      setProducts(Array.isArray(items) ? items : []);
     } catch (error) {
-      console.error(
-        "Failed to load products:",
-        error
-      );
+      console.error("Failed to load products:", error);
 
-      toast.error(
-        "Failed to load products."
-      );
+      toast.error("Failed to load products.");
 
       setProducts([]);
     } finally {
@@ -176,44 +150,23 @@ export default function AdminProducts() {
     return products.filter((product) => {
       const matchesSearch =
         !query ||
-        product.name
-          ?.toLowerCase()
-          .includes(query) ||
-        product.description
-          ?.toLowerCase()
-          .includes(query) ||
-        product.excerpt
-          ?.toLowerCase()
-          .includes(query) ||
-        product.category
-          ?.toLowerCase()
-          .includes(query);
+        product.name?.toLowerCase().includes(query) ||
+        product.description?.toLowerCase().includes(query) ||
+        product.excerpt?.toLowerCase().includes(query) ||
+        product.category?.toLowerCase().includes(query);
 
       const matchesCategory =
-        categoryFilter === "All" ||
-        product.category === categoryFilter;
+        categoryFilter === "All" || product.category === categoryFilter;
 
       const matchesStatus =
         statusFilter === "All" ||
-        (statusFilter === "Published" &&
-          product.published) ||
-        (statusFilter === "Draft" &&
-          !product.published) ||
-        (statusFilter === "Featured" &&
-          product.featured);
+        (statusFilter === "Published" && product.published) ||
+        (statusFilter === "Draft" && !product.published) ||
+        (statusFilter === "Featured" && product.featured);
 
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesStatus
-      );
+      return matchesSearch && matchesCategory && matchesStatus;
     });
-  }, [
-    products,
-    search,
-    categoryFilter,
-    statusFilter,
-  ]);
+  }, [products, search, categoryFilter, statusFilter]);
 
   /* ==========================================
      STATISTICS
@@ -222,19 +175,12 @@ export default function AdminProducts() {
   const stats = useMemo(() => {
     const total = products.length;
 
-    const published = products.filter(
-      (product) => product.published
-    ).length;
+    const published = products.filter((product) => product.published).length;
 
-    const featured = products.filter(
-      (product) => product.featured
-    ).length;
+    const featured = products.filter((product) => product.featured).length;
 
-    const categories = new Set(
-      products.map(
-        (product) => product.category
-      )
-    ).size;
+    const categories = new Set(products.map((product) => product.category))
+      .size;
 
     return {
       total,
@@ -266,36 +212,25 @@ export default function AdminProducts() {
       excerpt: product.excerpt || "",
       description: product.description || "",
       image: product.image || "",
-      category:
-        product.category || "Development",
+      category: product.category || "Development",
 
-      websiteUrl:
-        product.websiteUrl || "",
-      documentationUrl:
-        product.documentationUrl || "",
-      githubUrl:
-        product.githubUrl || "",
+      websiteUrl: product.websiteUrl || "",
+      documentationUrl: product.documentationUrl || "",
+      githubUrl: product.githubUrl || "",
 
-      pricingType:
-        product.pricingType || "Free",
+      pricingType: product.pricingType || "Free",
 
-      price:
-        product.price ?? 0,
+      price: product.price ?? 0,
 
-      currency:
-        product.currency || "USD",
+      currency: product.currency || "USD",
 
-      technologies: Array.isArray(
-        product.technologies
-      )
+      technologies: Array.isArray(product.technologies)
         ? product.technologies.join(", ")
         : "",
 
-      featured:
-        Boolean(product.featured),
+      featured: Boolean(product.featured),
 
-      published:
-        product.published !== false,
+      published: product.published !== false,
     });
 
     setModalOpen(true);
@@ -306,19 +241,11 @@ export default function AdminProducts() {
   ========================================== */
 
   const handleChange = (event) => {
-    const {
-      name,
-      value,
-      type,
-      checked,
-    } = event.target;
+    const { name, value, type, checked } = event.target;
 
     setForm((current) => ({
       ...current,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -330,23 +257,17 @@ export default function AdminProducts() {
     event.preventDefault();
 
     if (!form.name.trim()) {
-      toast.error(
-        "Product name is required."
-      );
+      toast.error("Product name is required.");
       return;
     }
 
     if (!form.description.trim()) {
-      toast.error(
-        "Product description is required."
-      );
+      toast.error("Product description is required.");
       return;
     }
 
     if (!form.websiteUrl.trim()) {
-      toast.error(
-        "Official website URL is required."
-      );
+      toast.error("Official website URL is required.");
       return;
     }
 
@@ -356,70 +277,44 @@ export default function AdminProducts() {
       const payload = {
         name: form.name.trim(),
 
-        excerpt:
-          form.excerpt.trim(),
+        excerpt: form.excerpt.trim(),
 
-        description:
-          form.description.trim(),
+        description: form.description.trim(),
 
-        image:
-          form.image.trim(),
+        image: form.image.trim(),
 
-        category:
-          form.category,
+        category: form.category,
 
-        websiteUrl:
-          form.websiteUrl.trim(),
+        websiteUrl: form.websiteUrl.trim(),
 
-        documentationUrl:
-          form.documentationUrl.trim(),
+        documentationUrl: form.documentationUrl.trim(),
 
-        githubUrl:
-          form.githubUrl.trim(),
+        githubUrl: form.githubUrl.trim(),
 
-        pricingType:
-          form.pricingType,
+        pricingType: form.pricingType,
 
-        price:
-          Number(form.price) || 0,
+        price: Number(form.price) || 0,
 
-        currency:
-          form.currency
-            .trim()
-            .toUpperCase() || "USD",
+        currency: form.currency.trim().toUpperCase() || "USD",
 
-        technologies:
-          form.technologies
-            .split(",")
-            .map((item) =>
-              item.trim()
-            )
-            .filter(Boolean),
+        technologies: form.technologies
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
 
-        featured:
-          Boolean(form.featured),
+        featured: Boolean(form.featured),
 
-        published:
-          Boolean(form.published),
+        published: Boolean(form.published),
       };
 
       if (editingId) {
-        await updateProduct(
-          editingId,
-          payload
-        );
+        await updateProduct(editingId, payload);
 
-        toast.success(
-          "Product updated successfully."
-        );
+        toast.success("Product updated successfully.");
       } else {
-        await createProduct(
-          payload
-        );
+        await createProduct(payload);
 
-        toast.success(
-          "Product added successfully."
-        );
+        toast.success("Product added successfully.");
       }
 
       setModalOpen(false);
@@ -428,14 +323,10 @@ export default function AdminProducts() {
 
       await loadProducts();
     } catch (error) {
-      console.error(
-        "Failed to save product:",
-        error
-      );
+      console.error("Failed to save product:", error);
 
       const message =
-        error?.response?.data?.message ||
-        "Failed to save product.";
+        error?.response?.data?.message || "Failed to save product.";
 
       toast.error(message);
     } finally {
@@ -448,32 +339,20 @@ export default function AdminProducts() {
   ========================================== */
 
   const handleDelete = async (product) => {
-    const confirmed =
-      window.confirm(
-        `Delete "${product.name}"?`
-      );
+    const confirmed = window.confirm(`Delete "${product.name}"?`);
 
     if (!confirmed) return;
 
     try {
-      await deleteProduct(
-        product._id
-      );
+      await deleteProduct(product._id);
 
-      toast.success(
-        "Product deleted successfully."
-      );
+      toast.success("Product deleted successfully.");
 
       await loadProducts();
     } catch (error) {
-      console.error(
-        "Failed to delete product:",
-        error
-      );
+      console.error("Failed to delete product:", error);
 
-      toast.error(
-        "Failed to delete product."
-      );
+      toast.error("Failed to delete product.");
     }
   };
 
@@ -484,15 +363,12 @@ export default function AdminProducts() {
   const formatPrice = (product) => {
     if (
       product.pricingType === "Free" ||
-      product.pricingType ===
-        "Open Source"
+      product.pricingType === "Open Source"
     ) {
       return product.pricingType;
     }
 
-    const price = Number(
-      product.price
-    );
+    const price = Number(product.price);
 
     if (!price) {
       return "Contact / See website";
@@ -515,7 +391,6 @@ export default function AdminProducts() {
         <div>
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-blue-600">
             <Sparkles size={16} />
-
             Developer & Business Products
           </div>
 
@@ -524,9 +399,8 @@ export default function AdminProducts() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
-            Curate useful tools, platforms,
-            software and services for
-            developers and businesses.
+            Curate useful tools, platforms, software and services for developers
+            and businesses.
           </p>
         </div>
 
@@ -536,7 +410,6 @@ export default function AdminProducts() {
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
         >
           <Plus size={18} />
-
           Add Product
         </button>
       </div>
@@ -588,11 +461,7 @@ export default function AdminProducts() {
             <input
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(
-                  event.target.value
-                )
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search products..."
               className={`${inputClass} pl-11`}
             />
@@ -602,55 +471,32 @@ export default function AdminProducts() {
 
           <select
             value={categoryFilter}
-            onChange={(event) =>
-              setCategoryFilter(
-                event.target.value
-              )
-            }
+            onChange={(event) => setCategoryFilter(event.target.value)}
             className={inputClass}
           >
-            <option value="All">
-              All Categories
-            </option>
+            <option value="All">All Categories</option>
 
-            {CATEGORIES.map(
-              (category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
-                  {category}
-                </option>
-              )
-            )}
+            {CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
 
           {/* STATUS */}
 
           <select
             value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value
-              )
-            }
+            onChange={(event) => setStatusFilter(event.target.value)}
             className={inputClass}
           >
-            <option value="All">
-              All Status
-            </option>
+            <option value="All">All Status</option>
 
-            <option value="Published">
-              Published
-            </option>
+            <option value="Published">Published</option>
 
-            <option value="Draft">
-              Draft
-            </option>
+            <option value="Draft">Draft</option>
 
-            <option value="Featured">
-              Featured
-            </option>
+            <option value="Featured">Featured</option>
           </select>
         </div>
       </div>
@@ -664,29 +510,17 @@ export default function AdminProducts() {
           <table className="w-full min-w-[900px]">
             <thead className="border-b border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
               <tr>
-                <TableHead>
-                  Product
-                </TableHead>
+                <TableHead>Product</TableHead>
 
-                <TableHead>
-                  Category
-                </TableHead>
+                <TableHead>Category</TableHead>
 
-                <TableHead>
-                  Pricing
-                </TableHead>
+                <TableHead>Pricing</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead>
-                  Views
-                </TableHead>
+                <TableHead>Views</TableHead>
 
-                <TableHead>
-                  Actions
-                </TableHead>
+                <TableHead>Actions</TableHead>
               </tr>
             </thead>
 
@@ -700,202 +534,152 @@ export default function AdminProducts() {
                     Loading products...
                   </td>
                 </tr>
-              ) : filteredProducts.length ===
-                0 ? (
+              ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan="6"
-                    className="px-6 py-16 text-center"
-                  >
+                  <td colSpan="6" className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center">
-                      <BookOpen
-                        size={40}
-                        className="mb-4 text-slate-300"
-                      />
+                      <BookOpen size={40} className="mb-4 text-slate-300" />
 
                       <h3 className="font-semibold text-slate-900 dark:text-white">
                         No products found
                       </h3>
 
                       <p className="mt-1 text-sm text-slate-500">
-                        Add your first
-                        developer or
-                        business product.
+                        Add your first developer or business product.
                       </p>
                     </div>
                   </td>
                 </tr>
               ) : (
-                filteredProducts.map(
-                  (product) => (
-                    <tr
-                      key={product._id}
-                      className="transition hover:bg-slate-50 dark:hover:bg-white/[0.03]"
-                    >
-                      {/* PRODUCT */}
+                filteredProducts.map((product) => (
+                  <tr
+                    key={product._id}
+                    className="transition hover:bg-slate-50 dark:hover:bg-white/[0.03]"
+                  >
+                    {/* PRODUCT */}
 
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={
-                              product.image ||
-                              "/images/product-placeholder.png"
-                            }
-                            alt={
-                              product.name
-                            }
-                            className="h-12 w-12 rounded-xl border border-slate-200 object-cover dark:border-white/10"
-                          />
-
-                          <div className="min-w-0">
-                            <p className="truncate font-semibold text-slate-900 dark:text-white">
-                              {
-                                product.name
-                              }
-                            </p>
-
-                            <p className="max-w-xs truncate text-xs text-slate-500">
-                              {
-                                product.excerpt ||
-                                product.description
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* CATEGORY */}
-
-                      <td className="px-6 py-4">
-                        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
-                          {
-                            product.category
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={
+                            product.image || "/images/product-placeholder.png"
                           }
-                        </span>
-                      </td>
+                          alt={product.name}
+                          className="h-12 w-12 rounded-xl border border-slate-200 object-cover dark:border-white/10"
+                        />
 
-                      {/* PRICING */}
-
-                      <td className="px-6 py-4">
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                            {formatPrice(
-                              product
-                            )}
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-slate-900 dark:text-white">
+                            {product.name}
                           </p>
 
-                          {product.pricingType && (
-                            <p className="text-xs text-slate-500">
-                              {
-                                product.pricingType
-                              }
-                            </p>
-                          )}
+                          <p className="max-w-xs truncate text-xs text-slate-500">
+                            {product.excerpt || product.description}
+                          </p>
                         </div>
-                      </td>
+                      </div>
+                    </td>
 
-                      {/* STATUS */}
+                    {/* CATEGORY */}
 
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col gap-1">
-                          <span
-                            className={`inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
-                              product.published
-                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
-                                : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300"
-                            }`}
-                          >
-                            {product.published ? (
-                              <>
-                                <Eye
-                                  size={12}
-                                />
-                                Published
-                              </>
-                            ) : (
-                              <>
-                                <EyeOff
-                                  size={12}
-                                />
-                                Draft
-                              </>
-                            )}
+                    <td className="px-6 py-4">
+                      <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
+                        {product.category}
+                      </span>
+                    </td>
+
+                    {/* PRICING */}
+
+                    <td className="px-6 py-4">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          {formatPrice(product)}
+                        </p>
+
+                        {product.pricingType && (
+                          <p className="text-xs text-slate-500">
+                            {product.pricingType}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* STATUS */}
+
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <span
+                          className={`inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                            product.published
+                              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
+                              : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300"
+                          }`}
+                        >
+                          {product.published ? (
+                            <>
+                              <Eye size={12} />
+                              Published
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff size={12} />
+                              Draft
+                            </>
+                          )}
+                        </span>
+
+                        {product.featured && (
+                          <span className="inline-flex w-fit items-center gap-1 text-xs font-medium text-amber-600">
+                            <Star size={12} fill="currentColor" />
+                            Featured
                           </span>
+                        )}
+                      </div>
+                    </td>
 
-                          {product.featured && (
-                            <span className="inline-flex w-fit items-center gap-1 text-xs font-medium text-amber-600">
-                              <Star
-                                size={12}
-                                fill="currentColor"
-                              />
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                      </td>
+                    {/* VIEWS */}
 
-                      {/* VIEWS */}
+                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                      {Number(product.views || 0).toLocaleString()}
+                    </td>
 
-                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
-                        {Number(
-                          product.views || 0
-                        ).toLocaleString()}
-                      </td>
+                    {/* ACTIONS */}
 
-                      {/* ACTIONS */}
-
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          {product.websiteUrl && (
-                            <a
-                              href={
-                                product.websiteUrl
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              title="Visit website"
-                              className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
-                            >
-                              <ExternalLink
-                                size={16}
-                              />
-                            </a>
-                          )}
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleEdit(
-                                product
-                              )
-                            }
-                            title="Edit"
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        {product.websiteUrl && (
+                          <a
+                            href={product.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Visit website"
                             className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
                           >
-                            <Pencil
-                              size={16}
-                            />
-                          </button>
+                            <ExternalLink size={16} />
+                          </a>
+                        )}
 
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDelete(
-                                product
-                              )
-                            }
-                            title="Delete"
-                            className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
-                          >
-                            <Trash2
-                              size={16}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                )
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(product)}
+                          title="Edit"
+                          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
+                        >
+                          <Pencil size={16} />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(product)}
+                          title="Delete"
+                          className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
@@ -914,23 +698,18 @@ export default function AdminProducts() {
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 dark:border-white/10">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                  {editingId
-                    ? "Edit Product"
-                    : "Add Product"}
+                  {editingId ? "Edit Product" : "Add Product"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  Add a useful developer or
-                  business product to the
-                  KanuorieTech hub.
+                  Add a useful developer or business product to the KanuorieTech
+                  hub.
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={() =>
-                  setModalOpen(false)
-                }
+                onClick={() => setModalOpen(false)}
                 className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
               >
                 <X size={20} />
@@ -939,10 +718,7 @@ export default function AdminProducts() {
 
             {/* FORM */}
 
-            <form
-              onSubmit={handleSubmit}
-              className="overflow-y-auto p-6"
-            >
+            <form onSubmit={handleSubmit} className="overflow-y-auto p-6">
               <div className="space-y-8">
                 {/* ==================================
                     BASIC INFORMATION
@@ -955,22 +731,13 @@ export default function AdminProducts() {
                 >
                   <div className="grid gap-5 md:grid-cols-2">
                     <div className="md:col-span-2">
-                      <FormField
-                        label="Product Name"
-                        required
-                      >
+                      <FormField label="Product Name" required>
                         <input
                           name="name"
-                          value={
-                            form.name
-                          }
-                          onChange={
-                            handleChange
-                          }
+                          value={form.name}
+                          onChange={handleChange}
                           placeholder="e.g. Visual Studio Code"
-                          className={
-                            inputClass
-                          }
+                          className={inputClass}
                           required
                         />
                       </FormField>
@@ -983,51 +750,27 @@ export default function AdminProducts() {
                       >
                         <input
                           name="excerpt"
-                          value={
-                            form.excerpt
-                          }
-                          onChange={
-                            handleChange
-                          }
+                          value={form.excerpt}
+                          onChange={handleChange}
                           placeholder="A powerful code editor for modern development."
                           maxLength={250}
-                          className={
-                            inputClass
-                          }
+                          className={inputClass}
                         />
                       </FormField>
                     </div>
 
-                    <FormField
-                      label="Category"
-                      required
-                    >
+                    <FormField label="Category" required>
                       <select
                         name="category"
-                        value={
-                          form.category
-                        }
-                        onChange={
-                          handleChange
-                        }
-                        className={
-                          inputClass
-                        }
+                        value={form.category}
+                        onChange={handleChange}
+                        className={inputClass}
                       >
-                        {CATEGORIES.map(
-                          (category) => (
-                            <option
-                              key={
-                                category
-                              }
-                              value={
-                                category
-                              }
-                            >
-                              {category}
-                            </option>
-                          )
-                        )}
+                        {CATEGORIES.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
                       </select>
                     </FormField>
 
@@ -1038,16 +781,10 @@ export default function AdminProducts() {
                       <input
                         type="url"
                         name="image"
-                        value={
-                          form.image
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        value={form.image}
+                        onChange={handleChange}
                         placeholder="https://..."
-                        className={
-                          inputClass
-                        }
+                        className={inputClass}
                       />
                     </FormField>
 
@@ -1059,12 +796,8 @@ export default function AdminProducts() {
                       >
                         <textarea
                           name="description"
-                          value={
-                            form.description
-                          }
-                          onChange={
-                            handleChange
-                          }
+                          value={form.description}
+                          onChange={handleChange}
                           placeholder="Describe the product, its purpose and its main use cases..."
                           rows={5}
                           className={`${inputClass} resize-y`}
@@ -1093,16 +826,10 @@ export default function AdminProducts() {
                       <input
                         type="url"
                         name="websiteUrl"
-                        value={
-                          form.websiteUrl
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        value={form.websiteUrl}
+                        onChange={handleChange}
                         placeholder="https://example.com"
-                        className={
-                          inputClass
-                        }
+                        className={inputClass}
                         required
                       />
                     </FormField>
@@ -1114,16 +841,10 @@ export default function AdminProducts() {
                       <input
                         type="url"
                         name="documentationUrl"
-                        value={
-                          form.documentationUrl
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        value={form.documentationUrl}
+                        onChange={handleChange}
                         placeholder="https://docs.example.com"
-                        className={
-                          inputClass
-                        }
+                        className={inputClass}
                       />
                     </FormField>
 
@@ -1134,16 +855,10 @@ export default function AdminProducts() {
                       <input
                         type="url"
                         name="githubUrl"
-                        value={
-                          form.githubUrl
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        value={form.githubUrl}
+                        onChange={handleChange}
                         placeholder="https://github.com/..."
-                        className={
-                          inputClass
-                        }
+                        className={inputClass}
                       />
                     </FormField>
                   </div>
@@ -1159,32 +874,18 @@ export default function AdminProducts() {
                   description="Describe how the product is priced."
                 >
                   <div className="grid gap-5 md:grid-cols-3">
-                    <FormField
-                      label="Pricing Type"
-                      required
-                    >
+                    <FormField label="Pricing Type" required>
                       <select
                         name="pricingType"
-                        value={
-                          form.pricingType
-                        }
-                        onChange={
-                          handleChange
-                        }
-                        className={
-                          inputClass
-                        }
+                        value={form.pricingType}
+                        onChange={handleChange}
+                        className={inputClass}
                       >
-                        {PRICING_TYPES.map(
-                          (type) => (
-                            <option
-                              key={type}
-                              value={type}
-                            >
-                              {type}
-                            </option>
-                          )
-                        )}
+                        {PRICING_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
                       </select>
                     </FormField>
 
@@ -1197,32 +898,20 @@ export default function AdminProducts() {
                         name="price"
                         min="0"
                         step="0.01"
-                        value={
-                          form.price
-                        }
-                        onChange={
-                          handleChange
-                        }
-                        className={
-                          inputClass
-                        }
+                        value={form.price}
+                        onChange={handleChange}
+                        className={inputClass}
                       />
                     </FormField>
 
                     <FormField label="Currency">
                       <input
                         name="currency"
-                        value={
-                          form.currency
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        value={form.currency}
+                        onChange={handleChange}
                         placeholder="USD"
                         maxLength={3}
-                        className={
-                          inputClass
-                        }
+                        className={inputClass}
                       />
                     </FormField>
                   </div>
@@ -1243,16 +932,10 @@ export default function AdminProducts() {
                   >
                     <input
                       name="technologies"
-                      value={
-                        form.technologies
-                      }
-                      onChange={
-                        handleChange
-                      }
+                      value={form.technologies}
+                      onChange={handleChange}
                       placeholder="JavaScript, React, Git"
-                      className={
-                        inputClass
-                      }
+                      className={inputClass}
                     />
                   </FormField>
                 </FormSection>
@@ -1271,12 +954,8 @@ export default function AdminProducts() {
                       <input
                         type="checkbox"
                         name="featured"
-                        checked={
-                          form.featured
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        checked={form.featured}
+                        onChange={handleChange}
                         className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                       />
 
@@ -1286,9 +965,7 @@ export default function AdminProducts() {
                         </p>
 
                         <p className="text-xs text-slate-500">
-                          Highlight this
-                          product in
-                          featured sections.
+                          Highlight this product in featured sections.
                         </p>
                       </div>
                     </label>
@@ -1297,12 +974,8 @@ export default function AdminProducts() {
                       <input
                         type="checkbox"
                         name="published"
-                        checked={
-                          form.published
-                        }
-                        onChange={
-                          handleChange
-                        }
+                        checked={form.published}
+                        onChange={handleChange}
                         className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                       />
 
@@ -1312,9 +985,7 @@ export default function AdminProducts() {
                         </p>
 
                         <p className="text-xs text-slate-500">
-                          Make this product
-                          visible on the
-                          public hub.
+                          Make this product visible on the public hub.
                         </p>
                       </div>
                     </label>
@@ -1329,9 +1000,7 @@ export default function AdminProducts() {
               <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end dark:border-white/10">
                 <button
                   type="button"
-                  onClick={() =>
-                    setModalOpen(false)
-                  }
+                  onClick={() => setModalOpen(false)}
                   className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
                 >
                   Cancel
@@ -1363,20 +1032,14 @@ export default function AdminProducts() {
    STAT CARD
 ========================================== */
 
-function StatCard({
-  icon,
-  label,
-  value,
-}) {
+function StatCard({ icon, label, value }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-slate-950">
       <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
         {icon}
       </div>
 
-      <p className="text-sm text-slate-500 dark:text-slate-400">
-        {label}
-      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
 
       <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
         {value.toLocaleString()}
@@ -1401,12 +1064,7 @@ function TableHead({ children }) {
    FORM SECTION
 ========================================== */
 
-function FormSection({
-  icon,
-  title,
-  description,
-  children,
-}) {
+function FormSection({ icon, title, description, children }) {
   return (
     <section>
       <div className="mb-5 flex items-start gap-3">

@@ -1,6 +1,6 @@
 export * from "./auth.service";
 export * from "./user.service";
-export * from "./book.service";
+export * from "./Learning.service";
 export * from "./course.service";
 export * from "./blog.service";
 export * from "./project.service";
@@ -17,3 +17,4 @@ export * from "./contact.service";
 export * from "./admin.service";
 export * from "./profile.service";
 export * from "./library.service";
+export * from "./community.service";

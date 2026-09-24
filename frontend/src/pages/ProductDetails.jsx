@@ -16,20 +16,14 @@ import {
 import { Badge, Button, Card, Loader } from "../components/common";
 import { getProduct } from "../services";
 
-const PRODUCT_PLACEHOLDER =
-  "/images/product-placeholder.png";
+const PRODUCT_PLACEHOLDER = "/images/product-placeholder.png";
 
 const getPricingLabel = (product) => {
-  const pricingType =
-    product?.pricingType || "Free";
+  const pricingType = product?.pricingType || "Free";
 
   const price = Number(product?.price);
 
-  if (
-    pricingType === "Paid" &&
-    Number.isFinite(price) &&
-    price > 0
-  ) {
+  if (pricingType === "Paid" && Number.isFinite(price) && price > 0) {
     return `${product?.currency || "USD"} ${price.toLocaleString()}`;
   }
 
@@ -71,14 +65,11 @@ const getProductData = (response) => {
 export default function ProductDetails() {
   const { id } = useParams();
 
-  const [product, setProduct] =
-    useState(null);
+  const [product, setProduct] = useState(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -88,26 +79,19 @@ export default function ProductDetails() {
         setLoading(true);
         setError("");
 
-        const response =
-          await getProduct(id);
+        const response = await getProduct(id);
 
-        const data =
-          getProductData(response);
+        const data = getProductData(response);
 
         if (mounted) {
           setProduct(data);
         }
       } catch (err) {
-        console.error(
-          "Failed to load product:",
-          err,
-        );
+        console.error("Failed to load product:", err);
 
         if (mounted) {
           setProduct(null);
-          setError(
-            "We couldn't load this product right now.",
-          );
+          setError("We couldn't load this product right now.");
         }
       } finally {
         if (mounted) {
@@ -188,10 +172,7 @@ export default function ProductDetails() {
 
           <Link to="/products">
             <Button>
-              <ArrowLeft
-                size={16}
-                className="mr-2"
-              />
+              <ArrowLeft size={16} className="mr-2" />
               Back to Products
             </Button>
           </Link>
@@ -200,40 +181,27 @@ export default function ProductDetails() {
     );
   }
 
-  const pricingType =
-    product.pricingType || "Free";
+  const pricingType = product.pricingType || "Free";
 
-  const pricingLabel =
-    getPricingLabel(product);
+  const pricingLabel = getPricingLabel(product);
 
-  const pricingClass =
-    getPricingClass(pricingType);
+  const pricingClass = getPricingClass(pricingType);
 
-  const technologies =
-    Array.isArray(
-      product.technologies,
-    )
-      ? product.technologies.filter(Boolean)
-      : [];
+  const technologies = Array.isArray(product.technologies)
+    ? product.technologies.filter(Boolean)
+    : [];
 
-  const gallery =
-    Array.isArray(product.gallery)
-      ? product.gallery.filter(Boolean)
-      : [];
+  const gallery = Array.isArray(product.gallery)
+    ? product.gallery.filter(Boolean)
+    : [];
 
-  const image =
-    product.image ||
-    gallery[0] ||
-    PRODUCT_PLACEHOLDER;
+  const image = product.image || gallery[0] || PRODUCT_PLACEHOLDER;
 
-  const rating =
-    Number(product.rating) || 0;
+  const rating = Number(product.rating) || 0;
 
-  const totalRatings =
-    Number(product.totalRatings) || 0;
+  const totalRatings = Number(product.totalRatings) || 0;
 
-  const views =
-    Number(product.views) || 0;
+  const views = Number(product.views) || 0;
 
   return (
     <>
@@ -338,8 +306,7 @@ export default function ProductDetails() {
                     ring-blue-400/20
                   "
                 >
-                  {product.category ||
-                    "Other"}
+                  {product.category || "Other"}
                 </span>
 
                 {product.featured && (
@@ -368,8 +335,7 @@ export default function ProductDetails() {
                   lg:text-6xl
                 "
               >
-                {product.name ||
-                  "Developer Tool"}
+                {product.name || "Developer Tool"}
               </h1>
 
               <p
@@ -445,15 +411,11 @@ export default function ProductDetails() {
                       text-slate-300
                     "
                   >
-                    <Star
-                      size={15}
-                      className="fill-current"
-                    />
+                    <Star size={15} className="fill-current" />
 
                     {rating.toFixed(1)}
 
-                    {totalRatings > 0 &&
-                      ` (${totalRatings})`}
+                    {totalRatings > 0 && ` (${totalRatings})`}
                   </span>
                 )}
               </div>
@@ -470,31 +432,21 @@ export default function ProductDetails() {
               >
                 {product.websiteUrl && (
                   <a
-                    href={
-                      product.websiteUrl
-                    }
+                    href={product.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Button>
-                      <Globe
-                        size={17}
-                        className="mr-2"
-                      />
+                      <Globe size={17} className="mr-2" />
                       Visit Official Website
-                      <ArrowUpRight
-                        size={15}
-                        className="ml-2"
-                      />
+                      <ArrowUpRight size={15} className="ml-2" />
                     </Button>
                   </a>
                 )}
 
                 {product.documentationUrl && (
                   <a
-                    href={
-                      product.documentationUrl
-                    }
+                    href={product.documentationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -514,19 +466,14 @@ export default function ProductDetails() {
                       hover:bg-white/10
                     "
                   >
-                    <FileText
-                      size={17}
-                      className="mr-2"
-                    />
+                    <FileText size={17} className="mr-2" />
                     Documentation
                   </a>
                 )}
 
                 {product.githubUrl && (
                   <a
-                    href={
-                      product.githubUrl
-                    }
+                    href={product.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -546,10 +493,7 @@ export default function ProductDetails() {
                       hover:bg-white/10
                     "
                   >
-                    <Github
-                      size={17}
-                      className="mr-2"
-                    />
+                    <Github size={17} className="mr-2" />
                     GitHub
                   </a>
                 )}
@@ -585,10 +529,7 @@ export default function ProductDetails() {
             >
               <img
                 src={image}
-                alt={
-                  product.name ||
-                  "Product"
-                }
+                alt={product.name || "Product"}
                 className="
                   aspect-video
                   w-full
@@ -596,16 +537,11 @@ export default function ProductDetails() {
                   object-cover
                 "
                 onError={(event) => {
-                  if (
-                    event.currentTarget.src.includes(
-                      PRODUCT_PLACEHOLDER,
-                    )
-                  ) {
+                  if (event.currentTarget.src.includes(PRODUCT_PLACEHOLDER)) {
                     return;
                   }
 
-                  event.currentTarget.src =
-                    PRODUCT_PLACEHOLDER;
+                  event.currentTarget.src = PRODUCT_PLACEHOLDER;
                 }}
               />
             </motion.div>
@@ -707,11 +643,10 @@ export default function ProductDetails() {
                   </h3>
 
                   <div className="flex flex-wrap gap-2">
-                    {technologies.map(
-                      (technology) => (
-                        <span
-                          key={technology}
-                          className="
+                    {technologies.map((technology) => (
+                      <span
+                        key={technology}
+                        className="
                             rounded-full
                             bg-slate-100
                             px-3
@@ -720,11 +655,10 @@ export default function ProductDetails() {
                             font-medium
                             text-slate-700
                           "
-                        >
-                          {technology}
-                        </span>
-                      ),
-                    )}
+                      >
+                        {technology}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
@@ -798,10 +732,8 @@ export default function ProductDetails() {
                   text-slate-500
                 "
               >
-                Pricing information is
-                provided for reference. Visit
-                the official website for current
-                plans and terms.
+                Pricing information is provided for reference. Visit the
+                official website for current plans and terms.
               </p>
             </Card>
 
@@ -822,9 +754,7 @@ export default function ProductDetails() {
               <div className="space-y-3">
                 {product.websiteUrl && (
                   <a
-                    href={
-                      product.websiteUrl
-                    }
+                    href={product.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -849,17 +779,13 @@ export default function ProductDetails() {
                       Official Website
                     </span>
 
-                    <ExternalLink
-                      size={15}
-                    />
+                    <ExternalLink size={15} />
                   </a>
                 )}
 
                 {product.documentationUrl && (
                   <a
-                    href={
-                      product.documentationUrl
-                    }
+                    href={product.documentationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -884,17 +810,13 @@ export default function ProductDetails() {
                       Documentation
                     </span>
 
-                    <ExternalLink
-                      size={15}
-                    />
+                    <ExternalLink size={15} />
                   </a>
                 )}
 
                 {product.githubUrl && (
                   <a
-                    href={
-                      product.githubUrl
-                    }
+                    href={product.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="
@@ -919,9 +841,7 @@ export default function ProductDetails() {
                       GitHub Repository
                     </span>
 
-                    <ExternalLink
-                      size={15}
-                    />
+                    <ExternalLink size={15} />
                   </a>
                 )}
 
@@ -929,8 +849,7 @@ export default function ProductDetails() {
                   !product.documentationUrl &&
                   !product.githubUrl && (
                     <p className="text-sm text-slate-500">
-                      No external links have
-                      been added yet.
+                      No external links have been added yet.
                     </p>
                   )}
               </div>
@@ -949,15 +868,11 @@ export default function ProductDetails() {
                 Category
               </p>
 
-              <Badge>
-                {product.category ||
-                  "Other"}
-              </Badge>
+              <Badge>{product.category || "Other"}</Badge>
 
               <Link
                 to={`/products?category=${encodeURIComponent(
-                  product.category ||
-                    "Other",
+                  product.category || "Other",
                 )}`}
                 className="
                   mt-5

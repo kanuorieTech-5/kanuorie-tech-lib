@@ -9,7 +9,6 @@ export default function RecommendedResources({
   savedIds,
   savingId,
   onSave,
-
 }) {
   if (!resources.length) return null;
 
@@ -107,7 +106,6 @@ export default function RecommendedResources({
               isSaved={savedIds.includes(resource.resourceId)}
               saving={savingId === resource.resourceId}
               onSave={onSave}
-            
             />
           </motion.div>
         ))}

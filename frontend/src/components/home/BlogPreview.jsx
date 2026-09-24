@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  CalendarDays,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CalendarDays } from "lucide-react";
 
 import { Loader, Card, Button, SectionTitle } from "../common";
 
@@ -194,8 +189,7 @@ export default function BlogPreview() {
                                   "/images/blog-placeholder.png"
                                 }
                                 alt={
-                                  blog.title ||
-                                  "KanuorieTech featured article"
+                                  blog.title || "KanuorieTech featured article"
                                 }
                                 className="absolute inset-0 h-full w-full object-cover"
                                 onError={(event) => {
@@ -254,7 +248,6 @@ export default function BlogPreview() {
 
                                 <span className="flex items-center gap-2">
                                   <BookOpen className="h-4 w-4 text-cyan-400" />
-
                                   KanuorieTech Knowledge Hub
                                 </span>
                               </div>
@@ -288,12 +281,7 @@ export default function BlogPreview() {
                 <div className="flex items-center gap-2">
                   {blogs.map((blog, index) => (
                     <button
-                      key={
-                        blog._id ||
-                        blog.id ||
-                        blog.slug ||
-                        `dot-${index}`
-                      }
+                      key={blog._id || blog.id || blog.slug || `dot-${index}`}
                       type="button"
                       onClick={() => setActiveIndex(index)}
                       aria-label={`Go to article ${index + 1}`}

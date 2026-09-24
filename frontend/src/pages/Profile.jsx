@@ -19,15 +19,7 @@ export default function Profile() {
 
   const fileInputRef = useRef(null);
 
-  /* ==========================================
-     MODAL STATE
-  ========================================== */
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  /* ==========================================
-     FORM STATE
-  ========================================== */
 
   const [formData, setFormData] = useState({
     firstName: "",

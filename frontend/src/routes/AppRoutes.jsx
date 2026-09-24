@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import AdminRoute from "./AdminRoute";
 
+import ScrollToTop from "../components/common/ScrollToTop";
 /* =========================
    PUBLIC PAGES
 ========================= */
@@ -18,8 +19,8 @@ const Home = lazy(() => import("../pages/Home"));
 const About = lazy(() => import("../pages/About"));
 const Contact = lazy(() => import("../pages/Contact"));
 const Help = lazy(() => import("../pages/Help"));
-const Books = lazy(() => import("../pages/Books"));
-const BookDetails = lazy(() => import("../pages/BookDetails"));
+const Learning = lazy(() => import("../pages/Learning"));
+const LearningDetails = lazy(() => import("../pages/LearningDetails"));
 const Library = lazy(() => import("../pages/Library"));
 
 const Courses = lazy(() => import("../pages/Courses"));
@@ -40,7 +41,9 @@ const BlogDetails = lazy(() => import("../pages/BlogDetails"));
 const Team = lazy(() => import("../pages/Team"));
 const FAQ = lazy(() => import("../pages/FAQ"));
 const Testimonials = lazy(() => import("../pages/Testimonials"));
-
+const Community = lazy(() => import("../pages/Community"));
+const Affiliate = lazy(() => import("../pages/Affiliate"));
+const Payments = lazy(() => import("../pages/Payments"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
@@ -98,6 +101,8 @@ export default function AppRoutes() {
         </div>
       }
     >
+      <ScrollToTop />
+
       <Routes>
         {/* =========================
             PUBLIC ROUTES
@@ -112,9 +117,9 @@ export default function AppRoutes() {
 
           <Route path="help" element={<Help />} />
 
-          <Route path="books" element={<Books />} />
+          <Route path="Learning" element={<Learning />} />
 
-          <Route path="books/:id" element={<BookDetails />} />
+          <Route path="Learning/:id" element={<LearningDetails />} />
 
           <Route path="library" element={<Library />} />
 
@@ -143,6 +148,12 @@ export default function AppRoutes() {
           <Route path="faq" element={<FAQ />} />
 
           <Route path="testimonials" element={<Testimonials />} />
+
+          <Route path="community" element={<Community />} />
+
+          <Route path="affiliate" element={<Affiliate />} />
+
+          <Route path="payments" element={<Payments />} />
 
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
 

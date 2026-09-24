@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 /* ==========================================
    NOTE SCHEMA
 ========================================== */
+
 const noteSchema = new mongoose.Schema(
   {
     lesson: {
@@ -28,8 +29,76 @@ const noteSchema = new mongoose.Schema(
 );
 
 /* ==========================================
+   ASSESSMENT SUBMISSION SCHEMA
+========================================== */
+
+const assessmentSubmissionSchema =
+  new mongoose.Schema(
+    {
+      module: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
+
+      assessment: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
+
+      submissionType: {
+        type: String,
+        enum: ["text", "url", "file"],
+        required: true,
+      },
+
+      text: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      url: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      fileUrl: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      status: {
+        type: String,
+        enum: [
+          "submitted",
+          "reviewed",
+          "approved",
+          "rejected",
+        ],
+        default: "submitted",
+      },
+
+      submittedAt: {
+        type: Date,
+        default: Date.now,
+      },
+
+      reviewedAt: {
+        type: Date,
+        default: null,
+      },
+    },
+    {
+      _id: true,
+    }
+  );
+
+/* ==========================================
    PROGRESS SCHEMA
 ========================================== */
+
 const progressSchema = new mongoose.Schema(
   {
     user: {
@@ -71,7 +140,30 @@ const progressSchema = new mongoose.Schema(
       },
     ],
 
-    bookmarkedLessons: [{ type: mongoose.Schema.Types.ObjectId }],
+    /* ----------------------------------------
+       COMPLETED MODULES
+    ---------------------------------------- */
+
+    completedModules: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
+
+    /* ----------------------------------------
+       ASSESSMENT SUBMISSIONS
+    ---------------------------------------- */
+
+    assessmentSubmissions: {
+      type: [assessmentSubmissionSchema],
+      default: [],
+    },
+
+    bookmarkedLessons: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
 
     watchTime: {
       type: Number,
@@ -120,6 +212,7 @@ const progressSchema = new mongoose.Schema(
 /* ==========================================
    ONE RECORD PER USER PER COURSE
 ========================================== */
+
 progressSchema.index(
   {
     user: 1,
@@ -133,6 +226,7 @@ progressSchema.index(
 /* ==========================================
    UPDATE STATUS AUTOMATICALLY
 ========================================== */
+
 progressSchema.pre("save", function (next) {
   this.lastProgressUpdate = new Date();
 

@@ -1,25 +1,16 @@
 import { Link } from "react-router-dom";
-import {
-  ArrowUpRight,
-  Github,
-  Globe,
-} from "lucide-react";
+import { ArrowUpRight, Github, Globe } from "lucide-react";
 
 import { Badge, Button, Card } from "../ui";
 
-export default function ProductCard({
-  product,
-}) {
+export default function ProductCard({ product }) {
   if (!product) return null;
 
-  const pricingType =
-    product.pricingType || "Free";
+  const pricingType = product.pricingType || "Free";
 
-  const price =
-    Number(product.price) || 0;
+  const price = Number(product.price) || 0;
 
-  const isPaid =
-    pricingType === "Paid";
+  const isPaid = pricingType === "Paid";
 
   const pricingLabel =
     pricingType === "Paid" && price > 0
@@ -37,16 +28,12 @@ export default function ProductCard({
         className="relative block overflow-hidden"
       >
         <img
-          src={
-            product.image ||
-            "/images/product-placeholder.png"
-          }
+          src={product.image || "/images/product-placeholder.png"}
           alt={product.name}
           className="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
           loading="lazy"
           onError={(event) => {
-            event.currentTarget.src =
-              "/images/product-placeholder.png";
+            event.currentTarget.src = "/images/product-placeholder.png";
           }}
         />
 
@@ -65,16 +52,11 @@ export default function ProductCard({
         {/* CATEGORY + PRICING */}
 
         <div className="flex items-center justify-between gap-3">
-          <Badge>
-            {product.category ||
-              "Other"}
-          </Badge>
+          <Badge>{product.category || "Other"}</Badge>
 
           <span
             className={`text-xs font-semibold ${
-              isPaid
-                ? "text-blue-600"
-                : "text-emerald-600"
+              isPaid ? "text-blue-600" : "text-emerald-600"
             }`}
           >
             {pricingLabel}
@@ -83,12 +65,9 @@ export default function ProductCard({
 
         {/* NAME */}
 
-        <Link
-          to={`/products/${product._id}`}
-        >
+        <Link to={`/products/${product._id}`}>
           <h3 className="line-clamp-2 text-xl font-semibold transition group-hover:text-blue-600">
-            {product.name ||
-              "Developer Product"}
+            {product.name || "Developer Product"}
           </h3>
         </Link>
 
@@ -102,21 +81,17 @@ export default function ProductCard({
 
         {/* TECHNOLOGIES */}
 
-        {Array.isArray(
-          product.technologies
-        ) &&
+        {Array.isArray(product.technologies) &&
           product.technologies.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {product.technologies
-                .slice(0, 3)
-                .map((technology) => (
-                  <span
-                    key={technology}
-                    className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300"
-                  >
-                    {technology}
-                  </span>
-                ))}
+              {product.technologies.slice(0, 3).map((technology) => (
+                <span
+                  key={technology}
+                  className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300"
+                >
+                  {technology}
+                </span>
+              ))}
             </div>
           )}
 
@@ -130,10 +105,7 @@ export default function ProductCard({
             className="flex-1"
           >
             Explore Product
-            <ArrowUpRight
-              size={15}
-              className="ml-1"
-            />
+            <ArrowUpRight size={15} className="ml-1" />
           </Button>
 
           {product.websiteUrl && (

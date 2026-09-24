@@ -1,24 +1,14 @@
-import {
-  ExternalLink,
-  Eye,
-  EyeOff,
-  Star,
-} from "lucide-react";
+import { ExternalLink, Eye, EyeOff, Star } from "lucide-react";
 
 import DataTable from "./DataTable";
 import { Button } from "../ui";
 
 const getPricingLabel = (product) => {
-  const pricingType =
-    product?.pricingType || "Free";
+  const pricingType = product?.pricingType || "Free";
 
   const price = Number(product?.price);
 
-  if (
-    pricingType === "Paid" &&
-    Number.isFinite(price) &&
-    price > 0
-  ) {
+  if (pricingType === "Paid" && Number.isFinite(price) && price > 0) {
     return `${product?.currency || "USD"} ${price.toLocaleString()}`;
   }
 
@@ -54,15 +44,11 @@ export default function ProductsTable({
             "
           >
             <img
-              src={
-                product?.image ||
-                "/images/product-placeholder.png"
-              }
+              src={product?.image || "/images/product-placeholder.png"}
               alt={product?.name || "Product"}
               className="h-full w-full object-cover"
               onError={(event) => {
-                event.currentTarget.src =
-                  "/images/product-placeholder.png";
+                event.currentTarget.src = "/images/product-placeholder.png";
               }}
             />
           </div>
@@ -76,8 +62,7 @@ export default function ProductsTable({
                 text-slate-900
               "
             >
-              {product?.name ||
-                "Unnamed Product"}
+              {product?.name || "Unnamed Product"}
             </p>
 
             {product?.excerpt && (
@@ -128,9 +113,7 @@ export default function ProductsTable({
           </p>
 
           {product?.pricingType && (
-            <p className="text-xs text-slate-500">
-              {product.pricingType}
-            </p>
+            <p className="text-xs text-slate-500">{product.pricingType}</p>
           )}
         </div>
       ),
@@ -158,15 +141,9 @@ export default function ProductsTable({
               }
             `}
           >
-            {product?.published ? (
-              <Eye size={13} />
-            ) : (
-              <EyeOff size={13} />
-            )}
+            {product?.published ? <Eye size={13} /> : <EyeOff size={13} />}
 
-            {product?.published
-              ? "Published"
-              : "Draft"}
+            {product?.published ? "Published" : "Draft"}
           </span>
 
           {product?.featured && (
@@ -184,11 +161,7 @@ export default function ProductsTable({
                 text-yellow-700
               "
             >
-              <Star
-                size={13}
-                className="fill-current"
-              />
-
+              <Star size={13} className="fill-current" />
               Featured
             </span>
           )}
@@ -201,9 +174,7 @@ export default function ProductsTable({
       title: "Views",
       render: (product) => (
         <span className="text-sm text-slate-600">
-          {Number(
-            product?.views || 0,
-          ).toLocaleString()}
+          {Number(product?.views || 0).toLocaleString()}
         </span>
       ),
     },
@@ -213,12 +184,7 @@ export default function ProductsTable({
       title: "Actions",
       render: (product) => (
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            onClick={() =>
-              onEdit(product)
-            }
-          >
+          <Button size="sm" onClick={() => onEdit(product)}>
             Edit
           </Button>
 
@@ -251,9 +217,7 @@ export default function ProductsTable({
           <Button
             size="sm"
             variant="destructive"
-            onClick={() =>
-              onDelete(product._id)
-            }
+            onClick={() => onDelete(product._id)}
           >
             Delete
           </Button>

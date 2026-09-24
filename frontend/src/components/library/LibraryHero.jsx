@@ -36,7 +36,7 @@ export default function LibraryHero() {
               </Button>
             </Link>
 
-            <Link to="/books">
+            <Link to="/Learning">
               <Button
                 variant="outline"
                 size="lg"
@@ -56,7 +56,9 @@ export default function LibraryHero() {
 
             <h3 className="text-3xl font-bold text-white">Beginner → Expert</h3>
 
-            <p className="mt-2 text-slate-300">Structured Learning Resources at Every Level</p>
+            <p className="mt-2 text-slate-300">
+              Structured Learning Resources at Every Level
+            </p>
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl sm:col-span-2">

@@ -17,7 +17,10 @@ import {
 import { Card, Button, Loader, Badge } from "../components/common";
 import { getCourses, enrollCourse } from "../services/course.service";
 import { getProgress } from "../services/progress.service";
-import { getSavedResources, removeSavedResource } from "../services/library.service";
+import {
+  getSavedResources,
+  removeSavedResource,
+} from "../services/library.service";
 import { useAuth } from "../contexts";
 
 /* ==========================================
@@ -56,9 +59,7 @@ const getCourseId = (course) =>
   course?._id || course?.id || course?.course?._id || null;
 
 const getCourseImage = (course) =>
-  course?.image ||
-  course?.cover ||
-  "/images/course-placeholder.png";
+  course?.image || course?.cover || "/images/course-placeholder.png";
 
 const formatDuration = (duration) => {
   const hours = Number(duration || 0);
@@ -98,12 +99,7 @@ const getTotalLessons = (item) => {
    COURSE CARD
 ========================================== */
 
-function ExploreCourseCard({
-  course,
-  enrolled,
-  enrollingId,
-  onEnroll,
-}) {
+function ExploreCourseCard({ course, enrolled, enrollingId, onEnroll }) {
   const courseId = getCourseId(course);
   const isEnrolling = enrollingId === courseId;
 
@@ -120,8 +116,7 @@ function ExploreCourseCard({
             alt={course?.title || "Course"}
             className="h-full w-full object-cover transition duration-500 hover:scale-105"
             onError={(event) => {
-              event.currentTarget.src =
-                "/images/course-placeholder.png";
+              event.currentTarget.src = "/images/course-placeholder.png";
             }}
           />
 
@@ -183,9 +178,7 @@ function ExploreCourseCard({
             )}
 
             <Link to={`/courses/${courseId}`}>
-              <Button variant="outline">
-                View
-              </Button>
+              <Button variant="outline">View</Button>
             </Link>
           </div>
         </div>
@@ -206,8 +199,7 @@ function LearningCard({ item }) {
   const completed = getCompletedCount(item);
   const total = getTotalLessons(item);
 
-  const isCompleted =
-    percentage >= 100 || item?.status === "completed";
+  const isCompleted = percentage >= 100 || item?.status === "completed";
 
   return (
     <motion.div
@@ -222,8 +214,7 @@ function LearningCard({ item }) {
             alt={course?.title || "Course"}
             className="h-full w-full object-cover transition duration-500 hover:scale-105"
             onError={(event) => {
-              event.currentTarget.src =
-                "/images/course-placeholder.png";
+              event.currentTarget.src = "/images/course-placeholder.png";
             }}
           />
 
@@ -274,9 +265,7 @@ function LearningCard({ item }) {
                 {completed} of {total} lessons completed
               </span>
             ) : (
-              <span>
-                {completed} lessons completed
-              </span>
+              <span>{completed} lessons completed</span>
             )}
           </div>
 
@@ -319,8 +308,8 @@ function EmptyLearningState() {
       </h3>
 
       <p className="mx-auto mt-3 max-w-xl text-slate-500 dark:text-slate-400">
-        You haven't enrolled in a course yet. Explore the available
-        courses below and start learning.
+        You haven't enrolled in a course yet. Explore the available courses
+        below and start learning.
       </p>
 
       <a href="#explore-courses">
@@ -367,14 +356,9 @@ function SavedResourcesSection({ isAuthenticated }) {
         response?.items ||
         [];
 
-      setSavedResources(
-        Array.isArray(items) ? items : [],
-      );
+      setSavedResources(Array.isArray(items) ? items : []);
     } catch (err) {
-      console.error(
-        "Failed to load saved resources:",
-        err,
-      );
+      console.error("Failed to load saved resources:", err);
 
       setSavedResources([]);
 
@@ -394,16 +378,10 @@ function SavedResourcesSection({ isAuthenticated }) {
       loadSavedResources();
     };
 
-    window.addEventListener(
-      "library-update",
-      handleLibraryUpdate,
-    );
+    window.addEventListener("library-update", handleLibraryUpdate);
 
     return () => {
-      window.removeEventListener(
-        "library-update",
-        handleLibraryUpdate,
-      );
+      window.removeEventListener("library-update", handleLibraryUpdate);
     };
   }, [isAuthenticated]);
 
@@ -416,31 +394,21 @@ function SavedResourcesSection({ isAuthenticated }) {
       setRemovingId(key);
       setError("");
 
-      await removeSavedResource(
-        resource.resourceId,
-        resource.resourceType,
-      );
+      await removeSavedResource(resource.resourceId, resource.resourceType);
 
       setSavedResources((current) =>
         current.filter(
           (item) =>
             !(
-              String(item?.resourceId) ===
-                String(resource.resourceId) &&
-              item?.resourceType ===
-                resource.resourceType
+              String(item?.resourceId) === String(resource.resourceId) &&
+              item?.resourceType === resource.resourceType
             ),
         ),
       );
 
-      window.dispatchEvent(
-        new Event("library-update"),
-      );
+      window.dispatchEvent(new Event("library-update"));
     } catch (err) {
-      console.error(
-        "Failed to remove saved resource:",
-        err,
-      );
+      console.error("Failed to remove saved resource:", err);
 
       setError(
         err?.response?.data?.message ||
@@ -476,9 +444,7 @@ function SavedResourcesSection({ isAuthenticated }) {
           {isAuthenticated && savedResources.length > 0 && (
             <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
               {savedResources.length}{" "}
-              {savedResources.length === 1
-                ? "resource"
-                : "resources"}
+              {savedResources.length === 1 ? "resource" : "resources"}
             </span>
           )}
         </div>
@@ -511,10 +477,7 @@ function SavedResourcesSection({ isAuthenticated }) {
           </div>
         ) : error ? (
           <Card className="border-red-200 bg-red-50 py-12 text-center dark:border-red-900/50 dark:bg-red-950/20">
-            <Library
-              size={42}
-              className="mx-auto text-red-400"
-            />
+            <Library size={42} className="mx-auto text-red-400" />
 
             <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
               Unable to load saved resources
@@ -524,10 +487,7 @@ function SavedResourcesSection({ isAuthenticated }) {
               {error}
             </p>
 
-            <Button
-              className="mt-6"
-              onClick={loadSavedResources}
-            >
+            <Button className="mt-6" onClick={loadSavedResources}>
               Try Again
             </Button>
           </Card>
@@ -543,8 +503,8 @@ function SavedResourcesSection({ isAuthenticated }) {
             </h3>
 
             <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Save useful courses, books, and learning resources
-              from the Library page and they will appear here.
+              Save useful courses, books, and learning resources from the
+              Library page and they will appear here.
             </p>
 
             <Link to="/library">
@@ -557,39 +517,28 @@ function SavedResourcesSection({ isAuthenticated }) {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {savedResources.map((resource) => {
-              const resourceId = String(
-                resource?.resourceId || "",
-              );
+              const resourceId = String(resource?.resourceId || "");
 
-              const resourceType =
-                resource?.resourceType || "external";
+              const resourceType = resource?.resourceType || "external";
 
               const key = `${resourceType}:${resourceId}`;
 
-              const title =
-                resource?.title || "Untitled Resource";
+              const title = resource?.title || "Untitled Resource";
 
               const description =
-                resource?.description ||
-                "Saved learning resource.";
+                resource?.description || "Saved learning resource.";
 
-              const category =
-                resource?.category || "General";
+              const category = resource?.category || "General";
 
-              const image =
-                resource?.image ||
-                "/images/course-placeholder.png";
+              const image = resource?.image || "/images/course-placeholder.png";
 
               const link = resource?.link || "";
 
-              const isRemoving =
-                removingId === key;
+              const isRemoving = removingId === key;
 
-              const isCourse =
-                resourceType === "course";
+              const isCourse = resourceType === "course";
 
-              const isBook =
-                resourceType === "book";
+              const isBook = resourceType === "book";
 
               return (
                 <motion.div
@@ -611,18 +560,12 @@ function SavedResourcesSection({ isAuthenticated }) {
                       />
 
                       <div className="absolute left-4 top-4">
-                        <Badge>
-                          {category}
-                        </Badge>
+                        <Badge>{category}</Badge>
                       </div>
 
                       <div className="absolute right-4 top-4">
                         <Badge>
-                          {isCourse
-                            ? "Course"
-                            : isBook
-                              ? "Book"
-                              : "Resource"}
+                          {isCourse ? "Course" : isBook ? "Book" : "Resource"}
                         </Badge>
                       </div>
                     </div>
@@ -646,10 +589,7 @@ function SavedResourcesSection({ isAuthenticated }) {
                           >
                             <Button className="w-full">
                               Open Resource
-                              <ArrowRight
-                                className="ml-2"
-                                size={17}
-                              />
+                              <ArrowRight className="ml-2" size={17} />
                             </Button>
                           </a>
                         ) : isCourse ? (
@@ -659,23 +599,14 @@ function SavedResourcesSection({ isAuthenticated }) {
                           >
                             <Button className="w-full">
                               View Course
-                              <ArrowRight
-                                className="ml-2"
-                                size={17}
-                              />
+                              <ArrowRight className="ml-2" size={17} />
                             </Button>
                           </Link>
                         ) : isBook ? (
-                          <Link
-                            to={`/books/${resourceId}`}
-                            className="flex-1"
-                          >
+                          <Link to={`/books/${resourceId}`} className="flex-1">
                             <Button className="w-full">
                               View Book
-                              <ArrowRight
-                                className="ml-2"
-                                size={17}
-                              />
+                              <ArrowRight className="ml-2" size={17} />
                             </Button>
                           </Link>
                         ) : null}
@@ -683,13 +614,9 @@ function SavedResourcesSection({ isAuthenticated }) {
                         <Button
                           variant="outline"
                           disabled={isRemoving}
-                          onClick={() =>
-                            handleRemove(resource)
-                          }
+                          onClick={() => handleRemove(resource)}
                         >
-                          {isRemoving
-                            ? "Removing..."
-                            : "Remove"}
+                          {isRemoving ? "Removing..." : "Remove"}
                         </Button>
                       </div>
                     </div>
@@ -716,9 +643,7 @@ export default function Books() {
   const [learning, setLearning] = useState([]);
 
   const [loadingCourses, setLoadingCourses] = useState(true);
-  const [loadingLearning, setLoadingLearning] = useState(
-    isAuthenticated,
-  );
+  const [loadingLearning, setLoadingLearning] = useState(isAuthenticated);
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
@@ -833,9 +758,7 @@ export default function Books() {
   ========================================== */
 
   const categories = useMemo(() => {
-    const values = courses
-      .map((course) => course?.category)
-      .filter(Boolean);
+    const values = courses.map((course) => course?.category).filter(Boolean);
 
     return ["All", ...new Set(values)];
   }, [courses]);
@@ -851,29 +774,16 @@ export default function Books() {
       const matchesSearch =
         !normalizedSearch ||
         course?.title?.toLowerCase().includes(normalizedSearch) ||
-        course?.description
-          ?.toLowerCase()
-          .includes(normalizedSearch) ||
-        course?.category
-          ?.toLowerCase()
-          .includes(normalizedSearch) ||
-        course?.instructor
-          ?.toLowerCase()
-          .includes(normalizedSearch);
+        course?.description?.toLowerCase().includes(normalizedSearch) ||
+        course?.category?.toLowerCase().includes(normalizedSearch) ||
+        course?.instructor?.toLowerCase().includes(normalizedSearch);
 
       const matchesCategory =
-        category === "All" ||
-        course?.category === category;
+        category === "All" || course?.category === category;
 
-      const matchesLevel =
-        level === "All" ||
-        course?.level === level;
+      const matchesLevel = level === "All" || course?.level === level;
 
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesLevel
-      );
+      return matchesSearch && matchesCategory && matchesLevel;
     });
   }, [courses, search, category, level]);
 
@@ -885,10 +795,7 @@ export default function Books() {
     return learning.filter((item) => {
       const percentage = getProgressPercentage(item);
 
-      return (
-        percentage < 100 &&
-        item?.status !== "completed"
-      );
+      return percentage < 100 && item?.status !== "completed";
     });
   }, [learning]);
 
@@ -900,10 +807,7 @@ export default function Books() {
     return learning.filter((item) => {
       const percentage = getProgressPercentage(item);
 
-      return (
-        percentage >= 100 ||
-        item?.status === "completed"
-      );
+      return percentage >= 100 || item?.status === "completed";
     });
   }, [learning]);
 
@@ -958,10 +862,6 @@ export default function Books() {
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* ========================================
-          HERO
-      ======================================== */}
-
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -984,23 +884,20 @@ export default function Books() {
 
             <h1 className="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-5xl lg:text-7xl">
               Your learning.
-              <span className="block text-blue-400">
-                Your progress.
-              </span>
+              <span className="block text-blue-400">Your progress.</span>
               Your next skill.
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              Continue your enrolled courses, track your real
-              learning progress, and discover new courses built
-              to help you grow with technology.
+              Continue your enrolled courses, track your real learning progress,
+              and discover new courses built to help you grow with technology.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <a href="#my-learning">
                 <Button>
                   <GraduationCap className="mr-2" size={18} />
-                  My Learning 
+                  My Learning
                 </Button>
               </a>
 
@@ -1010,19 +907,19 @@ export default function Books() {
                   <ArrowRight className="ml-2" size={18} />
                 </Button>
               </a>
+
+              <a href="#Saved Resources">
+                <Button variant="outline">
+                  Saved Resources
+                  <ArrowRight className="ml-2" size={18} />
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ========================================
-          MY LEARNING
-      ======================================== */}
-
-      <section
-        id="my-learning"
-        className="scroll-mt-24 py-16 lg:py-20"
-      >
+      <section id="my-learning" className="scroll-mt-24 py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-10">
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
@@ -1038,25 +935,20 @@ export default function Books() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
-              Pick up where you left off and keep building your
-              skills.
+              Pick up where you left off and keep building your skills.
             </p>
           </div>
 
           {!isAuthenticated ? (
             <Card className="py-14 text-center">
-              <GraduationCap
-                size={42}
-                className="mx-auto text-slate-400"
-              />
+              <GraduationCap size={42} className="mx-auto text-slate-400" />
 
               <h3 className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
                 Log in to see your learning
               </h3>
 
               <p className="mx-auto mt-3 max-w-lg text-slate-500 dark:text-slate-400">
-                Your enrolled courses and progress are private to
-                your account.
+                Your enrolled courses and progress are private to your account.
               </p>
 
               <Link to="/login">
@@ -1083,9 +975,7 @@ export default function Books() {
 
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       {continueLearning.length}{" "}
-                      {continueLearning.length === 1
-                        ? "course"
-                        : "courses"}
+                      {continueLearning.length === 1 ? "course" : "courses"}
                     </span>
                   </div>
 
@@ -1101,13 +991,7 @@ export default function Books() {
               )}
 
               {completedLearning.length > 0 && (
-                <div
-                  className={
-                    continueLearning.length > 0
-                      ? "mt-14"
-                      : ""
-                  }
-                >
+                <div className={continueLearning.length > 0 ? "mt-14" : ""}>
                   <div className="mb-5 flex items-center justify-between">
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                       Completed
@@ -1115,9 +999,7 @@ export default function Books() {
 
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       {completedLearning.length}{" "}
-                      {completedLearning.length === 1
-                        ? "course"
-                        : "courses"}
+                      {completedLearning.length === 1 ? "course" : "courses"}
                     </span>
                   </div>
 
@@ -1140,9 +1022,7 @@ export default function Books() {
           SAVED RESOURCES
       ======================================== */}
 
-      <SavedResourcesSection
-        isAuthenticated={isAuthenticated}
-      />
+      <SavedResourcesSection isAuthenticated={isAuthenticated} />
 
       {/* ========================================
           EXPLORE COURSES
@@ -1167,8 +1047,8 @@ export default function Books() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
-              Discover published KanuorieTech courses and find
-              your next learning opportunity.
+              Discover published KanuorieTech courses and find your next
+              learning opportunity.
             </p>
           </div>
 
@@ -1176,10 +1056,7 @@ export default function Books() {
 
           {filteredCourses.length === 0 ? (
             <Card className="mt-10 py-14 text-center">
-              <Search
-                size={42}
-                className="mx-auto text-slate-400"
-              />
+              <Search size={42} className="mx-auto text-slate-400" />
 
               <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
                 No courses found
@@ -1194,9 +1071,7 @@ export default function Books() {
               {filteredCourses.map((course) => {
                 const courseId = getCourseId(course);
 
-                const enrolled = enrolledCourseIds.has(
-                  String(courseId),
-                );
+                const enrolled = enrolledCourseIds.has(String(courseId));
 
                 return (
                   <ExploreCourseCard
@@ -1228,8 +1103,8 @@ export default function Books() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-400">
-            Build practical technology skills through structured
-            courses and hands-on learning with KanuorieTech.
+            Build practical technology skills through structured courses and
+            hands-on learning with KanuorieTech.
           </p>
 
           <a href="#explore-courses">

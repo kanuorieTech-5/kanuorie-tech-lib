@@ -301,16 +301,16 @@ export default function ProjectDetails() {
             )}
 
             {/* Actions */}
-            {(project.demoUrl || project.githubUrl) && (
+            {(project.liveDemo || project.github) && (
               <Card className="p-6">
                 <h2 className="mb-5 text-xl font-bold text-gray-900">
                   Explore This Project
                 </h2>
 
                 <div className="flex flex-col gap-3">
-                  {project.demoUrl && (
+                  {project.liveDemo && (
                     <a
-                      href={project.demoUrl}
+                      href={project.liveDemo}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full"
@@ -322,9 +322,9 @@ export default function ProjectDetails() {
                     </a>
                   )}
 
-                  {project.githubUrl && (
+                  {project.github && (
                     <a
-                      href={project.githubUrl}
+                      href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full"

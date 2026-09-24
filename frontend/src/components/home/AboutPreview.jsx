@@ -86,8 +86,8 @@ export default function AboutPreview() {
                 </p>
 
                 <p className="mt-2 text-sm leading-6 text-slate-200 sm:text-base">
-                  To make technology more accessible, practical, and
-                  impactful for businesses, learners, and communities.
+                  To make technology more accessible, practical, and impactful
+                  for businesses, learners, and communities.
                 </p>
               </div>
             </div>
@@ -139,17 +139,14 @@ export default function AboutPreview() {
               Whether you are a business looking for a technology partner, a
               student building your future, an organization seeking
               collaboration, or an investor exploring digital opportunities,
-              KanuorieTech is creating the technology and learning ecosystem
-              to move ideas forward.
+              KanuorieTech is creating the technology and learning ecosystem to
+              move ideas forward.
             </p>
 
             {/* Highlights */}
             <div className="mt-8 space-y-4">
               {highlights.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3"
-                >
+                <div key={item} className="flex items-start gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-cyan-400" />
 
                   <span className="text-sm font-medium text-slate-300 sm:text-base">
@@ -230,10 +227,10 @@ export default function AboutPreview() {
             </h3>
 
             <p className="mt-4 max-w-3xl leading-7 text-slate-400">
-              We believe the future belongs to people and organizations that
-              can confidently use technology to solve problems, create value,
-              and build new possibilities. That is the future we are working
-              to create.
+              We believe the future belongs to people and organizations that can
+              confidently use technology to solve problems, create value, and
+              build new possibilities. That is the future we are working to
+              create.
             </p>
           </div>
         </motion.div>

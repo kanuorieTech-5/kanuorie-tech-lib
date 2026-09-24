@@ -4,28 +4,34 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Loader, Card, SectionTitle } from "../common";
 import { getTeamMembers } from "../../services";
 import CEOImage from "../../assets/CEO.jpeg";
-
+import Teamimage from "../../assets/team work.JPG";
 const FALLBACK_TEAM = [
   {
     _id: "fallback-1",
-    name: "KanuorieTech Team",
-    position: "Digital Solutions",
+    name: "Mrs, Orie Bassey",
+    position: "CEO",
     image: CEOImage,
   },
   {
     _id: "fallback-2",
+    name: "KanuorieTech Team",
+    position: "Digital Solutions",
+    image: Teamimage,
+  },
+  {
+    _id: "fallback-3",
     name: "Development Team",
     position: "Software Development",
     image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
   },
   {
-    _id: "fallback-3",
+    _id: "fallback-4",
     name: "Creative Team",
     position: "Design & Digital Experience",
     image: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
   },
   {
-    _id: "fallback-4",
+    _id: "fallback-5",
     name: "Education Team",
     position: "Technology & Learning",
     image: "https://cdn-icons-png.flaticon.com/512/2721/2721296.png",
@@ -35,15 +41,8 @@ const FALLBACK_TEAM = [
 export default function TeamPreview() {
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-
-  /*
-  ==========================================
-  FETCH TEAM
-  ==========================================
-  */
 
   useEffect(() => {
     let mounted = true;
@@ -83,19 +82,7 @@ export default function TeamPreview() {
     };
   }, []);
 
-  /*
-  ==========================================
-  TEAM DATA
-  ==========================================
-  */
-
   const members = team.length > 0 ? team : FALLBACK_TEAM;
-
-  /*
-  ==========================================
-  RESPONSIVE SLIDES
-  ==========================================
-  */
 
   const getVisibleCards = () => {
     if (typeof window === "undefined") {
@@ -127,39 +114,15 @@ export default function TeamPreview() {
     };
   }, []);
 
-  /*
-  ==========================================
-  SLIDER LIMIT
-  ==========================================
-  */
-
   const maxIndex = Math.max(members.length - visibleCards, 0);
-
-  /*
-  ==========================================
-  NEXT SLIDE
-  ==========================================
-  */
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
-  /*
-  ==========================================
-  PREVIOUS SLIDE
-  ==========================================
-  */
-
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   };
-
-  /*
-  ==========================================
-  AUTO SLIDE
-  ==========================================
-  */
 
   useEffect(() => {
     if (isPaused || members.length <= visibleCards) {
@@ -175,23 +138,11 @@ export default function TeamPreview() {
     };
   }, [isPaused, maxIndex, members.length, visibleCards]);
 
-  /*
-  ==========================================
-  KEEP INDEX VALID
-  ==========================================
-  */
-
   useEffect(() => {
     if (currentIndex > maxIndex) {
       setCurrentIndex(0);
     }
   }, [currentIndex, maxIndex]);
-
-  /*
-  ==========================================
-  LOADING
-  ==========================================
-  */
 
   if (loading) {
     return (
@@ -262,9 +213,7 @@ export default function TeamPreview() {
                       amount: 0.2,
                     }}
                   >
-                    <Card
-                      className="h-full overflow-hidden border-white/10 bg-white/5 p-0 text-center backdrop-blur-xl"
-                    >
+                    <Card className="h-full overflow-hidden border-white/10 bg-white/5 p-0 text-center backdrop-blur-xl">
                       <img
                         src={member.image || "/images/team-placeholder.png"}
                         alt={

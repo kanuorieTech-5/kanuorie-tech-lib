@@ -96,9 +96,7 @@ export default function CoursesPreview() {
     return 1;
   };
 
-  const [visibleCount, setVisibleCount] = useState(
-    getVisibleCount,
-  );
+  const [visibleCount, setVisibleCount] = useState(getVisibleCount);
 
   useEffect(() => {
     const handleResize = () => {
@@ -112,10 +110,7 @@ export default function CoursesPreview() {
     };
   }, []);
 
-  const maxIndex = Math.max(
-    courses.length - visibleCount,
-    0,
-  );
+  const maxIndex = Math.max(courses.length - visibleCount, 0);
 
   /*
   ==========================================
@@ -124,15 +119,11 @@ export default function CoursesPreview() {
   */
 
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1,
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1,
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   /*
@@ -142,9 +133,7 @@ export default function CoursesPreview() {
   */
 
   useEffect(() => {
-    setCurrentIndex((previous) =>
-      Math.min(previous, maxIndex),
-    );
+    setCurrentIndex((previous) => Math.min(previous, maxIndex));
   }, [maxIndex]);
 
   /*
@@ -154,26 +143,16 @@ export default function CoursesPreview() {
   */
 
   useEffect(() => {
-    if (
-      courses.length <= visibleCount ||
-      isPaused
-    ) {
+    if (courses.length <= visibleCount || isPaused) {
       return;
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex ? 0 : previous + 1,
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [
-    courses.length,
-    visibleCount,
-    maxIndex,
-    isPaused,
-  ]);
+  }, [courses.length, visibleCount, maxIndex, isPaused]);
 
   /*
   ==========================================
@@ -181,10 +160,7 @@ export default function CoursesPreview() {
   ==========================================
   */
 
-  const totalSlides = useMemo(
-    () => Math.max(maxIndex + 1, 1),
-    [maxIndex],
-  );
+  const totalSlides = useMemo(() => Math.max(maxIndex + 1, 1), [maxIndex]);
 
   /*
   ==========================================
@@ -193,10 +169,7 @@ export default function CoursesPreview() {
   */
 
   const getCourseImage = (course) => {
-    if (
-      typeof course?.image === "string" &&
-      course.image.trim()
-    ) {
+    if (typeof course?.image === "string" && course.image.trim()) {
       return course.image.trim();
     }
 
@@ -210,11 +183,7 @@ export default function CoursesPreview() {
   */
 
   const formatDuration = (duration) => {
-    if (
-      duration === undefined ||
-      duration === null ||
-      duration === ""
-    ) {
+    if (duration === undefined || duration === null || duration === "") {
       return null;
     }
 
@@ -224,9 +193,7 @@ export default function CoursesPreview() {
       return null;
     }
 
-    return `${hours} ${
-      hours === 1 ? "hour" : "hours"
-    }`;
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
   };
 
   /*
@@ -270,9 +237,7 @@ export default function CoursesPreview() {
           <div className="mt-12 flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-16 text-center">
             <GraduationCap className="h-10 w-10 text-cyan-400" />
 
-            <p className="mt-4 text-slate-400">
-              Courses coming soon.
-            </p>
+            <p className="mt-4 text-slate-400">Courses coming soon.</p>
           </div>
         ) : (
           <div
@@ -285,10 +250,7 @@ export default function CoursesPreview() {
               <motion.div
                 className="flex"
                 animate={{
-                  x: `-${
-                    currentIndex *
-                    (100 / visibleCount)
-                  }%`,
+                  x: `-${currentIndex * (100 / visibleCount)}%`,
                 }}
                 transition={{
                   duration: 0.7,
@@ -297,17 +259,11 @@ export default function CoursesPreview() {
               >
                 {courses.map((course, index) => {
                   const image = getCourseImage(course);
-                  const duration = formatDuration(
-                    course.duration,
-                  );
+                  const duration = formatDuration(course.duration);
 
                   return (
                     <div
-                      key={
-                        course._id ||
-                        course.id ||
-                        `course-${index}`
-                      }
+                      key={course._id || course.id || `course-${index}`}
                       className="w-full shrink-0 px-2 md:w-1/2 lg:w-1/3"
                     >
                       <motion.div
@@ -338,10 +294,7 @@ export default function CoursesPreview() {
                           <div className="relative h-56 overflow-hidden bg-slate-900">
                             <img
                               src={image}
-                              alt={
-                                course.title ||
-                                "KanuorieTech course"
-                              }
+                              alt={course.title || "KanuorieTech course"}
                               className="
                                 h-full
                                 w-full
@@ -353,16 +306,14 @@ export default function CoursesPreview() {
                               loading="lazy"
                               onError={(event) => {
                                 if (
-                                  event.currentTarget
-                                    .src.endsWith(
-                                      COURSE_IMAGE_FALLBACK,
-                                    )
+                                  event.currentTarget.src.endsWith(
+                                    COURSE_IMAGE_FALLBACK,
+                                  )
                                 ) {
                                   return;
                                 }
 
-                                event.currentTarget.src =
-                                  COURSE_IMAGE_FALLBACK;
+                                event.currentTarget.src = COURSE_IMAGE_FALLBACK;
                               }}
                             />
 
@@ -430,8 +381,7 @@ export default function CoursesPreview() {
                                 <span className="flex items-center gap-1.5">
                                   <BookOpen className="h-4 w-4 text-cyan-400" />
                                   {course.modules.length}{" "}
-                                  {course.modules.length ===
-                                  1
+                                  {course.modules.length === 1
                                     ? "Module"
                                     : "Modules"}
                                 </span>
@@ -440,12 +390,7 @@ export default function CoursesPreview() {
 
                             {/* CTA */}
                             <div className="mt-auto pt-7">
-                              <Link
-                                to={`/courses/${
-                                  course._id ||
-                                  course.id
-                                }`}
-                              >
+                              <Link to={`/courses/${course._id || course.id}`}>
                                 <Button fullWidth>
                                   Explore Course
                                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -472,12 +417,8 @@ export default function CoursesPreview() {
                     <button
                       key={index}
                       type="button"
-                      onClick={() =>
-                        setCurrentIndex(index)
-                      }
-                      aria-label={`Go to course slide ${
-                        index + 1
-                      }`}
+                      onClick={() => setCurrentIndex(index)}
+                      aria-label={`Go to course slide ${index + 1}`}
                       className={`h-2 rounded-full transition-all duration-300 ${
                         index === currentIndex
                           ? "w-8 bg-cyan-400"

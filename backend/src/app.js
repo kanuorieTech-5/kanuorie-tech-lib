@@ -41,6 +41,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const libraryRoutes = require("./routes/libraryRoutes");
+const communityRoutes = require("./routes/communityRoutes");
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
@@ -126,21 +127,9 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use(logger);
 
-/* ==========================================
-   RATE LIMITING
-========================================== */
-
 app.use(rateLimiter);
 
-/* ==========================================
-   API VERSION
-========================================== */
-
 const API = "/api/v1";
-
-/* ==========================================
-   HEALTH CHECK
-========================================== */
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -155,10 +144,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-/* ==========================================
-   API ROOT
-========================================== */
-
 app.get(API, (req, res) => {
   res.status(200).json({
     success: true,
@@ -168,10 +153,6 @@ app.get(API, (req, res) => {
     documentation: "/api/docs",
   });
 });
-
-/* ==========================================
-   ROUTES
-========================================== */
 
 app.use(`${API}/auth`, authRoutes);
 
@@ -184,6 +165,8 @@ app.use(`${API}/books`, bookRoutes);
 app.use(`${API}/courses`, courseRoutes);
 
 app.use(`${API}/library`, libraryRoutes);
+
+app.use(`${API}/community`, communityRoutes);
 
 app.use(`${API}/progress`, progressRoutes);
 
@@ -209,15 +192,7 @@ app.use(`${API}/contact`, contactRoutes);
 
 app.use(`${API}/upload`, uploadRoutes);
 
-/* ==========================================
-   404 HANDLER
-========================================== */
-
 app.use(notFound);
-
-/* ==========================================
-   GLOBAL ERROR HANDLER
-========================================== */
 
 app.use(errorHandler);
 

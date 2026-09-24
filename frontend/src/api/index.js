@@ -8,7 +8,7 @@ export * from "./userApi";
 export * from "./adminApi";
 
 // Library
-export * from "./bookApi";
+export * from "./LearningApi";
 export * from "./courseApi";
 export * from "./progressApi";
 export * from "./libraryApi";
@@ -24,6 +24,7 @@ export * from "./teamApi";
 export * from "./testimonialApi";
 export * from "./faqApi";
 export * from "./newsletterApi";
+export * from "./communityApi";
 
 // Communication
 export * from "./contactApi";

@@ -15,10 +15,7 @@ export const getSavedResources = async () => {
 ========================================== */
 
 export const saveResource = async (resource) => {
-  const { data } = await API.post(
-    "/library/saved",
-    resource,
-  );
+  const { data } = await API.post("/library/saved", resource);
 
   return data;
 };
@@ -27,18 +24,12 @@ export const saveResource = async (resource) => {
    REMOVE SAVED RESOURCE
 ========================================== */
 
-export const removeSavedResource = async (
-  resourceId,
-  resourceType,
-) => {
-  const { data } = await API.delete(
-    `/library/saved/${resourceId}`,
-    {
-      params: {
-        resourceType,
-      },
+export const removeSavedResource = async (resourceId, resourceType) => {
+  const { data } = await API.delete(`/library/saved/${resourceId}`, {
+    params: {
+      resourceType,
     },
-  );
+  });
 
   return data;
 };
@@ -47,18 +38,12 @@ export const removeSavedResource = async (
    CHECK SAVED RESOURCE
 ========================================== */
 
-export const checkSavedResource = async (
-  resourceId,
-  resourceType,
-) => {
-  const { data } = await API.get(
-    `/library/saved/${resourceId}`,
-    {
-      params: {
-        resourceType,
-      },
+export const checkSavedResource = async (resourceId, resourceType) => {
+  const { data } = await API.get(`/library/saved/${resourceId}`, {
+    params: {
+      resourceType,
     },
-  );
+  });
 
   return data;
 };
