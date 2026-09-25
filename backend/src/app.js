@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const compression = require("compression");
@@ -42,6 +42,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const libraryRoutes = require("./routes/libraryRoutes");
 const communityRoutes = require("./routes/communityRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
@@ -110,8 +111,11 @@ app.use(
 
 app.use(
   express.json({
-    limit: "10mb",
-  })
+  limit: "10mb",
+  verify: (req, res, buf) => {
+    req.rawBody = Buffer.from(buf);
+  },
+})
 );
 
 app.use(
@@ -140,7 +144,7 @@ app.get("/health", (req, res) => {
     environment:
       process.env.NODE_ENV || "development",
     version: "1.0.0",
-    message: "KanuorieTech API is running 🚀",
+    message: "KanuorieTech API is running ðŸš€",
   });
 });
 
@@ -167,6 +171,7 @@ app.use(`${API}/courses`, courseRoutes);
 app.use(`${API}/library`, libraryRoutes);
 
 app.use(`${API}/community`, communityRoutes);
+app.use(`${API}/payments`, paymentRoutes);
 
 app.use(`${API}/progress`, progressRoutes);
 

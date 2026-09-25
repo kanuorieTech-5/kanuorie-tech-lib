@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+﻿import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
@@ -44,6 +44,9 @@ const Testimonials = lazy(() => import("../pages/Testimonials"));
 const Community = lazy(() => import("../pages/Community"));
 const Affiliate = lazy(() => import("../pages/Affiliate"));
 const Payments = lazy(() => import("../pages/Payments"));
+const PaystackCallback = lazy(
+  () => import("../pages/PaystackCallback"),
+);
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
@@ -154,6 +157,10 @@ export default function AppRoutes() {
           <Route path="affiliate" element={<Affiliate />} />
 
           <Route path="payments" element={<Payments />} />
+          <Route
+            path="payments/paystack/callback"
+            element={<PaystackCallback />}
+          />
 
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
@@ -232,3 +239,6 @@ export default function AppRoutes() {
     </Suspense>
   );
 }
+
+
+

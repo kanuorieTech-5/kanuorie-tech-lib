@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -39,11 +39,15 @@ import { Newsletter, CTA } from "../components/home";
 import {
   getCourse,
   getCourses,
+  enrollCourse,
+  initializePaystackCoursePayment,
   completeLesson,
   updateCurrentLesson,
   submitAssessment,
   completeModule,
 } from "../services";
+
+import CoursePurchaseCard from "../components/courses/CoursePurchaseCard";
 
 import { uploadAssessmentFile } from "../api/uploadApi";
 
@@ -141,6 +145,9 @@ export default function CourseDetails() {
   const [progress, setProgress] = useState(null);
   const [relatedCourses, setRelatedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [enrollmentLoading, setEnrollmentLoading] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+
   const [completingLesson, setCompletingLesson] = useState(null);
   const [completingModule, setCompletingModule] = useState(null);
   const [submittingAssessment, setSubmittingAssessment] = useState(null);
@@ -165,22 +172,46 @@ export default function CourseDetails() {
       setProgress(null);
       setRelatedCourses([]);
 
+
       try {
-        const [courseRes, coursesRes] = await Promise.all([
-          getCourse(id),
-          getCourses(),
-        ]);
+        // Public catalog data is always loaded first so non-enrolled
+        // learners can view the course before enrollment/purchase.
+        const coursesRes = await getCourses();
 
         if (!isMounted) {
           return;
         }
 
-        const fetchedCourse = courseRes?.data?.course || null;
-        const fetchedProgress = courseRes?.data?.progress || null;
-
         const fetchedCourses = Array.isArray(coursesRes?.data)
           ? coursesRes.data
           : [];
+
+        const publicCourse =
+          fetchedCourses.find(
+            (item) =>
+              String(item?._id) === String(id) ||
+              String(item?.slug) === String(id),
+          ) || null;
+
+        // The protected endpoint returns the full curriculum only when
+        // the learner is enrolled. A 403 is expected for public previews.
+        let fetchedCourse = publicCourse;
+        let fetchedProgress = null;
+
+        try {
+          const courseRes = await getCourse(id);
+
+          fetchedCourse = courseRes?.data?.course || publicCourse;
+          fetchedProgress = courseRes?.data?.progress || null;
+        } catch (courseError) {
+          if (courseError?.response?.status !== 403) {
+            throw courseError;
+          }
+        }
+
+        if (!isMounted) {
+          return;
+        }
 
         setCourse(fetchedCourse);
         setProgress(fetchedProgress);
@@ -191,7 +222,7 @@ export default function CourseDetails() {
 
         /* -----------------------------------------------
           OPEN CURRENT LESSON'S MODULE BY DEFAULT
-          Falls back to the first module.
+          Only available for enrolled learners.
         ------------------------------------------------ */
 
         const courseModules = Array.isArray(fetchedCourse.modules)
@@ -215,7 +246,6 @@ export default function CourseDetails() {
         }
 
         const firstModule = courseModules[0];
-
         const moduleToOpen = currentModule || firstModule;
 
         if (moduleToOpen) {
@@ -223,18 +253,15 @@ export default function CourseDetails() {
             [moduleToOpen._id || moduleToOpen.order || 0]: true,
           });
         }
+
         /* -----------------------------------------------
            RELATED COURSES
-
-           Public catalog intentionally excludes modules,
-           so related course lesson counts are not calculated
-           from the public response.
         ------------------------------------------------ */
 
         const availableCourses = fetchedCourses.filter(
           (item) =>
             item?._id &&
-            item._id !== fetchedCourse._id &&
+            String(item._id) !== String(fetchedCourse._id) &&
             item?.published !== false,
         );
 
@@ -282,6 +309,83 @@ export default function CourseDetails() {
       isMounted = false;
     };
   }, [id]);
+
+  const isEnrolled = Boolean(progress?._id || progress?.course);
+
+  const handleEnroll = async () => {
+    if (!id || enrollmentLoading || isEnrolled) {
+      return;
+    }
+
+    try {
+      setEnrollmentLoading(true);
+
+      const response = await enrollCourse(id);
+      const enrolledProgress = response?.data?.progress || response?.data || null;
+
+      setProgress(enrolledProgress);
+
+      toast.success("You are now enrolled! Loading your curriculum...");
+
+      // Reload the protected course endpoint so modules and lessons become
+      // available immediately after successful enrollment.
+      const courseResponse = await getCourse(id);
+
+      if (courseResponse?.data?.course) {
+        setCourse(courseResponse.data.course);
+      }
+
+      if (courseResponse?.data?.progress) {
+        setProgress(courseResponse.data.progress);
+      }
+    } catch (error) {
+      console.error("Enroll course error:", error);
+      toast.error(getApiMessage(error, "Unable to enroll in this course."));
+    } finally {
+      setEnrollmentLoading(false);
+    }
+  };
+
+  const handleBuyCourse = async () => {
+    if (!id || purchaseLoading || isEnrolled) {
+      return;
+    }
+
+    try {
+      setPurchaseLoading(true);
+
+      const response = await initializePaystackCoursePayment(id);
+
+      const authorizationUrl =
+        response?.data?.paystack?.authorization_url;
+
+      if (!authorizationUrl) {
+        throw new Error(
+          "Secure Paystack checkout could not be initialized.",
+        );
+      }
+
+      toast.success(
+        "Redirecting you to secure payment checkout...",
+      );
+
+      window.location.assign(authorizationUrl);
+    } catch (error) {
+      console.error(
+        "Initialize Paystack course payment error:",
+        error,
+      );
+
+      toast.error(
+        getApiMessage(
+          error,
+          "Unable to start secure payment checkout.",
+        ),
+      );
+
+      setPurchaseLoading(false);
+    }
+  };
 
   /* =======================================================
      COURSE CALCULATIONS
@@ -757,7 +861,7 @@ export default function CourseDetails() {
   };
 
   /* =======================================================
-   LESSON NOTES — UI ONLY
+   LESSON NOTES â€” UI ONLY
 ======================================================= */
 
   const handleOpenNote = (lessonId) => {
@@ -980,74 +1084,94 @@ export default function CourseDetails() {
               }}
             >
               <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-slate-300">
-                      Your Progress
-                    </p>
-
-                    <p className="mt-2 text-4xl font-black">
-                      {progressPercentage}%
-                    </p>
-                  </div>
-
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/20">
-                    {progressPercentage >= 100 ? (
-                      <Trophy className="text-yellow-300" size={28} />
-                    ) : (
-                      <BookOpen className="text-blue-300" size={28} />
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-6 h-3 overflow-hidden rounded-full bg-white/10">
-                  <motion.div
-                    initial={{
-                      width: 0,
-                    }}
-                    animate={{
-                      width: `${progressPercentage}%`,
-                    }}
-                    transition={{
-                      duration: 0.8,
-                    }}
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400"
-                  />
-                </div>
-
-                <div className="mt-4 flex items-center justify-between text-sm">
-                  <span className="text-slate-300">
-                    {completedLessonsCount} of {totalLessons} lessons completed
-                  </span>
-
-                  <span className="font-semibold text-blue-300">
-                    {progress?.status === "completed"
-                      ? "Completed"
-                      : progressPercentage > 0
-                        ? "In Progress"
-                        : "Not Started"}
-                  </span>
-                </div>
-
-                {progressPercentage >= 100 && (
-                  <div className="mt-6 rounded-2xl border border-yellow-400/20 bg-yellow-400/10 p-4">
-                    <div className="flex items-start gap-3">
-                      <Award
-                        className="mt-0.5 shrink-0 text-yellow-300"
-                        size={22}
-                      />
-
+                {isEnrolled ? (
+                  <>
+                    <div className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="font-bold text-yellow-100">
-                          Lessons completed!
+                        <p className="text-sm font-medium text-slate-300">
+                          Your Progress
                         </p>
 
-                        <p className="mt-1 text-sm leading-6 text-yellow-100/70">
-                          Complete the required assessments and final
-                          requirements to become certificate eligible.
+                        <p className="mt-2 text-4xl font-black">
+                          {progressPercentage}%
                         </p>
                       </div>
+
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/20">
+                        {progressPercentage >= 100 ? (
+                          <Trophy className="text-yellow-300" size={28} />
+                        ) : (
+                          <BookOpen className="text-blue-300" size={28} />
+                        )}
+                      </div>
                     </div>
+
+                    <div className="mt-6 h-3 overflow-hidden rounded-full bg-white/10">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressPercentage}%` }}
+                        transition={{ duration: 0.8 }}
+                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400"
+                      />
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between text-sm">
+                      <span className="text-slate-300">
+                        {completedLessonsCount} of {totalLessons} lessons completed
+                      </span>
+
+                      <span className="font-semibold text-blue-300">
+                        {progress?.status === "completed"
+                          ? "Completed"
+                          : progressPercentage > 0
+                            ? "In Progress"
+                            : "Not Started"}
+                      </span>
+                    </div>
+
+                    {progressPercentage >= 100 && (
+                      <div className="mt-6 rounded-2xl border border-yellow-400/20 bg-yellow-400/10 p-4">
+                        <div className="flex items-start gap-3">
+                          <Award
+                            className="mt-0.5 shrink-0 text-yellow-300"
+                            size={22}
+                          />
+
+                          <div>
+                            <p className="font-bold text-yellow-100">
+                              Lessons completed!
+                            </p>
+
+                            <p className="mt-1 text-sm leading-6 text-yellow-100/70">
+                              Complete the required assessments and final
+                              requirements to become certificate eligible.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div>
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/20">
+                      <BookOpen className="text-blue-300" size={28} />
+                    </div>
+
+                    <p className="mt-6 text-sm font-semibold uppercase tracking-wider text-blue-300">
+                      Course Access
+                    </p>
+
+                    <h2 className="mt-2 text-2xl font-black">
+                      {course?.premium
+                        ? "Premium course access"
+                        : "Enroll to start learning"}
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-300">
+                      {course?.premium
+                        ? "Purchase this course to unlock the protected curriculum, lessons, assessments, and learning progress."
+                        : "Enroll for free to unlock the protected curriculum, lessons, assessments, and learning progress."}
+                    </p>
                   </div>
                 )}
               </div>
@@ -1055,6 +1179,20 @@ export default function CourseDetails() {
           </div>
         </div>
       </section>
+
+      {!isEnrolled && (
+        <section className="bg-slate-50 px-6 py-10 sm:py-14">
+          <div className="mx-auto max-w-5xl">
+            <CoursePurchaseCard
+              course={course}
+              enrolled={isEnrolled}
+              loading={enrollmentLoading || purchaseLoading}
+              onEnroll={handleEnroll}
+              onBuy={handleBuyCourse}
+            />
+          </div>
+        </section>
+      )}
 
       {/* ==================================================
           COURSE INFORMATION
@@ -1216,13 +1354,14 @@ export default function CourseDetails() {
           COURSE CURRICULUM
       ================================================== */}
 
+      {isEnrolled && (
       <section className="bg-slate-50 py-10 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <SectionTitle
             title="Course Curriculum"
             subtitle={`${modules.length} ${
               modules.length === 1 ? "module" : "modules"
-            } • ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
+            } â€¢ ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
           />
 
           {currentLessonDetails && progressPercentage < 100 && (
@@ -1356,14 +1495,14 @@ export default function CourseDetails() {
 
                             {lessons.length > 0 && (
                               <>
-                                <span className="text-slate-300">•</span>
+                                <span className="text-slate-300">â€¢</span>
                                 <span>{moduleCompletedLessons} completed</span>
                               </>
                             )}
 
                             {assessment && (
                               <>
-                                <span className="text-slate-300">•</span>
+                                <span className="text-slate-300">â€¢</span>
                                 <span className="inline-flex items-center gap-1 text-blue-600">
                                   <ClipboardCheck size={14} />
                                   Assessment
@@ -2193,10 +2332,13 @@ export default function CourseDetails() {
         </div>
       </section>
 
+      )}
+
       {/* ==================================================
           CERTIFICATE
       ================================================== */}
 
+      {isEnrolled && (
       <section className="py-10 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <Card className="text-center">
@@ -2227,6 +2369,8 @@ export default function CourseDetails() {
           </Card>
         </div>
       </section>
+
+      )}
 
       {/* ==================================================
           INSTRUCTOR
@@ -2339,3 +2483,7 @@ export default function CourseDetails() {
     </>
   );
 }
+
+
+
+
