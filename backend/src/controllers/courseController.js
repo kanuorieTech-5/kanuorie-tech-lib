@@ -4,7 +4,7 @@ const Progress = require("../models/Progress");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
-
+const { enrollUserInCourse, } = require("../services/courseEnrollmentService");
 /* ==========================================
    CREATE COURSE
 ========================================== */
@@ -264,6 +264,8 @@ const updateCourse = asyncHandler(async (req, res) => {
     "duration",
     "featured",
     "premium",
+    "price",
+    "currency",
     "published",
     "tags",
     "prerequisites",

@@ -76,11 +76,10 @@ const emptyCourse = {
   duration: 0,
   featured: false,
   premium: false,
+  price: 0,
+  currency: "USD",
   published: true,
   tags: [],
-  prerequisites: [],
-  outcomes: [],
-  modules: [],
 };
 
 /* ==========================================
@@ -741,6 +740,10 @@ export default function AdminCourses() {
 
         premium: Boolean(form.premium),
 
+        price: form.premium ? Math.max(Number(form.price) || 0, 0) : 0,
+
+        currency: form.currency?.trim()?.toUpperCase() || "USD",
+
         published: Boolean(form.published),
 
         tags: Array.isArray(form.tags)
@@ -1234,6 +1237,49 @@ export default function AdminCourses() {
                     onChange={(value) => updateField("premium", value)}
                   />
                 </div>
+
+                {form.premium && (
+                  <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 p-5">
+                    <div className="mb-4">
+                      <h4 className="font-bold text-slate-900">
+                        Premium Course Pricing
+                      </h4>
+
+                      <p className="mt-1 text-xs text-slate-500">
+                        Set the price learners must pay before they can access this course.
+                      </p>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field
+                        label="Price"
+                        type="number"
+                        value={form.price}
+                        onChange={(value) => updateField("price", value)}
+                        placeholder="49"
+                        required
+                      />
+
+                      <SelectField
+                        label="Currency"
+                        value={form.currency}
+                        onChange={(value) => updateField("currency", value)}
+                        options={["USD", "NGN"]}
+                      />
+                    </div>
+
+                    <div className="mt-4 rounded-xl border border-purple-100 bg-white/70 px-4 py-3">
+                      <p className="text-xs font-medium text-slate-500">
+                        Course price
+                      </p>
+
+                      <p className="mt-1 text-lg font-black text-slate-900">
+                        {form.currency === "NGN" ? "₦" : "$"}
+                        {Number(form.price || 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </FormSection>
 
               {/* METADATA */}

@@ -1,25 +1,13 @@
 const mongoose = require("mongoose");
 
-/* ==========================================
-   COMMUNITY POST SCHEMA
-========================================== */
-
 const communityPostSchema = new mongoose.Schema(
   {
-    /* ========================================
-       AUTHOR
-    ======================================== */
-
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
     },
-
-    /* ========================================
-       POST CONTENT
-    ======================================== */
 
     title: {
       type: String,
@@ -50,23 +38,12 @@ const communityPostSchema = new mongoose.Schema(
       trim: true,
     },
 
-    /* ========================================
-       MODERATION
-    ======================================== */
-
     status: {
       type: String,
       enum: ["published", "hidden", "deleted"],
       default: "published",
       index: true,
     },
-
-    /* ========================================
-       ENGAGEMENT
-       
-       These will be expanded when we add
-       likes/comments.
-    ======================================== */
 
     likesCount: {
       type: Number,
@@ -79,15 +56,17 @@ const communityPostSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+
+    sharesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true,
   }
 );
-
-/* ==========================================
-   INDEXES
-========================================== */
 
 communityPostSchema.index({
   status: 1,

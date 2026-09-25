@@ -220,7 +220,7 @@ const courseSchema = new mongoose.Schema(
       min: 0,
     },
 
-    /* ----------------------------------------
+        /* ----------------------------------------
        PUBLISHING & SETTINGS
     ---------------------------------------- */
 
@@ -234,11 +234,23 @@ const courseSchema = new mongoose.Schema(
       default: false,
     },
 
+    price: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    currency: {
+      type: String,
+      default: "USD",
+      uppercase: true,
+      trim: true,
+    },
+
     published: {
       type: Boolean,
       default: true,
     },
-
     /* ----------------------------------------
        COURSE STATISTICS
     ---------------------------------------- */

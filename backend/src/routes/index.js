@@ -19,5 +19,8 @@ router.use("/notifications", require("./notificationRoutes"));
 router.use("/upload", require("./uploadRoutes"));
 router.use("/admin", require("./adminRoutes"));
 router.use("/library", require("./libraryRoutes"));
+router.use("/community", require("./communityRoutes"));
+router.use("/affiliate", require("./affiliateRoutes"));
+router.use("/payments", require("./paymentRoutes"));
 
 module.exports = router;
