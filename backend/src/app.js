@@ -43,6 +43,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const libraryRoutes = require("./routes/libraryRoutes");
 const communityRoutes = require("./routes/communityRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
@@ -52,6 +53,31 @@ const allowedOrigins = (process.env.CLIENT_URL || "")
   .split(",")
   .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
+
+const isAllowedVercelPreview = (origin) => {
+  if (!origin) {
+    return false;
+  }
+
+  try {
+    const url = new URL(origin);
+
+    if (url.protocol !== "https:") {
+      return false;
+    }
+
+    if (url.hostname === "kanuorie-tech-lib-ne15.vercel.app") {
+      return true;
+    }
+
+    return (
+      url.hostname.startsWith("kanuorie-tech-lib-ne15-") &&
+      url.hostname.endsWith(".vercel.app")
+    );
+  } catch {
+    return false;
+  }
+};
 
 console.log("Allowed CORS origins:", allowedOrigins);
 
@@ -66,14 +92,17 @@ app.use(compression());
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow server-to-server requests and health checks
+      // Allow server-to-server requests and health checks.
       if (!origin) {
         return callback(null, true);
       }
 
       const normalizedOrigin = origin.replace(/\/$/, "");
 
-      if (allowedOrigins.includes(normalizedOrigin)) {
+      if (
+        allowedOrigins.includes(normalizedOrigin) ||
+        isAllowedVercelPreview(normalizedOrigin)
+      ) {
         return callback(null, true);
       }
 
@@ -111,11 +140,11 @@ app.use(
 
 app.use(
   express.json({
-  limit: "10mb",
-  verify: (req, res, buf) => {
-    req.rawBody = Buffer.from(buf);
-  },
-})
+    limit: "10mb",
+    verify: (req, res, buf) => {
+      req.rawBody = Buffer.from(buf);
+    },
+  })
 );
 
 app.use(
@@ -130,7 +159,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use(logger);
-
 app.use(rateLimiter);
 
 const API = "/api/v1";
@@ -144,7 +172,7 @@ app.get("/health", (req, res) => {
     environment:
       process.env.NODE_ENV || "development",
     version: "1.0.0",
-    message: "KanuorieTech API is running ðŸš€",
+    message: "KanuorieTech API is running 🚀",
   });
 });
 
@@ -159,46 +187,27 @@ app.get(API, (req, res) => {
 });
 
 app.use(`${API}/auth`, authRoutes);
-
 app.use(`${API}/users`, userRoutes);
-
 app.use(`${API}/admin`, adminRoutes);
-
 app.use(`${API}/books`, bookRoutes);
-
 app.use(`${API}/courses`, courseRoutes);
-
 app.use(`${API}/library`, libraryRoutes);
-
 app.use(`${API}/community`, communityRoutes);
 app.use(`${API}/payments`, paymentRoutes);
-
 app.use(`${API}/progress`, progressRoutes);
-
 app.use(`${API}/products`, productRoutes);
-
 app.use(`${API}/projects`, projectRoutes);
-
 app.use(`${API}/services`, serviceRoutes);
-
 app.use(`${API}/blog`, blogRoutes);
-
 app.use(`${API}/faq`, faqRoutes);
-
 app.use(`${API}/team`, teamRoutes);
-
 app.use(`${API}/testimonials`, testimonialRoutes);
-
 app.use(`${API}/newsletter`, newsletterRoutes);
-
 app.use(`${API}/notifications`, notificationRoutes);
-
 app.use(`${API}/contact`, contactRoutes);
-
 app.use(`${API}/upload`, uploadRoutes);
 
 app.use(notFound);
-
 app.use(errorHandler);
 
 module.exports = app;
