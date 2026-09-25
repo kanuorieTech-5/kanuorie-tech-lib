@@ -18,3 +18,6 @@ export * from "./admin.service";
 export * from "./profile.service";
 export * from "./library.service";
 export * from "./community.service";
+
+// Payments
+export * from "./payment.service";

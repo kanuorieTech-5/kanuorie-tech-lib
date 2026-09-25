@@ -32,3 +32,6 @@ export * from "./notificationApi";
 
 // Upload
 export * from "./uploadApi";
+
+// Payments
+export * from "./paymentApi";
