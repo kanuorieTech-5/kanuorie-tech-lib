@@ -1,4 +1,4 @@
-const Course = require("../models/Course");
+﻿const Course = require("../models/Course");
 const Progress = require("../models/Progress");
 
 /* ==========================================
@@ -8,6 +8,7 @@ const Progress = require("../models/Progress");
 const enrollUserInCourse = async ({
   userId,
   courseId,
+  allowPremium = false,
 }) => {
   const course = await Course.findById(courseId);
 
@@ -25,6 +26,21 @@ const enrollUserInCourse = async ({
     throw error;
   }
 
+  /*
+   * PREMIUM COURSES REQUIRE VERIFIED PAYMENT.
+   *
+   * allowPremium must ONLY be set to true by the
+   * server-side payment fulfillment flow after
+   * Paystack has successfully verified the transaction.
+   */
+  if (course.premium && !allowPremium) {
+    const error = new Error(
+      "This is a premium course. Please complete payment before enrolling."
+    );
+    error.statusCode = 402;
+    throw error;
+  }
+
   const existingProgress = await Progress.findOne({
     user: userId,
     course: course._id,
@@ -38,10 +54,7 @@ const enrollUserInCourse = async ({
     throw error;
   }
 
-  /* ------------------------------------------
-     FIND FIRST LESSON
-  ------------------------------------------ */
-
+  /* FIND FIRST LESSON */
   const sortedModules = [...(course.modules || [])].sort(
     (a, b) => (a.order || 0) - (b.order || 0)
   );
@@ -59,18 +72,13 @@ const enrollUserInCourse = async ({
     }
   }
 
-  /* ------------------------------------------
-     CREATE PROGRESS
-  ------------------------------------------ */
-
+  /* CREATE PROGRESS */
   const progress = await Progress.create({
     user: userId,
     course: course._id,
     percentage: 0,
     status: "not_started",
-    currentLesson: firstLesson
-      ? firstLesson._id
-      : null,
+    currentLesson: firstLesson ? firstLesson._id : null,
     completedLessons: [],
     bookmarkedLessons: [],
     watchTime: 0,
@@ -83,12 +91,8 @@ const enrollUserInCourse = async ({
     lastProgressUpdate: new Date(),
   });
 
-  /* ------------------------------------------
-     UPDATE ENROLLMENT COUNT
-  ------------------------------------------ */
-
+  /* UPDATE ENROLLMENT COUNT */
   course.enrollments += 1;
-
   await course.save();
 
   return {

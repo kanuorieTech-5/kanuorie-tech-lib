@@ -632,6 +632,7 @@ const markPaymentSuccessful = async ({
         await enrollUserInCourse({
           userId: order.user,
           courseId: course._id,
+          allowPremium: true,
         });
 
       enrollments.push({

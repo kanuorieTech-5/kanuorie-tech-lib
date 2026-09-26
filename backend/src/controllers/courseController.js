@@ -1034,6 +1034,20 @@ const enrollCourse = asyncHandler(async (req, res) => {
     );
   }
 
+  /*
+   * PREMIUM COURSES MUST GO THROUGH THE PAYMENT FLOW.
+   *
+   * The public enrollment endpoint is only for free courses.
+   * Premium enrollment is created by the server-side Paystack
+   * fulfillment flow after successful transaction verification.
+   */
+  if (course.premium) {
+    throw new ApiError(
+      402,
+      "This is a premium course. Please complete payment before enrolling."
+    );
+  }
+
   const existingProgress = await Progress.findOne({
     user: req.user._id,
     course: course._id,
