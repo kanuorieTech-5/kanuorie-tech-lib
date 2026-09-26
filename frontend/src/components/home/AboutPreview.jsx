@@ -54,7 +54,7 @@ export default function AboutPreview() {
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="relative mx-auto px-6 lg:px-8">
         {/* Section heading */}
         <SectionTitle
           Badge="About KanuorieTech"

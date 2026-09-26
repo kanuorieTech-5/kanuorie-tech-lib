@@ -25,6 +25,7 @@ export * from "./testimonialApi";
 export * from "./faqApi";
 export * from "./newsletterApi";
 export * from "./communityApi";
+export * from "./certificatesApi";
 
 // Communication
 export * from "./contactApi";

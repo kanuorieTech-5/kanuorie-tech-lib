@@ -54,6 +54,7 @@ const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Notifications = lazy(() => import("../pages/Notifications"));
+const Certificates = lazy(() => import("../pages/Certificates"));
 
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 
@@ -193,6 +194,8 @@ export default function AppRoutes() {
             <Route path="settings" element={<Settings />} />
 
             <Route path="notifications" element={<Notifications />} />
+
+<Route path="certificates" element={<Certificates />} />
           </Route>
         </Route>
 
@@ -239,6 +242,7 @@ export default function AppRoutes() {
     </Suspense>
   );
 }
+
 
 
 

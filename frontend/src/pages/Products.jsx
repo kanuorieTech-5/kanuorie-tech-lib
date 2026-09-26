@@ -206,22 +206,8 @@ export default function Products() {
 
   return (
     <>
-      {/* =====================================================
-          HERO
-      ===================================================== */}
-
       <section
-        className="
-          relative
-          overflow-hidden
-          bg-gradient-to-br
-          from-slate-950
-          via-slate-900
-          to-blue-950
-          py-20
-          text-white
-          lg:py-28
-        "
+        className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-20 text-white lg:py-28"
       >
         <div
           className="
@@ -373,7 +359,7 @@ export default function Products() {
         "
         aria-labelledby="products-heading"
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto">
           {/* Header */}
 
           <motion.div
@@ -421,8 +407,7 @@ export default function Products() {
             </h2>
 
             <p
-              className="
-                max-w-3xl
+              className="max-w-3xl
                 text-base
                 leading-7
                 text-slate-600
