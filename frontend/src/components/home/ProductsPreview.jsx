@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Globe, Sparkles } from "lucide-react";
@@ -30,7 +30,6 @@ const getProductsData = (response) => {
 
 const getPricingLabel = (product) => {
   const pricingType = product?.pricingType || "Free";
-
   const price = Number(product?.price);
 
   if (pricingType === "Paid" && Number.isFinite(price) && price > 0) {
@@ -43,6 +42,46 @@ const getPricingLabel = (product) => {
 export default function ProductsPreview() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const sliderRef = useRef(null);
+
+  const visibleProducts = products.slice(0, 4);
+
+  /* ==========================================
+     AUTOPLAY MOBILE CAROUSEL
+  ========================================== */
+
+  useEffect(() => {
+    if (visibleProducts.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((previous) => {
+        const next =
+          previous + 1 >= visibleProducts.length
+            ? 0
+            : previous + 1;
+
+        const slides = sliderRef.current?.children;
+
+        if (slides?.[next]) {
+          slides[next].scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+
+        return next;
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [visibleProducts.length]);
+
+  /* ==========================================
+     LOAD PRODUCTS
+  ========================================== */
 
   useEffect(() => {
     let mounted = true;
@@ -77,6 +116,28 @@ export default function ProductsPreview() {
       mounted = false;
     };
   }, []);
+
+  /* ==========================================
+     GO TO SLIDE
+  ========================================== */
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+
+    const slides = sliderRef.current?.children;
+
+    if (slides?.[index]) {
+      slides[index].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  };
+
+  /* ==========================================
+     LOADING
+  ========================================== */
 
   if (loading) {
     return (
@@ -131,6 +192,7 @@ export default function ProductsPreview() {
       />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+
         {/* Header */}
 
         <div className="mb-12">
@@ -166,7 +228,9 @@ export default function ProductsPreview() {
               "
             />
 
-            <h3 className="mb-3 text-2xl font-bold">Product Hub coming soon</h3>
+            <h3 className="mb-3 text-2xl font-bold">
+              Product Hub coming soon
+            </h3>
 
             <p className="mx-auto max-w-xl text-slate-400">
               We're building a curated directory of useful tools and
@@ -175,42 +239,61 @@ export default function ProductsPreview() {
           </div>
         ) : (
           <>
-            {/* Product grid */}
+            {/* ==========================================
+                MOBILE CAROUSEL
+            ========================================== */}
 
-            <div
-              className="
-                grid
-                gap-6
-                sm:grid-cols-2
-                lg:grid-cols-4
-              "
-            >
-              {products.slice(0, 4).map((product, index) => {
-                const productId = product?._id || product?.id;
+            <div className="sm:hidden">
 
-                return (
-                  <motion.div
-                    key={productId || `product-${index}`}
-                    initial={{
-                      opacity: 0,
-                      y: 25,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      duration: 0.45,
-                      delay: Math.min(index * 0.08, 0.3),
-                    }}
-                    viewport={{
-                      once: true,
-                      amount: 0.15,
-                    }}
-                    className="h-full"
-                  >
-                    <Card
+              <div
+                ref={sliderRef}
+                className="
+                  flex
+                  snap-x
+                  snap-mandatory
+                  gap-5
+                  overflow-x-auto
+                  pb-4
+                  scrollbar-hide
+                "
+              >
+                {visibleProducts.map((product, index) => {
+                  const productId =
+                    product?._id || product?.id;
+
+                  return (
+                    <motion.div
+                      key={
+                        productId ||
+                        `mobile-product-${index}`
+                      }
+                      initial={{
+                        opacity: 0,
+                        x: 25,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        x: 0,
+                      }}
+                      transition={{
+                        duration: 0.45,
+                        delay: Math.min(
+                          index * 0.08,
+                          0.3
+                        ),
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.1,
+                      }}
                       className="
+                        w-[88%]
+                        shrink-0
+                        snap-center
+                      "
+                    >
+                      <Card
+                        className="
                           group
                           flex
                           h-full
@@ -223,22 +306,34 @@ export default function ProductsPreview() {
                           backdrop-blur-xl
                           transition
                           duration-300
-                          hover:-translate-y-1
-                          hover:border-blue-400/30
-                          hover:shadow-2xl
                         "
-                    >
-                      {/* Image */}
-
-                      <Link
-                        to={productId ? `/products/${productId}` : "/products"}
-                        className="relative block overflow-hidden"
                       >
-                        <img
-                          src={product?.image || PRODUCT_PLACEHOLDER}
-                          alt={product?.name || "Developer tool"}
-                          loading="lazy"
+
+                        {/* Image */}
+
+                        <Link
+                          to={
+                            productId
+                              ? `/products/${productId}`
+                              : "/products"
+                          }
                           className="
+                            relative
+                            block
+                            overflow-hidden
+                          "
+                        >
+                          <img
+                            src={
+                              product?.image ||
+                              PRODUCT_PLACEHOLDER
+                            }
+                            alt={
+                              product?.name ||
+                              "Developer tool"
+                            }
+                            loading="lazy"
+                            className="
                               h-52
                               w-full
                               object-cover
@@ -246,22 +341,23 @@ export default function ProductsPreview() {
                               duration-500
                               group-hover:scale-105
                             "
-                          onError={(event) => {
-                            if (
-                              event.currentTarget.src.includes(
-                                PRODUCT_PLACEHOLDER,
-                              )
-                            ) {
-                              return;
-                            }
+                            onError={(event) => {
+                              if (
+                                event.currentTarget.src.includes(
+                                  PRODUCT_PLACEHOLDER
+                                )
+                              ) {
+                                return;
+                              }
 
-                            event.currentTarget.src = PRODUCT_PLACEHOLDER;
-                          }}
-                        />
+                              event.currentTarget.src =
+                                PRODUCT_PLACEHOLDER;
+                            }}
+                          />
 
-                        {product?.featured && (
-                          <span
-                            className="
+                          {product?.featured && (
+                            <span
+                              className="
                                 absolute
                                 left-4
                                 top-4
@@ -273,35 +369,36 @@ export default function ProductsPreview() {
                                 font-bold
                                 text-slate-950
                               "
-                          >
-                            Featured
-                          </span>
-                        )}
-                      </Link>
+                            >
+                              Featured
+                            </span>
+                          )}
+                        </Link>
 
-                      {/* Content */}
+                        {/* Content */}
 
-                      <div
-                        className="
+                        <div
+                          className="
                             flex
                             flex-1
                             flex-col
                             p-5
                           "
-                      >
-                        {/* Category */}
+                        >
 
-                        <div
-                          className="
+                          {/* Category */}
+
+                          <div
+                            className="
                               mb-3
                               flex
                               items-center
                               justify-between
                               gap-3
                             "
-                        >
-                          <span
-                            className="
+                          >
+                            <span
+                              className="
                                 rounded-full
                                 bg-blue-500/10
                                 px-3
@@ -310,75 +407,83 @@ export default function ProductsPreview() {
                                 font-semibold
                                 text-blue-300
                               "
-                          >
-                            {product?.category || "Other"}
-                          </span>
+                            >
+                              {product?.category ||
+                                "Other"}
+                            </span>
 
-                          <span
-                            className="
+                            <span
+                              className="
                                 text-xs
                                 font-bold
                                 text-emerald-400
                               "
+                            >
+                              {getPricingLabel(product)}
+                            </span>
+                          </div>
+
+                          {/* Name */}
+
+                          <Link
+                            to={
+                              productId
+                                ? `/products/${productId}`
+                                : "/products"
+                            }
                           >
-                            {getPricingLabel(product)}
-                          </span>
-                        </div>
-
-                        {/* Name */}
-
-                        <Link
-                          to={
-                            productId ? `/products/${productId}` : "/products"
-                          }
-                        >
-                          <h3
-                            className="
+                            <h3
+                              className="
                                 line-clamp-2
                                 text-xl
                                 font-bold
                                 transition
                                 group-hover:text-blue-400
                               "
-                          >
-                            {product?.name || "Developer Tool"}
-                          </h3>
-                        </Link>
+                            >
+                              {product?.name ||
+                                "Developer Tool"}
+                            </h3>
+                          </Link>
 
-                        {/* Description */}
+                          {/* Description */}
 
-                        <p
-                          className="
+                          <p
+                            className="
                               mt-3
                               line-clamp-3
                               text-sm
                               leading-6
                               text-slate-400
                             "
-                        >
-                          {product?.excerpt ||
-                            product?.description ||
-                            "A useful technology for modern digital work."}
-                        </p>
+                          >
+                            {product?.excerpt ||
+                              product?.description ||
+                              "A useful technology for modern digital work."}
+                          </p>
 
-                        {/* Technologies */}
+                          {/* Technologies */}
 
-                        {Array.isArray(product?.technologies) &&
-                          product.technologies.length > 0 && (
-                            <div
-                              className="
+                          {Array.isArray(
+                            product?.technologies
+                          ) &&
+                            product.technologies.length >
+                              0 && (
+                              <div
+                                className="
                                   mt-4
                                   flex
                                   flex-wrap
                                   gap-2
                                 "
-                            >
-                              {product.technologies
-                                .slice(0, 2)
-                                .map((technology) => (
-                                  <span
-                                    key={technology}
-                                    className="
+                              >
+                                {product.technologies
+                                  .slice(0, 2)
+                                  .map(
+                                    (technology) => (
+                                      <span
+                                        key={technology}
+                                        className="
                                           rounded-full
                                           bg-white/5
                                           px-2.5
@@ -386,44 +491,55 @@ export default function ProductsPreview() {
                                           text-xs
                                           text-slate-400
                                         "
-                                  >
-                                    {technology}
-                                  </span>
-                                ))}
-                            </div>
-                          )}
+                                      >
+                                        {technology}
+                                      </span>
+                                    )
+                                  )}
+                              </div>
+                            )}
 
-                        {/* Actions */}
+                          {/* Actions */}
 
-                        <div
-                          className="
+                          <div
+                            className="
                               mt-auto
                               flex
                               items-center
                               gap-2
                               pt-5
                             "
-                        >
-                          <Link
-                            to={
-                              productId ? `/products/${productId}` : "/products"
-                            }
-                            className="flex-1"
                           >
-                            <Button fullWidth size="sm">
-                              Explore
-                              <ArrowUpRight size={15} className="ml-1" />
-                            </Button>
-                          </Link>
+                            <Link
+                              to={
+                                productId
+                                  ? `/products/${productId}`
+                                  : "/products"
+                              }
+                              className="flex-1"
+                            >
+                              <Button
+                                fullWidth
+                                size="sm"
+                              >
+                                Explore
+                                <ArrowUpRight
+                                  size={15}
+                                  className="ml-1"
+                                />
+                              </Button>
+                            </Link>
 
-                          {product?.websiteUrl && (
-                            <a
-                              href={product.websiteUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label={`Visit ${product.name} website`}
-                              title="Official Website"
-                              className="
+                            {product?.websiteUrl && (
+                              <a
+                                href={
+                                  product.websiteUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Visit ${product.name} website`}
+                                title="Official Website"
+                                className="
                                   flex
                                   h-9
                                   w-9
@@ -438,19 +554,21 @@ export default function ProductsPreview() {
                                   hover:border-blue-400
                                   hover:text-blue-400
                                 "
-                            >
-                              <Globe size={16} />
-                            </a>
-                          )}
+                              >
+                                <Globe size={16} />
+                              </a>
+                            )}
 
-                          {product?.githubUrl && (
-                            <a
-                              href={product.githubUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label={`${product.name} GitHub`}
-                              title="GitHub"
-                              className="
+                            {product?.githubUrl && (
+                              <a
+                                href={
+                                  product.githubUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${product.name} GitHub`}
+                                title="GitHub"
+                                className="
                                   flex
                                   h-9
                                   w-9
@@ -465,6 +583,379 @@ export default function ProductsPreview() {
                                   hover:border-white/30
                                   hover:text-white
                                 "
+                              >
+                                <Github size={16} />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Carousel indicators */}
+
+              {visibleProducts.length > 1 && (
+                <div className="mt-4 flex justify-center gap-2">
+                  {visibleProducts.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() =>
+                        goToSlide(index)
+                      }
+                      aria-label={`Go to product ${
+                        index + 1
+                      }`}
+                      aria-current={
+                        currentSlide === index
+                      }
+                      className={`
+                        h-2
+                        rounded-full
+                        transition-all
+                        duration-300
+                        ${
+                          currentSlide === index
+                            ? "w-6 bg-blue-400"
+                            : "w-2 bg-white/20"
+                        }
+                      `}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ==========================================
+                TABLET / DESKTOP GRID
+            ========================================== */}
+
+            <div
+              className="
+                hidden
+                gap-6
+                sm:grid
+                sm:grid-cols-2
+                lg:grid-cols-4
+              "
+            >
+              {visibleProducts.map((product, index) => {
+                const productId =
+                  product?._id || product?.id;
+
+                return (
+                  <motion.div
+                    key={
+                      productId ||
+                      `desktop-product-${index}`
+                    }
+                    initial={{
+                      opacity: 0,
+                      y: 25,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      delay: Math.min(
+                        index * 0.08,
+                        0.3
+                      ),
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.15,
+                    }}
+                    className="h-full"
+                  >
+                    <Card
+                      className="
+                        group
+                        flex
+                        h-full
+                        flex-col
+                        overflow-hidden
+                        border-white/10
+                        bg-white/5
+                        p-0
+                        text-white
+                        backdrop-blur-xl
+                        transition
+                        duration-300
+                        hover:-translate-y-1
+                        hover:border-blue-400/30
+                        hover:shadow-2xl
+                      "
+                    >
+
+                      {/* Image */}
+
+                      <Link
+                        to={
+                          productId
+                            ? `/products/${productId}`
+                            : "/products"
+                        }
+                        className="
+                          relative
+                          block
+                          overflow-hidden
+                        "
+                      >
+                        <img
+                          src={
+                            product?.image ||
+                            PRODUCT_PLACEHOLDER
+                          }
+                          alt={
+                            product?.name ||
+                            "Developer tool"
+                          }
+                          loading="lazy"
+                          className="
+                            h-52
+                            w-full
+                            object-cover
+                            transition
+                            duration-500
+                            group-hover:scale-105
+                          "
+                          onError={(event) => {
+                            if (
+                              event.currentTarget.src.includes(
+                                PRODUCT_PLACEHOLDER
+                              )
+                            ) {
+                              return;
+                            }
+
+                            event.currentTarget.src =
+                              PRODUCT_PLACEHOLDER;
+                          }}
+                        />
+
+                        {product?.featured && (
+                          <span
+                            className="
+                              absolute
+                              left-4
+                              top-4
+                              rounded-full
+                              bg-yellow-400
+                              px-3
+                              py-1
+                              text-xs
+                              font-bold
+                              text-slate-950
+                            "
+                          >
+                            Featured
+                          </span>
+                        )}
+                      </Link>
+
+                      {/* Content */}
+
+                      <div
+                        className="
+                          flex
+                          flex-1
+                          flex-col
+                          p-5
+                        "
+                      >
+                        <div
+                          className="
+                            mb-3
+                            flex
+                            items-center
+                            justify-between
+                            gap-3
+                          "
+                        >
+                          <span
+                            className="
+                              rounded-full
+                              bg-blue-500/10
+                              px-3
+                              py-1
+                              text-xs
+                              font-semibold
+                              text-blue-300
+                            "
+                          >
+                            {product?.category ||
+                              "Other"}
+                          </span>
+
+                          <span
+                            className="
+                              text-xs
+                              font-bold
+                              text-emerald-400
+                            "
+                          >
+                            {getPricingLabel(product)}
+                          </span>
+                        </div>
+
+                        <Link
+                          to={
+                            productId
+                              ? `/products/${productId}`
+                              : "/products"
+                          }
+                        >
+                          <h3
+                            className="
+                              line-clamp-2
+                              text-xl
+                              font-bold
+                              transition
+                              group-hover:text-blue-400
+                            "
+                          >
+                            {product?.name ||
+                              "Developer Tool"}
+                          </h3>
+                        </Link>
+
+                        <p
+                          className="
+                            mt-3
+                            line-clamp-3
+                            text-sm
+                            leading-6
+                            text-slate-400
+                          "
+                        >
+                          {product?.excerpt ||
+                            product?.description ||
+                            "A useful technology for modern digital work."}
+                        </p>
+
+                        {Array.isArray(
+                          product?.technologies
+                        ) &&
+                          product.technologies.length >
+                            0 && (
+                            <div
+                              className="
+                                mt-4
+                                flex
+                                flex-wrap
+                                gap-2
+                              "
+                            >
+                              {product.technologies
+                                .slice(0, 2)
+                                .map(
+                                  (technology) => (
+                                    <span
+                                      key={technology}
+                                      className="
+                                        rounded-full
+                                        bg-white/5
+                                        px-2.5
+                                        py-1
+                                        text-xs
+                                        text-slate-400
+                                      "
+                                    >
+                                      {technology}
+                                    </span>
+                                  )
+                                )}
+                            </div>
+                          )}
+
+                        <div
+                          className="
+                            mt-auto
+                            flex
+                            items-center
+                            gap-2
+                            pt-5
+                          "
+                        >
+                          <Link
+                            to={
+                              productId
+                                ? `/products/${productId}`
+                                : "/products"
+                            }
+                            className="flex-1"
+                          >
+                            <Button
+                              fullWidth
+                              size="sm"
+                            >
+                              Explore
+                              <ArrowUpRight
+                                size={15}
+                                className="ml-1"
+                              />
+                            </Button>
+                          </Link>
+
+                          {product?.websiteUrl && (
+                            <a
+                              href={
+                                product.websiteUrl
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Visit ${product.name} website`}
+                              title="Official Website"
+                              className="
+                                flex
+                                h-9
+                                w-9
+                                shrink-0
+                                items-center
+                                justify-center
+                                rounded-lg
+                                border
+                                border-white/10
+                                text-slate-400
+                                transition
+                                hover:border-blue-400
+                                hover:text-blue-400
+                              "
+                            >
+                              <Globe size={16} />
+                            </a>
+                          )}
+
+                          {product?.githubUrl && (
+                            <a
+                              href={
+                                product.githubUrl
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${product.name} GitHub`}
+                              title="GitHub"
+                              className="
+                                flex
+                                h-9
+                                w-9
+                                shrink-0
+                                items-center
+                                justify-center
+                                rounded-lg
+                                border
+                                border-white/10
+                                text-slate-400
+                                transition
+                                hover:border-white/30
+                                hover:text-white
+                              "
                             >
                               <Github size={16} />
                             </a>
@@ -477,7 +968,9 @@ export default function ProductsPreview() {
               })}
             </div>
 
-            {/* View all */}
+            {/* ==========================================
+                VIEW ALL
+            ========================================== */}
 
             <div className="mt-12 text-center">
               <Link to="/products">
@@ -491,7 +984,10 @@ export default function ProductsPreview() {
                   "
                 >
                   Explore Product Hub
-                  <ArrowUpRight size={16} className="ml-2" />
+                  <ArrowUpRight
+                    size={16}
+                    className="ml-2"
+                  />
                 </Button>
               </Link>
             </div>

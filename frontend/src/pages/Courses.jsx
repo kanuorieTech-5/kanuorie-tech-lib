@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Award,
   LockKeyhole,
+  ShoppingCart,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -25,7 +26,12 @@ import { SearchBar } from "../components/layout";
 
 import { Newsletter, CTA } from "../components/home";
 
-import { getCourses, enrollCourse } from "../services";
+import {
+  getCourses,
+  enrollCourse,
+  initializePaystackCoursePayment,
+} from "../services";
+
 import { FaMoneyBill } from "react-icons/fa";
 
 const PER_PAGE = 9;
@@ -48,6 +54,26 @@ function getApiMessage(error, fallback = "Something went wrong.") {
   );
 }
 
+function formatPrice(course) {
+  if (!course?.premium) return "Free";
+
+  const price = Number(course?.price || 0);
+
+  if (!price) return "Premium";
+
+  const currency = course?.currency || "NGN";
+
+  if (currency === "NGN") {
+    return `₦${price.toLocaleString("en-NG")}`;
+  }
+
+  return `${currency} ${price.toLocaleString()}`;
+}
+
+function isPremiumCourse(course) {
+  return Boolean(course?.premium);
+}
+
 export default function Courses() {
   const navigate = useNavigate();
 
@@ -59,6 +85,7 @@ export default function Courses() {
   const [page, setPage] = useState(1);
 
   const [enrollingId, setEnrollingId] = useState(null);
+  const [purchasingId, setPurchasingId] = useState(null);
 
   useEffect(() => {
     async function loadCourses() {
@@ -120,8 +147,22 @@ export default function Courses() {
     page * PER_PAGE,
   );
 
+  /* ==========================================
+     FREE COURSE ENROLLMENT
+  ========================================== */
+
   const handleEnroll = async (course) => {
-    if (!course?._id || enrollingId) return;
+    if (!course?._id || enrollingId || purchasingId) return;
+
+    /*
+     * Premium courses MUST NEVER use the free enrollment endpoint.
+     *
+     * The backend also blocks this with HTTP 402, but we prevent
+     * the incorrect action from the UI as well.
+     */
+    if (isPremiumCourse(course)) {
+      return handleBuyCourse(course);
+    }
 
     setEnrollingId(course._id);
 
@@ -156,6 +197,14 @@ export default function Courses() {
         return;
       }
 
+      if (status === 402) {
+        toast.error(
+          "This is a premium course. Please complete payment before enrolling.",
+        );
+
+        return;
+      }
+
       toast.error(
         getApiMessage(
           error,
@@ -164,6 +213,70 @@ export default function Courses() {
       );
     } finally {
       setEnrollingId(null);
+    }
+  };
+
+  /* ==========================================
+     PREMIUM COURSE PAYSTACK CHECKOUT
+  ========================================== */
+
+  const handleBuyCourse = async (course) => {
+    if (!course?._id || purchasingId || enrollingId) return;
+
+    setPurchasingId(course._id);
+
+    try {
+      const response = await initializePaystackCoursePayment(course._id);
+
+      const authorizationUrl =
+        response?.data?.paystack?.authorization_url;
+
+      if (!authorizationUrl) {
+        throw new Error(
+          "Payment checkout could not be initialized. Please try again.",
+        );
+      }
+
+      /*
+       * Redirect directly to the Paystack-hosted checkout.
+       *
+       * Enrollment is NOT created here.
+       * The backend creates enrollment only after verified payment.
+       */
+      window.location.assign(authorizationUrl);
+    } catch (error) {
+      console.error("Course payment initialization failed:", error);
+
+      const status = error?.response?.status;
+
+      if (status === 401) {
+        toast.error("Please log in to purchase this course.");
+
+        navigate("/login", {
+          state: {
+            from: `/courses/${course._id}`,
+          },
+        });
+
+        return;
+      }
+
+      if (status === 409) {
+        toast.success("You already have access to this course.");
+
+        navigate(`/courses/${course._id}`);
+
+        return;
+      }
+
+      toast.error(
+        getApiMessage(
+          error,
+          "Unable to start payment. Please try again.",
+        ),
+      );
+    } finally {
+      setPurchasingId(null);
     }
   };
 
@@ -224,7 +337,8 @@ export default function Courses() {
       {/* ==========================================
           COURSE CATALOG
       ========================================== */}
-      <section className="bg-slate-200 py-10 lg:py-20 text-slate-900 dark:bg-slate-900 dark:text-white">
+
+      <section className="bg-slate-200 py-10 text-slate-900 dark:bg-slate-900 dark:text-white lg:py-20">
         <div className="px-6">
           <SectionTitle
             title="Browse All Courses"
@@ -271,11 +385,12 @@ export default function Courses() {
           {/* ==========================================
               FEATURED COURSE
           ========================================== */}
+
           {featuredCourse && (
             <section className="mt-16">
               <SectionTitle
                 title="Featured Course"
-                subtitle="Recommended for you"
+                subtitle="Explore this featured learning experience"
               />
 
               <motion.div
@@ -305,6 +420,25 @@ export default function Courses() {
                         </div>
                       )}
 
+                      <div className="absolute right-5 top-5">
+                        <span
+                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold shadow-lg ${
+                            isPremiumCourse(featuredCourse)
+                              ? "bg-blue-600 text-white"
+                              : "bg-emerald-500 text-white"
+                          }`}
+                        >
+                          {isPremiumCourse(featuredCourse) ? (
+                            <>
+                              <LockKeyhole size={14} />
+                              Premium
+                            </>
+                          ) : (
+                            "Free"
+                          )}
+                        </span>
+                      </div>
+
                       <div className="absolute bottom-6 left-6 right-6 text-white">
                         <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold">
                           {featuredCourse.level || "Beginner"}
@@ -327,9 +461,11 @@ export default function Courses() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="rounded-2xl bg-slate-50 p-4">
                           <Clock3 size={20} className="text-blue-600" />
+
                           <p className="mt-2 text-sm text-slate-500">
                             Duration
                           </p>
+
                           <strong className="text-slate-900">
                             {featuredCourse.duration || "8 Weeks"}
                           </strong>
@@ -341,7 +477,11 @@ export default function Courses() {
                             className="text-yellow-500"
                             fill="currentColor"
                           />
-                          <p className="mt-2 text-sm text-slate-500">Rating</p>
+
+                          <p className="mt-2 text-sm text-slate-500">
+                            Rating
+                          </p>
+
                           <strong className="text-slate-900">
                             {featuredCourse.rating || "5.0"}
                           </strong>
@@ -353,56 +493,105 @@ export default function Courses() {
                             className="text-yellow-500"
                             fill="currentColor"
                           />
+
                           <p className="text-sm text-slate-500">
                             Course Access
                           </p>
 
                           <span className="text-2xl font-black text-blue-600">
-                            {featuredCourse.premium ? "Premium" : "Free"}
+                            {isPremiumCourse(featuredCourse)
+                              ? "Premium"
+                              : "Free"}
                           </span>
                         </div>
 
                         <div className="rounded-2xl bg-slate-50 p-4">
                           <Award size={20} className="text-yellow-500" />
+
                           <p className="mt-2 text-sm text-slate-500">
                             Certificate
                           </p>
-                          <strong className="text-slate-900">Available</strong>
+
+                          <strong className="text-slate-900">
+                            Available
+                          </strong>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between gap-4">
                         <span className="text-2xl font-black text-slate-900">
-                          {featuredCourse.price
-                            ? `₦${featuredCourse.price}`
-                            : "#0"}
+                          {formatPrice(featuredCourse)}
                         </span>
                       </div>
 
-                      <Button
-                        fullWidth
-                        loading={enrollingId === featuredCourse._id}
-                        disabled={Boolean(enrollingId)}
-                        onClick={() => handleEnroll(featuredCourse)}
-                      >
-                        {enrollingId === featuredCourse._id
-                          ? "Enrolling..."
-                          : "Enroll Now"}
-                      </Button>
+                      <div className="space-y-3">
+                        {isPremiumCourse(featuredCourse) ? (
+                          <Button
+                            fullWidth
+                            loading={purchasingId === featuredCourse._id}
+                            disabled={
+                              Boolean(enrollingId) ||
+                              Boolean(purchasingId)
+                            }
+                            onClick={() => handleBuyCourse(featuredCourse)}
+                          >
+                            {purchasingId === featuredCourse._id ? (
+                              "Opening Checkout..."
+                            ) : (
+                              <>
+                                <ShoppingCart size={18} />
+                                Buy Course
+                              </>
+                            )}
+                          </Button>
+                        ) : (
+                          <Button
+                            fullWidth
+                            loading={enrollingId === featuredCourse._id}
+                            disabled={
+                              Boolean(enrollingId) ||
+                              Boolean(purchasingId)
+                            }
+                            onClick={() => handleEnroll(featuredCourse)}
+                          >
+                            {enrollingId === featuredCourse._id
+                              ? "Enrolling..."
+                              : "Enroll Now"}
+                          </Button>
+                        )}
 
-                      <Link
-                        to={`/courses/${featuredCourse._id}`}
-                        className="block"
-                      >
-                        <Button
-                          fullWidth
-                          variant="outline"
-                          disabled={Boolean(enrollingId)}
+                        <Link
+                          to={`/courses/${featuredCourse._id}`}
+                          className="block"
                         >
-                          <LockKeyhole size={18} />
-                          Continue Learning
-                        </Button>
-                      </Link>
+                          <Button
+                            fullWidth
+                            variant="outline"
+                            disabled={
+                              Boolean(enrollingId) ||
+                              Boolean(purchasingId)
+                            }
+                          >
+                            <ArrowRight size={18} />
+                            View Course
+                          </Button>
+                        </Link>
+                      </div>
+
+                      {isPremiumCourse(featuredCourse) && (
+                        <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                          <LockKeyhole
+                            size={18}
+                            className="mt-0.5 shrink-0 text-blue-600"
+                          />
+
+                          <p className="text-sm leading-6 text-slate-600">
+                            This is a premium course. Complete payment through
+                            Paystack to unlock enrollment and access the
+                            curriculum.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -413,6 +602,7 @@ export default function Courses() {
           {/* ==========================================
               COURSE CARDS
           ========================================== */}
+
           {catalogCourses.length > 0 ? (
             currentCourses.length > 0 ? (
               <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -455,6 +645,20 @@ export default function Courses() {
                             Featured
                           </span>
                         )}
+
+                        <span
+                          className={`absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold shadow-lg ${
+                            isPremiumCourse(course)
+                              ? "bg-slate-950/90 text-white"
+                              : "bg-emerald-500 text-white"
+                          }`}
+                        >
+                          {isPremiumCourse(course) && (
+                            <LockKeyhole size={13} />
+                          )}
+
+                          {isPremiumCourse(course) ? "Premium" : "Free"}
+                        </span>
                       </div>
 
                       {/* Content */}
@@ -490,28 +694,58 @@ export default function Courses() {
                           </div>
 
                           <span className="text-lg font-bold text-blue-600">
-                            {course.price ? `₦${course.price}` : "Free"}
+                            {formatPrice(course)}
                           </span>
                         </div>
 
                         {/* Actions */}
                         <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                          <Button
-                            fullWidth
-                            loading={enrollingId === course._id}
-                            disabled={Boolean(enrollingId)}
-                            onClick={() => handleEnroll(course)}
-                          >
-                            {enrollingId === course._id
-                              ? "Enrolling..."
-                              : "Enroll Now"}
-                          </Button>
+                          {isPremiumCourse(course) ? (
+                            <Button
+                              fullWidth
+                              loading={purchasingId === course._id}
+                              disabled={
+                                Boolean(enrollingId) ||
+                                Boolean(purchasingId)
+                              }
+                              onClick={() => handleBuyCourse(course)}
+                            >
+                              {purchasingId === course._id ? (
+                                "Checkout..."
+                              ) : (
+                                <>
+                                  <ShoppingCart size={17} />
+                                  Buy Course
+                                </>
+                              )}
+                            </Button>
+                          ) : (
+                            <Button
+                              fullWidth
+                              loading={enrollingId === course._id}
+                              disabled={
+                                Boolean(enrollingId) ||
+                                Boolean(purchasingId)
+                              }
+                              onClick={() => handleEnroll(course)}
+                            >
+                              {enrollingId === course._id
+                                ? "Enrolling..."
+                                : "Enroll Now"}
+                            </Button>
+                          )}
 
-                          <Link to={`/courses/${course._id}`} className="block">
+                          <Link
+                            to={`/courses/${course._id}`}
+                            className="block"
+                          >
                             <Button
                               fullWidth
                               variant="outline"
-                              disabled={Boolean(enrollingId)}
+                              disabled={
+                                Boolean(enrollingId) ||
+                                Boolean(purchasingId)
+                              }
                             >
                               View Course
                               <ArrowRight size={18} className="ml-2" />
@@ -561,6 +795,7 @@ export default function Courses() {
       {/* ==========================================
           LEARNING BENEFITS
       ========================================== */}
+
       <section className="bg-slate-50 py-10 lg:py-20">
         <div className="px-6">
           <SectionTitle
@@ -602,6 +837,7 @@ export default function Courses() {
           </div>
         </div>
       </section>
+
       <Newsletter />
       <CTA />
     </>

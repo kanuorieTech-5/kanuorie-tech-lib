@@ -190,7 +190,7 @@ export default function ProjectsPreview() {
                     viewport={{
                       once: true,
                     }}
-                    className="h-full"
+                    className="h-half"
                   >
                     <Card
                       className="
