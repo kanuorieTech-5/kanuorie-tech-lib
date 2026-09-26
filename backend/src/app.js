@@ -43,6 +43,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const libraryRoutes = require("./routes/libraryRoutes");
 const communityRoutes = require("./routes/communityRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const certificateRoutes = require("./routes/certificateRoutes");
 
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
@@ -194,6 +195,7 @@ app.use(`${API}/courses`, courseRoutes);
 app.use(`${API}/library`, libraryRoutes);
 app.use(`${API}/community`, communityRoutes);
 app.use(`${API}/payments`, paymentRoutes);
+app.use(`${API}/certificates`, certificateRoutes);
 app.use(`${API}/progress`, progressRoutes);
 app.use(`${API}/products`, productRoutes);
 app.use(`${API}/projects`, projectRoutes);
@@ -211,3 +213,6 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+
+
+

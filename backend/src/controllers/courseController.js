@@ -1,10 +1,11 @@
-const Course = require("../models/Course");
+﻿const Course = require("../models/Course");
 const Progress = require("../models/Progress");
 
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
-const { enrollUserInCourse, } = require("../services/courseEnrollmentService");
+const { enrollUserInCourse } = require("../services/courseEnrollmentService");
+const certificateService = require("../services/certificateService");
 /* ==========================================
    CREATE COURSE
 ========================================== */
@@ -491,10 +492,33 @@ const completeLesson = asyncHandler(async (req, res) => {
 
   await progress.save();
 
+  /* ------------------------------------------
+     ISSUE CERTIFICATE ON COURSE COMPLETION
+  ------------------------------------------ */
+
+  let certificate = null;
+
+  if (
+    progress.completed &&
+    progress.percentage >= 100
+  ) {
+    certificate =
+      await certificateService.issueCertificate({
+        userId: req.user._id,
+        courseId: course._id,
+        progressId: progress._id,
+      });
+  }
+
   return ApiResponse.success(
     res,
-    progress,
-    "Lesson completed successfully."
+    {
+      progress,
+      certificate,
+    },
+    progress.completed
+      ? "Course completed successfully. Certificate issued."
+      : "Lesson completed successfully."
   );
 });
 
@@ -1140,3 +1164,4 @@ module.exports = {
   updateProgress,
   updateNotes,
 };
+

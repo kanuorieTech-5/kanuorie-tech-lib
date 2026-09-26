@@ -2,6 +2,7 @@ const User = require("./User");
 const Book = require("./Book");
 const Course = require("./Course");
 const Progress = require("./Progress");
+const Certificate = require("./Certificate");
 const Notification = require("./Notification");
 const Product = require("./Product");
 const Service = require("./Service");
@@ -20,6 +21,7 @@ module.exports = {
   Course,
   SavedResource,
   Progress,
+  Certificate,
   Notification,
   Product,
   Service,

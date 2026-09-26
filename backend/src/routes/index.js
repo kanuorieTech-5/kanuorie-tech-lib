@@ -22,5 +22,6 @@ router.use("/library", require("./libraryRoutes"));
 router.use("/community", require("./communityRoutes"));
 router.use("/affiliate", require("./affiliateRoutes"));
 router.use("/payments", require("./paymentRoutes"));
+router.use("/certificates", require("./certificateRoutes"));
 
 module.exports = router;
