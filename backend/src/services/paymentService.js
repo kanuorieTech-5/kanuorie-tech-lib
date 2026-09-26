@@ -773,13 +773,23 @@ const finalizePaystackPayment =
        Paystack amount is subunit.
     ---------------------------------------- */
 
-    const expectedAmount = Math.round(
+   const expectedAmount = Math.round(
       Number(payment.amount) * 100
     );
 
     const paidAmount = Number(
       paystackTransaction.amount
     );
+
+    console.log("========== PAYSTACK AMOUNT DEBUG ==========");
+    console.log("Payment amount:", payment.amount);
+    console.log("Payment currency:", payment.currency);
+    console.log("Order total:", order.total);
+    console.log("Order currency:", order.currency);
+    console.log("Expected Paystack amount (subunit):", expectedAmount);
+    console.log("Actual Paystack amount (subunit):", paidAmount);
+    console.log("Paystack currency:", paystackTransaction.currency);
+    console.log("============================================");
 
     if (
       !Number.isFinite(paidAmount) ||
