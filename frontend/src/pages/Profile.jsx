@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts";
 import {
   User,
@@ -12,6 +13,13 @@ import {
   ShieldCheck,
   CheckCircle2,
   AlertCircle,
+  BookOpen,
+  Award,
+  Bookmark,
+  Users,
+  Handshake,
+  CreditCard,
+  ArrowUpRight,
 } from "lucide-react";
 
 export default function Profile() {
@@ -327,9 +335,9 @@ export default function Profile() {
         ====================================== */}
 
         <div className="mb-8">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
+          {/* <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
             Account
-          </p>
+          </p> */}
 
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
@@ -500,6 +508,168 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* ======================================
+          QUICK ACCESS
+      ====================================== */}
+
+      <div className="mt-8 md:hidden">
+        <div className="mb-4">
+          {/* <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+            Quick Access
+          </p> */}
+
+          <h3 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
+            Your KanuorieTech
+            <span className="text-blue-600"> Hub</span>
+          </h3>
+
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Quickly access your learning, certificates, community and account
+            services.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          {/* MY LEARNING */}
+
+          <Link
+            to="/my-learning"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+                <BookOpen className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              My Learning
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Continue your courses
+            </p>
+          </Link>
+
+          {/* CERTIFICATES */}
+
+          <Link
+            to="/certificates"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-amber-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+                <Award className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-amber-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              Certificates
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              View your achievements
+            </p>
+          </Link>
+
+          {/* SAVED RESOURCES */}
+
+          <Link
+            to="/Learning"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-purple-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400">
+                <Bookmark className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-purple-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              Saved Resources
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Access saved materials
+            </p>
+          </Link>
+
+          {/* COMMUNITY */}
+
+          <Link
+            to="/community"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-green-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-green-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400">
+                <Users className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-green-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              Community
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Connect and discuss
+            </p>
+          </Link>
+
+          {/* AFFILIATE */}
+
+          <Link
+            to="/affiliate"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                <Handshake className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-indigo-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              Affiliate
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Manage your referrals
+            </p>
+          </Link>
+
+          {/* ACCOUNTS & PAYMENTS */}
+
+          <Link
+            to="/payments"
+            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-cyan-700"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400">
+                <CreditCard className="h-5 w-5" />
+              </div>
+
+              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-cyan-600" />
+            </div>
+
+            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+              Accounts & Payments
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+              Manage payments and orders
+            </p>
+          </Link>
+        </div>
+      </div>
+
       {/* ========================================
           EDIT PROFILE MODAL
       ======================================== */}
@@ -531,7 +701,7 @@ export default function Profile() {
                 type="button"
                 onClick={closeEditModal}
                 disabled={saving || uploadingAvatar}
-                className="rounded-xl p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-white"
+                className="rounded-xl p-2 text-gray-500 transition hover: hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>

@@ -8,13 +8,7 @@ import {
   ChevronRight,
   Download,
   ExternalLink,
-  FileBadge2,
-  Loader2,
-  Printer,
-  Search,
-  ShieldCheck,
-  Sparkles,
-  X,
+  FileBadge2, Loader2, Printer, Search, ShieldCheck, Sparkles, X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
