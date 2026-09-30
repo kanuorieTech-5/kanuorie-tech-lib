@@ -27,6 +27,7 @@ export * from "./newsletterApi";
 export * from "./communityApi";
 export * from "./certificatesApi";
 export * from "./careerApplicationApi"
+export * from "./careerAdminApi";
 // Communication
 export * from "./contactApi";
 export * from "./notificationApi";

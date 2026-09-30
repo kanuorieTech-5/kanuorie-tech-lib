@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -8,11 +9,14 @@ import {
   Package,
   FolderKanban,
   Briefcase,
+  BriefcaseBusiness,
   FileText,
   MessageSquare,
   HelpCircle,
   Mail,
   Bell,
+  Menu,
+  X,
 } from "lucide-react";
 
 const adminLinks = [
@@ -25,6 +29,11 @@ const adminLinks = [
     name: "Users",
     path: "/admin/users",
     icon: Users,
+  },
+  {
+    name: "Careers",
+    path: "/admin/careers",
+    icon: BriefcaseBusiness,
   },
   {
     name: "Books",
@@ -79,33 +88,112 @@ const adminLinks = [
 ];
 
 export default function AdminSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeSidebar = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <aside className="w-72 border-r bg-slate-900 text-white">
-      <div className="border-b p-6">
-        <h2 className="text-2xl font-bold">Admin Panel</h2>
-      </div>
+    <>
+      {/* ==========================================
+          MOBILE MENU BUTTON
+      ========================================== */}
 
-      <nav className="p-4">
-        {adminLinks.map((item) => {
-          const Icon = item.icon;
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="fixed left-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition hover:bg-slate-800 lg:hidden"
+        aria-label="Open admin menu"
+        aria-expanded={isOpen}
+      >
+        <Menu size={22} />
+      </button>
 
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `mb-2 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
-                  isActive ? "bg-blue-600" : "hover:bg-slate-800"
-                }`
-              }
-            >
-              <Icon size={20} />
+      {/* ==========================================
+          MOBILE OVERLAY
+      ========================================== */}
 
-              {item.name}
-            </NavLink>
-          );
-        })}
-      </nav>
-    </aside>
+      {isOpen && (
+        <button
+          type="button"
+          aria-label="Close admin menu"
+          onClick={closeSidebar}
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
+        />
+      )}
+
+      {/* ==========================================
+          SIDEBAR
+      ========================================== */}
+
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50
+          flex w-72 flex-col
+          border-r border-slate-800
+          bg-slate-900 text-white
+          shadow-2xl
+          transition-transform duration-300 ease-in-out
+          lg:static lg:z-auto lg:translate-x-0
+          lg:shadow-none
+          ${
+            isOpen
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
+        `}
+      >
+        {/* ==========================================
+            HEADER
+        ========================================== */}
+
+        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+          <h2 className="text-2xl font-bold">
+            Admin Panel
+          </h2>
+
+          {/* Mobile close button */}
+
+          <button
+            type="button"
+            onClick={closeSidebar}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-300 transition hover:bg-slate-800 hover:text-white lg:hidden"
+            aria-label="Close admin menu"
+          >
+            <X size={21} />
+          </button>
+        </div>
+
+        {/* ==========================================
+            NAVIGATION
+        ========================================== */}
+
+        <nav className="flex-1 overflow-y-auto p-4">
+          {adminLinks.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `mb-2 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
+                    isActive
+                      ? "bg-blue-600 shadow-lg shadow-blue-600/20"
+                      : "hover:bg-slate-800"
+                  }`
+                }
+              >
+                <Icon size={20} />
+
+                <span>{item.name}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }

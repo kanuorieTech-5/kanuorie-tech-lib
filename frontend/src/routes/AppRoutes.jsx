@@ -86,7 +86,7 @@ const AdminTestimonials = lazy(() => import("../pages/admin/AdminTestimonials"))
 const AdminFAQ = lazy(() => import("../pages/admin/AdminFAQ"));
 
 const AdminNewsletter = lazy(() => import("../pages/admin/AdminNewsletter"));
-
+const AdminCareers = lazy(() => import("../pages/admin/AdminCareers"));
 const AdminNotifications = lazy(
   () => import("../pages/admin/AdminNotifications"),
 );
@@ -220,6 +220,8 @@ export default function AppRoutes() {
 
               {/* Users */}
               <Route path="users" element={<AdminUsers />} />
+
+              <Route path="careers" element={<AdminCareers />} />
 
               {/* Content */}
               <Route path="books" element={<AdminBooks />} />

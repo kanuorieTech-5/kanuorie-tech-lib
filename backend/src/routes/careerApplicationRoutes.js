@@ -21,10 +21,7 @@ const router = express.Router();
    PUBLIC
 ========================================== */
 
-router.post(
-  "/",
-  createApplication
-);
+router.post("/", createApplication);
 
 /* ==========================================
    ADMIN
@@ -51,28 +48,28 @@ router.get(
   getApplication
 );
 
-router.put(
+router.patch(
   "/:id/status",
   protect,
   adminOnly,
   updateApplicationStatus
 );
 
-router.put(
+router.patch(
   "/:id/notes",
   protect,
   adminOnly,
   updateApplicationNotes
 );
 
-router.put(
+router.patch(
   "/:id/read",
   protect,
   adminOnly,
   markAsRead
 );
 
-router.put(
+router.patch(
   "/:id/unread",
   protect,
   adminOnly,
