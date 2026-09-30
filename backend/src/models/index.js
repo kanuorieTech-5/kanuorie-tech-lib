@@ -1,23 +1,38 @@
-const User = require("./User");
-const Book = require("./Book");
+﻿const User = require("./User");
+
+const Learning = require("./Learning");
+
 const Course = require("./Course");
+
 const Progress = require("./Progress");
+
 const Certificate = require("./Certificate");
+
 const Notification = require("./Notification");
+
 const Product = require("./Product");
+
 const Service = require("./Service");
+
 const Project = require("./Project");
+
 const Team = require("./Team");
+
 const Testimonial = require("./Testimonial");
+
 const FAQ = require("./FAQ");
+
 const Blog = require("./Blog");
+
 const Contact = require("./Contact");
+
 const Newsletter = require("./Newsletter");
+
 const SavedResource = require("./SavedResource");
 
 module.exports = {
   User,
-  Book,
+  Learning,
   Course,
   SavedResource,
   Progress,

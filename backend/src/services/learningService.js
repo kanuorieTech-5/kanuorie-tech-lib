@@ -1,28 +1,26 @@
-const Book = require("../models/Book");
+const Learning = require("../models/Learning");
 
 const paginate = require("../helpers/pagination");
 const buildQuery = require("../helpers/queryBuilder");
-// const slugify = require("../helpers/slugify");
 
 /* =========================
-   CREATE BOOK
+   CREATE LEARNING RESOURCE
 ========================= */
 
 exports.create = async (data, user) => {
-  const book = await Book.create({
+  const resource = await Learning.create({
     ...data,
-    // slug: slugify(data.title),
     createdBy: user._id,
   });
 
-  return book;
+  return resource;
 };
 
 /* =========================
-   GET BOOKS
+   GET LEARNING RESOURCES
 ========================= */
 
-exports.getBooks = async (query = {}) => {
+exports.getAll = async (query = {}) => {
   const filters = buildQuery(query);
 
   const { page, limit, skip } = paginate(
@@ -30,15 +28,15 @@ exports.getBooks = async (query = {}) => {
     query.limit
   );
 
-  const books = await Book.find(filters)
+  const resources = await Learning.find(filters)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
 
-  const total = await Book.countDocuments(filters);
+  const total = await Learning.countDocuments(filters);
 
   return {
-    books,
+    resources,
     page,
     pages: Math.ceil(total / limit),
     total,
@@ -46,30 +44,29 @@ exports.getBooks = async (query = {}) => {
 };
 
 /* =========================
-   GET SINGLE BOOK
+   GET SINGLE RESOURCE
 ========================= */
 
 exports.getById = async (id) => {
-  const book = await Book.findById(id);
+  const resource = await Learning.findById(id);
 
-  if (!book) return null;
+  if (!resource) {
+    return null;
+  }
 
-  book.views = (book.views || 0) + 1;
-  await book.save();
+  resource.views = (resource.views || 0) + 1;
 
-  return book;
+  await resource.save();
+
+  return resource;
 };
 
 /* =========================
-   UPDATE BOOK
+   UPDATE RESOURCE
 ========================= */
 
 exports.update = async (id, data) => {
-  if (data.title) {
-    // data.slug = slugify(data.title);
-  }
-
-  return Book.findByIdAndUpdate(
+  return Learning.findByIdAndUpdate(
     id,
     data,
     {
@@ -80,19 +77,19 @@ exports.update = async (id, data) => {
 };
 
 /* =========================
-   DELETE BOOK
+   DELETE RESOURCE
 ========================= */
 
 exports.delete = async (id) => {
-  return Book.findByIdAndDelete(id);
+  return Learning.findByIdAndDelete(id);
 };
 
 /* =========================
-   FEATURED BOOKS
+   FEATURED RESOURCES
 ========================= */
 
 exports.getFeatured = async (limit = 6) => {
-  return Book.find({
+  return Learning.find({
     featured: true,
   })
     .sort({ createdAt: -1 })
@@ -100,12 +97,15 @@ exports.getFeatured = async (limit = 6) => {
 };
 
 /* =========================
-   RELATED BOOKS
+   RELATED RESOURCES
 ========================= */
 
-exports.getRelated = async (bookId, category) => {
-  return Book.find({
-    _id: { $ne: bookId },
+exports.getRelated = async (
+  resourceId,
+  category
+) => {
+  return Learning.find({
+    _id: { $ne: resourceId },
     category,
   }).limit(4);
 };

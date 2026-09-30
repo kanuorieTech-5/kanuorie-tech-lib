@@ -69,7 +69,7 @@ const AdminDashboard = lazy(() => import("../pages/Admin"));
 
 const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
 
-const AdminBooks = lazy(() => import("../pages/admin/AdminBooks"));
+const AdminLearning = lazy(() => import("../pages/admin/AdminLearning"));
 
 const AdminCourses = lazy(() => import("../pages/admin/AdminCourses"));
 
@@ -224,7 +224,7 @@ export default function AppRoutes() {
               <Route path="careers" element={<AdminCareers />} />
 
               {/* Content */}
-              <Route path="books" element={<AdminBooks />} />
+              <Route path="learning" element={<AdminLearning />} />
 
               <Route path="courses" element={<AdminCourses />} />
 
@@ -253,6 +253,7 @@ export default function AppRoutes() {
     </Suspense>
   );
 }
+
 
 
 

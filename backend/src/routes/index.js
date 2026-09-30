@@ -1,9 +1,12 @@
 const express = require("express");
+
 const router = express.Router();
 
 router.use("/auth", require("./authRoutes"));
 router.use("/users", require("./userRoutes"));
-router.use("/books", require("./bookRoutes"));
+
+router.use("/learning", require("./learningRoutes"));
+
 router.use("/courses", require("./courseRoutes"));
 router.use("/progress", require("./progressRoutes"));
 router.use("/products", require("./productRoutes"));

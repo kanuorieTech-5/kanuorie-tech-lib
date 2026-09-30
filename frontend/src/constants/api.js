@@ -1,4 +1,4 @@
-export const API_ENDPOINTS = {
+﻿export const API_ENDPOINTS = {
   // Authentication
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
@@ -10,8 +10,8 @@ export const API_ENDPOINTS = {
   USERS: "/users",
   PROFILE: "/users/profile",
 
-  // Books
-  BOOKS: "/books",
+  // Learning
+  LEARNING: "/learning",
 
   // Courses
   COURSES: "/courses",
@@ -55,3 +55,4 @@ export const API_ENDPOINTS = {
   // Admin
   ADMIN: "/admin",
 };
+

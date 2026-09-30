@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { BookOpen, ArrowRight } from "lucide-react";
 
-export default function LatestBooks({ books = [] }) {
-  const latestBooks = Array.isArray(books) ? books.slice(0, 5) : [];
+export default function LatestLearning({ learningResources = [] }) {
+  const latestLearning = Array.isArray(learningResources)
+    ? learningResources.slice(0, 5)
+    : [];
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -13,13 +15,17 @@ export default function LatestBooks({ books = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Latest Books</h2>
-            <p className="text-sm text-slate-500">Recently added books</p>
+            <h2 className="text-lg font-bold text-slate-900">
+              Latest Learning Resources
+            </h2>
+            <p className="text-sm text-slate-500">
+              Recently added learning resources
+            </p>
           </div>
         </div>
 
         <Link
-          to="/admin/books"
+          to="/admin/learning"
           className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700"
         >
           View all
@@ -27,34 +33,39 @@ export default function LatestBooks({ books = [] }) {
         </Link>
       </div>
 
-      {latestBooks.length === 0 ? (
+      {latestLearning.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
           <BookOpen className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700">No books yet</p>
+          <p className="font-medium text-slate-700">
+            No learning resources yet
+          </p>
 
           <p className="mt-1 text-sm text-slate-500">
-            Recently added books will appear here.
+            Recently added learning resources will appear here.
           </p>
         </div>
       ) : (
         <div className="divide-y divide-slate-100">
-          {latestBooks.map((book, index) => {
-            const id = book._id || book.id || index;
+          {latestLearning.map((resource, index) => {
+            const id = resource._id || resource.id || index;
 
-            const title = book.title || book.name || "Untitled Book";
+            const title =
+              resource.title ||
+              resource.name ||
+              "Untitled learning resource";
 
             const author =
-              book.author?.name ||
-              book.author ||
-              book.authorName ||
+              resource.author?.name ||
+              resource.author ||
+              resource.authorName ||
               "Unknown Author";
 
             const cover =
-              book.coverImage ||
-              book.cover ||
-              book.image ||
-              book.thumbnail ||
+              resource.coverImage ||
+              resource.cover ||
+              resource.image ||
+              resource.thumbnail ||
               null;
 
             return (
@@ -76,11 +87,13 @@ export default function LatestBooks({ books = [] }) {
                     {title}
                   </p>
 
-                  <p className="truncate text-sm text-slate-500">{author}</p>
+                  <p className="truncate text-sm text-slate-500">
+                    {author}
+                  </p>
                 </div>
 
                 <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
-                  Book
+                  Learning
                 </span>
               </div>
             );

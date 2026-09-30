@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 
 import {
-  getBooks,
+  getLearningResources,
   getCourses,
   getSavedResources,
   saveResource,
@@ -210,7 +210,7 @@ export default function Library() {
     try {
       const [booksResponse, coursesResponse, savedResponse] = await Promise.all(
         [
-          getBooks().catch((error) => {
+          getLearningResources().catch((error) => {
             console.error("Failed to load books:", error);
 
             return null;
@@ -492,7 +492,7 @@ export default function Library() {
         return [savedItem, ...previous];
       });
 
-      setToast("Saved to your Library ✓");
+      setToast("Saved to your Library âœ“");
 
       /*
        * Kept only for compatibility with
@@ -729,3 +729,4 @@ export default function Library() {
     </main>
   );
 }
+

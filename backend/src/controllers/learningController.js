@@ -1,32 +1,32 @@
-const Book = require("../models/Book");
+const Learning = require("../models/Learning");
 
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 
 /* ==========================================
-   CREATE BOOK
+   CREATE LEARNING RESOURCE
 ========================================== */
 
-const createBook = asyncHandler(async (req, res) => {
-  const book = await Book.create({
+const createLearningResource = asyncHandler(async (req, res) => {
+  const resource = await Learning.create({
     ...req.body,
     createdBy: req.user._id,
   });
 
   return ApiResponse.success(
     res,
-    book,
-    "Book created successfully.",
+    resource,
+    "Learning resource created successfully.",
     201
   );
 });
 
 /* ==========================================
-   GET ALL BOOKS
+   GET ALL LEARNING RESOURCES
 ========================================== */
 
-const getBooks = asyncHandler(async (req, res) => {
+const getLearningResources = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 12;
   const skip = (page - 1) * limit;
@@ -47,6 +47,10 @@ const getBooks = asyncHandler(async (req, res) => {
 
   if (req.query.difficulty) {
     filter.difficulty = req.query.difficulty;
+  }
+
+  if (req.query.published) {
+    filter.published = req.query.published === "true";
   }
 
   if (req.query.search) {
@@ -101,19 +105,19 @@ const getBooks = asyncHandler(async (req, res) => {
       sort.createdAt = -1;
   }
 
-  const [books, total] = await Promise.all([
-    Book.find(filter)
+  const [resources, total] = await Promise.all([
+    Learning.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit),
 
-    Book.countDocuments(filter),
+    Learning.countDocuments(filter),
   ]);
 
   return ApiResponse.success(
     res,
-    books,
-    "Books retrieved successfully.",
+    resources,
+    "Learning resources retrieved successfully.",
     200,
     {
       page,
@@ -125,17 +129,17 @@ const getBooks = asyncHandler(async (req, res) => {
 });
 
 /* ==========================================
-   GET SINGLE BOOK
+   GET SINGLE LEARNING RESOURCE
 ========================================== */
 
-const getBook = asyncHandler(async (req, res) => {
+const getLearningResource = asyncHandler(async (req, res) => {
   const identifier = req.params.id;
 
   const filter = identifier.match(/^[0-9a-fA-F]{24}$/)
     ? { _id: identifier }
     : { slug: identifier };
 
-  const book = await Book.findOneAndUpdate(
+  const resource = await Learning.findOneAndUpdate(
     filter,
     {
       $inc: {
@@ -147,23 +151,26 @@ const getBook = asyncHandler(async (req, res) => {
     }
   );
 
-  if (!book) {
-    throw new ApiError(404, "Book not found.");
+  if (!resource) {
+    throw new ApiError(
+      404,
+      "Learning resource not found."
+    );
   }
 
   return ApiResponse.success(
     res,
-    book,
-    "Book retrieved successfully."
+    resource,
+    "Learning resource retrieved successfully."
   );
 });
 
 /* ==========================================
-   UPDATE BOOK
+   UPDATE LEARNING RESOURCE
 ========================================== */
 
-const updateBook = asyncHandler(async (req, res) => {
-  const book = await Book.findByIdAndUpdate(
+const updateLearningResource = asyncHandler(async (req, res) => {
+  const resource = await Learning.findByIdAndUpdate(
     req.params.id,
     req.body,
     {
@@ -172,43 +179,51 @@ const updateBook = asyncHandler(async (req, res) => {
     }
   );
 
-  if (!book) {
-    throw new ApiError(404, "Book not found.");
+  if (!resource) {
+    throw new ApiError(
+      404,
+      "Learning resource not found."
+    );
   }
 
   return ApiResponse.success(
     res,
-    book,
-    "Book updated successfully."
+    resource,
+    "Learning resource updated successfully."
   );
 });
 
 /* ==========================================
-   DELETE BOOK
+   DELETE LEARNING RESOURCE
 ========================================== */
 
-const deleteBook = asyncHandler(async (req, res) => {
-  const book = await Book.findById(req.params.id);
+const deleteLearningResource = asyncHandler(async (req, res) => {
+  const resource = await Learning.findById(
+    req.params.id
+  );
 
-  if (!book) {
-    throw new ApiError(404, "Book not found.");
+  if (!resource) {
+    throw new ApiError(
+      404,
+      "Learning resource not found."
+    );
   }
 
-  await book.deleteOne();
+  await resource.deleteOne();
 
   return ApiResponse.success(
     res,
     null,
-    "Book deleted successfully."
+    "Learning resource deleted successfully."
   );
 });
 
 /* ==========================================
-   FEATURED BOOKS
+   FEATURED LEARNING RESOURCES
 ========================================== */
 
-const getFeaturedBooks = asyncHandler(async (req, res) => {
-  const books = await Book.find({
+const getFeaturedLearning = asyncHandler(async (req, res) => {
+  const resources = await Learning.find({
     featured: true,
   })
     .sort({
@@ -218,62 +233,74 @@ const getFeaturedBooks = asyncHandler(async (req, res) => {
 
   return ApiResponse.success(
     res,
-    books,
-    "Featured books retrieved successfully."
+    resources,
+    "Featured learning resources retrieved successfully."
   );
 });
 
 /* ==========================================
-   BOOK CATEGORIES
+   LEARNING CATEGORIES
 ========================================== */
 
-const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Book.distinct("category");
+const getLearningCategories = asyncHandler(async (req, res) => {
+  const categories = await Learning.distinct(
+    "category"
+  );
 
   return ApiResponse.success(
     res,
     categories,
-    "Categories retrieved successfully."
+    "Learning categories retrieved successfully."
   );
 });
 
 /* ==========================================
-   DOWNLOAD BOOK
+   DOWNLOAD LEARNING RESOURCE
 ========================================== */
 
-const downloadBook = asyncHandler(async (req, res) => {
-  const book = await Book.findByIdAndUpdate(
-    req.params.id,
-    {
-      $inc: {
-        downloads: 1,
+const downloadLearningResource = asyncHandler(
+  async (req, res) => {
+    const resource = await Learning.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc: {
+          downloads: 1,
+        },
       },
-    },
-    {
-      new: true,
+      {
+        new: true,
+      }
+    );
+
+    if (!resource) {
+      throw new ApiError(
+        404,
+        "Learning resource not found."
+      );
     }
-  );
 
-  if (!book) {
-    throw new ApiError(404, "Book not found.");
+    return ApiResponse.success(
+      res,
+      {
+        downloadUrl:
+          resource.pdf || resource.link,
+      },
+      "Download started."
+    );
   }
+);
 
-  return ApiResponse.success(
-    res,
-    {
-      downloadUrl: book.pdf || book.link,
-    },
-    "Download started."
-  );
-});
+/* ==========================================
+   EXPORTS
+========================================== */
 
 module.exports = {
-  createBook,
-  getBooks,
-  getBook,
-  updateBook,
-  deleteBook,
-  getFeaturedBooks,
-  getCategories,
-  downloadBook,
+  createLearningResource,
+  getLearningResources,
+  getLearningResource,
+  updateLearningResource,
+  deleteLearningResource,
+  getFeaturedLearning,
+  getLearningCategories,
+  downloadLearningResource,
 };

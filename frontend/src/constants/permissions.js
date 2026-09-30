@@ -1,8 +1,8 @@
-import { ROLES } from "./roles";
+﻿import { ROLES } from "./roles";
 
 export const PERMISSIONS = {
   [ROLES.USER]: [
-    "view_books",
+    "view_learning",
     "view_courses",
     "edit_profile",
     "manage_progress",
@@ -10,7 +10,7 @@ export const PERMISSIONS = {
 
   [ROLES.ADMIN]: [
     "manage_users",
-    "manage_books",
+    "manage_learning",
     "manage_courses",
     "manage_products",
     "manage_projects",
@@ -24,3 +24,4 @@ export const PERMISSIONS = {
     "view_dashboard",
   ],
 };
+

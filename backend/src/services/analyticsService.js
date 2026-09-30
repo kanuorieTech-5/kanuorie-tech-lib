@@ -1,37 +1,28 @@
-exports.dashboard = async()=>{
+const User = require("../models/User");
+const Learning = require("../models/Learning");
+const Course = require("../models/Course");
+const Product = require("../models/Product");
 
-const [
+exports.dashboard = async () => {
+  const [
+    users,
+    books,
+    courses,
+    products,
+  ] = await Promise.all([
+    User.countDocuments(),
 
-users,
+    Learning.countDocuments(),
 
-books,
+    Course.countDocuments(),
 
-courses,
+    Product.countDocuments(),
+  ]);
 
-products,
-
-] = await Promise.all([
-
-User.countDocuments(),
-
-Book.countDocuments(),
-
-Course.countDocuments(),
-
-Product.countDocuments(),
-
-]);
-
-return{
-
-users,
-
-books,
-
-courses,
-
-products,
-
-};
-
+  return {
+    users,
+    books,
+    courses,
+    products,
+  };
 };

@@ -1,4 +1,4 @@
-import { ROUTES } from "./routes";
+﻿import { ROUTES } from "./routes";
 
 export const MAIN_NAVIGATION = [
   {
@@ -75,8 +75,8 @@ export const adminNavigation = [
     icon: "BookOpen",
     children: [
       {
-        label: "Books",
-        path: "/admin/books",
+        label: "Learning",
+        path: "/admin/learning",
       },
     ],
   },
@@ -143,3 +143,4 @@ export const adminNavigation = [
     icon: "Settings",
   },
 ];
+

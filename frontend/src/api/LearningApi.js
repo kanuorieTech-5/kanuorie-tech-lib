@@ -1,41 +1,47 @@
 import API from "./axiosApi";
 
 /* ==========================
-   BOOKS
+   LEARNING LIBRARY
 ========================== */
 
-export const getBooks = async (config = {}) => {
-  const { data } = await API.get("/books", config);
+export const getLearningResources = async (config = {}) => {
+  const { data } = await API.get("/learning", config);
 
   return data;
 };
 
-export const getBook = async (id) => {
-  const { data } = await API.get(`/books/${id}`);
+export const getLearningResource = async (id) => {
+  const { data } = await API.get(`/learning/${id}`);
 
   return data;
 };
 
-export const createBook = async (book) => {
-  const { data } = await API.post("/books", book);
+export const createLearningResource = async (resource) => {
+  const { data } = await API.post("/learning", resource);
 
   return data;
 };
 
-export const updateBook = async (id, book) => {
-  const { data } = await API.put(`/books/${id}`, book);
+export const updateLearningResource = async (id, resource) => {
+  const { data } = await API.put(`/learning/${id}`, resource);
 
   return data;
 };
 
-export const deleteBook = async (id) => {
-  const { data } = await API.delete(`/books/${id}`);
+export const deleteLearningResource = async (id) => {
+  const { data } = await API.delete(`/learning/${id}`);
 
   return data;
 };
 
-export const getCategories = async () => {
-  const { data } = await API.get("/books/categories");
+export const getLearningCategories = async () => {
+  const { data } = await API.get("/learning/categories");
+
+  return data;
+};
+
+export const getFeaturedLearning = async () => {
+  const { data } = await API.get("/learning/featured");
 
   return data;
 };

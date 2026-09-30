@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
   BookOpen,
@@ -17,11 +17,11 @@ import {
 import { Card, Button, Loader } from "../../components/common";
 
 import {
-  getAdminBooks,
-  createAdminBook,
-  updateAdminBook,
-  deleteAdminBook,
-  getCategories,
+  getAdminLearning,
+  createAdminLearning,
+  updateAdminLearning,
+  deleteAdminLearning,
+  getLearningCategories,
 } from "../../services";
 
 const PAGE_SIZE = 12;
@@ -58,12 +58,12 @@ function extractData(response) {
     return response.data.data;
   }
 
-  if (Array.isArray(response?.data?.books)) {
-    return response.data.books;
+  if (Array.isArray(response?.data?.learningResources)) {
+    return response.data.learningResources;
   }
 
-  if (Array.isArray(response?.books)) {
-    return response.books;
+  if (Array.isArray(response?.learningResources)) {
+    return response.learningResources;
   }
 
   return [];
@@ -75,8 +75,8 @@ function extractMeta(response) {
   );
 }
 
-export default function AdminBooks() {
-  const [books, setBooks] = useState([]);
+export default function AdminLearning() {
+  const [learningResources, setlearningResources] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -94,14 +94,14 @@ export default function AdminBooks() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalBooks, setTotalBooks] = useState(0);
+  const [totalLearning, setTotalLearning] = useState(0);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingBook, setEditingBook] = useState(null);
+  const [editingLearningResource, setEditingLearningResource] = useState(null);
 
   const [form, setForm] = useState(EMPTY_FORM);
 
-  const loadBooks = useCallback(async () => {
+  const loadLearning = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -135,14 +135,14 @@ export default function AdminBooks() {
         params.sort = sort;
       }
 
-      const response = await getAdminBooks(params);
+      const response = await getAdminLearning(params);
 
       const data = extractData(response);
       const meta = extractMeta(response);
 
-      setBooks(data);
+      setlearningResources(data);
 
-      setTotalBooks(
+      setTotalLearning(
         Number(meta.total) || Number(response?.total) || data.length,
       );
 
@@ -154,11 +154,11 @@ export default function AdminBooks() {
           ),
       );
     } catch (err) {
-      console.error("Failed to load books:", err);
+      console.error("Failed to load learningResources:", err);
 
-      setError(err?.response?.data?.message || "Unable to load books.");
+      setError(err?.response?.data?.message || "Unable to load learningResources.");
 
-      setBooks([]);
+      setlearningResources([]);
     } finally {
       setLoading(false);
     }
@@ -166,7 +166,7 @@ export default function AdminBooks() {
 
   const loadCategories = useCallback(async () => {
     try {
-      const response = await getCategories();
+      const response = await getLearningCategories();
 
       const data = extractData(response);
 
@@ -177,8 +177,8 @@ export default function AdminBooks() {
   }, []);
 
   useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
+    loadLearning();
+  }, [loadLearning]);
 
   useEffect(() => {
     loadCategories();
@@ -186,41 +186,41 @@ export default function AdminBooks() {
 
   const stats = useMemo(() => {
     return {
-      total: totalBooks,
-      published: books.filter((book) => book.published).length,
-      premium: books.filter((book) => book.premium).length,
-      featured: books.filter((book) => book.featured).length,
+      total: totalLearning,
+      published: learningResources.filter((learningResource) => learningResource.published).length,
+      premium: learningResources.filter((learningResource) => learningResource.premium).length,
+      featured: learningResources.filter((learningResource) => learningResource.featured).length,
     };
-  }, [books, totalBooks]);
+  }, [learningResources, totalLearning]);
 
   const openCreateModal = () => {
-    setEditingBook(null);
+    setEditingLearningResource(null);
     setForm(EMPTY_FORM);
     setModalOpen(true);
   };
 
-  const openEditModal = (book) => {
-    setEditingBook(book);
+  const openEditModal = (learningResource) => {
+    setEditingLearningResource(learningResource);
 
     setForm({
-      title: book.title || "",
-      description: book.description || "",
-      author: book.author || "",
-      category: book.category || "",
-      image: book.image || "",
-      pdf: book.pdf || "",
-      link: book.link || "",
-      preview: book.preview || "",
-      tags: Array.isArray(book.tags) ? book.tags.join(", ") : "",
-      difficulty: book.difficulty || "Beginner",
-      language: book.language || "English",
-      pages: book.pages || 0,
-      featured: Boolean(book.featured),
-      premium: Boolean(book.premium),
-      price: book.price || 0,
-      published: book.published !== undefined ? Boolean(book.published) : true,
-      fileSize: book.fileSize || 0,
-      isbn: book.isbn || "",
+      title: learningResource.title || "",
+      description: learningResource.description || "",
+      author: learningResource.author || "",
+      category: learningResource.category || "",
+      image: learningResource.image || "",
+      pdf: learningResource.pdf || "",
+      link: learningResource.link || "",
+      preview: learningResource.preview || "",
+      tags: Array.isArray(learningResource.tags) ? learningResource.tags.join(", ") : "",
+      difficulty: learningResource.difficulty || "Beginner",
+      language: learningResource.language || "English",
+      pages: learningResource.pages || 0,
+      featured: Boolean(learningResource.featured),
+      premium: Boolean(learningResource.premium),
+      price: learningResource.price || 0,
+      published: learningResource.published !== undefined ? Boolean(learningResource.published) : true,
+      fileSize: learningResource.fileSize || 0,
+      isbn: learningResource.isbn || "",
     });
 
     setModalOpen(true);
@@ -230,7 +230,7 @@ export default function AdminBooks() {
     if (saving) return;
 
     setModalOpen(false);
-    setEditingBook(null);
+    setEditingLearningResource(null);
     setForm(EMPTY_FORM);
   };
 
@@ -247,17 +247,17 @@ export default function AdminBooks() {
     event.preventDefault();
 
     if (!form.title.trim()) {
-      toast.error("Book title is required.");
+      toast.error("learningResource title is required.");
       return;
     }
 
     if (!form.description.trim()) {
-      toast.error("Book description is required.");
+      toast.error("learningResource description is required.");
       return;
     }
 
     if (!form.category.trim()) {
-      toast.error("Book category is required.");
+      toast.error("learningResource category is required.");
       return;
     }
 
@@ -297,47 +297,47 @@ export default function AdminBooks() {
         isbn: form.isbn.trim(),
       };
 
-      if (editingBook) {
-        await updateAdminBook(editingBook._id, payload);
+      if (editingLearningResource) {
+        await updateAdminLearning(editingLearningResource._id, payload);
 
-        toast.success("Book updated successfully.");
+        toast.success("learningResource updated successfully.");
       } else {
-        await createAdminBook(payload);
+        await createAdminLearning(payload);
 
-        toast.success("Book created successfully.");
+        toast.success("learningResource created successfully.");
       }
 
       closeModal();
-      await loadBooks();
+      await loadLearning();
       await loadCategories();
     } catch (err) {
-      console.error("Book save error:", err);
+      console.error("learningResource save error:", err);
 
-      toast.error(err?.response?.data?.message || "Failed to save book.");
+      toast.error(err?.response?.data?.message || "Failed to save learningResource.");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async (book) => {
+  const handleDelete = async (learningResource) => {
     const confirmed = window.confirm(
-      `Delete "${book.title}"? This action cannot be undone.`,
+      `Delete "${learningResource.title}"? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
 
     try {
-      setDeletingId(book._id);
+      setDeletingId(learningResource._id);
 
-      await deleteAdminBook(book._id);
+      await deleteAdminLearning(learningResource._id);
 
-      toast.success("Book deleted successfully.");
+      toast.success("learningResource deleted successfully.");
 
-      await loadBooks();
+      await loadLearning();
     } catch (err) {
-      console.error("Book deletion error:", err);
+      console.error("learningResource deletion error:", err);
 
-      toast.error(err?.response?.data?.message || "Failed to delete book.");
+      toast.error(err?.response?.data?.message || "Failed to delete learningResource.");
     } finally {
       setDeletingId(null);
     }
@@ -362,7 +362,7 @@ export default function AdminBooks() {
             Content Management
           </p>
 
-          <h1 className="text-3xl font-bold text-slate-900">Books</h1>
+          <h1 className="text-3xl font-bold text-slate-900">learningResources</h1>
 
           <p className="mt-2 text-slate-500">
             Manage your digital library, publications and downloadable
@@ -372,13 +372,13 @@ export default function AdminBooks() {
 
         <Button onClick={openCreateModal}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Book
+          Add learningResource
         </Button>
       </div>
 
       {/* STATS */}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Total Books" value={stats.total} icon={BookOpen} />
+        <Stat label="Total Learning Resources" value={stats.total} icon={BookOpen} />
 
         <Stat label="Published" value={stats.published} icon={Eye} />
 
@@ -406,7 +406,7 @@ export default function AdminBooks() {
                 setSearch(event.target.value);
                 setPage(1);
               }}
-              placeholder="Search books..."
+              placeholder="Search learningResources..."
               className="w-full rounded-lg border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
@@ -453,7 +453,7 @@ export default function AdminBooks() {
             }}
             className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
           >
-            <option value="">All Books</option>
+            <option value="">All learningResources</option>
             <option value="true">Premium</option>
             <option value="false">Free</option>
           </select>
@@ -506,7 +506,7 @@ export default function AdminBooks() {
 
           <button
             type="button"
-            onClick={loadBooks}
+            onClick={loadLearning}
             className="mt-3 text-sm font-semibold text-red-600 underline"
           >
             Try again
@@ -514,13 +514,13 @@ export default function AdminBooks() {
         </Card>
       )}
 
-      {/* BOOKS */}
+      {/* learningResources */}
       <Card className="overflow-hidden">
         {loading ? (
           <div className="flex min-h-[300px] items-center justify-center">
             <Loader />
           </div>
-        ) : books.length === 0 ? (
+        ) : learningResources.length === 0 ? (
           <EmptyState onAdd={openCreateModal} />
         ) : (
           <>
@@ -530,7 +530,7 @@ export default function AdminBooks() {
                 <thead className="border-b border-slate-200 bg-slate-50">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Book
+                      learningResource
                     </th>
 
                     <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -556,10 +556,10 @@ export default function AdminBooks() {
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                  {books.map((book) => (
-                    <BookRow
-                      key={book._id}
-                      book={book}
+                  {learningResources.map((learningResource) => (
+                    <LearningRow
+                      key={learningResource._id}
+                      learningResource={learningResource}
                       onEdit={openEditModal}
                       onDelete={handleDelete}
                       deletingId={deletingId}
@@ -571,10 +571,10 @@ export default function AdminBooks() {
 
             {/* MOBILE */}
             <div className="divide-y divide-slate-100 lg:hidden">
-              {books.map((book) => (
-                <BookMobileCard
-                  key={book._id}
-                  book={book}
+              {learningResources.map((learningResource) => (
+                <LearningMobileCard
+                  key={learningResource._id}
+                  learningResource={learningResource}
                   onEdit={openEditModal}
                   onDelete={handleDelete}
                   deletingId={deletingId}
@@ -586,7 +586,7 @@ export default function AdminBooks() {
       </Card>
 
       {/* PAGINATION */}
-      {!loading && books.length > 0 && (
+      {!loading && learningResources.length > 0 && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500">
             Page {page} of {totalPages}
@@ -620,9 +620,9 @@ export default function AdminBooks() {
 
       {/* MODAL */}
       {modalOpen && (
-        <BookModal
+        <LearningModal
           form={form}
-          editingBook={editingBook}
+          editingLearningResource={editingLearningResource}
           saving={saving}
           onChange={handleChange}
           onSubmit={handleSubmit}
@@ -656,25 +656,25 @@ function Stat({ label, value, icon: Icon }) {
 }
 
 /* ==========================================
-   BOOK ROW
+   learningResource ROW
 ========================================== */
 
-function BookRow({ book, onEdit, onDelete, deletingId }) {
+function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
   return (
     <tr className="transition hover:bg-slate-50">
       <td className="px-6 py-4">
         <div className="flex min-w-[280px] items-center gap-4">
           <img
-            src={book.image || "/images/book-placeholder.png"}
-            alt={book.title}
+            src={learningResource.image || "/images/learningResource-placeholder.png"}
+            alt={learningResource.title}
             className="h-16 w-12 rounded-lg object-cover"
           />
 
           <div>
-            <p className="font-semibold text-slate-900">{book.title}</p>
+            <p className="font-semibold text-slate-900">{learningResource.title}</p>
 
             <p className="mt-1 text-sm text-slate-500">
-              {book.author || "Unknown"}
+              {learningResource.author || "Unknown"}
             </p>
           </div>
         </div>
@@ -682,52 +682,52 @@ function BookRow({ book, onEdit, onDelete, deletingId }) {
 
       <td className="px-6 py-4">
         <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-          {book.category}
+          {learningResource.category}
         </span>
       </td>
 
       <td className="px-6 py-4 font-semibold text-slate-900">
-        {Number(book.price) > 0
-          ? `₦${Number(book.price).toLocaleString()}`
+        {Number(learningResource.price) > 0
+          ? `â‚¦${Number(learningResource.price).toLocaleString()}`
           : "Free"}
       </td>
 
       <td className="px-6 py-4">
         <div className="flex flex-wrap gap-2">
           <Status
-            active={book.published}
-            label={book.published ? "Published" : "Draft"}
+            active={learningResource.published}
+            label={learningResource.published ? "Published" : "Draft"}
           />
 
-          {book.premium && <Status active label="Premium" />}
+          {learningResource.premium && <Status active label="Premium" />}
 
-          {book.featured && <Status active label="Featured" />}
+          {learningResource.featured && <Status active label="Featured" />}
         </div>
       </td>
 
       <td className="px-6 py-4 text-sm text-slate-500">
-        <div>{Number(book.views || 0).toLocaleString()} views</div>
+        <div>{Number(learningResource.views || 0).toLocaleString()} views</div>
 
-        <div>{Number(book.downloads || 0).toLocaleString()} downloads</div>
+        <div>{Number(learningResource.downloads || 0).toLocaleString()} downloads</div>
       </td>
 
       <td className="px-6 py-4">
         <div className="flex justify-end gap-2">
           <button
             type="button"
-            onClick={() => onEdit(book)}
+            onClick={() => onEdit(learningResource)}
             className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-100"
-            title="Edit book"
+            title="Edit learningResource"
           >
             <Edit3 className="h-4 w-4" />
           </button>
 
           <button
             type="button"
-            disabled={deletingId === book._id}
-            onClick={() => onDelete(book)}
+            disabled={deletingId === learningResource._id}
+            onClick={() => onDelete(learningResource)}
             className="rounded-lg border border-red-200 p-2 text-red-600 transition hover:bg-red-50 disabled:opacity-50"
-            title="Delete book"
+            title="Delete learningResource"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -738,29 +738,29 @@ function BookRow({ book, onEdit, onDelete, deletingId }) {
 }
 
 /* ==========================================
-   MOBILE BOOK CARD
+   MOBILE learningResource CARD
 ========================================== */
 
-function BookMobileCard({ book, onEdit, onDelete, deletingId }) {
+function LearningMobileCard({ learningResource, onEdit, onDelete, deletingId }) {
   return (
     <div className="p-5">
       <div className="flex gap-4">
         <img
-          src={book.image || "/images/book-placeholder.png"}
-          alt={book.title}
+          src={learningResource.image || "/images/learningResource-placeholder.png"}
+          alt={learningResource.title}
           className="h-24 w-16 rounded-lg object-cover"
         />
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-slate-900">{book.title}</h3>
+          <h3 className="font-bold text-slate-900">{learningResource.title}</h3>
 
           <p className="mt-1 text-sm text-slate-500">
-            {book.author || "Unknown"}
+            {learningResource.author || "Unknown"}
           </p>
 
           <p className="mt-3 font-semibold text-blue-600">
-            {Number(book.price) > 0
-              ? `₦${Number(book.price).toLocaleString()}`
+            {Number(learningResource.price) > 0
+              ? `â‚¦${Number(learningResource.price).toLocaleString()}`
               : "Free"}
           </p>
         </div>
@@ -768,25 +768,25 @@ function BookMobileCard({ book, onEdit, onDelete, deletingId }) {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Status
-          active={book.published}
-          label={book.published ? "Published" : "Draft"}
+          active={learningResource.published}
+          label={learningResource.published ? "Published" : "Draft"}
         />
 
-        {book.premium && <Status active label="Premium" />}
+        {learningResource.premium && <Status active label="Premium" />}
 
-        {book.featured && <Status active label="Featured" />}
+        {learningResource.featured && <Status active label="Featured" />}
       </div>
 
       <div className="mt-5 flex gap-2">
-        <Button variant="secondary" onClick={() => onEdit(book)}>
+        <Button variant="secondary" onClick={() => onEdit(learningResource)}>
           <Edit3 className="mr-2 h-4 w-4" />
           Edit
         </Button>
 
         <button
           type="button"
-          disabled={deletingId === book._id}
-          onClick={() => onDelete(book)}
+          disabled={deletingId === learningResource._id}
+          onClick={() => onDelete(learningResource)}
           className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
           <Trash2 className="mr-2 inline h-4 w-4" />
@@ -826,25 +826,25 @@ function EmptyState({ onAdd }) {
         <BookOpen className="h-10 w-10 text-slate-400" />
       </div>
 
-      <h3 className="mt-5 text-xl font-bold text-slate-900">No books found</h3>
+      <h3 className="mt-5 text-xl font-bold text-slate-900">No learningResources found</h3>
 
       <p className="mt-2 max-w-md text-sm text-slate-500">
-        There are no books matching your current filters.
+        There are no learningResources matching your current filters.
       </p>
 
       <Button className="mt-6" onClick={onAdd}>
         <Plus className="mr-2 h-4 w-4" />
-        Add First Book
+        Add First learningResource
       </Button>
     </div>
   );
 }
 
 /* ==========================================
-   BOOK MODAL
+   learningResource MODAL
 ========================================== */
 
-function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
+function LearningModal({ form, editingLearningResource, saving, onChange, onSubmit, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
       <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
@@ -852,12 +852,12 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
           <div>
             <h2 className="text-xl font-bold text-slate-900">
-              {editingBook ? "Edit Book" : "Add New Book"}
+              {editingLearningResource ? "Edit learningResource" : "Add New learningResource"}
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              {editingBook
-                ? "Update the book information."
+              {editingLearningResource
+                ? "Update the learningResource information."
                 : "Add a new resource to your digital library."}
             </p>
           </div>
@@ -883,7 +883,7 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
                   name="title"
                   value={form.title}
                   onChange={onChange}
-                  placeholder="Book title"
+                  placeholder="learningResource title"
                 />
 
                 <Input
@@ -916,7 +916,7 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
                 name="description"
                 value={form.description}
                 onChange={onChange}
-                placeholder="Describe the book..."
+                placeholder="Describe the learningResource..."
               />
             </FormSection>
 
@@ -964,7 +964,7 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
 
                   <img
                     src={form.image}
-                    alt="Book preview"
+                    alt="learningResource preview"
                     className="h-40 w-28 rounded-lg object-cover shadow"
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
@@ -975,7 +975,7 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
             </FormSection>
 
             {/* DETAILS */}
-            <FormSection title="Book Details">
+            <FormSection title="learningResource Details">
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                 <Select
                   label="Difficulty"
@@ -1026,7 +1026,7 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
             <FormSection title="Publishing & Pricing">
               <div className="grid gap-5 md:grid-cols-2">
                 <Input
-                  label="Price (₦)"
+                  label="Price (â‚¦)"
                   type="number"
                   name="price"
                   value={form.price}
@@ -1074,9 +1074,9 @@ function BookModal({ form, editingBook, saving, onChange, onSubmit, onClose }) {
             <Button type="submit" disabled={saving}>
               {saving
                 ? "Saving..."
-                : editingBook
-                  ? "Update Book"
-                  : "Create Book"}
+                : editingLearningResource
+                  ? "Update learningResource"
+                  : "Create learningResource"}
             </Button>
           </div>
         </form>
@@ -1164,3 +1164,6 @@ function Checkbox({ label, ...props }) {
     </label>
   );
 }
+
+
+

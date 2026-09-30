@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -29,7 +29,7 @@ import {
 
 import { Newsletter, CTA } from "../components/home";
 
-import { getBook, getBooks } from "../services";
+import { getLearningResource, getLearningResources } from "../services";
 
 export default function BookDetails() {
   const { id } = useParams();
@@ -48,8 +48,8 @@ export default function BookDetails() {
 
       try {
         const [bookResponse, booksResponse] = await Promise.all([
-          getBook(id),
-          getBooks(),
+          getLearningResource(id),
+          getLearningResources(),
         ]);
 
         if (!mounted) return;
@@ -132,7 +132,7 @@ export default function BookDetails() {
 
   const bookPrice =
     book?.price !== undefined && book?.price !== null && book?.price !== ""
-      ? `₦${Number(book.price).toLocaleString()}`
+      ? `â‚¦${Number(book.price).toLocaleString()}`
       : "Free";
 
   const rating = book?.rating || "4.9";
@@ -802,3 +802,6 @@ function SpecificationCard({ label, value }) {
     </Card>
   );
 }
+
+
+

@@ -26,7 +26,7 @@ requiredEnv.forEach((key) => {
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
-const bookRoutes = require("./routes/bookRoutes");
+const learningRoutes = require("./routes/learningRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -191,7 +191,7 @@ app.get(API, (req, res) => {
 app.use(`${API}/auth`, authRoutes);
 app.use(`${API}/users`, userRoutes);
 app.use(`${API}/admin`, adminRoutes);
-app.use(`${API}/books`, bookRoutes);
+app.use(`${API}/learning`, learningRoutes);
 app.use(`${API}/courses`, courseRoutes);
 app.use(`${API}/library`, libraryRoutes);
 app.use(`${API}/community`, communityRoutes);

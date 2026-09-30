@@ -5,7 +5,7 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 
 const User = require("../models/User");
-const Book = require("../models/Book");
+const Learning = require("../models/Learning");
 const Course = require("../models/Course");
 const Notification = require("../models/Notification");
 const Progress = require("../models/Progress");
@@ -49,6 +49,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     avatar,
     phone,
     bio,
+    settings,
   } = req.body;
 
   if (email?.trim()) {
@@ -83,8 +84,8 @@ const updateProfile = asyncHandler(async (req, res) => {
     user.lastName = lastName.trim();
   }
 
-    /* ----------------------------------------
-    USERNAME
+  /* ----------------------------------------
+     USERNAME
   ---------------------------------------- */
 
   if (username !== undefined) {
@@ -137,6 +138,10 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (bio !== undefined) {
     user.bio = bio;
   }
+
+  /* ----------------------------------------
+     SETTINGS
+  ---------------------------------------- */
 
   if (settings !== undefined) {
 
@@ -342,7 +347,7 @@ const getDashboard = asyncHandler(async (req, res) => {
       )
       .lean(),
 
-    Book.countDocuments({
+    Learning.countDocuments({
       createdBy: userId,
     }),
 
@@ -496,7 +501,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 
   await Promise.all([
-    Book.deleteMany({
+    Learning.deleteMany({
       createdBy: id,
     }),
 
@@ -550,15 +555,15 @@ const changePassword = asyncHandler(async (req, res) => {
     );
   }
 
-  const user = await User.findById(req.user._id).select("+password");
+  const user = await User.findById(req.user._id)
+    .select("+password");
 
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
 
-  const isCurrentPasswordValid = await user.matchPassword(
-    currentPassword
-  );
+  const isCurrentPasswordValid =
+    await user.matchPassword(currentPassword);
 
   if (!isCurrentPasswordValid) {
     throw new ApiError(
@@ -592,7 +597,7 @@ const deleteAccount = asyncHandler(async (req, res) => {
   }
 
   await Promise.all([
-    Book.deleteMany({
+    Learning.deleteMany({
       createdBy: userId,
     }),
 
@@ -685,7 +690,8 @@ const updateSettings = asyncHandler(async (req, res) => {
       );
     }
 
-    user.settings.language = language.trim().toLowerCase();
+    user.settings.language =
+      language.trim().toLowerCase();
   }
 
   /* ----------------------------------------
@@ -784,6 +790,7 @@ const updateSettings = asyncHandler(async (req, res) => {
 /* ==========================================
    EXPORTS
 ========================================== */
+
 module.exports = {
   getProfile,
   updateProfile,

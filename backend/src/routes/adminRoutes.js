@@ -22,19 +22,27 @@ const {
 } = require("../controllers/blogController");
 
 const {
-  createBook,
-  getBooks,
-  updateBook,
-  deleteBook,
-} = require("../controllers/bookController");
+  createLearningResource,
+  getLearningResources,
+  updateLearningResource,
+  deleteLearningResource,
+} = require("../controllers/learningController");
 
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
 const router = express.Router();
 
+/* ==========================================
+   ADMIN PROTECTION
+========================================== */
+
 router.use(protect);
 router.use(adminOnly);
+
+/* ==========================================
+   DASHBOARD
+========================================== */
 
 router.get(
   "/dashboard",
@@ -45,6 +53,10 @@ router.get(
   "/stats",
   getStats
 );
+
+/* ==========================================
+   USERS
+========================================== */
 
 router.get(
   "/users",
@@ -66,6 +78,10 @@ router.delete(
   deleteUser
 );
 
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
 router.get(
   "/notifications",
   getAdminNotifications
@@ -80,6 +96,10 @@ router.delete(
   "/notifications",
   clearAdminNotifications
 );
+
+/* ==========================================
+   BLOG
+========================================== */
 
 router.get(
   "/blog",
@@ -101,14 +121,18 @@ router.delete(
   deleteBlog
 );
 
-router
-  .route("/books")
-  .get(getBooks)
-  .post(createBook);
+/* ==========================================
+   LEARNING RESOURCES
+========================================== */
 
 router
-  .route("/books/:id")
-  .put(updateBook)
-  .delete(deleteBook);
+  .route("/learning")
+  .get(getLearningResources)
+  .post(createLearningResource);
+
+router
+  .route("/learning/:id")
+  .put(updateLearningResource)
+  .delete(deleteLearningResource);
 
 module.exports = router;

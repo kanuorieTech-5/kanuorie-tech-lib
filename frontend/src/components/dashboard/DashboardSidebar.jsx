@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+﻿import { NavLink } from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -27,8 +27,8 @@ const adminLinks = [
     icon: Users,
   },
   {
-    name: "Books",
-    path: "/admin/books",
+    name: "Learning",
+    path: "/admin/learning",
     icon: BookOpen,
   },
   {
@@ -120,10 +120,11 @@ export default function AdminSidebar() {
         {/* Footer */}
         <div className="border-t border-white/10 p-4">
           <p className="text-center text-xs text-slate-500">
-            KanuorieTech © {new Date().getFullYear()}
+            KanuorieTech Â© {new Date().getFullYear()}
           </p>
         </div>
       </div>
     </aside>
   );
 }
+

@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* =====================================================
    ADMIN DASHBOARD
@@ -47,29 +47,29 @@ export const deleteAdminUser = async (id) => {
 };
 
 /* =====================================================
-   BOOKS
+   LEARNING
 ===================================================== */
 
-export const getAdminBooks = async (params = {}) => {
-  const { data } = await API.get(`/books?${params.toString()}`);
+export const getAdminLearning = async (params = {}) => {
+  const { data } = await API.get(`/admin/learning?${params.toString()}`);
 
   return data;
 };
 
-export const createAdminBook = async (bookData) => {
-  const { data } = await API.post("/books", bookData);
+export const createAdminLearning = async (learningData) => {
+  const { data } = await API.post("/admin/learning", learningData);
 
   return data;
 };
 
-export const updateAdminBook = async (id, bookData) => {
-  const { data } = await API.put(`/books/${id}`, bookData);
+export const updateAdminLearning = async (id, learningData) => {
+  const { data } = await API.put(`/admin/learning/${id}`, learningData);
 
   return data;
 };
 
-export const deleteAdminBook = async (id) => {
-  const { data } = await API.delete(`/books/${id}`);
+export const deleteAdminLearning = async (id) => {
+  const { data } = await API.delete(`/admin/learning/${id}`);
 
   return data;
 };
@@ -269,3 +269,4 @@ export const deleteAdminNotification = async (id) => {
 
   return data;
 };
+

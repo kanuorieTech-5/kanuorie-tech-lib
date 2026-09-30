@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const createSlug = require("../helpers/slugify");
 
-const bookSchema = new mongoose.Schema(
+const learningSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -114,6 +114,7 @@ const bookSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+
     price: {
       type: Number,
       default: 0,
@@ -136,14 +137,13 @@ const bookSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+
+    // Keep using the existing MongoDB collection.
+    collection: "books",
   }
 );
 
-/* =========================
-   GENERATE SLUG
-========================= */
-
-bookSchema.pre("save", function (next) {
+learningSchema.pre("save", function (next) {
   if (this.isModified("title")) {
     this.slug = createSlug(this.title);
   }
@@ -151,4 +151,4 @@ bookSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model("Book", bookSchema);
+module.exports = mongoose.model("Learning", learningSchema);

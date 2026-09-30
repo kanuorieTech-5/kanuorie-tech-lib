@@ -1,55 +1,43 @@
-exports.getHomepage = async()=>{
+const Service = require("../models/Service");
+const Project = require("../models/Project");
+const Learning = require("../models/Learning");
+const Course = require("../models/Course");
+const Blog = require("../models/Blog");
+const Testimonial = require("../models/Testimonial");
+const FAQ = require("../models/FAQ");
 
-const [
+exports.getHomepage = async () => {
+  const [
+    services,
+    projects,
+    books,
+    courses,
+    blogs,
+    testimonials,
+    faq,
+  ] = await Promise.all([
+    Service.find({ featured: true }),
 
-services,
+    Project.find({ featured: true }),
 
-projects,
+    Learning.find({ featured: true }),
 
-books,
+    Course.find({ featured: true }),
 
-courses,
+    Blog.find().limit(3),
 
-blogs,
+    Testimonial.find(),
 
-testimonials,
+    FAQ.find(),
+  ]);
 
-faq,
-
-] = await Promise.all([
-
-Service.find({featured:true}),
-
-Project.find({featured:true}),
-
-Book.find({featured:true}),
-
-Course.find({featured:true}),
-
-Blog.find().limit(3),
-
-Testimonial.find(),
-
-FAQ.find(),
-
-]);
-
-return{
-
-services,
-
-projects,
-
-books,
-
-courses,
-
-blogs,
-
-testimonials,
-
-faq,
-
-};
-
+  return {
+    services,
+    projects,
+    books,
+    courses,
+    blogs,
+    testimonials,
+    faq,
+  };
 };

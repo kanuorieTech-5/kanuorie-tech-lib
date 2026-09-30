@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { SectionTitle } from "../common";
 import { TrendingResources } from "../library";
-import { getBooks } from "../../services";
+import { getLearningResources } from "../../services";
 import defaultResources from "../../data/resources";
 
-export default function BooksPreview() {
+export default function libraryPreview() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,72 +15,56 @@ export default function BooksPreview() {
       try {
         setLoading(true);
 
-        const response = await getBooks();
+        const response = await getLearningResources({
+          params: {
+            limit: 6,
+          },
+        });
 
-        /*
-         * Backend may return:
-         *
-         * {
-         *   data: [...]
-         * }
-         *
-         * or:
-         *
-         * {
-         *   data: {
-         *     books: [...]
-         *   }
-         * }
-         */
-
-        const books = Array.isArray(response)
+        const learningResources = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
             ? response.data
-            : Array.isArray(response?.data?.books)
-              ? response.data.books
-              : [];
+            : Array.isArray(response?.data?.resources)
+              ? response.data.resources
+              : Array.isArray(response?.resources)
+                ? response.resources
+                : [];
 
         if (!mounted) return;
 
-        /*
-         * Keep local resources as fallback/additional
-         * resources while the API is available.
-         */
-        const combined = [...defaultResources, ...books];
+        const combined = [...defaultResources, ...learningResources];
 
-        /*
-         * Give every resource a stable ID.
-         */
         const formatted = combined.map((item, index) => ({
           ...item,
-
           resourceId:
-            item._id || item.id || item.resourceId || `${item.title}-${index}`,
+            item._id ||
+            item.id ||
+            item.resourceId ||
+            `${item.title || "resource"}-${index}`,
         }));
 
-        /*
-         * Remove duplicates.
-         */
         const unique = Array.from(
-          new Map(formatted.map((item) => [item.resourceId, item])).values(),
+          new Map(
+            formatted.map((item) => [item.resourceId, item]),
+          ).values(),
         );
 
         setResources(unique);
       } catch (error) {
-        console.error("Failed to load library resources:", error);
+        console.error(
+          "Failed to load learning resources:",
+          error,
+        );
 
-        /*
-         * API failure should not break
-         * the homepage.
-         */
         if (mounted) {
           setResources(
             defaultResources.map((item, index) => ({
               ...item,
-
               resourceId:
-                item.id || item.resourceId || `${item.title}-${index}`,
+                item.id ||
+                item.resourceId ||
+                `${item.title || "resource"}-${index}`,
             })),
           );
         }
@@ -99,7 +83,7 @@ export default function BooksPreview() {
   }, []);
 
   return (
-    <section className="bg-slate-900 dark:bg-slate-900 py-15">
+    <section className="bg-slate-900 py-15 dark:bg-slate-900">
       <div className="px-6 text-center text-white">
         <SectionTitle
           Badge="Digital Library"
@@ -107,21 +91,20 @@ export default function BooksPreview() {
           subtitle="Access ebooks, guides and learning materials designed to improve your skills."
         />
 
-        {/* Loading */}
         {loading && (
           <div className="mt-1 flex justify-center">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-cyan-400/20 border-t-cyan-400" />
           </div>
         )}
 
-        {/* Resources */}
         {!loading && resources.length > 0 && (
           <div className="mt-1">
-            <TrendingResources resources={resources.slice(0, 6)} />
+            <TrendingResources
+              resources={resources.slice(0, 6)}
+            />
           </div>
         )}
 
-        {/* Empty state */}
         {!loading && resources.length === 0 && (
           <div className="mt-1 text-center">
             <p className="text-slate-400">

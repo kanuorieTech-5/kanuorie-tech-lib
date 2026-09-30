@@ -4,12 +4,13 @@ const ApiError = require("../utils/ApiError");
 
 const User = require("../models/User");
 const Course = require("../models/Course");
-const Book = require("../models/Book");
+const Learning = require("../models/Learning");
 const Progress = require("../models/Progress");
 
 /* ==========================================
    GET ADMIN DASHBOARD
 ========================================== */
+
 const getStats = asyncHandler(async (req, res) => {
   const [
     totalUsers,
@@ -22,11 +23,11 @@ const getStats = asyncHandler(async (req, res) => {
   ] = await Promise.all([
     User.countDocuments(),
     Course.countDocuments(),
-    Book.countDocuments(),
+    Learning.countDocuments(),
     Progress.countDocuments(),
     User.countDocuments({ isVerified: true }),
     User.countDocuments({ isBlocked: true }),
-    Book.countDocuments({ featured: true }),
+    Learning.countDocuments({ featured: true }),
   ]);
 
   /* ==========================================
@@ -66,9 +67,11 @@ const getStats = asyncHandler(async (req, res) => {
 
   /* ==========================================
      BOOK TREND
+     Uses Learning model while preserving
+     existing frontend response field names.
   ========================================== */
 
-  const bookTrend = await Book.aggregate([
+  const bookTrend = await Learning.aggregate([
     {
       $group: {
         _id: {
@@ -110,7 +113,10 @@ const getStats = asyncHandler(async (req, res) => {
   ]);
 
   /* ==========================================
-     RECENT USERS & BOOKS
+     RECENT USERS & LEARNING RESOURCES
+     
+     Uses Learning model while preserving
+     existing frontend response field names.
   ========================================== */
 
   const [latestUsers, latestBooks] = await Promise.all([
@@ -119,7 +125,7 @@ const getStats = asyncHandler(async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5),
 
-    Book.find()
+    Learning.find()
       .sort({ createdAt: -1 })
       .limit(5),
   ]);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -36,8 +36,8 @@ const adminLinks = [
     icon: BriefcaseBusiness,
   },
   {
-    name: "Books",
-    path: "/admin/books",
+    name: "Learning",
+    path: "/admin/learning",
     icon: BookOpen,
   },
   {

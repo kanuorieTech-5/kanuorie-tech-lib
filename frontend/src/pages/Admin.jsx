@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 import {
   DashboardHeader,
   WelcomeBanner,
   StatsGrid,
-  LatestBooks,
+  LatestLearning,
   LatestCourses,
   LatestOrders,
   LatestUsers,
@@ -101,7 +101,7 @@ export default function Admin() {
 
   const stats = dashboard?.stats ?? {};
 
-  const books = dashboard?.books ?? dashboard?.latestBooks ?? [];
+  const learningResources = dashboard?.learningResources ?? dashboard?.books ?? dashboard?.latestBooks ?? [];
 
   const courses = dashboard?.courses ?? dashboard?.latestCourses ?? [];
 
@@ -135,7 +135,7 @@ export default function Admin() {
       <QuickActions />
 
       <div className="grid gap-8 xl:grid-cols-2">
-        <LatestBooks books={books} />
+        <LatestLearning learningResources={learningResources} />
 
         <LatestCourses courses={courses} />
       </div>
@@ -150,3 +150,5 @@ export default function Admin() {
     </div>
   );
 }
+
+
