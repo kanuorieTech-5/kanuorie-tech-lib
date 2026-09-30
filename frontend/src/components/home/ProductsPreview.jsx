@@ -43,14 +43,8 @@ export default function ProductsPreview() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const sliderRef = useRef(null);
-
   const visibleProducts = products.slice(0, 4);
-
-  /* ==========================================
-     AUTOPLAY MOBILE CAROUSEL
-  ========================================== */
 
   useEffect(() => {
     if (visibleProducts.length <= 1) return;
@@ -78,10 +72,6 @@ export default function ProductsPreview() {
 
     return () => clearInterval(interval);
   }, [visibleProducts.length]);
-
-  /* ==========================================
-     LOAD PRODUCTS
-  ========================================== */
 
   useEffect(() => {
     let mounted = true;
@@ -117,10 +107,6 @@ export default function ProductsPreview() {
     };
   }, []);
 
-  /* ==========================================
-     GO TO SLIDE
-  ========================================== */
-
   const goToSlide = (index) => {
     setCurrentSlide(index);
 
@@ -135,10 +121,6 @@ export default function ProductsPreview() {
     }
   };
 
-  /* ==========================================
-     LOADING
-  ========================================== */
-
   if (loading) {
     return (
       <section className="bg-slate-950 py-16">
@@ -150,52 +132,16 @@ export default function ProductsPreview() {
   }
 
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        bg-slate-950
-        py-16
-        text-white
-        lg:py-24
-      "
+    <section className="relative overflow-hidden bg-slate-950 py-16 text-white lg:py-24"
     >
-      {/* Background glow */}
-
-      <div
-        className="
-          absolute
-          left-1/2
-          top-0
-          h-96
-          w-96
-          -translate-x-1/2
-          rounded-full
-          bg-blue-500/10
-          blur-3xl
-        "
+      <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
         aria-hidden="true"
       />
-
-      <div
-        className="
-          absolute
-          bottom-0
-          right-0
-          h-72
-          w-72
-          rounded-full
-          bg-yellow-400/5
-          blur-3xl
-        "
+      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-yellow-400/5 blur-3xl"
         aria-hidden="true"
       />
-
       <div className="relative mx-auto px-6 lg:px-8">
-
-        {/* Header */}
-
-        <div className="mb-12">
+        <div className="mb-12 text-center">
           <SectionTitle
             Badge="Developer & Business Products"
             title="Tools Worth Knowing"
@@ -203,29 +149,11 @@ export default function ProductsPreview() {
           />
         </div>
 
-        {/* Empty state */}
-
         {products.length === 0 ? (
-          <div
-            className="
-              rounded-3xl
-              border
-              border-white/10
-              bg-white/5
-              px-6
-              py-16
-              text-center
-              backdrop-blur-xl
-            "
+          <div className="rounded-3xl border border-white/10 bg-white/5 px-6 py-16 text-center backdrop-blur-xl"
           >
             <Sparkles
-              className="
-                mx-auto
-                mb-5
-                h-10
-                w-10
-                text-blue-400
-              "
+              className="mx-auto mb-5 h-10 w-10 text-blue-400"
             />
 
             <h3 className="mb-3 text-2xl font-bold">
@@ -239,23 +167,13 @@ export default function ProductsPreview() {
           </div>
         ) : (
           <>
-            {/* ==========================================
-                MOBILE CAROUSEL
-            ========================================== */}
-
+            
             <div className="sm:hidden">
 
               <div
-                ref={sliderRef}
-                className="
-                  flex
-                  snap-x
-                  snap-mandatory
-                  gap-5
-                  overflow-x-auto
-                  pb-4
-                  scrollbar-hide
-                "
+                // ref={sliderRef}
+                className="flex snap-x snap-mandatory gap-5
+                  overflow-x-auto pb-4 scrollbar-hide"
               >
                 {visibleProducts.map((product, index) => {
                   const productId =
@@ -286,42 +204,18 @@ export default function ProductsPreview() {
                         once: true,
                         amount: 0.1,
                       }}
-                      className="
-                        w-[88%]
-                        shrink-0
-                        snap-center
-                      "
+                      className="w-[88%] shrink-0 snap-center"
                     >
                       <Card
-                        className="
-                          group
-                          flex
-                          h-full
-                          flex-col
-                          overflow-hidden
-                          border-white/10
-                          bg-white/5
-                          p-0
-                          text-white
-                          backdrop-blur-xl
-                          transition
-                          duration-300
-                        "
+                        className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300"
                       >
-
-                        {/* Image */}
-
                         <Link
                           to={
                             productId
                               ? `/products/${productId}`
                               : "/products"
                           }
-                          className="
-                            relative
-                            block
-                            overflow-hidden
-                          "
+                          className="relative block overflow-hidden"
                         >
                           <img
                             src={
@@ -333,14 +227,7 @@ export default function ProductsPreview() {
                               "Developer tool"
                             }
                             loading="lazy"
-                            className="
-                              h-52
-                              w-full
-                              object-cover
-                              transition
-                              duration-500
-                              group-hover:scale-105
-                            "
+                            className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
                             onError={(event) => {
                               if (
                                 event.currentTarget.src.includes(
@@ -357,56 +244,17 @@ export default function ProductsPreview() {
 
                           {product?.featured && (
                             <span
-                              className="
-                                absolute
-                                left-4
-                                top-4
-                                rounded-full
-                                bg-yellow-400
-                                px-3
-                                py-1
-                                text-xs
-                                font-bold
-                                text-slate-950
-                              "
+                              className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950"
                             >
                               Featured
                             </span>
                           )}
                         </Link>
 
-                        {/* Content */}
-
-                        <div
-                          className="
-                            flex
-                            flex-1
-                            flex-col
-                            p-5
-                          "
-                        >
-
-                          {/* Category */}
-
-                          <div
-                            className="
-                              mb-3
-                              flex
-                              items-center
-                              justify-between
-                              gap-3
-                            "
-                          >
+                        <div className="flex flex-1 flex-col p-5">
+                          <div className="mb-3 flex items-center justify-between gap-3">
                             <span
-                              className="
-                                rounded-full
-                                bg-blue-500/10
-                                px-3
-                                py-1
-                                text-xs
-                                font-semibold
-                                text-blue-300
-                              "
+                              className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300"
                             >
                               {product?.category ||
                                 "Other"}
@@ -432,14 +280,7 @@ export default function ProductsPreview() {
                                 : "/products"
                             }
                           >
-                            <h3
-                              className="
-                                line-clamp-2
-                                text-xl
-                                font-bold
-                                transition
-                                group-hover:text-blue-400
-                              "
+                            <h3 className="line-clamp-2 text-xl font-bold transition group-hover:text-blue-400"
                             >
                               {product?.name ||
                                 "Developer Tool"}
@@ -448,14 +289,7 @@ export default function ProductsPreview() {
 
                           {/* Description */}
 
-                          <p
-                            className="
-                              mt-3
-                              line-clamp-3
-                              text-sm
-                              leading-6
-                              text-slate-400
-                            "
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400"
                           >
                             {product?.excerpt ||
                               product?.description ||
@@ -470,12 +304,7 @@ export default function ProductsPreview() {
                             product.technologies.length >
                               0 && (
                               <div
-                                className="
-                                  mt-4
-                                  flex
-                                  flex-wrap
-                                  gap-2
-                                "
+                                className="mt-4 flex flex-wrap gap-2"
                               >
                                 {product.technologies
                                   .slice(0, 2)
@@ -483,14 +312,7 @@ export default function ProductsPreview() {
                                     (technology) => (
                                       <span
                                         key={technology}
-                                        className="
-                                          rounded-full
-                                          bg-white/5
-                                          px-2.5
-                                          py-1
-                                          text-xs
-                                          text-slate-400
-                                        "
+                                        className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-slate-400"
                                       >
                                         {technology}
                                       </span>
@@ -501,14 +323,7 @@ export default function ProductsPreview() {
 
                           {/* Actions */}
 
-                          <div
-                            className="
-                              mt-auto
-                              flex
-                              items-center
-                              gap-2
-                              pt-5
-                            "
+                          <div className="mt-auto flex items-center gap-2 pt-5"
                           >
                             <Link
                               to={
@@ -539,21 +354,7 @@ export default function ProductsPreview() {
                                 rel="noopener noreferrer"
                                 aria-label={`Visit ${product.name} website`}
                                 title="Official Website"
-                                className="
-                                  flex
-                                  h-9
-                                  w-9
-                                  shrink-0
-                                  items-center
-                                  justify-center
-                                  rounded-lg
-                                  border
-                                  border-white/10
-                                  text-slate-400
-                                  transition
-                                  hover:border-blue-400
-                                  hover:text-blue-400
-                                "
+                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-slate-400 transition hover:border-blue-400 hover:text-blue-400"
                               >
                                 <Globe size={16} />
                               </a>
@@ -629,18 +430,7 @@ export default function ProductsPreview() {
               )}
             </div>
 
-            {/* ==========================================
-                TABLET / DESKTOP GRID
-            ========================================== */}
-
-            <div
-              className="
-                hidden
-                gap-6
-                sm:grid
-                sm:grid-cols-2
-                lg:grid-cols-4
-              "
+            <div className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4"
             >
               {visibleProducts.map((product, index) => {
                 const productId =
@@ -674,23 +464,7 @@ export default function ProductsPreview() {
                     className="h-full"
                   >
                     <Card
-                      className="
-                        group
-                        flex
-                        h-full
-                        flex-col
-                        overflow-hidden
-                        border-white/10
-                        bg-white/5
-                        p-0
-                        text-white
-                        backdrop-blur-xl
-                        transition
-                        duration-300
-                        hover:-translate-y-1
-                        hover:border-blue-400/30
-                        hover:shadow-2xl
-                      "
+                      className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:shadow-2xl"
                     >
 
                       {/* Image */}
@@ -701,11 +475,7 @@ export default function ProductsPreview() {
                             ? `/products/${productId}`
                             : "/products"
                         }
-                        className="
-                          relative
-                          block
-                          overflow-hidden
-                        "
+                        className="relative block overflow-hidden"
                       >
                         <img
                           src={
@@ -717,14 +487,7 @@ export default function ProductsPreview() {
                             "Developer tool"
                           }
                           loading="lazy"
-                          className="
-                            h-52
-                            w-full
-                            object-cover
-                            transition
-                            duration-500
-                            group-hover:scale-105
-                          "
+                          className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
                           onError={(event) => {
                             if (
                               event.currentTarget.src.includes(
@@ -741,64 +504,24 @@ export default function ProductsPreview() {
 
                         {product?.featured && (
                           <span
-                            className="
-                              absolute
-                              left-4
-                              top-4
-                              rounded-full
-                              bg-yellow-400
-                              px-3
-                              py-1
-                              text-xs
-                              font-bold
-                              text-slate-950
-                            "
+                            className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950"
                           >
                             Featured
                           </span>
                         )}
                       </Link>
 
-                      {/* Content */}
-
-                      <div
-                        className="
-                          flex
-                          flex-1
-                          flex-col
-                          p-5
-                        "
+                      <div className="flex flex-1 flex-col p-5"
                       >
-                        <div
-                          className="
-                            mb-3
-                            flex
-                            items-center
-                            justify-between
-                            gap-3
-                          "
+                        <div className="mb-3 flex items-center justify-between gap-3"
                         >
-                          <span
-                            className="
-                              rounded-full
-                              bg-blue-500/10
-                              px-3
-                              py-1
-                              text-xs
-                              font-semibold
-                              text-blue-300
-                            "
+                          <span className=" rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300"
                           >
                             {product?.category ||
                               "Other"}
                           </span>
 
-                          <span
-                            className="
-                              text-xs
-                              font-bold
-                              text-emerald-400
-                            "
+                          <span className="text-xs font-bold text-emerald-400"
                           >
                             {getPricingLabel(product)}
                           </span>
@@ -826,13 +549,7 @@ export default function ProductsPreview() {
                         </Link>
 
                         <p
-                          className="
-                            mt-3
-                            line-clamp-3
-                            text-sm
-                            leading-6
-                            text-slate-400
-                          "
+                          className=" mt-3 line-clamp-3 text-sm leading-6 text-slate-400"
                         >
                           {product?.excerpt ||
                             product?.description ||

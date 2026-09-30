@@ -37,7 +37,7 @@ const ServiceDetails = lazy(() => import("../pages/ServiceDetails"));
 
 const Blog = lazy(() => import("../pages/Blog"));
 const BlogDetails = lazy(() => import("../pages/BlogDetails"));
-
+const Careers = lazy(() => import("../pages/Careers"));
 const Team = lazy(() => import("../pages/Team"));
 const FAQ = lazy(() => import("../pages/FAQ"));
 const Testimonials = lazy(() => import("../pages/Testimonials"));
@@ -81,9 +81,7 @@ const AdminServices = lazy(() => import("../pages/admin/AdminServices"));
 
 const AdminBlog = lazy(() => import("../pages/admin/AdminBlog"));
 
-const AdminTestimonials = lazy(
-  () => import("../pages/admin/AdminTestimonials"),
-);
+const AdminTestimonials = lazy(() => import("../pages/admin/AdminTestimonials"));
 
 const AdminFAQ = lazy(() => import("../pages/admin/AdminFAQ"));
 
@@ -155,6 +153,8 @@ export default function AppRoutes() {
           <Route path="blog" element={<Blog />} />
 
           <Route path="blog/:id" element={<BlogDetails />} />
+
+          <Route path="careers" element={<Careers />} />
 
           <Route path="team" element={<Team />} />
 

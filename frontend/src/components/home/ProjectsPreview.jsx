@@ -51,21 +51,9 @@ export default function ProjectsPreview() {
     };
   }, []);
 
-  /*
-  ==========================================
-  RESET SLIDER WHEN DATA CHANGES
-  ==========================================
-  */
-
   useEffect(() => {
     setCurrentIndex(0);
   }, [projects.length]);
-
-  /*
-  ==========================================
-  SLIDER
-  ==========================================
-  */
 
   const maxIndex = Math.max(projects.length - VISIBLE_DESKTOP, 0);
 
@@ -76,12 +64,6 @@ export default function ProjectsPreview() {
   const prevSlide = () => {
     setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
-
-  /*
-  ==========================================
-  AUTO SLIDE
-  ==========================================
-  */
 
   useEffect(() => {
     if (projects.length <= VISIBLE_DESKTOP) {
@@ -137,10 +119,6 @@ export default function ProjectsPreview() {
           subtitle="Explore some of the digital solutions, platforms and products we have built."
         />
 
-        {/* ========================================
-            SLIDER
-        ======================================== */}
-
         <div className="relative mt-16 overflow-hidden">
           <motion.div
             className="flex"
@@ -193,16 +171,7 @@ export default function ProjectsPreview() {
                     className="h-half"
                   >
                     <Card
-                      className="
-                        flex
-                        h-full
-                        flex-col
-                        overflow-hidden
-                        border-white/10
-                        bg-white/5
-                        p-0
-                        backdrop-blur-xl
-                      "
+                      className="flex h-full flex- overflow-hidden border-white/10 bg-white/5 p-0 backdrop-blur-xl"
                     >
                       <img
                         src={project.image || "/images/project-placeholder.png"}
@@ -214,11 +183,7 @@ export default function ProjectsPreview() {
                         className="
                           h-60
                           w-full
-                          object-cover
-                          transition-transform
-                          duration-500
-                          hover:scale-105
-                        "
+                          object-cover transition-transform duration-500 hover:scale-105"
                         loading="lazy"
                       />
 
@@ -257,16 +222,7 @@ export default function ProjectsPreview() {
             <button
               type="button"
               onClick={prevSlide}
-              className="
-                rounded-full
-                border
-                border-white/20
-                px-5
-                py-2
-                text-white
-                transition
-                hover:bg-white/10
-              "
+              className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
               aria-label="Previous projects"
             >
               ←
@@ -275,16 +231,7 @@ export default function ProjectsPreview() {
             <button
               type="button"
               onClick={nextSlide}
-              className="
-                rounded-full
-                border
-                border-white/20
-                px-5
-                py-2
-                text-white
-                transition
-                hover:bg-white/10
-              "
+              className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
               aria-label="Next projects"
             >
               →

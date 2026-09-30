@@ -1,29 +1,61 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
-
+import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, } from "react-icons/fa";
+import logo from "../../assets/logo.jpeg";
 export default function Footer() {
   const year = new Date().getFullYear();
-
   return (
     <footer className="border-t border-slate-800 bg-slate-950 text-gray-300">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-5">
-        {/* ================================
-            BRAND
-        ================================= */}
-
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
-          <h2 className="mb-4 text-2xl font-bold text-white">KanuorieTech</h2>
+          <h1>
+            <img src={logo} alt="KanuorieTech" className="h-8 w-8 object-contain"/>
+            KanuorieTech
+          </h1>
 
-          <p className="max-w-md leading-7 text-gray-400">
+          <p className="mt-5 max-w-md leading-7 text-gray-400">
             Empowering developers through technology, education, and digital
             innovation.
           </p>
+
+          {/* Social */}
+          <div className="flex items-center gap-5 text-xl mt-5">
+            <a
+              href="https://www.facebook.com/KanuorieTech"
+              aria-label="KanuorieTech Facebook"
+              className="transition hover:text-white"
+            >
+              <FaFacebook />
+            </a>
+
+            <a
+              href="https://www.instagram.com/kanuorietech/"
+              aria-label="KanuorieTech Instagram"
+              className="transition hover:text-white"
+            >
+              <FaInstagram />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
+              aria-label="KanuorieTech LinkedIn"
+              className="transition hover:text-white"
+            >
+              <FaLinkedin />
+            </a>
+
+            <a
+              href="https://github.com/kanuorieTech-5"
+              aria-label="KanuorieTech GitHub"
+              className="transition hover:text-white"
+            >
+              <FaGithub />
+            </a>
+          </div>
         </div>
 
         {/* ================================
             EXPLORE
         ================================= */}
-
         <div>
           <h3 className="mb-4 font-semibold text-white">Explore</h3>
 
@@ -69,7 +101,6 @@ export default function Footer() {
         {/* ================================
             COMPANY
         ================================= */}
-
         <div>
           <h3 className="mb-4 font-semibold text-white">Company</h3>
 
@@ -97,13 +128,57 @@ export default function Footer() {
                 FAQ
               </Link>
             </li>
+
+            <li>
+              <Link to="/help" className="transition hover:text-white">
+                Help & Support
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* ================================
+            OPPORTUNITIES
+        ================================= */}
+        <div>
+          <h3 className="mb-4 font-semibold text-white">Opportunities</h3>
+
+          <ul className="space-y-3">
+            <li>
+              <Link to="/Careers" className="transition hover:text-white">
+                Careers
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/investors" className="transition hover:text-white">
+                Investors
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/affiliate" className="transition hover:text-white">
+                Affiliate
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/pricing" className="transition hover:text-white">
+                Plans & Pricing
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/community" className="transition hover:text-white">
+                Community
+              </Link>
+            </li>
           </ul>
         </div>
 
         {/* ================================
             LEGAL
         ================================= */}
-
         <div>
           <h3 className="mb-4 font-semibold text-white">Legal</h3>
 
@@ -127,13 +202,19 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link to="/cookie-policy" className="transition hover:text-white">
+              <Link
+                to="/cookie-policy"
+                className="transition hover:text-white"
+              >
                 Cookie Policy
               </Link>
             </li>
 
             <li>
-              <Link to="/refund-policy" className="transition hover:text-white">
+              <Link
+                to="/refund-policy"
+                className="transition hover:text-white"
+              >
                 Refund Policy
               </Link>
             </li>
@@ -150,20 +231,17 @@ export default function Footer() {
       {/* ================================
           SOCIAL + COPYRIGHT
       ================================= */}
-
       <div className="border-t border-slate-800">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-6 py-5 sm:flex-row">
           {/* Copyright */}
-
           <p className="text-center text-sm text-gray-500 sm:text-left">
             © {year} KanuorieTech. All rights reserved.
           </p>
 
           {/* Social */}
-
           <div className="flex items-center gap-5 text-xl">
             <a
-              href="#"
+              href="https://www.facebook.com/KanuorieTech"
               aria-label="KanuorieTech Facebook"
               className="transition hover:text-white"
             >
@@ -171,7 +249,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="#"
+              href="https://www.instagram.com/kanuorietech/"
               aria-label="KanuorieTech Instagram"
               className="transition hover:text-white"
             >
@@ -179,7 +257,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="#"
+              href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
               aria-label="KanuorieTech LinkedIn"
               className="transition hover:text-white"
             >
@@ -187,7 +265,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="#"
+              href="https://github.com/kanuorieTech-5"
               aria-label="KanuorieTech GitHub"
               className="transition hover:text-white"
             >

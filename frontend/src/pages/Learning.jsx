@@ -730,39 +730,33 @@ function LearningDashboard({
   wishlist,
   onToggleWishlist,
 }) {
-  setWishlist(getStoredArray(WISHLIST_STORAGE_KEY));
-  const [streak, setStreak] = useState(0);
-  const [schedule, setSchedule] = useState({
-    day: "Monday",
-    time: "18:00",
-    duration: "60",
-  });
-  const [remindersEnabled, setRemindersEnabled] = useState(false);
-  const [showSchedule, setShowSchedule] = useState(false);
-  const [showWishlist, setShowWishlist] = useState(false);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    setWishlist(getStoredArray(WISHLIST_STORAGE_KEY));
-
-    const savedStreak = getStoredObject(STREAK_STORAGE_KEY, {
+  const [streak, setStreak] = useState(() => {
+    const saved = getStoredObject(STREAK_STORAGE_KEY, {
       count: 0,
       lastDate: null,
     });
 
-    setStreak(Number(savedStreak.count || 0));
+    return Number(saved.count || 0);
+  });
 
-    const savedSchedule = getStoredObject(SCHEDULE_STORAGE_KEY);
+  const [schedule, setSchedule] = useState(() =>
+    getStoredObject(SCHEDULE_STORAGE_KEY, {
+      day: "Monday",
+      time: "18:00",
+      duration: "60",
+    })
+  );
 
-    if (savedSchedule?.day) {
-      setSchedule(savedSchedule);
-    }
+  const [remindersEnabled, setRemindersEnabled] = useState(
+    () => localStorage.getItem(REMINDER_STORAGE_KEY) === "true"
+  );
 
-    const savedReminder = localStorage.getItem(REMINDER_STORAGE_KEY);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
 
-    setRemindersEnabled(savedReminder === "true");
-  }, [isAuthenticated]);
+  /* ==========================================
+     WISHLIST COURSES
+  ========================================== */
 
   const wishlistCourses = useMemo(() => {
     return wishlist
@@ -774,8 +768,9 @@ function LearningDashboard({
       .filter(Boolean);
   }, [wishlist, courses]);
 
-  const isWishlisted = (courseId) =>
-    wishlist.some((id) => String(id) === String(courseId));
+  /* ==========================================
+     START LEARNING STREAK
+  ========================================== */
 
   const startStreak = () => {
     const today = getTodayKey();
@@ -788,14 +783,26 @@ function LearningDashboard({
 
     let nextCount = Number(saved.count || 0);
 
+    /*
+      If the learner already started today's streak,
+      don't increase the count again.
+    */
     if (saved.lastDate === today) {
       setStreak(nextCount);
       return;
     }
 
+    /*
+      Continue the streak if yesterday was the
+      learner's previous learning day.
+    */
     if (saved.lastDate === yesterday) {
       nextCount += 1;
     } else {
+      /*
+        Start a new streak if the previous learning
+        day was not yesterday.
+      */
       nextCount = 1;
     }
 
@@ -812,6 +819,10 @@ function LearningDashboard({
     setStreak(nextCount);
   };
 
+  /* ==========================================
+     SAVE LEARNING SCHEDULE
+  ========================================== */
+
   const saveSchedule = () => {
     localStorage.setItem(
       SCHEDULE_STORAGE_KEY,
@@ -821,10 +832,27 @@ function LearningDashboard({
     setShowSchedule(false);
   };
 
+  /* ==========================================
+     LEARNING REMINDERS
+  ========================================== */
+
   const toggleReminders = async () => {
+    /*
+      Turning reminders ON requires browser
+      notification permission.
+    */
     if (!remindersEnabled && "Notification" in window) {
       if (Notification.permission === "default") {
-        await Notification.requestPermission();
+        try {
+          await Notification.requestPermission();
+        } catch (error) {
+          console.error(
+            "Notification permission request failed:",
+            error
+          );
+
+          return;
+        }
       }
 
       if (Notification.permission !== "granted") {
@@ -841,6 +869,10 @@ function LearningDashboard({
 
     setRemindersEnabled(nextValue);
   };
+
+  /* ==========================================
+     AUTHENTICATION GUARD
+  ========================================== */
 
   if (!isAuthenticated) {
     return null;
@@ -901,7 +933,10 @@ function LearningDashboard({
 
             <Button className="mt-5 w-full" onClick={startStreak}>
               <Flame className="mr-2" size={17} />
-              {streak > 0 ? "Keep My Streak" : "Start Learning Streak"}
+
+              {streak > 0
+                ? "Keep My Streak"
+                : "Start Learning Streak"}
             </Button>
           </Card>
 
@@ -967,6 +1002,7 @@ function LearningDashboard({
               onClick={() => setShowWishlist((value) => !value)}
             >
               <Heart className="mr-2" size={17} />
+
               {showWishlist ? "Hide Wishlist" : "View Wishlist"}
             </Button>
           </Card>
@@ -982,7 +1018,7 @@ function LearningDashboard({
             </h3>
 
             <div className="mt-5 grid grid-cols-2 gap-2">
-              <Link to="/my-learning">
+              <Link to="/Learning">
                 <Button variant="outline" className="w-full text-xs">
                   <GraduationCap className="mr-1.5" size={15} />
                   Learning
@@ -1032,7 +1068,10 @@ function LearningDashboard({
               onClick={() => setShowSchedule((value) => !value)}
             >
               <CalendarDays className="mr-2" size={17} />
-              {showSchedule ? "Close Schedule" : "Set Learning Time"}
+
+              {showSchedule
+                ? "Close Schedule"
+                : "Set Learning Time"}
             </Button>
 
             {showSchedule && (
@@ -1130,7 +1169,10 @@ function LearningDashboard({
               onClick={toggleReminders}
             >
               <Bell className="mr-2" size={17} />
-              {remindersEnabled ? "Reminders On" : "Turn On Reminders"}
+
+              {remindersEnabled
+                ? "Reminders On"
+                : "Turn On Reminders"}
             </Button>
 
             {remindersEnabled && (
@@ -1157,7 +1199,9 @@ function LearningDashboard({
 
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 {wishlistCourses.length}{" "}
-                {wishlistCourses.length === 1 ? "course" : "courses"}
+                {wishlistCourses.length === 1
+                  ? "course"
+                  : "courses"}
               </span>
             </div>
 
@@ -1173,7 +1217,8 @@ function LearningDashboard({
                 </h4>
 
                 <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                  Add courses from the course catalog and they will appear here.
+                  Add courses from the course catalog and they will
+                  appear here.
                 </p>
 
                 <a href="#explore-courses">
@@ -1195,6 +1240,10 @@ function LearningDashboard({
                           src={getCourseImage(course)}
                           alt={course?.title || "Course"}
                           className="h-20 w-20 rounded-xl object-cover"
+                          onError={(event) => {
+                            event.currentTarget.src =
+                              "/images/course-placeholder.png";
+                          }}
                         />
 
                         <div className="min-w-0 flex-1">
@@ -1216,13 +1265,20 @@ function LearningDashboard({
                         >
                           <Button className="w-full">
                             View Course
-                            <ArrowRight className="ml-2" size={16} />
+                            <ArrowRight
+                              className="ml-2"
+                              size={16}
+                            />
                           </Button>
                         </Link>
 
                         <Button
                           variant="outline"
-                          onClick={() => onToggleWishlist(courseId)}
+                          onClick={() =>
+                            onToggleWishlist(courseId)
+                          }
+                          aria-label="Remove course from wishlist"
+                          title="Remove from wishlist"
                         >
                           <X size={16} />
                         </Button>
@@ -1237,8 +1293,8 @@ function LearningDashboard({
 
         {/* NOTE */}
         <p className="mt-6 text-xs text-slate-400 dark:text-slate-600">
-          Your streak, wishlist, schedule, and browser reminders are currently
-          stored on this device.
+          Your streak, wishlist, schedule, and browser reminders are
+          currently stored on this device.
         </p>
       </div>
     </section>

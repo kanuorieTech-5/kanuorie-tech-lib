@@ -349,21 +349,8 @@ export default function Profile() {
                 Manage your personal information and account details.
               </p>
             </div>
-
-            <button
-              type="button"
-              onClick={openEditModal}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
-            >
-              <Edit3 className="h-4 w-4" />
-              Edit Profile
-            </button>
           </div>
         </div>
-
-        {/* ======================================
-            PROFILE CARD
-        ====================================== */}
 
         <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
           {/* COVER */}
@@ -505,6 +492,14 @@ export default function Profile() {
               </p>
             </div>
           </div>
+          <button
+              type="button"
+              onClick={openEditModal}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
+             >
+              <Edit3 className="h-4 w-4" />
+              Edit Profile
+            </button>
         </div>
       </div>
 
@@ -533,7 +528,7 @@ export default function Profile() {
           {/* MY LEARNING */}
 
           <Link
-            to="/my-learning"
+            to="/Learning"
             className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-700"
           >
             <div className="flex items-start justify-between gap-2">
