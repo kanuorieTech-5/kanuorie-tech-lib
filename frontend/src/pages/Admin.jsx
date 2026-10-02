@@ -1,5 +1,4 @@
 ﻿import { useEffect, useState } from "react";
-
 import {
   DashboardHeader,
   WelcomeBanner,
@@ -12,6 +11,7 @@ import {
   QuickActions,
   RevenueSummary,
   SalesOverview,
+  PlatformOperationsOverview,
 } from "../components/dashboard";
 
 import { getAdminDashboard } from "../services";
@@ -40,7 +40,11 @@ export default function Admin() {
          * response.data
          * response.data.data
          */
-        const data = response?.data?.data ?? response?.data ?? response ?? {};
+        const data =
+          response?.data?.data ??
+          response?.data ??
+          response ??
+          {};
 
         setDashboard(data);
       } catch (err) {
@@ -48,7 +52,8 @@ export default function Admin() {
 
         if (mounted) {
           setError(
-            err?.response?.data?.message || "Unable to load dashboard data.",
+            err?.response?.data?.message ||
+              "Unable to load dashboard data.",
           );
         }
       } finally {
@@ -65,18 +70,26 @@ export default function Admin() {
     };
   }, []);
 
+  /* ========================================
+     LOADING
+  ======================================== */
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
 
-          <p className="mt-4 text-sm text-slate-500">Loading dashboard...</p>
+          <p className="mt-4 text-sm text-slate-500">
+            Loading dashboard...
+          </p>
         </div>
       </div>
     );
   }
 
+  /* ========================================
+     ERROR
+  ======================================== */
   if (error) {
     return (
       <section className="mx-auto max-w-7xl px-6 py-10">
@@ -85,12 +98,25 @@ export default function Admin() {
             Dashboard unavailable
           </h2>
 
-          <p className="mt-2 text-sm text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-600">
+            {error}
+          </p>
 
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-5 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+            className="
+              mt-5
+              rounded-lg
+              bg-red-600
+              px-5
+              py-2.5
+              text-sm
+              font-semibold
+              text-white
+              transition
+              hover:bg-red-700
+            "
           >
             Try Again
           </button>
@@ -101,54 +127,126 @@ export default function Admin() {
 
   const stats = dashboard?.stats ?? {};
 
-  const learningResources = dashboard?.learningResources ?? dashboard?.books ?? dashboard?.latestBooks ?? [];
+  const learningResources =
+    dashboard?.learningResources ??
+    dashboard?.books ??
+    dashboard?.latestBooks ??
+    [];
 
-  const courses = dashboard?.courses ?? dashboard?.latestCourses ?? [];
+  const courses =
+    dashboard?.courses ??
+    dashboard?.latestCourses ??
+    [];
 
-  const orders = dashboard?.orders ?? dashboard?.latestOrders ?? [];
+  const orders =
+    dashboard?.orders ??
+    dashboard?.latestOrders ??
+    [];
 
-  const users = dashboard?.users ?? dashboard?.latestUsers ?? [];
+  const users =
+    dashboard?.users ??
+    dashboard?.latestUsers ??
+    [];
 
-  const activities = dashboard?.activities ?? dashboard?.recentActivity ?? [];
+  const activities =
+    dashboard?.activities ??
+    dashboard?.recentActivity ??
+    [];
 
   const revenue = dashboard?.revenue ?? {};
 
   const sales = dashboard?.sales ?? {};
 
+  /*
+   * Platform operations
+   */
+  const operations = {
+    team: dashboard?.team ?? {},
+    affiliates: dashboard?.affiliates ?? {},
+    investorsPartners:
+      dashboard?.investorsPartners ??
+      dashboard?.investors ??
+      dashboard?.partners ??
+      {},
+    enrollments:
+      dashboard?.enrollments ??
+      dashboard?.courseEnrollments ??
+      {},
+    certificates:
+      dashboard?.certificates ??
+      dashboard?.certificatesIssued ??
+      {},
+    payments:
+      dashboard?.payments ??
+      dashboard?.paymentActivities ??
+      {},
+    compliance: dashboard?.compliance ?? {},
+    issues: dashboard?.issues ?? {},
+    feedback: dashboard?.feedback ?? {},
+  };
+
   return (
     <div className="space-y-8">
+      {/* ========================================
+          HEADER
+      ======================================== */}
       <DashboardHeader
         title="Admin Dashboard"
-        subtitle="Monitor your platform, content, users and business activity."
+        subtitle="Monitor your platform, team, learning operations, finances, partnerships, compliance and user activity."
       />
 
       <WelcomeBanner />
 
+      {/* ========================================
+          CORE PLATFORM STATS
+      ======================================== */}
       <StatsGrid stats={stats} />
 
+      {/* ========================================
+          BUSINESS OVERVIEW
+      ======================================== */}
       <div className="grid gap-8 xl:grid-cols-2">
         <RevenueSummary data={revenue} />
 
         <SalesOverview data={sales} />
       </div>
 
+      {/* ========================================
+          PLATFORM OPERATIONS
+      ======================================== */}
+      <PlatformOperationsOverview
+        operations={operations}
+      />
+
+      {/* ========================================
+          QUICK ACTIONS
+      ======================================== */}
       <QuickActions />
 
+      {/* ========================================
+          LATEST CONTENT
+      ======================================== */}
       <div className="grid gap-8 xl:grid-cols-2">
-        <LatestLearning learningResources={learningResources} />
+        <LatestLearning
+          learningResources={learningResources}
+        />
 
         <LatestCourses courses={courses} />
       </div>
 
+      {/* ========================================
+          ORDERS & USERS
+      ======================================== */}
       <div className="grid gap-8 xl:grid-cols-2">
         <LatestOrders orders={orders} />
 
         <LatestUsers users={users} />
       </div>
 
+      {/* ========================================
+          RECENT ACTIVITY
+      ======================================== */}
       <RecentActivity activities={activities} />
     </div>
   );
 }
-
-

@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 
 const router = express.Router();
 
@@ -19,6 +19,7 @@ const {
   updateTeamMember,
   deleteTeamMember,
   getFeaturedMembers,
+  getTeamStats,
 } = require("../controllers/teamController");
 
 /* =========================
@@ -29,10 +30,26 @@ router.get("/", getTeamMembers);
 
 router.get("/featured", getFeaturedMembers);
 
+/* =========================
+   ADMIN STATISTICS
+   IMPORTANT: Must come before /:id
+========================= */
+
+router.get(
+  "/stats",
+  protect,
+  admin,
+  getTeamStats
+);
+
+/* =========================
+   PUBLIC SINGLE MEMBER
+========================= */
+
 router.get("/:id", getTeamMember);
 
 /* =========================
-   ADMIN ROUTES
+   ADMIN CREATE
 ========================= */
 
 router.post(
@@ -44,6 +61,10 @@ router.post(
   createTeamMember
 );
 
+/* =========================
+   ADMIN UPDATE
+========================= */
+
 router.put(
   "/:id",
   protect,
@@ -52,6 +73,10 @@ router.put(
   validate,
   updateTeamMember
 );
+
+/* =========================
+   ADMIN DELETE
+========================= */
 
 router.delete(
   "/:id",

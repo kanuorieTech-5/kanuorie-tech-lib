@@ -6,13 +6,38 @@ import { Card, Button, Loader, SectionTitle } from "../common";
 
 import { getProjects } from "../../services";
 
-const VISIBLE_DESKTOP = 3;
-
 export default function ProjectsPreview() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(1);
 
+  /* ========================================
+     RESPONSIVE VISIBLE CARDS
+  ======================================== */
+  useEffect(() => {
+    const updateVisibleCards = () => {
+      if (window.innerWidth >= 1024) {
+        setVisibleCards(3);
+      } else if (window.innerWidth >= 768) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(1);
+      }
+    };
+
+    updateVisibleCards();
+
+    window.addEventListener("resize", updateVisibleCards);
+
+    return () => {
+      window.removeEventListener("resize", updateVisibleCards);
+    };
+  }, []);
+
+  /* ========================================
+     FETCH PROJECTS
+  ======================================== */
   useEffect(() => {
     let mounted = true;
 
@@ -51,32 +76,68 @@ export default function ProjectsPreview() {
     };
   }, []);
 
+  /* ========================================
+     CALCULATE MAX SLIDE
+  ======================================== */
+  const maxIndex = Math.max(
+    projects.length - visibleCards,
+    0,
+  );
+
+  /* ========================================
+     KEEP INDEX VALID WHEN SCREEN RESIZES
+  ======================================== */
+  useEffect(() => {
+    setCurrentIndex((previous) =>
+      Math.min(previous, maxIndex),
+    );
+  }, [maxIndex]);
+
+  /* ========================================
+     RESET WHEN PROJECTS CHANGE
+  ======================================== */
   useEffect(() => {
     setCurrentIndex(0);
   }, [projects.length]);
 
-  const maxIndex = Math.max(projects.length - VISIBLE_DESKTOP, 0);
-
+  /* ========================================
+     NEXT SLIDE
+  ======================================== */
   const nextSlide = () => {
-    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
+    setCurrentIndex((previous) =>
+      previous >= maxIndex ? 0 : previous + 1,
+    );
   };
 
+  /* ========================================
+     PREVIOUS SLIDE
+  ======================================== */
   const prevSlide = () => {
-    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
+    setCurrentIndex((previous) =>
+      previous <= 0 ? maxIndex : previous - 1,
+    );
   };
 
+  /* ========================================
+     AUTOPLAY
+  ======================================== */
   useEffect(() => {
-    if (projects.length <= VISIBLE_DESKTOP) {
+    if (projects.length <= visibleCards) {
       return;
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
+      setCurrentIndex((previous) =>
+        previous >= maxIndex ? 0 : previous + 1,
+      );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [projects.length, maxIndex]);
+  }, [projects.length, visibleCards, maxIndex]);
 
+  /* ========================================
+     LOADING
+  ======================================== */
   if (loading) {
     return (
       <section className="bg-slate-200 py-10">
@@ -87,6 +148,9 @@ export default function ProjectsPreview() {
     );
   }
 
+  /* ========================================
+     EMPTY STATE
+  ======================================== */
   if (!projects.length) {
     return (
       <section className="bg-slate-900 py-10 text-white">
@@ -98,11 +162,13 @@ export default function ProjectsPreview() {
           />
 
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <h3 className="text-xl font-bold">Projects Coming Soon</h3>
+            <h3 className="text-xl font-bold">
+              Projects Coming Soon
+            </h3>
 
             <p className="mx-auto mt-3 max-w-lg text-slate-400">
-              We're currently updating our portfolio. Check back soon to explore
-              projects built by KanuorieTech.
+              We're currently updating our portfolio. Check back
+              soon to explore projects built by KanuorieTech.
             </p>
           </div>
         </div>
@@ -119,11 +185,14 @@ export default function ProjectsPreview() {
           subtitle="Explore some of the digital solutions, platforms and products we have built."
         />
 
+        {/* ========================================
+            PROJECT SLIDER
+        ======================================== */}
         <div className="relative mt-16 overflow-hidden">
           <motion.div
             className="flex"
             animate={{
-              x: `-${currentIndex * (100 / VISIBLE_DESKTOP)}%`,
+              x: `-${currentIndex * (100 / visibleCards)}%`,
             }}
             transition={{
               duration: 0.7,
@@ -168,13 +237,25 @@ export default function ProjectsPreview() {
                     viewport={{
                       once: true,
                     }}
-                    className="h-half"
+                    className="h-full"
                   >
                     <Card
-                      className="flex h-full flex- overflow-hidden border-white/10 bg-white/5 p-0 backdrop-blur-xl"
+                      className="
+                        flex
+                        h-full
+                        flex-col
+                        overflow-hidden
+                        border-white/10
+                        bg-white/5
+                        p-0
+                        backdrop-blur-xl
+                      "
                     >
                       <img
-                        src={project.image || "/images/project-placeholder.png"}
+                        src={
+                          project.image ||
+                          "/images/project-placeholder.png"
+                        }
                         alt={
                           project.title
                             ? `${project.title} project`
@@ -183,7 +264,11 @@ export default function ProjectsPreview() {
                         className="
                           h-60
                           w-full
-                          object-cover transition-transform duration-500 hover:scale-105"
+                          object-cover
+                          transition-transform
+                          duration-500
+                          hover:scale-105
+                        "
                         loading="lazy"
                       />
 
@@ -214,35 +299,86 @@ export default function ProjectsPreview() {
         </div>
 
         {/* ========================================
-            CONTROLS
+            SLIDER CONTROLS
         ======================================== */}
+        {projects.length > visibleCards && (
+          <>
+            <div className="mt-10 flex justify-center gap-4">
+              <button
+                type="button"
+                onClick={prevSlide}
+                className="
+                  rounded-full
+                  border
+                  border-white/20
+                  px-5
+                  py-2
+                  text-white
+                  transition
+                  hover:bg-white/10
+                "
+                aria-label="Previous projects"
+              >
+                ←
+              </button>
 
-        {projects.length > VISIBLE_DESKTOP && (
-          <div className="mt-10 flex justify-center gap-4">
-            <button
-              type="button"
-              onClick={prevSlide}
-              className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
-              aria-label="Previous projects"
-            >
-              ←
-            </button>
+              <button
+                type="button"
+                onClick={nextSlide}
+                className="
+                  rounded-full
+                  border
+                  border-white/20
+                  px-5
+                  py-2
+                  text-white
+                  transition
+                  hover:bg-white/10
+                "
+                aria-label="Next projects"
+              >
+                →
+              </button>
+            </div>
 
-            <button
-              type="button"
-              onClick={nextSlide}
-              className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
-              aria-label="Next projects"
-            >
-              →
-            </button>
-          </div>
+            {/* ========================================
+                SLIDE INDICATORS
+            ======================================== */}
+            <div className="mt-6 flex justify-center gap-2">
+              {Array.from({ length: maxIndex + 1 }).map(
+                (_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setCurrentIndex(index)}
+                    aria-label={`Go to project slide ${index + 1}`}
+                    className={`
+                      h-2
+                      rounded-full
+                      transition-all
+                      duration-300
+                      ${
+                        currentIndex === index
+                          ? "w-8 bg-white"
+                          : "w-2 bg-white/30 hover:bg-white/60"
+                      }
+                    `}
+                  />
+                ),
+              )}
+            </div>
+          </>
         )}
 
+        {/* ========================================
+            VIEW ALL PROJECTS
+        ======================================== */}
         {projects.length > 3 && (
           <div className="mt-12 text-center">
             <Link to="/projects">
-              <Button variant="secondary">View All Projects</Button>
+              <Button variant="secondary">
+                View All Projects
+              </Button>
             </Link>
           </div>
         )}

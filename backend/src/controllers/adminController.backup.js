@@ -1,22 +1,11 @@
-﻿const asyncHandler = require("../utils/asyncHandler");
+const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 
 const User = require("../models/User");
 const Course = require("../models/Course");
 const Learning = require("../models/Learning");
-const Progress = require("..\/models\/Progress");
-const Team = require("../models/Team");
-const Affiliate = require("../models/Affiliate");
-const AffiliateReferral = require("../models/AffiliateReferral");
-const AffiliatePayout = require("../models/AffiliatePayout");
-const Order = require("../models/Order");
-const Payment = require("../models/Payment");
-const Invoice = require("../models/Invoice");
-const Certificate = require("../models/Certificate");
-const Contact = require("../models/Contact");
-const CommunityReport = require("../models/CommunityReport");
-const Testimonial = require("../models/Testimonial");
+const Progress = require("../models/Progress");
 
 /* ==========================================
    GET ADMIN DASHBOARD
@@ -287,4 +276,3 @@ module.exports = {
   deleteUser,
   toggleBlockUser,
 };
-

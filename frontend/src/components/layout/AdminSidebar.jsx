@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
+  UserRound,
   BookOpen,
   GraduationCap,
   Package,
@@ -34,6 +35,11 @@ const adminLinks = [
     name: "Careers",
     path: "/admin/careers",
     icon: BriefcaseBusiness,
+  },
+  {
+    name: "Team",
+    path: "/admin/team",
+    icon: UserRound,
   },
   {
     name: "Learning",
@@ -152,8 +158,6 @@ export default function AdminSidebar() {
           <h2 className="text-2xl font-bold">
             Admin Panel
           </h2>
-
-          {/* Mobile close button */}
 
           <button
             type="button"

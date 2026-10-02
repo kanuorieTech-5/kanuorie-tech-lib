@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-slate-800 bg-slate-950 text-gray-300">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-6">
+      <div className="mx-auto grid gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <h1>
             <img src={logo} alt="KanuorieTech" className="h-8 w-8 object-contain"/>

@@ -66,7 +66,6 @@ export default function CTA() {
         className="
           relative
           mx-auto
-          max-w-6xl
           px-6
         "
       >
