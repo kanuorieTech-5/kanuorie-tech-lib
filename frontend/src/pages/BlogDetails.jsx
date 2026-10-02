@@ -60,7 +60,7 @@ export default function BlogDetails() {
         By {authorName}
         {blog.createdAt && (
           <>
-            {" â€¢ "}
+            {" • "}
             {new Date(blog.createdAt).toLocaleDateString()}
           </>
         )}
@@ -77,4 +77,5 @@ export default function BlogDetails() {
     </section>
   );
 }
+
 

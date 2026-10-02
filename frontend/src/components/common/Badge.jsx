@@ -34,3 +34,4 @@ export default function Badge({ children, color = "info", className = "" }) {
   );
 }
 
+

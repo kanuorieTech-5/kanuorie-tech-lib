@@ -9,3 +9,4 @@
   lastProgressUpdate: course.lastProgressUpdate || null,
 });
 
+

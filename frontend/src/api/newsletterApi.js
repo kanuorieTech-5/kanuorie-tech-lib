@@ -27,3 +27,4 @@ export const deleteSubscriber = async (id) => {
   return data;
 };
 
+

@@ -312,7 +312,7 @@ function ExploreCourseCard({
           <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
             <span>{course?.level || "Beginner"}</span>
 
-            <span>â€¢</span>
+            <span>•</span>
 
             <span className="flex items-center gap-1">
               <Clock3 size={14} />
@@ -421,7 +421,7 @@ function LearningCard({ item }) {
               {course?.category || "General"}
             </span>
 
-            <span>â€¢</span>
+            <span>•</span>
 
             <span>
               {course?.level || "Beginner"}
@@ -1558,7 +1558,7 @@ function LearningDashboard({
                             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                               {course?.category ||
                                 "General"}{" "}
-                              â€¢{" "}
+                              •{" "}
                               {course?.level ||
                                 "Beginner"}
                             </p>
@@ -2378,7 +2378,7 @@ export default function Learning() {
                 </p>
 
                 <span className="hidden text-xs text-slate-400 sm:block">
-                  Auto-scrolling â€¢ Hover to pause
+                  Auto-scrolling • Hover to pause
                 </span>
               </div>
 
@@ -2456,3 +2456,4 @@ export default function Learning() {
     </main>
   );
 }
+

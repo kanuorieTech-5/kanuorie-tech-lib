@@ -68,7 +68,7 @@ export default function LibraryHero() {
 
             <p className="mt-4 leading-7 text-slate-300">
               Frontend, Backend, DevOps, UI/UX, AI, System Design, Interview
-              Preparation and much moreâ€”all in one place.
+              Preparation and much more—all in one place.
             </p>
           </div>
         </div>
@@ -76,4 +76,5 @@ export default function LibraryHero() {
     </section>
   );
 }
+
 

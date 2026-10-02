@@ -237,7 +237,7 @@ export default function Hero() {
                 <h3 className="font-semibold">Software Solutions</h3>
 
                 <p className="text-sm text-slate-300">
-                  Websites â€¢ APIs â€¢ Dashboards
+                  Websites • APIs • Dashboards
                 </p>
               </div>
             </div>
@@ -284,4 +284,5 @@ export default function Hero() {
     </section>
   );
 }
+
 

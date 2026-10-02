@@ -17,3 +17,4 @@ export const updateProgress = async (courseId, progress) => {
   return data;
 };
 
+

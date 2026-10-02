@@ -18,3 +18,4 @@ export default function SuccessModal({ isOpen, onClose, message }) {
   );
 }
 
+

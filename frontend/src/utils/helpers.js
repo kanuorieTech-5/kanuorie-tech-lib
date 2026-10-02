@@ -7,3 +7,4 @@ export const capitalize = (text = "") =>
 
 export const generateId = () => crypto.randomUUID();
 
+

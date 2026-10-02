@@ -861,7 +861,7 @@ export default function CourseDetails() {
   };
 
   /* =======================================================
-   LESSON NOTES â€” UI ONLY
+   LESSON NOTES — UI ONLY
 ======================================================= */
 
   const handleOpenNote = (lessonId) => {
@@ -1361,7 +1361,7 @@ export default function CourseDetails() {
             title="Course Curriculum"
             subtitle={`${modules.length} ${
               modules.length === 1 ? "module" : "modules"
-            } â€¢ ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
+            } • ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
           />
 
           {currentLessonDetails && progressPercentage < 100 && (
@@ -1495,14 +1495,14 @@ export default function CourseDetails() {
 
                             {lessons.length > 0 && (
                               <>
-                                <span className="text-slate-300">â€¢</span>
+                                <span className="text-slate-300">•</span>
                                 <span>{moduleCompletedLessons} completed</span>
                               </>
                             )}
 
                             {assessment && (
                               <>
-                                <span className="text-slate-300">â€¢</span>
+                                <span className="text-slate-300">•</span>
                                 <span className="inline-flex items-center gap-1 text-blue-600">
                                   <ClipboardCheck size={14} />
                                   Assessment
@@ -2483,6 +2483,7 @@ export default function CourseDetails() {
     </>
   );
 }
+
 
 
 

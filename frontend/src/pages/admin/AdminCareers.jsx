@@ -914,7 +914,7 @@ export default function AdminCareers() {
                             ? new Date(
                                 application.createdAt,
                               ).toLocaleDateString()
-                            : "â€”"}
+                            : "—"}
                         </td>
 
                         <td className="px-6 py-5">
@@ -1052,7 +1052,7 @@ export default function AdminCareers() {
                       ? new Date(
                           selectedApplication.createdAt,
                         ).toLocaleString()
-                      : "â€”"}
+                      : "—"}
                   </p>
                 </div>
               </div>
@@ -1228,3 +1228,4 @@ export default function AdminCareers() {
     </section>
   );
 }
+

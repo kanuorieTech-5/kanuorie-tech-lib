@@ -396,7 +396,7 @@ export default function AdminUsers() {
                       <td className="px-6 py-5 text-sm text-slate-500">
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString()
-                          : "â€”"}
+                          : "—"}
                       </td>
 
                       <td className="px-6 py-5 text-right">
@@ -422,4 +422,5 @@ export default function AdminUsers() {
     </div>
   );
 }
+
 

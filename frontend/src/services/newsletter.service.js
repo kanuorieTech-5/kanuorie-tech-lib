@@ -4,3 +4,4 @@ export * from "../api/newsletterApi";
 
 export default NewsletterApi;
 
+

@@ -67,3 +67,4 @@ export const updateSettings = async (settings) => {
   return data;
 };
 
+

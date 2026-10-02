@@ -4,3 +4,4 @@ export * from "../api/faqApi";
 
 export default FAQApi;
 
+

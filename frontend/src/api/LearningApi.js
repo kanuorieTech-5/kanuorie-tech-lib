@@ -45,3 +45,4 @@ export const getFeaturedLearning = async () => {
 
   return data;
 };
+

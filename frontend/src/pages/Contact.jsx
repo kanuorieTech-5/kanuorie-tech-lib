@@ -64,7 +64,7 @@ export default function Contact() {
     {
       icon: Clock,
       title: "Working Hours",
-      value: "Mon - Fri â€¢ 9AM - 5PM",
+      value: "Mon - Fri • 9AM - 5PM",
     },
   ];
 
@@ -198,4 +198,5 @@ export default function Contact() {
     </>
   );
 }
+
 

@@ -32,10 +32,11 @@ export default function Logo({ size = "md", showText = true }) {
             KanuorieTech
           </h1>
 
-          <p className="text-xs text-gray-500">Learn â€¢ Build â€¢ Grow</p>
+          <p className="text-xs text-gray-500">Learn • Build • Grow</p>
         </div>
       )}
     </Link>
   );
 }
+
 

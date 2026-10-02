@@ -30,7 +30,7 @@ function Metric({
           </p>
 
           <p className="mt-2 text-2xl font-bold text-slate-900">
-            {value ?? "â€”"}
+            {value ?? 0}
           </p>
 
           {description && (
@@ -530,4 +530,6 @@ export default function PlatformOperationsOverview({
     </div>
   );
 }
+
+
 

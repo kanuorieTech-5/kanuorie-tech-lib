@@ -650,7 +650,7 @@ export default function AdminServices() {
                             onClick={() => removeTechnology(technology)}
                             className="hover:text-white"
                           >
-                            Ã—
+                            ×
                           </button>
                         </span>
                       ))}
@@ -774,4 +774,5 @@ export default function AdminServices() {
     </section>
   );
 }
+
 

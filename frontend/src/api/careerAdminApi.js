@@ -93,3 +93,4 @@ export const deleteCareerApplication = async (id) => {
 
   return data;
 };
+
