@@ -1,4 +1,4 @@
-const resources = [
+﻿const resources = [
   {
     id: "1",
     title: "Tech Career Roadmap",
@@ -670,3 +670,4 @@ const resources = [
   },
 ];
 export default resources;
+

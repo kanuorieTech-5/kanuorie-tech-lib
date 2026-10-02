@@ -1,4 +1,4 @@
-export default function Avatar({ src, name, size = 40 }) {
+﻿export default function Avatar({ src, name, size = 40 }) {
   return (
     <img
       src={
@@ -13,3 +13,4 @@ export default function Avatar({ src, name, size = 40 }) {
     />
   );
 }
+

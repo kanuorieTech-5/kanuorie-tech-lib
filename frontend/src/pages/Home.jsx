@@ -1,4 +1,4 @@
-import Hero from "../components/home/Hero";
+﻿import Hero from "../components/home/Hero";
 import ServiceTicker from "../components/home/ServiceTicker";
 import AboutPreview from "../components/home/AboutPreview";
 import ImageSlider from "../components/home/ImageSlider";
@@ -52,3 +52,4 @@ export default function Home() {
     </main>
   );
 }
+

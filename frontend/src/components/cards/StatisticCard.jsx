@@ -1,4 +1,4 @@
-import { Card } from "../common";
+﻿import { Card } from "../common";
 
 export default function StatisticCard({
   title,
@@ -17,8 +17,9 @@ export default function StatisticCard({
           positive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
         }`}
       >
-        {positive ? "▲" : "▼"} {percentage}
+        {positive ? "â–²" : "â–¼"} {percentage}
       </div>
     </Card>
   );
 }
+

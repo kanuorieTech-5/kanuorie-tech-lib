@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 
 export default function usePagination(items = [], perPage = 10) {
   const [page, setPage] = useState(1);
@@ -18,3 +18,4 @@ export default function usePagination(items = [], perPage = 10) {
     currentData,
   };
 }
+

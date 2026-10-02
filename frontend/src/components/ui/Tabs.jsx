@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 export default function Tabs({ tabs }) {
   const [active, setActive] = useState(0);
@@ -23,3 +23,4 @@ export default function Tabs({ tabs }) {
     </>
   );
 }
+

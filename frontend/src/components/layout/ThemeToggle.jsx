@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+﻿import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../../contexts";
 
 export default function ThemeToggle() {
@@ -33,3 +33,4 @@ export default function ThemeToggle() {
     </button>
   );
 }
+

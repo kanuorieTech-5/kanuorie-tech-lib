@@ -1,4 +1,4 @@
-import Button from "./Button";
+﻿import Button from "./Button";
 
 export default function Pagination({
   currentPage = 1,
@@ -43,3 +43,4 @@ export default function Pagination({
     </div>
   );
 }
+

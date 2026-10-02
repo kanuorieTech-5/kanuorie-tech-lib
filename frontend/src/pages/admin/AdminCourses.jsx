@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import {
   Plus,
   Search,
@@ -1274,7 +1274,7 @@ export default function AdminCourses() {
                       </p>
 
                       <p className="mt-1 text-lg font-black text-slate-900">
-                        {form.currency === "NGN" ? "₦" : "$"}
+                        {form.currency === "NGN" ? "â‚¦" : "$"}
                         {Number(form.price || 0).toLocaleString()}
                       </p>
                     </div>
@@ -1962,3 +1962,4 @@ function Toggle({ label, checked, onChange }) {
     </button>
   );
 }
+

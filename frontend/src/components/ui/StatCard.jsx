@@ -1,4 +1,4 @@
-import Card from "./Card";
+﻿import Card from "./Card";
 
 export default function StatCard({
   title,
@@ -18,3 +18,4 @@ export default function StatCard({
     </Card>
   );
 }
+

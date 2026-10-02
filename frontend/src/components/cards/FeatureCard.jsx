@@ -1,4 +1,4 @@
-import { Card } from "../ui";
+﻿import { Card } from "../ui";
 
 export default function FeatureCard({ icon, title, description }) {
   return (
@@ -15,3 +15,4 @@ export default function FeatureCard({ icon, title, description }) {
     </Card>
   );
 }
+

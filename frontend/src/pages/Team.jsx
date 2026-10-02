@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 import { Loader, Card } from "../components/common";
 
@@ -135,3 +135,4 @@ export default function Team() {
     </section>
   );
 }
+

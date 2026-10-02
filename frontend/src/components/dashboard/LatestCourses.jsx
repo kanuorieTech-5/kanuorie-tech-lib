@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { GraduationCap, ArrowRight } from "lucide-react";
 
 export default function LatestCourses({ courses = [] }) {
@@ -95,3 +95,4 @@ export default function LatestCourses({ courses = [] }) {
     </section>
   );
 }
+

@@ -1,4 +1,4 @@
-export default function SectionTitle({
+﻿export default function SectionTitle({
   title,
   subtitle,
   Badge,
@@ -37,3 +37,4 @@ export default function SectionTitle({
     </div>
   );
 }
+

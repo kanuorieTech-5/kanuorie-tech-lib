@@ -1,4 +1,4 @@
-import {
+﻿import {
   ResponsiveContainer,
   LineChart,
   Line,
@@ -35,3 +35,4 @@ export default function CustomLineChart({
     </ChartCard>
   );
 }
+

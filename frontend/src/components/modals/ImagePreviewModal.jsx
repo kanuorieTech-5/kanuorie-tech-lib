@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 
 export default function ImagePreviewModal({ isOpen, onClose, image }) {
   return (
@@ -7,3 +7,4 @@ export default function ImagePreviewModal({ isOpen, onClose, image }) {
     </Modal>
   );
 }
+

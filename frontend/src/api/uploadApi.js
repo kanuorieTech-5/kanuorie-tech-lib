@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================================
    IMAGE UPLOAD
@@ -59,3 +59,4 @@ export default {
   uploadAssessmentFile,
   deleteImage,
 };
+

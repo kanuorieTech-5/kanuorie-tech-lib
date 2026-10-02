@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button, Card, SectionTitle } from "../components/common";
@@ -64,7 +64,7 @@ export default function Contact() {
     {
       icon: Clock,
       title: "Working Hours",
-      value: "Mon - Fri • 9AM - 5PM",
+      value: "Mon - Fri â€¢ 9AM - 5PM",
     },
   ];
 
@@ -164,7 +164,7 @@ export default function Contact() {
 
               <div className="mt-10 space-y-6">
                 <div>
-                  <h3 className="font-semibold">✔ Fast Response</h3>
+                  <h3 className="font-semibold">âœ” Fast Response</h3>
 
                   <p className="text-gray-600">
                     We aim to reply within one business day.
@@ -172,7 +172,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold">✔ Professional Support</h3>
+                  <h3 className="font-semibold">âœ” Professional Support</h3>
 
                   <p className="text-gray-600">
                     Get guidance from experienced professionals.
@@ -180,7 +180,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold">✔ Tailored Solutions</h3>
+                  <h3 className="font-semibold">âœ” Tailored Solutions</h3>
 
                   <p className="text-gray-600">
                     Every project is planned around your goals and requirements.
@@ -198,3 +198,4 @@ export default function Contact() {
     </>
   );
 }
+

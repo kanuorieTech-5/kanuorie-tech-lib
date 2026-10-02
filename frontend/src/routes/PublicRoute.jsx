@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+﻿import { Outlet } from "react-router-dom";
 import { useAuth } from "../contexts";
 
 export default function PublicRoute() {
@@ -14,3 +14,4 @@ export default function PublicRoute() {
 
   return <Outlet />;
 }
+

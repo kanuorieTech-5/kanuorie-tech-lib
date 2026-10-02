@@ -1,4 +1,4 @@
-export default function Spinner({ size = 24, className = "" }) {
+﻿export default function Spinner({ size = 24, className = "" }) {
   return (
     <svg
       className={`animate-spin ${className}`}
@@ -20,3 +20,4 @@ export default function Spinner({ size = 24, className = "" }) {
     </svg>
   );
 }
+

@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 import { CheckCircle } from "lucide-react";
 import { Button } from "../ui";
 
@@ -17,3 +17,4 @@ export default function SuccessModal({ isOpen, onClose, message }) {
     </Modal>
   );
 }
+

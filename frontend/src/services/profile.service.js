@@ -1,4 +1,4 @@
-import {
+﻿import {
   getProfile,
   updateProfile,
   uploadAvatar,
@@ -30,3 +30,4 @@ export default {
   getSettings,
   updateSettings,
 };
+

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+﻿import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 export default function Breadcrumb() {
@@ -28,3 +28,4 @@ export default function Breadcrumb() {
     </div>
   );
 }
+

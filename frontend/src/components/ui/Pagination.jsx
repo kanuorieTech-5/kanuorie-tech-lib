@@ -1,4 +1,4 @@
-export default function Pagination({ page, totalPages, onChange }) {
+﻿export default function Pagination({ page, totalPages, onChange }) {
   return (
     <div className="flex items-center justify-center gap-3">
       <button disabled={page === 1} onClick={() => onChange(page - 1)}>
@@ -15,3 +15,4 @@ export default function Pagination({ page, totalPages, onChange }) {
     </div>
   );
 }
+

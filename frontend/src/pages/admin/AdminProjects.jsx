@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Plus,
@@ -816,7 +816,7 @@ export default function AdminProjects() {
                     <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/5 px-6 py-8 text-center transition hover:border-cyan-400/40 hover:bg-white/10">
                       <div>
                         <p className="font-semibold text-white">
-                          📁 Choose image from your computer
+                          ðŸ“ Choose image from your computer
                         </p>
 
                         <p className="mt-1 text-xs text-slate-500">
@@ -910,7 +910,7 @@ export default function AdminProjects() {
                     <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/5 px-6 py-8 text-center transition hover:border-cyan-400/40 hover:bg-white/10">
                       <div>
                         <p className="font-semibold text-white">
-                          📁 Choose multiple images
+                          ðŸ“ Choose multiple images
                         </p>
 
                         <p className="mt-1 text-xs text-slate-500">
@@ -1084,3 +1084,4 @@ export default function AdminProjects() {
     </section>
   );
 }
+

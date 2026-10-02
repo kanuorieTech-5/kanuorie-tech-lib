@@ -1,4 +1,4 @@
-export const formatCurrency = (amount, currency = "USD") => {
+﻿export const formatCurrency = (amount, currency = "USD") => {
   if (amount === null || amount === undefined) {
     return "";
   }
@@ -8,3 +8,4 @@ export const formatCurrency = (amount, currency = "USD") => {
     currency,
   }).format(amount);
 };
+

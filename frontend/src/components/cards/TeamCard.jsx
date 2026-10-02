@@ -1,4 +1,4 @@
-import { Card, Avatar } from "../ui";
+﻿import { Card, Avatar } from "../ui";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 export default function TeamCard({ member }) {
@@ -39,3 +39,4 @@ export default function TeamCard({ member }) {
     </Card>
   );
 }
+

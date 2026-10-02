@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, BookOpen, Github, Globe, Search } from "lucide-react";
@@ -887,3 +887,4 @@ export default function Products() {
     </>
   );
 }
+

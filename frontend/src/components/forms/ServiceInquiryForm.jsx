@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Card, Input, Select, TextArea } from "../ui";
 
 export default function ServiceInquiryForm({ onSubmit, loading = false }) {
@@ -89,3 +89,4 @@ export default function ServiceInquiryForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
+

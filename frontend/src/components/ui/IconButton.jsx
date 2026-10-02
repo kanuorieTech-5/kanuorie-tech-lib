@@ -1,4 +1,4 @@
-import Button from "./Button";
+﻿import Button from "./Button";
 
 export default function IconButton({ icon, ...props }) {
   return (
@@ -7,3 +7,4 @@ export default function IconButton({ icon, ...props }) {
     </Button>
   );
 }
+

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Badge, Button, Card } from "../ui";
 
 export default function BookCard({ book }) {
@@ -28,3 +28,4 @@ export default function BookCard({ book }) {
     </Card>
   );
 }
+

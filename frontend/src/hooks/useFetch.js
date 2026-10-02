@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import useApi from "./useApi";
 
 export default function useFetch(apiFunction, ...params) {
@@ -10,3 +10,4 @@ export default function useFetch(apiFunction, ...params) {
 
   return api;
 }
+

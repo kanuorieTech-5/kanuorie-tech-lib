@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPassword } from "../services";
 import { Card, Button } from "../components/common";
@@ -49,3 +49,4 @@ export default function ForgotPassword() {
     </section>
   );
 }
+

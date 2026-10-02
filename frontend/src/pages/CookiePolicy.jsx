@@ -1,4 +1,4 @@
-export default function CookiePolicy() {
+﻿export default function CookiePolicy() {
   const lastUpdated = "August 27, 2026";
 
   return (
@@ -274,3 +274,4 @@ export default function CookiePolicy() {
     </section>
   );
 }
+

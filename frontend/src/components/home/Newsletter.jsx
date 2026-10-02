@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 import { Button, SectionTitle } from "../common";
 
@@ -73,3 +73,4 @@ export default function Newsletter() {
     </section>
   );
 }
+

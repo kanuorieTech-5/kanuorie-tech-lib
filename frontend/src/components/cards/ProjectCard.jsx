@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Badge, Button, Card } from "../ui";
 
 export default function ProjectCard({ project }) {
@@ -39,3 +39,4 @@ export default function ProjectCard({ project }) {
     </Card>
   );
 }
+

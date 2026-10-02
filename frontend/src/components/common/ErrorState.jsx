@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+﻿import { AlertTriangle } from "lucide-react";
 import Button from "./Button";
 
 export default function ErrorState({
@@ -25,3 +25,4 @@ export default function ErrorState({
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+﻿import { X } from "lucide-react";
 
 export default function Modal({
   open,
@@ -42,3 +42,4 @@ export default function Modal({
     </div>
   );
 }
+

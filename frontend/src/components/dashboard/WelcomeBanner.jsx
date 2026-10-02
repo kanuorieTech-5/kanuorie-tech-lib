@@ -1,4 +1,4 @@
-import { Card } from "../common";
+﻿import { Card } from "../common";
 
 export default function WelcomeBanner({ name }) {
   return (
@@ -11,3 +11,4 @@ export default function WelcomeBanner({ name }) {
     </Card>
   );
 }
+

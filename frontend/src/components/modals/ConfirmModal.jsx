@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 import { Button } from "../ui";
 
 export default function ConfirmModal({
@@ -22,3 +22,4 @@ export default function ConfirmModal({
     </Modal>
   );
 }
+

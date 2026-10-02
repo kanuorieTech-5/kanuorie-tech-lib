@@ -1,4 +1,4 @@
-export const validateFileSize = (file, maxSize) => {
+﻿export const validateFileSize = (file, maxSize) => {
   return file.size <= maxSize;
 };
 
@@ -15,3 +15,4 @@ export const createFormData = (data) => {
 
   return formData;
 };
+

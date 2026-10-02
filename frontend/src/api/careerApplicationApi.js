@@ -22,3 +22,4 @@ export const submitCareerApplication = async (application) => {
 
   return data;
 };
+

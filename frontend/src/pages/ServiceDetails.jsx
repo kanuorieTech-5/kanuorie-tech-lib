@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Card, Button, Loader } from "../components/common";
 
@@ -88,7 +88,7 @@ export default function ServiceDetails() {
           to="/services"
           className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
         >
-          ← Back to Services
+          â† Back to Services
         </Link>
       </div>
 
@@ -166,7 +166,7 @@ export default function ServiceDetails() {
                       </span>
 
                       <span className="text-right font-semibold">
-                        ₦{Number(service.price).toLocaleString()}
+                        â‚¦{Number(service.price).toLocaleString()}
                       </span>
                     </div>
                   )}
@@ -218,3 +218,4 @@ export default function ServiceDetails() {
     </section>
   );
 }
+

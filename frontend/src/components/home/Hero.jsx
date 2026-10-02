@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -237,7 +237,7 @@ export default function Hero() {
                 <h3 className="font-semibold">Software Solutions</h3>
 
                 <p className="text-sm text-slate-300">
-                  Websites • APIs • Dashboards
+                  Websites â€¢ APIs â€¢ Dashboards
                 </p>
               </div>
             </div>
@@ -284,3 +284,4 @@ export default function Hero() {
     </section>
   );
 }
+

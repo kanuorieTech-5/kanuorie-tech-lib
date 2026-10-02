@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
   BriefcaseBusiness,
@@ -914,7 +914,7 @@ export default function AdminCareers() {
                             ? new Date(
                                 application.createdAt,
                               ).toLocaleDateString()
-                            : "—"}
+                            : "â€”"}
                         </td>
 
                         <td className="px-6 py-5">
@@ -1052,7 +1052,7 @@ export default function AdminCareers() {
                       ? new Date(
                           selectedApplication.createdAt,
                         ).toLocaleString()
-                      : "—"}
+                      : "â€”"}
                   </p>
                 </div>
               </div>

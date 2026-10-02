@@ -1,4 +1,4 @@
-const cache = new Map();
+﻿const cache = new Map();
 
 export const cachedGet = async (key, fn) => {
   if (cache.has(key)) return cache.get(key);
@@ -13,3 +13,4 @@ export const clearCache = (key) => {
   if (key) cache.delete(key);
   else cache.clear();
 };
+

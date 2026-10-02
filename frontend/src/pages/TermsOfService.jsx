@@ -1,4 +1,4 @@
-export default function TermsOfService() {
+﻿export default function TermsOfService() {
   return (
     <section className="bg-white dark:bg-slate-950">
       <div className="mx-auto max-w-5xl px-6 py-10 lg:px-8">
@@ -553,3 +553,4 @@ export default function TermsOfService() {
     </section>
   );
 }
+

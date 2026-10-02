@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================================
    PUBLIC
@@ -26,3 +26,4 @@ export const deleteSubscriber = async (id) => {
 
   return data;
 };
+

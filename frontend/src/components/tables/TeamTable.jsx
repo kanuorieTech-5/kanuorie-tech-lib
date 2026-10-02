@@ -1,4 +1,4 @@
-import DataTable from "./DataTable";
+﻿import DataTable from "./DataTable";
 import { Button } from "../ui";
 
 export default function TeamTable({
@@ -65,3 +65,4 @@ export default function TeamTable({
     />
   );
 }
+

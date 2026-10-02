@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Bell, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
@@ -663,3 +663,4 @@ function PasswordInput({ label, name, value, onChange, visible, onToggle }) {
     </div>
   );
 }
+

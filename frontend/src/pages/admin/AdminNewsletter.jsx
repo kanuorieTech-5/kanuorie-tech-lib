@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
   Mail,
@@ -389,7 +389,7 @@ export default function AdminNewsletter() {
 
                           <div>
                             <p className="font-medium text-slate-900">
-                              {subscriber?.email || "�"}
+                              {subscriber?.email || "ï¿½"}
                             </p>
                           </div>
                         </div>
@@ -405,7 +405,7 @@ export default function AdminNewsletter() {
                       <td className="px-6 py-4 text-sm text-slate-500">
                         {subscriber?.createdAt
                           ? new Date(subscriber.createdAt).toLocaleDateString()
-                          : "�"}
+                          : "ï¿½"}
                       </td>
 
                       <td className="px-6 py-4 text-right">
@@ -430,3 +430,4 @@ export default function AdminNewsletter() {
     </section>
   );
 }
+

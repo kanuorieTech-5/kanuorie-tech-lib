@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+﻿import { ChevronRight } from "lucide-react";
 
 export default function DashboardBreadcrumb({ items = [] }) {
   return (
@@ -13,3 +13,4 @@ export default function DashboardBreadcrumb({ items = [] }) {
     </div>
   );
 }
+

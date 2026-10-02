@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Home, ArrowLeft, Search } from "lucide-react";
 
 import { Button } from "../components/common";
@@ -43,3 +43,4 @@ export default function NotFound() {
     </section>
   );
 }
+

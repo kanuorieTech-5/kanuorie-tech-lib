@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Divider({
   text,
@@ -39,3 +39,4 @@ export default function Divider({
     </div>
   );
 }
+

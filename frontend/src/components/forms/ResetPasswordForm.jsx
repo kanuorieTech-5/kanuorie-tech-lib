@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Card, Input } from "../ui";
 
 export default function ResetPasswordForm({ onSubmit, loading = false }) {
@@ -51,3 +51,4 @@ export default function ResetPasswordForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
+

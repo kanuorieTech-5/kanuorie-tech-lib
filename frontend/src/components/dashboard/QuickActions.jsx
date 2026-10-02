@@ -1,4 +1,4 @@
-import { Button } from "../ui";
+﻿import { Button } from "../ui";
 
 export default function QuickActions({ actions = [] }) {
   return (
@@ -13,3 +13,4 @@ export default function QuickActions({ actions = [] }) {
     </div>
   );
 }
+

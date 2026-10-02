@@ -1,4 +1,4 @@
-import DataTable from "./DataTable";
+﻿import DataTable from "./DataTable";
 import { Badge } from "../ui";
 
 export default function OrdersTable({
@@ -49,3 +49,4 @@ export default function OrdersTable({
     />
   );
 }
+

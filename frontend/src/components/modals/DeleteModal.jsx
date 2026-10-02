@@ -1,4 +1,4 @@
-import ConfirmModal from "./ConfirmModal";
+﻿import ConfirmModal from "./ConfirmModal";
 
 export default function DeleteModal(props) {
   return (
@@ -9,3 +9,4 @@ export default function DeleteModal(props) {
     />
   );
 }
+

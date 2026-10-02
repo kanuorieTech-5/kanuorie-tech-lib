@@ -1,4 +1,4 @@
-export const FOOTER_LINKS = {
+﻿export const FOOTER_LINKS = {
   company: [
     {
       label: "About Us",
@@ -40,3 +40,4 @@ export const FOOTER_LINKS = {
     },
   ],
 };
+

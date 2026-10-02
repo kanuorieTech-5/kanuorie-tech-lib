@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+﻿import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "../ui";
 
@@ -97,3 +97,4 @@ export default function DataTable({
     </div>
   );
 }
+

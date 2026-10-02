@@ -1,4 +1,4 @@
-export const formatNumber = (number) => {
+﻿export const formatNumber = (number) => {
   if (number === null || number === undefined) {
     return "0";
   }
@@ -17,3 +17,4 @@ export const abbreviateNumber = (number) => {
 
   return number;
 };
+

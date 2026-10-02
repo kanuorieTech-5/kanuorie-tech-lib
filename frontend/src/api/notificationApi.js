@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================================
    GET ALL NOTIFICATIONS
@@ -44,3 +44,4 @@ export const clearNotifications = async () => {
   const { data } = await API.delete("/notifications");
   return data;
 };
+

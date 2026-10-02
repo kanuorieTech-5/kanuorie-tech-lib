@@ -1,4 +1,4 @@
-import { Card } from "../common";
+﻿import { Card } from "../common";
 
 export default function StatsCard({
   title,
@@ -21,3 +21,4 @@ export default function StatsCard({
     </Card>
   );
 }
+

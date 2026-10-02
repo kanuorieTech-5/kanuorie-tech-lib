@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { ArrowUpRight, Github, Globe } from "lucide-react";
 
 import { Badge, Button, Card } from "../ui";
@@ -138,3 +138,4 @@ export default function ProductCard({ product }) {
     </Card>
   );
 }
+

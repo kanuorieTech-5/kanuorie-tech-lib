@@ -1,4 +1,4 @@
-import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from "recharts";
+﻿import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from "recharts";
 
 import ChartCard from "./ChartCard";
 
@@ -21,3 +21,4 @@ export default function CustomPieChart({ title, subtitle, data }) {
     </ChartCard>
   );
 }
+

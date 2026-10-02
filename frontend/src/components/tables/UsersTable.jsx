@@ -1,4 +1,4 @@
-import DataTable from "./DataTable";
+﻿import DataTable from "./DataTable";
 import { Badge, Button } from "../ui";
 
 export default function UsersTable({
@@ -66,3 +66,4 @@ export default function UsersTable({
     />
   );
 }
+

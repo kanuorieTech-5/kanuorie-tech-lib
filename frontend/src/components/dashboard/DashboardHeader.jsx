@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+﻿import { useLocation } from "react-router-dom";
 export default function DashboardHeader({
   title = "Dashboard",
   subtitle = "",
@@ -28,3 +28,4 @@ export default function DashboardHeader({
     </div>
   );
 }
+

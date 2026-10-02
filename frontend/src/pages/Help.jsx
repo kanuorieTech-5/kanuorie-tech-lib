@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 
 import {
   HelpCircle,
@@ -218,3 +218,4 @@ function FAQItem({ question, children }) {
     </details>
   );
 }
+

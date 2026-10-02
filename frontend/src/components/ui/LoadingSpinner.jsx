@@ -1,4 +1,4 @@
-import Spinner from "./Spinner";
+﻿import Spinner from "./Spinner";
 
 export default function LoadingSpinner({ text = "Loading..." }) {
   return (
@@ -9,3 +9,4 @@ export default function LoadingSpinner({ text = "Loading..." }) {
     </div>
   );
 }
+

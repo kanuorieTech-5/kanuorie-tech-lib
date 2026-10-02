@@ -393,3 +393,4 @@ const VerifyCertificate = () => {
 };
 
 export default VerifyCertificate;
+

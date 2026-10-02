@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+﻿import { X } from "lucide-react";
 import { useEffect } from "react";
 
 export default function Modal({
@@ -59,3 +59,4 @@ export default function Modal({
     </div>
   );
 }
+

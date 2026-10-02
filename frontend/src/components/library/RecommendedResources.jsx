@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -113,3 +113,4 @@ export default function RecommendedResources({
     </section>
   );
 }
+

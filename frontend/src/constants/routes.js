@@ -1,4 +1,4 @@
-export const ROUTES = {
+﻿export const ROUTES = {
   HOME: "/",
 
   LOGIN: "/login",
@@ -28,3 +28,4 @@ export const ROUTES = {
   PRIVACY: "/privacy-policy",
   COOKIE: "/cookie-policy",
 };
+

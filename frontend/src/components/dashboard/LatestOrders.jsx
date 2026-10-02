@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import {
   ShoppingBag,
   ArrowRight,
@@ -129,3 +129,4 @@ export default function LatestOrders({ orders = [] }) {
     </section>
   );
 }
+

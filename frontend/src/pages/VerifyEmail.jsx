@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -28,3 +28,4 @@ export default function VerifyEmail() {
 
   return <Loader />;
 }
+

@@ -1,4 +1,4 @@
-export const normalizeCourse = (course) => ({
+﻿export const normalizeCourse = (course) => ({
   id: course.id,
   title: course.title,
   category: course.category || "General",
@@ -8,3 +8,4 @@ export const normalizeCourse = (course) => ({
   notes: course.notes || "",
   lastProgressUpdate: course.lastProgressUpdate || null,
 });
+

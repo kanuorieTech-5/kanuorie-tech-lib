@@ -1,4 +1,4 @@
-import { BarChart3, TrendingUp, ShoppingCart } from "lucide-react";
+﻿import { BarChart3, TrendingUp, ShoppingCart } from "lucide-react";
 
 export default function SalesOverview({ data = {} }) {
   const sales = data || {};
@@ -83,3 +83,4 @@ export default function SalesOverview({ data = {} }) {
     </section>
   );
 }
+

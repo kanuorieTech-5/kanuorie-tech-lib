@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Users, BookOpen, FolderOpen, Award } from "lucide-react";
 
 import { StatCard } from "../common";
@@ -71,3 +71,4 @@ export default function Stats() {
     </section>
   );
 }
+

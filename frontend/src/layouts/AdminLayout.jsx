@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+﻿import { Outlet } from "react-router-dom";
 
 import AdminSidebar from "../components/layout/AdminSidebar";
 
@@ -25,3 +25,4 @@ export default function AdminLayout() {
     </div>
   );
 }
+

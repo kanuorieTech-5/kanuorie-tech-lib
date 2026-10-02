@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, SearchInput } from "../ui";
 
 export default function SearchForm({ onSearch }) {
@@ -18,3 +18,4 @@ export default function SearchForm({ onSearch }) {
     </form>
   );
 }
+

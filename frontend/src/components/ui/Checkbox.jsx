@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Checkbox({ label, className = "", ...props }) {
   return (
@@ -19,3 +19,4 @@ export default function Checkbox({ label, className = "", ...props }) {
     </label>
   );
 }
+

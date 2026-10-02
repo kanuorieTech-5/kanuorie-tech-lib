@@ -1,4 +1,4 @@
-const variants = {
+﻿const variants = {
   success: "bg-green-500/10 text-green-400 border-green-500/20",
 
   warning: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
@@ -33,3 +33,4 @@ export default function Badge({ children, color = "info", className = "" }) {
     </span>
   );
 }
+

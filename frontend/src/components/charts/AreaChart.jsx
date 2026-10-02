@@ -1,4 +1,4 @@
-import {
+﻿import {
   ResponsiveContainer,
   AreaChart,
   Area,
@@ -35,3 +35,4 @@ export default function CustomAreaChart({
     </ChartCard>
   );
 }
+

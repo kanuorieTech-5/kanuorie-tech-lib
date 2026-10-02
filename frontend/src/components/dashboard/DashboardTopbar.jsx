@@ -1,4 +1,4 @@
-import { Bell, Menu, Search } from "lucide-react";
+﻿import { Bell, Menu, Search } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 export default function DashboardTopbar() {
@@ -77,3 +77,4 @@ export default function DashboardTopbar() {
     </header>
   );
 }
+

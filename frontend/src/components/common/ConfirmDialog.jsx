@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 import Button from "./Button";
 
 export default function ConfirmDialog({
@@ -38,3 +38,4 @@ export default function ConfirmDialog({
     </Modal>
   );
 }
+

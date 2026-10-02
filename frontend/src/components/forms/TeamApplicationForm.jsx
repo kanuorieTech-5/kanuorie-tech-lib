@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Card, Input, TextArea } from "../ui";
 
 export default function TeamApplicationForm({ loading = false, onSubmit }) {
@@ -73,3 +73,4 @@ export default function TeamApplicationForm({ loading = false, onSubmit }) {
     </Card>
   );
 }
+

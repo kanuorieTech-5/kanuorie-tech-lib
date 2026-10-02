@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Card, Input, TextArea } from "../ui";
 
 export default function ProjectInquiryForm({ onSubmit, loading = false }) {
@@ -79,3 +79,4 @@ export default function ProjectInquiryForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
+

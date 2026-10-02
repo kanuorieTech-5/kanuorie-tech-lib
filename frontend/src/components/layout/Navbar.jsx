@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 
@@ -28,8 +28,8 @@ export default function Navbar() {
             <Link to="/projects">Projects</Link>
             <Link to="/services">Services</Link>
             <Link to="/blog">Blog</Link>
-            <Link to="/contact">📞</Link>
-            <Link to="/profile">👤</Link>
+            <Link to="/contact">ðŸ“ž</Link>
+            <Link to="/profile">ðŸ‘¤</Link>
           </nav>
 
           {/* Search */}
@@ -87,3 +87,4 @@ export default function Navbar() {
     </>
   );
 }
+

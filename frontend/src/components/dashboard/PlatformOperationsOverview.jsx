@@ -1,4 +1,4 @@
-import {
+﻿import {
   Users,
   Handshake,
   GraduationCap,
@@ -30,7 +30,7 @@ function Metric({
           </p>
 
           <p className="mt-2 text-2xl font-bold text-slate-900">
-            {value ?? "—"}
+            {value ?? "â€”"}
           </p>
 
           {description && (
@@ -530,3 +530,4 @@ export default function PlatformOperationsOverview({
     </div>
   );
 }
+

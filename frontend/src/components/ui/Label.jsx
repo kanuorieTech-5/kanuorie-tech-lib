@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Label({
   children,
@@ -20,3 +20,4 @@ export default function Label({
     </label>
   );
 }
+

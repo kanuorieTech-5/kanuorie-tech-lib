@@ -1,4 +1,4 @@
-import { Inbox } from "lucide-react";
+﻿import { Inbox } from "lucide-react";
 import Button from "./Button";
 
 export default function EmptyState({
@@ -22,3 +22,4 @@ export default function EmptyState({
     </div>
   );
 }
+

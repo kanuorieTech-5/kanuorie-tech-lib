@@ -2487,3 +2487,4 @@ export default function CourseDetails() {
 
 
 
+

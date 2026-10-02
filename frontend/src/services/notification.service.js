@@ -1,4 +1,4 @@
-import * as NotificationApi from "../api/notificationApi";
+﻿import * as NotificationApi from "../api/notificationApi";
 
 export const getNotifications = NotificationApi.getNotifications;
 
@@ -18,3 +18,4 @@ export default {
   deleteNotification,
   clearNotifications,
 };
+

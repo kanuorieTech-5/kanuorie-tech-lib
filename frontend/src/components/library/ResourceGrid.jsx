@@ -1,4 +1,4 @@
-import ResourceCard from "./ResourceCard";
+﻿import ResourceCard from "./ResourceCard";
 import { Pagination } from "../common";
 
 export default function ResourceGrid({
@@ -72,3 +72,4 @@ export default function ResourceGrid({
     </div>
   );
 }
+

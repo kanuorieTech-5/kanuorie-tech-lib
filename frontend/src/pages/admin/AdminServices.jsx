@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -365,7 +365,7 @@ export default function AdminServices() {
                             />
                           ) : (
                             <span className="text-xl text-cyan-400">
-                              {service.icon || "⚙"}
+                              {service.icon || "âš™"}
                             </span>
                           )}
                         </div>
@@ -650,7 +650,7 @@ export default function AdminServices() {
                             onClick={() => removeTechnology(technology)}
                             className="hover:text-white"
                           >
-                            ×
+                            Ã—
                           </button>
                         </span>
                       ))}
@@ -774,3 +774,4 @@ export default function AdminServices() {
     </section>
   );
 }
+

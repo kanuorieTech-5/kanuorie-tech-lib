@@ -1,4 +1,4 @@
-export default function PageHeader({ title, subtitle, actions }) {
+﻿export default function PageHeader({ title, subtitle, actions }) {
   return (
     <div className="mb-8 flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
       <div>
@@ -11,3 +11,4 @@ export default function PageHeader({ title, subtitle, actions }) {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 
 export default function LoadingModal({ isOpen }) {
   return (
@@ -9,3 +9,4 @@ export default function LoadingModal({ isOpen }) {
     </Modal>
   );
 }
+

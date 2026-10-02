@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Bookmark, Check, BookOpen } from "lucide-react";
 
 import { Card, Button, Badge } from "../common";
@@ -75,3 +75,4 @@ export default function ResourceCard({ resource, isSaved, saving, onSave }) {
     </Card>
   );
 }
+

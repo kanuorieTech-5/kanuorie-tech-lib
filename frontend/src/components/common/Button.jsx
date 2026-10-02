@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Button({
   children,
@@ -50,3 +50,4 @@ export default function Button({
     </button>
   );
 }
+

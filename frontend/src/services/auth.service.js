@@ -1,4 +1,4 @@
-import * as AuthApi from "../api/authApi";
+﻿import * as AuthApi from "../api/authApi";
 export const login = AuthApi.loginUser;
 export const register = AuthApi.registerUser;
 export const logout = AuthApi.logoutUser;
@@ -22,3 +22,4 @@ export default {
   resetPassword,
   // changePassword,
 };
+

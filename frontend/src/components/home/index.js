@@ -1,4 +1,4 @@
-export { default as Hero } from "./Hero";
+﻿export { default as Hero } from "./Hero";
 export { default as Features } from "./Features";
 export { default as Stats } from "./Stats";
 export { default as TechStack } from "./TechStack";
@@ -15,3 +15,4 @@ export { default as Newsletter } from "./Newsletter";
 export { default as CTA } from "./CTA";
 export { default as ImageSlider } from "./ImageSlider";
 export { default as FeaturesSlider } from "./FeaturesSlider";
+

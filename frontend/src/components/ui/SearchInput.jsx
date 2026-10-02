@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+﻿import { Search } from "lucide-react";
 import Input from "./Input";
 
 export default function SearchInput(props) {
@@ -6,3 +6,4 @@ export default function SearchInput(props) {
     <Input leftIcon={<Search size={18} />} placeholder="Search..." {...props} />
   );
 }
+

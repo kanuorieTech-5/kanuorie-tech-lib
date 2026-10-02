@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, } from "react-icons/fa";
 import logo from "../../assets/logo.jpeg";
 export default function Footer() {
@@ -235,7 +235,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-6 py-5 sm:flex-row">
           {/* Copyright */}
           <p className="text-center text-sm text-gray-500 sm:text-left">
-            © {year} KanuorieTech. All rights reserved.
+            Â© {year} KanuorieTech. All rights reserved.
           </p>
 
           {/* Social */}

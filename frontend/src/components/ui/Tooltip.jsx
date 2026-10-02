@@ -1,4 +1,4 @@
-export default function Tooltip({ text, children }) {
+﻿export default function Tooltip({ text, children }) {
   return (
     <div className="group relative inline-flex">
       {children}
@@ -9,3 +9,4 @@ export default function Tooltip({ text, children }) {
     </div>
   );
 }
+

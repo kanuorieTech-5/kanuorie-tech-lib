@@ -1,24 +1,25 @@
-import { io } from "socket.io-client";
+﻿import { io } from "socket.io-client";
 
-// ✅ Remove /api if present
+// âœ… Remove /api if present
 const BASE_URL = (import.meta.env.VITE_API_URL || "").replace("/api", "");
 
-// ✅ Fallback (extra safety)
+// âœ… Fallback (extra safety)
 const SOCKET_URL = BASE_URL || "http://localhost:5000";
 
 const socket = io(SOCKET_URL, {
   withCredentials: true,
   transports: ["websocket"],
-  autoConnect: false, // ✅ manual control (correct)
+  autoConnect: false, // âœ… manual control (correct)
 });
 
-// ✅ Optional debug (very useful in production)
+// âœ… Optional debug (very useful in production)
 socket.on("connect", () => {
-  console.log("🔌 Socket connected:", socket.id);
+  console.log("ðŸ”Œ Socket connected:", socket.id);
 });
 
 socket.on("disconnect", () => {
-  console.log("❌ Socket disconnected");
+  console.log("âŒ Socket disconnected");
 });
 
 export default socket;
+

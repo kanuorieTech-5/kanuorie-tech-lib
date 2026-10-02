@@ -1,4 +1,4 @@
-import { Button } from "../ui";
+﻿import { Button } from "../ui";
 import DataTable from "./DataTable";
 
 export default function BooksTable({
@@ -72,3 +72,4 @@ export default function BooksTable({
     />
   );
 }
+

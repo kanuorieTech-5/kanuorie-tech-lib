@@ -1,4 +1,4 @@
-export const BOOK_CATEGORIES = [
+﻿export const BOOK_CATEGORIES = [
   "Technology",
 
   "Business",
@@ -11,3 +11,4 @@ export const BOOK_CATEGORIES = [
 
   "Personal Development",
 ];
+

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Input } from "../ui";
 
 export default function NewsletterForm({ onSubmit, loading = false }) {
@@ -28,3 +28,4 @@ export default function NewsletterForm({ onSubmit, loading = false }) {
     </form>
   );
 }
+

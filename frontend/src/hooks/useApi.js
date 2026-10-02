@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+﻿import { useState, useCallback } from "react";
 
 export default function useApi(apiFunction) {
   const [data, setData] = useState(null);
@@ -33,3 +33,4 @@ export default function useApi(apiFunction) {
     request,
   };
 }
+

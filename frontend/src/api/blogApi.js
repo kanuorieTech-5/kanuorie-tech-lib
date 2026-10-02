@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 export const getBlogs = async () => {
   const { data } = await API.get("/blog");
@@ -24,3 +24,4 @@ export const deleteBlog = async (id) => {
   const { data } = await API.delete(`/blog/${id}`);
   return data;
 };
+

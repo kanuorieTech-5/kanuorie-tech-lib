@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { ChevronDown, HelpCircle } from "lucide-react";
 
@@ -118,3 +118,4 @@ export default function FAQ() {
     </main>
   );
 }
+

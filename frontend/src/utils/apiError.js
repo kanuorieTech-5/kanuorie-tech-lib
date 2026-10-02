@@ -1,4 +1,4 @@
-export const getApiError = (error) => {
+﻿export const getApiError = (error) => {
   if (error?.response?.data?.message) {
     return error.response.data.message;
   }
@@ -9,3 +9,4 @@ export const getApiError = (error) => {
 
   return "Something went wrong. Please try again.";
 };
+

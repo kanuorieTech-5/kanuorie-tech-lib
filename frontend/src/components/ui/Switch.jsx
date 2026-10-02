@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Switch({
   checked,
@@ -27,3 +27,4 @@ export default function Switch({
     </button>
   );
 }
+

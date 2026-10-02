@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Card, Loader } from "../components/common";
@@ -60,7 +60,7 @@ export default function BlogDetails() {
         By {authorName}
         {blog.createdAt && (
           <>
-            {" • "}
+            {" â€¢ "}
             {new Date(blog.createdAt).toLocaleDateString()}
           </>
         )}
@@ -77,3 +77,4 @@ export default function BlogDetails() {
     </section>
   );
 }
+

@@ -1,4 +1,4 @@
-export const formatBytes = (bytes, decimals = 2) => {
+﻿export const formatBytes = (bytes, decimals = 2) => {
   if (!bytes) return "0 Bytes";
 
   const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -9,3 +9,4 @@ export const formatBytes = (bytes, decimals = 2) => {
     (bytes / Math.pow(1024, index)).toFixed(decimals),
   )} ${sizes[index]}`;
 };
+

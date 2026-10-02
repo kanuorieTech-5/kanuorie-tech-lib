@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 export default function useMediaQuery(query) {
   const media = window.matchMedia(query);
@@ -15,3 +15,4 @@ export default function useMediaQuery(query) {
 
   return matches;
 }
+

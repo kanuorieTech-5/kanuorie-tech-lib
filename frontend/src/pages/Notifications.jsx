@@ -1,4 +1,4 @@
-import { Card, Button } from "../components/common";
+﻿import { Card, Button } from "../components/common";
 import { useNotification } from "../contexts";
 
 export default function Notifications() {
@@ -88,3 +88,4 @@ export default function Notifications() {
     </section>
   );
 }
+

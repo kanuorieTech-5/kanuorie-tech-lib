@@ -1,4 +1,4 @@
-export default function CategoryFilter({ categories, value, onChange }) {
+﻿export default function CategoryFilter({ categories, value, onChange }) {
   return (
     <select
       value={value}
@@ -13,3 +13,4 @@ export default function CategoryFilter({ categories, value, onChange }) {
     </select>
   );
 }
+

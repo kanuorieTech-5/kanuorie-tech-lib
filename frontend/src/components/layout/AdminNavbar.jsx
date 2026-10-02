@@ -1,4 +1,4 @@
-import { Bell, Settings } from "lucide-react";
+﻿import { Bell, Settings } from "lucide-react";
 
 import Avatar from "../common/Avatar";
 
@@ -26,3 +26,4 @@ export default function AdminNavbar() {
     </header>
   );
 }
+

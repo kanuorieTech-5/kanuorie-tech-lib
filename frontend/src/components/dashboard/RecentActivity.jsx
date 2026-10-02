@@ -1,4 +1,4 @@
-import { Card } from "../common";
+﻿import { Card } from "../common";
 
 export default function RecentActivity({ activities = [] }) {
   return (
@@ -17,3 +17,4 @@ export default function RecentActivity({ activities = [] }) {
     </Card>
   );
 }
+

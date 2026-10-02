@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Card } from "../ui";
 
 export default function UploadAvatarForm({ onSubmit, loading = false }) {
@@ -31,3 +31,4 @@ export default function UploadAvatarForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
+

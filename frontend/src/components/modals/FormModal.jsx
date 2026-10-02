@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+﻿import Modal from "./Modal";
 
 export default function FormModal({ isOpen, onClose, title, children }) {
   return (
@@ -7,3 +7,4 @@ export default function FormModal({ isOpen, onClose, title, children }) {
     </Modal>
   );
 }
+

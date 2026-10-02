@@ -1,4 +1,4 @@
-import { Card, Avatar } from "../ui";
+﻿import { Card, Avatar } from "../ui";
 
 export default function TestimonialCard({ testimonial }) {
   return (
@@ -18,8 +18,9 @@ export default function TestimonialCard({ testimonial }) {
       </p>
 
       <div className="mt-5 flex text-yellow-500">
-        {"★".repeat(testimonial.rating)}
+        {"â˜…".repeat(testimonial.rating)}
       </div>
     </Card>
   );
 }
+

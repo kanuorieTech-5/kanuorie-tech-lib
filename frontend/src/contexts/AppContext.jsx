@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+﻿import { createContext, useContext, useMemo, useState } from "react";
 
 const AppContext = createContext(null);
 
@@ -100,3 +100,4 @@ export const AppProvider = ({ children }) => {
 export const useApp = () => useContext(AppContext);
 
 export default AppContext;
+

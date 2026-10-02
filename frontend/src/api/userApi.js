@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================================
    USER PROFILE
@@ -66,3 +66,4 @@ export const updateSettings = async (settings) => {
 
   return data;
 };
+

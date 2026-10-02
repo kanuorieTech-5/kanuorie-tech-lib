@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 export const getCommunityPosts = async (params = {}) => {
   const { data } = await API.get("/community", {

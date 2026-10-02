@@ -1,4 +1,4 @@
-const services = [
+﻿const services = [
   "Web Development",
   "Frontend Development",
   "Backend Development",
@@ -13,7 +13,7 @@ const services = [
   "Digital Solutions",
 ];
 
-const serviceText = `${services.join(" · ")} · `;
+const serviceText = `${services.join(" Â· ")} Â· `;
 
 export default function ServiceTicker() {
   return (
@@ -37,3 +37,4 @@ export default function ServiceTicker() {
     </div>
   );
 }
+

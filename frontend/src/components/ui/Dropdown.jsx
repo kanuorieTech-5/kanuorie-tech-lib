@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 export default function Dropdown({ trigger, children }) {
   const [open, setOpen] = useState(false);
@@ -15,3 +15,4 @@ export default function Dropdown({ trigger, children }) {
     </div>
   );
 }
+

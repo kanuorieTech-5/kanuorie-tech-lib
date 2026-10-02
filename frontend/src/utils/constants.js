@@ -1,4 +1,4 @@
-export const APP_NAME = "KanuorieTech";
+﻿export const APP_NAME = "KanuorieTech";
 
 export const STORAGE_KEYS = {
   TOKEN: "kanuorietech_token",
@@ -25,3 +25,4 @@ export const FILE_LIMITS = {
   IMAGE_SIZE: 5 * 1024 * 1024,
   DOCUMENT_SIZE: 20 * 1024 * 1024,
 };
+

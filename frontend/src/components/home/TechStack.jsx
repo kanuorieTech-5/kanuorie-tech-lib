@@ -1,4 +1,4 @@
-import { color, motion } from "framer-motion";
+﻿import { color, motion } from "framer-motion";
 
 import {
   SiReact,
@@ -162,3 +162,4 @@ export default function TechStack() {
     </section>
   );
 }
+

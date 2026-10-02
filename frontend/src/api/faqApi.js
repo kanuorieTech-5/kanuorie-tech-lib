@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================================
    PUBLIC
@@ -35,3 +35,4 @@ export const reorderFAQs = async (items) => {
 
   return data;
 };
+

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 
 export default function useInfiniteScroll(callback) {
   useEffect(() => {
@@ -16,3 +16,4 @@ export default function useInfiniteScroll(callback) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [callback]);
 }
+

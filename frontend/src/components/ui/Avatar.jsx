@@ -1,4 +1,4 @@
-import clsx from "clsx";
+﻿import clsx from "clsx";
 
 export default function Avatar({
   src,
@@ -43,3 +43,4 @@ export default function Avatar({
     />
   );
 }
+

@@ -1,4 +1,4 @@
-export default function EmptyState({ title, description, action }) {
+﻿export default function EmptyState({ title, description, action }) {
   return (
     <div className="py-10 text-center">
       <h3 className="text-xl font-semibold">{title}</h3>
@@ -9,3 +9,4 @@ export default function EmptyState({ title, description, action }) {
     </div>
   );
 }
+

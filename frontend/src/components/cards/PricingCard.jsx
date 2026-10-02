@@ -1,4 +1,4 @@
-import { Button, Card, Badge } from "../ui";
+﻿import { Button, Card, Badge } from "../ui";
 
 export default function PricingCard({
   title,
@@ -30,7 +30,7 @@ export default function PricingCard({
       <ul className="space-y-3">
         {features.map((feature, index) => (
           <li key={index} className="flex items-center gap-2">
-            ✅ {feature}
+            âœ… {feature}
           </li>
         ))}
       </ul>
@@ -41,3 +41,4 @@ export default function PricingCard({
     </Card>
   );
 }
+

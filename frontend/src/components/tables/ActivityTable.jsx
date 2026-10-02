@@ -1,4 +1,4 @@
-import DataTable from "./DataTable";
+﻿import DataTable from "./DataTable";
 
 export default function ActivityTable({
   activities = [],
@@ -48,3 +48,4 @@ export default function ActivityTable({
     />
   );
 }
+

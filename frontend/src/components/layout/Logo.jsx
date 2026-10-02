@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import logo from "../../assets/Logo.jpeg";
+﻿import { Link } from "react-router-dom";
+import logo from "../../assets/logo.jpeg";
 export default function Logo({ size = "md", showText = true }) {
   const sizes = {
     sm: {
@@ -32,9 +32,10 @@ export default function Logo({ size = "md", showText = true }) {
             KanuorieTech
           </h1>
 
-          <p className="text-xs text-gray-500">Learn • Build • Grow</p>
+          <p className="text-xs text-gray-500">Learn â€¢ Build â€¢ Grow</p>
         </div>
       )}
     </Link>
   );
 }
+

@@ -1,4 +1,4 @@
-export * from "./auth.service";
+﻿export * from "./auth.service";
 export * from "./user.service";
 export * from "./Learning.service";
 export * from "./course.service";
@@ -22,3 +22,4 @@ export * from "./certificates.service";
 
 // Payments
 export * from "./payment.service";
+

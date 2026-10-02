@@ -1,4 +1,4 @@
-import Card from "./Card";
+﻿import Card from "./Card";
 
 export default function StatCard({ title, description, icon: Icon }) {
   return (
@@ -16,3 +16,4 @@ export default function StatCard({ title, description, icon: Icon }) {
     </Card>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 
@@ -258,7 +258,7 @@ export default function Testimonials() {
                 hover:bg-white/10
               "
             >
-              ←
+              â†
             </button>
 
             <button
@@ -276,7 +276,7 @@ export default function Testimonials() {
                 hover:bg-white/10
               "
             >
-              →
+              â†’
             </button>
           </div>
         )}
@@ -311,3 +311,4 @@ export default function Testimonials() {
     </section>
   );
 }
+

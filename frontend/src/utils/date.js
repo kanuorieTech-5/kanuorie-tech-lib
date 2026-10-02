@@ -1,4 +1,4 @@
-export const formatDate = (date, options = {}) => {
+﻿export const formatDate = (date, options = {}) => {
   if (!date) return "";
 
   return new Intl.DateTimeFormat("en-US", {
@@ -42,3 +42,4 @@ export const timeAgo = (date) => {
 
   return "Just now";
 };
+

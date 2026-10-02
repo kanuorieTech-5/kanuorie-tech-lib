@@ -1,4 +1,4 @@
-import API from "./axiosApi";
+﻿import API from "./axiosApi";
 
 /* ==========================
    COURSE PROGRESS
@@ -16,3 +16,4 @@ export const updateProgress = async (courseId, progress) => {
 
   return data;
 };
+

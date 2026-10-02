@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Users, ArrowRight } from "lucide-react";
 
 export default function LatestUsers({ users = [] }) {
@@ -104,3 +104,4 @@ export default function LatestUsers({ users = [] }) {
     </section>
   );
 }
+

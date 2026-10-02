@@ -1,4 +1,4 @@
-import {
+﻿import {
   ResponsiveContainer,
   BarChart,
   CartesianGrid,
@@ -35,3 +35,4 @@ export default function CustomBarChart({
     </ChartCard>
   );
 }
+

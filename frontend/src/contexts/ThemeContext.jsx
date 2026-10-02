@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+﻿import { createContext, useContext, useEffect, useState } from "react";
 
 import { getSettings, updateSettings } from "../api/userApi";
 
@@ -152,3 +152,4 @@ export function useTheme() {
 
   return context;
 }
+

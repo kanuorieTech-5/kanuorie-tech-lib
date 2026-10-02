@@ -1,4 +1,4 @@
-import { ExternalLink, Eye, EyeOff, Star } from "lucide-react";
+﻿import { ExternalLink, Eye, EyeOff, Star } from "lucide-react";
 
 import DataTable from "./DataTable";
 import { Button } from "../ui";
@@ -240,3 +240,4 @@ export default function ProductsTable({
     />
   );
 }
+

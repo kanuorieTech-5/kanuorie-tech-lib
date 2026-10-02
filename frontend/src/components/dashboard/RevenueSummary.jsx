@@ -1,4 +1,4 @@
-import { TrendingUp, DollarSign, Wallet } from "lucide-react";
+﻿import { TrendingUp, DollarSign, Wallet } from "lucide-react";
 
 export default function RevenueSummary({ data = {} }) {
   const revenue = data || {};
@@ -96,3 +96,4 @@ export default function RevenueSummary({ data = {} }) {
     </section>
   );
 }
+

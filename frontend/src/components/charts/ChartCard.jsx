@@ -1,4 +1,4 @@
-export default function ChartCard({ title, subtitle, children }) {
+﻿export default function ChartCard({ title, subtitle, children }) {
   return (
     <div className="rounded-xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="mb-6">
@@ -11,3 +11,4 @@ export default function ChartCard({ title, subtitle, children }) {
     </div>
   );
 }
+
