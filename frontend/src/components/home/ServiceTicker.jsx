@@ -13,7 +13,7 @@
   "Digital Solutions",
 ];
 
-const serviceText = `${services.join(" Â· ")} Â· `;
+const serviceText = `${services.join(" · ")} · `;
 
 export default function ServiceTicker() {
   return (
@@ -37,5 +37,6 @@ export default function ServiceTicker() {
     </div>
   );
 }
+
 
 

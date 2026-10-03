@@ -389,7 +389,7 @@ export default function AdminNewsletter() {
 
                           <div>
                             <p className="font-medium text-slate-900">
-                              {subscriber?.email || "ï¿½"}
+                              {subscriber?.email || "�"}
                             </p>
                           </div>
                         </div>
@@ -405,7 +405,7 @@ export default function AdminNewsletter() {
                       <td className="px-6 py-4 text-sm text-slate-500">
                         {subscriber?.createdAt
                           ? new Date(subscriber.createdAt).toLocaleDateString()
-                          : "ï¿½"}
+                          : "�"}
                       </td>
 
                       <td className="px-6 py-4 text-right">
@@ -430,5 +430,6 @@ export default function AdminNewsletter() {
     </section>
   );
 }
+
 
 

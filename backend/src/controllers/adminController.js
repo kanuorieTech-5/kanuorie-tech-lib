@@ -23,6 +23,31 @@ const Testimonial = require("../models/Testimonial");
 ========================================== */
 
 const getStats = asyncHandler(async (req, res) => {
+  /* ==========================================
+     DATE RANGES
+  ========================================== */
+
+  const now = new Date();
+
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const startOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1
+  );
+
+  const startOfPreviousMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1
+  );
+
+  /* ==========================================
+     BASIC PLATFORM STATS
+  ========================================== */
+
   const [
     totalUsers,
     totalCourses,
@@ -31,7 +56,56 @@ const getStats = asyncHandler(async (req, res) => {
     verifiedUsers,
     blockedUsers,
     featuredBooks,
+
+    /* TEAM */
+    totalTeam,
+    activeTeam,
+
+    /* AFFILIATES */
+    totalAffiliates,
+    activeAffiliates,
+    pendingPayouts,
+    paidPayouts,
+
+    /* ENROLLMENTS */
+    totalEnrollments,
+    completedEnrollments,
+    inProgressEnrollments,
+
+    /* CERTIFICATES */
+    totalCertificates,
+    certificatesThisMonth,
+    pendingCertificates,
+
+    /* PAYMENTS */
+    totalPayments,
+    successfulPayments,
+    pendingPayments,
+    failedPayments,
+    refundedPayments,
+
+    /* INVESTORS / PARTNERS */
+    investorInquiries,
+    partnerInquiries,
+    repliedInvestorInquiries,
+    repliedPartnerInquiries,
+
+    /* ISSUES */
+    totalIssues,
+    openIssues,
+    resolvedIssues,
+
+    /* FEEDBACK */
+    totalTestimonials,
+    newTestimonials,
+    positiveTestimonials,
+    contactsNeedingResponse,
+
+    /* ORDERS */
+    totalOrders,
+    paidOrders,
   ] = await Promise.all([
+    /* PLATFORM */
     User.countDocuments(),
     Course.countDocuments(),
     Learning.countDocuments(),
@@ -39,10 +113,309 @@ const getStats = asyncHandler(async (req, res) => {
     User.countDocuments({ isVerified: true }),
     User.countDocuments({ isBlocked: true }),
     Learning.countDocuments({ featured: true }),
+
+    /* TEAM */
+    Team.countDocuments(),
+    Team.countDocuments({ active: true }),
+
+    /* AFFILIATES */
+    Affiliate.countDocuments(),
+    Affiliate.countDocuments({ status: "active" }),
+    AffiliatePayout.countDocuments({
+      status: { $in: ["requested", "processing"] },
+    }),
+    AffiliatePayout.countDocuments({
+      status: "paid",
+    }),
+
+    /* ENROLLMENTS */
+    Progress.countDocuments(),
+    Progress.countDocuments({
+      status: "completed",
+    }),
+    Progress.countDocuments({
+      status: "in_progress",
+    }),
+
+    /* CERTIFICATES */
+    Certificate.countDocuments({
+      status: "issued",
+    }),
+    Certificate.countDocuments({
+      status: "issued",
+      issuedAt: { $gte: startOfMonth },
+    }),
+    Progress.countDocuments({
+      status: "completed",
+      certificateIssued: false,
+    }),
+
+    /* PAYMENTS */
+    Payment.countDocuments(),
+    Payment.countDocuments({
+      status: "successful",
+    }),
+    Payment.countDocuments({
+      status: "pending",
+    }),
+    Payment.countDocuments({
+      status: "failed",
+    }),
+    Payment.countDocuments({
+      status: "refunded",
+    }),
+
+    /* INVESTORS */
+    Contact.countDocuments({
+      inquiryType: "Investment",
+    }),
+    Contact.countDocuments({
+      inquiryType: "Partnership",
+    }),
+    Contact.countDocuments({
+      inquiryType: "Investment",
+      replied: true,
+    }),
+    Contact.countDocuments({
+      inquiryType: "Partnership",
+      replied: true,
+    }),
+
+    /* ISSUES */
+    CommunityReport.countDocuments(),
+    CommunityReport.countDocuments({
+      status: "pending",
+    }),
+    CommunityReport.countDocuments({
+      status: {
+        $in: ["reviewed", "dismissed", "actioned"],
+      },
+    }),
+
+    /* FEEDBACK */
+    Testimonial.countDocuments(),
+    Testimonial.countDocuments({
+      createdAt: { $gte: startOfMonth },
+    }),
+    Testimonial.countDocuments({
+      rating: { $gte: 4 },
+      active: true,
+    }),
+    Contact.countDocuments({
+      replied: false,
+    }),
+
+    /* ORDERS */
+    Order.countDocuments(),
+    Order.countDocuments({
+      status: "paid",
+    }),
   ]);
 
   /* ==========================================
-     USER GROWTH (LAST 7 DAYS)
+     AFFILIATE COMMISSIONS
+  ========================================== */
+
+  const [
+    totalCommissionRows,
+    pendingCommissionRows,
+  ] = await Promise.all([
+    AffiliateReferral.aggregate([
+      {
+        $match: {
+          commissionAmount: { $gt: 0 },
+        },
+      },
+      {
+        $group: {
+          _id: "$commissionCurrency",
+          amount: { $sum: "$commissionAmount" },
+        },
+      },
+    ]),
+
+    AffiliateReferral.aggregate([
+      {
+        $match: {
+          commissionStatus: "pending",
+          commissionAmount: { $gt: 0 },
+        },
+      },
+      {
+        $group: {
+          _id: "$commissionCurrency",
+          amount: { $sum: "$commissionAmount" },
+        },
+      },
+    ]),
+  ]);
+
+  const formatCurrencyTotals = (rows) => {
+    if (!rows || rows.length === 0) {
+      return 0;
+    }
+
+    if (rows.length === 1) {
+      return rows[0].amount;
+    }
+
+    return rows.reduce((result, row) => {
+      result[row._id || "UNKNOWN"] = row.amount;
+      return result;
+    }, {});
+  };
+
+  const totalCommission =
+    formatCurrencyTotals(totalCommissionRows);
+
+  const pendingCommission =
+    formatCurrencyTotals(pendingCommissionRows);
+
+  /* ==========================================
+     PAYMENT VOLUME BY CURRENCY
+  ========================================== */
+
+  const paymentVolumeRows = await Payment.aggregate([
+    {
+      $match: {
+        status: "successful",
+      },
+    },
+    {
+      $group: {
+        _id: "$currency",
+        amount: { $sum: "$amount" },
+      },
+    },
+  ]);
+
+  const paymentVolume =
+    formatCurrencyTotals(paymentVolumeRows);
+
+  /* ==========================================
+     REVENUE
+  ========================================== */
+
+  const [
+    revenueTodayRows,
+    revenueMonthRows,
+    revenuePreviousMonthRows,
+  ] = await Promise.all([
+    Payment.aggregate([
+      {
+        $match: {
+          status: "successful",
+          paidAt: { $gte: startOfToday },
+        },
+      },
+      {
+        $group: {
+          _id: "$currency",
+          amount: { $sum: "$amount" },
+        },
+      },
+    ]),
+
+    Payment.aggregate([
+      {
+        $match: {
+          status: "successful",
+          paidAt: { $gte: startOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: "$currency",
+          amount: { $sum: "$amount" },
+        },
+      },
+    ]),
+
+    Payment.aggregate([
+      {
+        $match: {
+          status: "successful",
+          paidAt: {
+            $gte: startOfPreviousMonth,
+            $lt: startOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$currency",
+          amount: { $sum: "$amount" },
+        },
+      },
+    ]),
+  ]);
+
+  const revenueToday =
+    formatCurrencyTotals(revenueTodayRows);
+
+  const revenueMonth =
+    formatCurrencyTotals(revenueMonthRows);
+
+  const revenuePreviousMonth =
+    formatCurrencyTotals(revenuePreviousMonthRows);
+
+  let revenueGrowth = 0;
+
+  if (
+    typeof revenueMonth === "number" &&
+    typeof revenuePreviousMonth === "number"
+  ) {
+    if (revenuePreviousMonth > 0) {
+      revenueGrowth =
+        ((revenueMonth - revenuePreviousMonth) /
+          revenuePreviousMonth) *
+        100;
+    } else if (revenueMonth > 0) {
+      revenueGrowth = 100;
+    }
+  }
+
+  /* ==========================================
+     SALES
+  ========================================== */
+
+  const [
+    salesToday,
+    salesMonth,
+    salesPreviousMonth,
+  ] = await Promise.all([
+    Order.countDocuments({
+      status: "paid",
+      paidAt: { $gte: startOfToday },
+    }),
+
+    Order.countDocuments({
+      status: "paid",
+      paidAt: { $gte: startOfMonth },
+    }),
+
+    Order.countDocuments({
+      status: "paid",
+      paidAt: {
+        $gte: startOfPreviousMonth,
+        $lt: startOfMonth,
+      },
+    }),
+  ]);
+
+  let salesGrowth = 0;
+
+  if (salesPreviousMonth > 0) {
+    salesGrowth =
+      ((salesMonth - salesPreviousMonth) /
+        salesPreviousMonth) *
+      100;
+  } else if (salesMonth > 0) {
+    salesGrowth = 100;
+  }
+
+  /* ==========================================
+     USER GROWTH
   ========================================== */
 
   const sevenDaysAgo = new Date();
@@ -51,9 +424,7 @@ const getStats = asyncHandler(async (req, res) => {
   const userGrowth = await User.aggregate([
     {
       $match: {
-        createdAt: {
-          $gte: sevenDaysAgo,
-        },
+        createdAt: { $gte: sevenDaysAgo },
       },
     },
     {
@@ -64,22 +435,16 @@ const getStats = asyncHandler(async (req, res) => {
             date: "$createdAt",
           },
         },
-        users: {
-          $sum: 1,
-        },
+        users: { $sum: 1 },
       },
     },
     {
-      $sort: {
-        _id: 1,
-      },
+      $sort: { _id: 1 },
     },
   ]);
 
   /* ==========================================
      BOOK TREND
-     Uses Learning model while preserving
-     existing frontend response field names.
   ========================================== */
 
   const bookTrend = await Learning.aggregate([
@@ -91,15 +456,11 @@ const getStats = asyncHandler(async (req, res) => {
             date: "$createdAt",
           },
         },
-        books: {
-          $sum: 1,
-        },
+        books: { $sum: 1 },
       },
     },
     {
-      $sort: {
-        _id: 1,
-      },
+      $sort: { _id: 1 },
     },
   ]);
 
@@ -111,51 +472,164 @@ const getStats = asyncHandler(async (req, res) => {
     {
       $group: {
         _id: "$course",
-        activity: {
-          $sum: 1,
-        },
+        activity: { $sum: 1 },
       },
     },
     {
-      $sort: {
-        activity: -1,
-      },
+      $sort: { activity: -1 },
     },
   ]);
 
   /* ==========================================
-     RECENT USERS & LEARNING RESOURCES
-     
-     Uses Learning model while preserving
-     existing frontend response field names.
+     RECENT DATA
   ========================================== */
 
-  const [latestUsers, latestBooks] = await Promise.all([
-    User.find()
-      .select("-password")
-      .sort({ createdAt: -1 })
-      .limit(5),
+  const [latestUsers, latestBooks] =
+    await Promise.all([
+      User.find()
+        .select("-password")
+        .sort({ createdAt: -1 })
+        .limit(5),
 
-    Learning.find()
-      .sort({ createdAt: -1 })
-      .limit(5),
-  ]);
+      Learning.find()
+        .sort({ createdAt: -1 })
+        .limit(5),
+    ]);
+
+  /* ==========================================
+     OPERATIONS
+  ========================================== */
+
+  const operations = {
+    team: {
+      total: totalTeam,
+      active: activeTeam,
+      inactive: totalTeam - activeTeam,
+    },
+
+    affiliates: {
+      total: totalAffiliates,
+      active: activeAffiliates,
+      pendingPayouts,
+      paidPayouts,
+      totalCommission,
+      pendingCommission,
+    },
+
+    investorsPartners: {
+      investors: investorInquiries,
+      partners: partnerInquiries,
+
+      active:
+        repliedInvestorInquiries +
+        repliedPartnerInquiries,
+
+      pending:
+        (investorInquiries - repliedInvestorInquiries) +
+        (partnerInquiries - repliedPartnerInquiries),
+    },
+
+    enrollments: {
+      total: totalEnrollments,
+
+      active:
+        totalEnrollments -
+        completedEnrollments,
+
+      completed: completedEnrollments,
+      inProgress: inProgressEnrollments,
+    },
+
+    certificates: {
+      total: totalCertificates,
+      thisMonth: certificatesThisMonth,
+      pending: pendingCertificates,
+    },
+
+    payments: {
+      total: totalPayments,
+      successful: successfulPayments,
+      pending: pendingPayments,
+      failed: failedPayments,
+      refunded: refundedPayments,
+      volume: paymentVolume,
+    },
+
+    compliance: {
+      configured: false,
+      total: null,
+      compliant: null,
+      pending: null,
+      issues: null,
+    },
+
+    issues: {
+      total: totalIssues,
+      open: openIssues,
+      resolved: resolvedIssues,
+    },
+
+    feedback: {
+      total: totalTestimonials,
+      new: newTestimonials,
+      positive: positiveTestimonials,
+      needsResponse: contactsNeedingResponse,
+    },
+  };
+
+  /* ==========================================
+     RESPONSE
+  ========================================== */
+
+  const stats = {
+    users: totalUsers,
+    courses: totalCourses,
+    books: totalBooks,
+    progress: totalProgress,
+  };
 
   return ApiResponse.success(
     res,
     {
-      totals: {
-        users: totalUsers,
-        courses: totalCourses,
-        books: totalBooks,
-        progress: totalProgress,
-      },
+      stats,
+
+      totals: stats,
 
       summary: {
         verifiedUsers,
         blockedUsers,
         featuredBooks,
       },
+
+      revenue: {
+        total: paymentVolume,
+        today: revenueToday,
+        month: revenueMonth,
+        previousMonth: revenuePreviousMonth,
+        growth: revenueGrowth,
+        byCurrency: paymentVolumeRows,
+      },
+
+      sales: {
+        total: paidOrders,
+        today: salesToday,
+        month: salesMonth,
+        previousMonth: salesPreviousMonth,
+        orders: totalOrders,
+        growth: salesGrowth,
+      },
+
+      operations,
+
+      team: operations.team,
+      affiliates: operations.affiliates,
+      investorsPartners: operations.investorsPartners,
+      enrollments: operations.enrollments,
+      certificates: operations.certificates,
+      payments: operations.payments,
+      compliance: operations.compliance,
+      issues: operations.issues,
+      feedback: operations.feedback,
 
       charts: {
         userGrowth,
@@ -287,4 +761,6 @@ module.exports = {
   deleteUser,
   toggleBlockUser,
 };
+
+
 

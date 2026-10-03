@@ -28,11 +28,11 @@ export default function BookReviewForm({ loading = false, onSubmit }) {
           value={review.rating}
           onChange={change}
           options={[
-            { label: "â˜…â˜…â˜…â˜…â˜…", value: "5" },
-            { label: "â˜…â˜…â˜…â˜…â˜†", value: "4" },
-            { label: "â˜…â˜…â˜…â˜†â˜†", value: "3" },
-            { label: "â˜…â˜…â˜†â˜†â˜†", value: "2" },
-            { label: "â˜…â˜†â˜†â˜†â˜†", value: "1" },
+            { label: "★★★★★", value: "5" },
+            { label: "★★★★☆", value: "4" },
+            { label: "★★★☆☆", value: "3" },
+            { label: "★★☆☆☆", value: "2" },
+            { label: "★☆☆☆☆", value: "1" },
           ]}
         />
 
@@ -51,5 +51,6 @@ export default function BookReviewForm({ loading = false, onSubmit }) {
     </Card>
   );
 }
+
 
 

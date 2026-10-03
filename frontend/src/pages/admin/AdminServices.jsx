@@ -365,7 +365,7 @@ export default function AdminServices() {
                             />
                           ) : (
                             <span className="text-xl text-cyan-400">
-                              {service.icon || "âš™"}
+                              {service.icon || "⚠"}
                             </span>
                           )}
                         </div>
@@ -774,5 +774,6 @@ export default function AdminServices() {
     </section>
   );
 }
+
 
 

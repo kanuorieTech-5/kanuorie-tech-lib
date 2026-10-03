@@ -54,7 +54,7 @@ export default function LibraryHero() {
           <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
             <GraduationCap className="mb-6 h-10 w-10 text-cyan-400" />
 
-            <h3 className="text-3xl font-bold text-white">Beginner â†’ Expert</h3>
+            <h3 className="text-3xl font-bold text-white">Beginner → Expert</h3>
 
             <p className="mt-2 text-slate-300">
               Structured Learning Resources at Every Level

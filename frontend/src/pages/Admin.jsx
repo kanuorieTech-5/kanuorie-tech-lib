@@ -159,8 +159,12 @@ export default function Admin() {
 
   /*
    * Platform operations
+   *
+   * The backend now returns a dedicated database-backed
+   * operations object. Keep the legacy top-level fallbacks
+   * for compatibility with older API responses.
    */
-  const operations = {
+  const operations = dashboard?.operations ?? {
     team: dashboard?.team ?? {},
     affiliates: dashboard?.affiliates ?? {},
     investorsPartners:
@@ -187,9 +191,6 @@ export default function Admin() {
 
   return (
     <div className="space-y-8">
-      {/* ========================================
-          HEADER
-      ======================================== */}
       <DashboardHeader
         title="Admin Dashboard"
         subtitle="Monitor your platform, team, learning operations, finances, partnerships, compliance and user activity."
@@ -197,57 +198,27 @@ export default function Admin() {
 
       <WelcomeBanner />
 
-      {/* ========================================
-          CORE PLATFORM STATS
-      ======================================== */}
       <StatsGrid stats={stats} />
 
-      {/* ========================================
-          BUSINESS OVERVIEW
-      ======================================== */}
       <div className="grid gap-8 xl:grid-cols-2">
         <RevenueSummary data={revenue} />
 
         <SalesOverview data={sales} />
       </div>
 
-      {/* ========================================
-          PLATFORM OPERATIONS
-      ======================================== */}
       <PlatformOperationsOverview
         operations={operations}
       />
 
-      {/* ========================================
-          QUICK ACTIONS
-      ======================================== */}
       <QuickActions />
 
-      {/* ========================================
-          LATEST CONTENT
-      ======================================== */}
-      <div className="grid gap-8 xl:grid-cols-2">
-        <LatestLearning
-          learningResources={learningResources}
-        />
-
-        <LatestCourses courses={courses} />
-      </div>
-
-      {/* ========================================
-          ORDERS & USERS
-      ======================================== */}
       <div className="grid gap-8 xl:grid-cols-2">
         <LatestOrders orders={orders} />
-
-        <LatestUsers users={users} />
       </div>
 
-      {/* ========================================
-          RECENT ACTIVITY
-      ======================================== */}
       <RecentActivity activities={activities} />
     </div>
   );
 }
+
 

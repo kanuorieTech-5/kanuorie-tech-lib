@@ -235,7 +235,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-6 py-5 sm:flex-row">
           {/* Copyright */}
           <p className="text-center text-sm text-gray-500 sm:text-left">
-            Â© {year} KanuorieTech. All rights reserved.
+            © {year} KanuorieTech. All rights reserved.
           </p>
 
           {/* Social */}
@@ -277,4 +277,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 

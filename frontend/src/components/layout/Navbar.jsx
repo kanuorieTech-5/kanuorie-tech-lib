@@ -28,8 +28,8 @@ export default function Navbar() {
             <Link to="/projects">Projects</Link>
             <Link to="/services">Services</Link>
             <Link to="/blog">Blog</Link>
-            <Link to="/contact">ðŸ“ž</Link>
-            <Link to="/profile">ðŸ‘¤</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/profile">Profile</Link>
           </nav>
 
           {/* Search */}

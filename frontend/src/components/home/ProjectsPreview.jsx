@@ -319,7 +319,7 @@ export default function ProjectsPreview() {
                 "
                 aria-label="Previous projects"
               >
-                â†
+                ←
               </button>
 
               <button
@@ -337,7 +337,7 @@ export default function ProjectsPreview() {
                 "
                 aria-label="Next projects"
               >
-                â†’
+                →
               </button>
             </div>
 

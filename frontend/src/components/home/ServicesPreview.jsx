@@ -322,7 +322,7 @@ export default function ServicesPreview() {
                     "
                     aria-label="Previous services"
                   >
-                    â†
+                    ←
                   </button>
 
                   <button
@@ -339,7 +339,7 @@ export default function ServicesPreview() {
                     "
                     aria-label="Next services"
                   >
-                    â†’
+                    →
                   </button>
                 </div>
 

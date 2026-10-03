@@ -30,7 +30,7 @@ export default function PricingCard({
       <ul className="space-y-3">
         {features.map((feature, index) => (
           <li key={index} className="flex items-center gap-2">
-            âœ… {feature}
+            ✅ {feature}
           </li>
         ))}
       </ul>
@@ -41,5 +41,6 @@ export default function PricingCard({
     </Card>
   );
 }
+
 
 

@@ -194,7 +194,7 @@ export default function FeaturesSlider() {
             aria-label="Previous feature"
             className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
           >
-            â†
+            ←
           </button>
 
           <button
@@ -203,7 +203,7 @@ export default function FeaturesSlider() {
             aria-label="Next feature"
             className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
           >
-            â†’
+            →
           </button>
         </div>
 

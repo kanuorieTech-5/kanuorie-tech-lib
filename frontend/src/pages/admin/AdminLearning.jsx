@@ -688,7 +688,7 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
 
       <td className="px-6 py-4 font-semibold text-slate-900">
         {Number(learningResource.price) > 0
-          ? `â‚¦${Number(learningResource.price).toLocaleString()}`
+          ? `₦${Number(learningResource.price).toLocaleString()}`
           : "Free"}
       </td>
 
@@ -760,7 +760,7 @@ function LearningMobileCard({ learningResource, onEdit, onDelete, deletingId }) 
 
           <p className="mt-3 font-semibold text-blue-600">
             {Number(learningResource.price) > 0
-              ? `â‚¦${Number(learningResource.price).toLocaleString()}`
+              ? `₦${Number(learningResource.price).toLocaleString()}`
               : "Free"}
           </p>
         </div>
@@ -1026,7 +1026,7 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
             <FormSection title="Publishing & Pricing">
               <div className="grid gap-5 md:grid-cols-2">
                 <Input
-                  label="Price (â‚¦)"
+                  label="Price (₦)"
                   type="number"
                   name="price"
                   value={form.price}
@@ -1164,6 +1164,7 @@ function Checkbox({ label, ...props }) {
     </label>
   );
 }
+
 
 
 

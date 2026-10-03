@@ -132,7 +132,7 @@ export default function BookDetails() {
 
   const bookPrice =
     book?.price !== undefined && book?.price !== null && book?.price !== ""
-      ? `â‚¦${Number(book.price).toLocaleString()}`
+      ? `₦${Number(book.price).toLocaleString()}`
       : "Free";
 
   const rating = book?.rating || "4.9";
@@ -802,6 +802,7 @@ function SpecificationCard({ label, value }) {
     </Card>
   );
 }
+
 
 
 

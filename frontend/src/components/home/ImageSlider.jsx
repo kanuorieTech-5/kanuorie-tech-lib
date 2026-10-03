@@ -111,13 +111,13 @@ export default function ImageSlider() {
             onClick={prevSlide}
             className="absolute left-5 top-1/2 rounded-full bg-black/40 px-4 py-3 text-white"
           >
-            â†
+            ←
           </button>
           <button
             onClick={nextSlide}
             className=" absolute right-5 top-1/2 rounded-full bg-black/40 px-4 py-3 text-white"
           >
-            â†’
+            →
           </button>
         </div>
       </div>

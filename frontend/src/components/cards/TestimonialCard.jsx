@@ -18,10 +18,11 @@ export default function TestimonialCard({ testimonial }) {
       </p>
 
       <div className="mt-5 flex text-yellow-500">
-        {"â˜…".repeat(testimonial.rating)}
+        {"★".repeat(testimonial.rating)}
       </div>
     </Card>
   );
 }
+
 
 

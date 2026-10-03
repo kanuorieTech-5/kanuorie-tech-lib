@@ -1,4 +1,4 @@
-require("dotenv").config();
+﻿require("dotenv").config();
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -63,19 +63,15 @@ const startServer = async () => {
 
     server.listen(PORT, () => {
       console.log(`
-/* ==================================================
-🚀 KanuorieTech API Started Successfully
-================================================== */
-Environment : ${process.env.NODE_ENV || "development"}
-Port        : ${PORT}
-MongoDB     : Connected
-Socket.IO   : Enabled
-`);
-    });
 
-    /* ==========================================
-       GRACEFUL SHUTDOWN
-    ========================================== */
+      KanuorieTech API Started Successfully
+
+      Environment : ${process.env.NODE_ENV || "development"}
+      Port        : ${PORT}
+      MongoDB     : Connected
+      Socket.IO   : Enabled
+      `);
+    });
 
     const shutdown = (signal) => {
       console.log(`\n${signal} received. Shutting down...`);
@@ -91,10 +87,6 @@ Socket.IO   : Enabled
 
     process.on("SIGTERM", () => shutdown("SIGTERM"));
 
-    /* ==========================================
-       UNHANDLED PROMISE REJECTIONS
-    ========================================== */
-
     process.on("unhandledRejection", (err) => {
       console.error(
         "Unhandled Rejection:",
@@ -103,10 +95,6 @@ Socket.IO   : Enabled
 
       server.close(() => process.exit(1));
     });
-
-    /* ==========================================
-       UNCAUGHT EXCEPTIONS
-    ========================================== */
 
     process.on("uncaughtException", (err) => {
       console.error(
@@ -126,9 +114,5 @@ Socket.IO   : Enabled
     process.exit(1);
   }
 };
-
-/* ==========================================
-   BOOTSTRAP
-========================================== */
 
 startServer();

@@ -88,7 +88,7 @@ export default function ServiceDetails() {
           to="/services"
           className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
         >
-          â† Back to Services
+          ← Back to Services
         </Link>
       </div>
 
@@ -166,7 +166,7 @@ export default function ServiceDetails() {
                       </span>
 
                       <span className="text-right font-semibold">
-                        â‚¦{Number(service.price).toLocaleString()}
+                        ₦{Number(service.price).toLocaleString()}
                       </span>
                     </div>
                   )}
@@ -218,5 +218,6 @@ export default function ServiceDetails() {
     </section>
   );
 }
+
 
 

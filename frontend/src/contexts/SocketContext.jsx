@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     newSocket.on("connect", () => {
-      console.log("ðŸŸ¢ Socket Connected:", newSocket.id);
+      console.log("🟢 Socket Connected:", newSocket.id);
 
       if (user?._id) {
         newSocket.emit("join-user-room", user._id);
@@ -43,7 +43,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     newSocket.on("disconnect", (reason) => {
-      console.log("ðŸ”´ Socket Disconnected:", reason);
+      console.log("🔴 Socket Disconnected:", reason);
     });
 
     newSocket.on("connect_error", (err) => {
@@ -68,5 +68,6 @@ export const useSocket = () => {
 };
 
 export default SocketContext;
+
 
 

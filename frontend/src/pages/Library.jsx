@@ -492,7 +492,7 @@ export default function Library() {
         return [savedItem, ...previous];
       });
 
-      setToast("Saved to your Library âœ“");
+      setToast("Saved to your Library ✓");
 
       /*
        * Kept only for compatibility with
@@ -729,6 +729,7 @@ export default function Library() {
     </main>
   );
 }
+
 
 
 

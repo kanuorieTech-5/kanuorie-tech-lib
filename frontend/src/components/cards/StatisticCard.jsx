@@ -17,10 +17,11 @@ export default function StatisticCard({
           positive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
         }`}
       >
-        {positive ? "â–²" : "â–¼"} {percentage}
+        {positive ? "▲" : "▼"} {percentage}
       </div>
     </Card>
   );
 }
+
 
 

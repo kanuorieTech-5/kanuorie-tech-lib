@@ -14,23 +14,99 @@
   XCircle,
 } from "lucide-react";
 
+/* ========================================
+   VALUE FORMATTERS
+======================================== */
+
+function formatNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return "0";
+  }
+
+  const numericValue = Number(value);
+
+  if (!Number.isNaN(numericValue)) {
+    return numericValue.toLocaleString();
+  }
+
+  return String(value);
+}
+
+function formatCurrency(value) {
+  if (value === null || value === undefined || value === "") {
+    return "0";
+  }
+
+  /*
+   * Backend may return:
+   *
+   * 1250
+   *
+   * or:
+   *
+   * {
+   *   USD: 1250,
+   *   NGN: 50000
+   * }
+   *
+   * We keep currencies separate rather than adding
+   * different currencies together.
+   */
+
+  if (typeof value === "number") {
+    return value.toLocaleString();
+  }
+
+  if (typeof value === "object" && !Array.isArray(value)) {
+    const entries = Object.entries(value).filter(
+      ([, amount]) => amount !== null && amount !== undefined
+    );
+
+    if (!entries.length) {
+      return "0";
+    }
+
+    return entries
+      .map(
+        ([currency, amount]) =>
+          `${currency} ${Number(amount).toLocaleString()}`
+      )
+      .join(" • ");
+  }
+
+  return String(value);
+}
+
+function formatConfiguredValue(value, configured) {
+  if (configured === false) {
+    return "Not configured";
+  }
+
+  return formatNumber(value);
+}
+
+/* ========================================
+   METRIC
+======================================== */
+
 function Metric({
   label,
   value,
   icon: Icon,
   description,
   status,
+  formatter = formatNumber,
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">
             {label}
           </p>
 
-          <p className="mt-2 text-2xl font-bold text-slate-900">
-            {value ?? 0}
+          <p className="mt-2 break-words text-2xl font-bold text-slate-900">
+            {formatter(value)}
           </p>
 
           {description && (
@@ -55,6 +131,10 @@ function Metric({
     </div>
   );
 }
+
+/* ========================================
+   SECTION
+======================================== */
 
 function Section({
   title,
@@ -89,6 +169,10 @@ function Section({
   );
 }
 
+/* ========================================
+   STATUS BADGE
+======================================== */
+
 function StatusBadge({ type = "neutral", children }) {
   const styles = {
     success:
@@ -110,6 +194,10 @@ function StatusBadge({ type = "neutral", children }) {
   );
 }
 
+/* ========================================
+   PLATFORM OPERATIONS
+======================================== */
+
 export default function PlatformOperationsOverview({
   operations = {},
 }) {
@@ -125,11 +213,10 @@ export default function PlatformOperationsOverview({
     feedback = {},
   } = operations;
 
+  const complianceConfigured = compliance.configured !== false;
+
   return (
     <div className="space-y-8">
-      {/* ========================================
-          TEAM
-      ======================================== */}
       <Section
         title="Team Overview"
         description="Monitor team members, roles and account status."
@@ -161,9 +248,6 @@ export default function PlatformOperationsOverview({
         />
       </Section>
 
-      {/* ========================================
-          AFFILIATES & PAYOUTS
-      ======================================== */}
       <Section
         title="Affiliates & Payouts"
         description="Track affiliate activity, commissions and payout status."
@@ -204,43 +288,46 @@ export default function PlatformOperationsOverview({
           label="Total Commission"
           value={affiliates.totalCommission}
           icon={Wallet}
+          formatter={formatCurrency}
         />
 
         <Metric
           label="Pending Commission"
           value={affiliates.pendingCommission}
           icon={Clock3}
+          formatter={formatCurrency}
         />
       </Section>
 
       {/* ========================================
           INVESTORS & PARTNERS
       ======================================== */}
+
       <Section
         title="Investors & Partners"
-        description="Overview of strategic partnerships and investor relationships."
+        description="Overview of strategic partnerships and investor inquiries."
         icon={Handshake}
       >
         <Metric
-          label="Investors"
+          label="Investor Inquiries"
           value={investorsPartners.investors}
           icon={Users}
         />
 
         <Metric
-          label="Partners"
+          label="Partner Inquiries"
           value={investorsPartners.partners}
           icon={Handshake}
         />
 
         <Metric
-          label="Active Partnerships"
+          label="Replied"
           value={investorsPartners.active}
           icon={CheckCircle2}
           status={
             investorsPartners.active !== undefined && (
               <StatusBadge type="success">
-                Active
+                Replied
               </StatusBadge>
             )
           }
@@ -250,12 +337,20 @@ export default function PlatformOperationsOverview({
           label="Pending Requests"
           value={investorsPartners.pending}
           icon={Clock3}
+          status={
+            investorsPartners.pending !== undefined && (
+              <StatusBadge type="warning">
+                Awaiting response
+              </StatusBadge>
+            )
+          }
         />
       </Section>
 
       {/* ========================================
           COURSE ENROLLMENTS
       ======================================== */}
+
       <Section
         title="Course Enrollment Overview"
         description="Monitor learner enrollment and course completion activity."
@@ -296,6 +391,7 @@ export default function PlatformOperationsOverview({
       {/* ========================================
           CERTIFICATES
       ======================================== */}
+
       <Section
         title="Certificates Issued"
         description="Track certificates generated from completed learning."
@@ -323,6 +419,7 @@ export default function PlatformOperationsOverview({
       {/* ========================================
           PAYMENT ACTIVITIES
       ======================================== */}
+
       <Section
         title="Payment Activities"
         description="Monitor payment transactions and payment status."
@@ -383,28 +480,48 @@ export default function PlatformOperationsOverview({
           label="Payment Volume"
           value={payments.volume}
           icon={Wallet}
+          formatter={formatCurrency}
         />
       </Section>
 
       {/* ========================================
           COMPLIANCE
       ======================================== */}
+
       <Section
         title="Compliance Overview"
-        description="Monitor compliance checks, requirements and outstanding items."
+        description={
+          complianceConfigured
+            ? "Monitor compliance checks, requirements and outstanding items."
+            : "A dedicated compliance data source has not been configured yet."
+        }
         icon={ShieldCheck}
       >
         <Metric
           label="Compliance Items"
           value={compliance.total}
           icon={ShieldCheck}
+          formatter={(value) =>
+            formatConfiguredValue(value, complianceConfigured)
+          }
+          status={
+            !complianceConfigured && (
+              <StatusBadge type="neutral">
+                Not configured
+              </StatusBadge>
+            )
+          }
         />
 
         <Metric
           label="Compliant"
           value={compliance.compliant}
           icon={CheckCircle2}
+          formatter={(value) =>
+            formatConfiguredValue(value, complianceConfigured)
+          }
           status={
+            complianceConfigured &&
             compliance.compliant !== undefined && (
               <StatusBadge type="success">
                 Compliant
@@ -417,7 +534,11 @@ export default function PlatformOperationsOverview({
           label="Pending Review"
           value={compliance.pending}
           icon={Clock3}
+          formatter={(value) =>
+            formatConfiguredValue(value, complianceConfigured)
+          }
           status={
+            complianceConfigured &&
             compliance.pending !== undefined && (
               <StatusBadge type="warning">
                 Review required
@@ -430,7 +551,11 @@ export default function PlatformOperationsOverview({
           label="Issues"
           value={compliance.issues}
           icon={AlertTriangle}
+          formatter={(value) =>
+            formatConfiguredValue(value, complianceConfigured)
+          }
           status={
+            complianceConfigured &&
             compliance.issues !== undefined && (
               <StatusBadge type="danger">
                 Attention required
@@ -443,6 +568,7 @@ export default function PlatformOperationsOverview({
       {/* ========================================
           ISSUES
       ======================================== */}
+
       <Section
         title="Issues & Support"
         description="Monitor reported platform issues and support cases."
@@ -484,6 +610,7 @@ export default function PlatformOperationsOverview({
       {/* ========================================
           FEEDBACK
       ======================================== */}
+
       <Section
         title="Feedback & Reviews"
         description="Monitor learner, customer and platform feedback."
@@ -530,6 +657,3 @@ export default function PlatformOperationsOverview({
     </div>
   );
 }
-
-
-
