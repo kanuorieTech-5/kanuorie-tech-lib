@@ -80,6 +80,9 @@ const emptyCourse = {
   currency: "USD",
   published: true,
   tags: [],
+  prerequisites: [],
+  outcomes: [],
+  modules: [],
 };
 
 /* ==========================================
@@ -1962,6 +1965,3 @@ function Toggle({ label, checked, onChange }) {
     </button>
   );
 }
-
-
-
