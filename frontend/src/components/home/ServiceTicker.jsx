@@ -20,7 +20,7 @@ export default function ServiceTicker() {
     <div
       role="marquee"
       aria-label="Services offered by KanuorieTech"
-      className="sticky top-19 z-40 group flex h-10 w-full overflow-hidden bg-[#C9A84C]"
+      className="sticky top-15 z-40 group flex h-10 w-full overflow-hidden bg-[#C9A84C]"
     >
       <div className="flex min-w-max items-center animate-ticker group-hover:[animation-play-state:paused]">
         <span className="whitespace-nowrap px-4 text-[11px] font-medium uppercase tracking-[0.15em] text-[#0A1628]">
