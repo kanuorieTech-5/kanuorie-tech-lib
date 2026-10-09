@@ -4,7 +4,8 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const generateToken = require("../utils/generateToken");
-
+const Affiliate = require("../models/Affiliate");
+const AffiliateReferral = require("../models/AffiliateReferral");
 const register = asyncHandler(async (req, res) => {
   const {
     firstName,
@@ -49,6 +50,50 @@ const register = asyncHandler(async (req, res) => {
     email: normalizedEmail,
     password,
   });
+  /* ==========================================
+   RECORD AFFILIATE REGISTRATION
+========================================== */
+
+const referralCode = String(
+  req.body.referralCode || ""
+)
+  .trim()
+  .toUpperCase();
+
+if (referralCode) {
+  try {
+    const affiliate = await Affiliate.findOne({
+      referralCode,
+      status: "active",
+    });
+
+    if (
+      affiliate &&
+      affiliate.user.toString() !== user._id.toString()
+    ) {
+      // A registered user can only be attributed once.
+      const existingReferral =
+        await AffiliateReferral.findOne({
+          referredUser: user._id,
+        });
+
+      if (!existingReferral) {
+        await AffiliateReferral.create({
+          affiliate: affiliate._id,
+          referralCode: affiliate.referralCode,
+          referredUser: user._id,
+          status: "registered",
+        });
+      }
+    }
+  } catch (error) {
+    // Referral tracking must not prevent account creation.
+    console.error(
+      "Affiliate registration tracking error:",
+      error.message
+    );
+  }
+}
 
   // Generate authentication token
   const token = generateToken(user._id);

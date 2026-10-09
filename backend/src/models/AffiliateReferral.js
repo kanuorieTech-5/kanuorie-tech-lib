@@ -104,6 +104,16 @@ affiliateReferralSchema.index({
   commissionStatus: 1,
 });
 
+affiliateReferralSchema.index(
+  { referredUser: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      referredUser: { $type: "objectId" },
+    },
+  }
+);
+
 module.exports = mongoose.model(
   "AffiliateReferral",
   affiliateReferralSchema

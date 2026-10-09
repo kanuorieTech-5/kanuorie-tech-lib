@@ -1,14 +1,18 @@
 ﻿import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-
 import { useAuth } from "../contexts";
 import { register } from "../services";
-
 import { Button, Card, Input } from "../components/ui";
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const referralCode = (
+    searchParams.get("ref") || ""
+  ).trim().toUpperCase();
+
   const { login } = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -34,10 +38,6 @@ export default function Register() {
     e.preventDefault();
 
     if (loading) return;
-
-    /* ----------------------------------------
-       VALIDATION
-    ---------------------------------------- */
 
     if (
       !form.firstName.trim() ||
@@ -65,26 +65,16 @@ export default function Register() {
     try {
       setLoading(true);
 
-      /*
-       * Only send fields the backend expects.
-       */
       const registrationData = {
         firstName: form.firstName.trim(),
-
         lastName: form.lastName.trim(),
-
         email: form.email.trim().toLowerCase(),
-
         password: form.password,
+        ...(referralCode ? { referralCode } : {}),
       };
 
       const res = await register(registrationData);
 
-      /*
-       * Our ApiResponse structure should
-       * return the authentication data under
-       * res.data.
-       */
       const authData = res?.data;
 
       if (!authData?.token || !authData?.user) {
@@ -93,10 +83,6 @@ export default function Register() {
         );
       }
 
-      /*
-       * Automatically authenticate the
-       * newly registered user.
-       */
       login(authData.user, authData.token);
 
       toast.success("Account created successfully!");

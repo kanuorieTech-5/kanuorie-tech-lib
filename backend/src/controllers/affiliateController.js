@@ -44,11 +44,14 @@ const getAffiliateDashboard = async (
     ] = await Promise.all([
       AffiliateReferral.countDocuments({
         affiliate: affiliateId,
+        status: "clicked",
       }),
 
       AffiliateReferral.countDocuments({
         affiliate: affiliateId,
-        status: "converted",
+        status: {
+          $in: ["registered", "qualified", "converted"],
+        },
       }),
 
       AffiliateReferral.aggregate([
