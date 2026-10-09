@@ -1,5 +1,4 @@
 ﻿import { Link, useNavigate } from "react-router-dom";
-
 import {
   X,
   User,
@@ -36,6 +35,9 @@ export default function MobileMenu({ open, onClose }) {
     }
   };
 
+  const linkClasses =
+    "relative z-10 flex items-center gap-3 px-5 py-3 text-gray-800 transition-colors hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 dark:active:bg-gray-700";
+
   return (
     <div
       id="mobile-navigation-menu"
@@ -44,9 +46,18 @@ export default function MobileMenu({ open, onClose }) {
       aria-modal="true"
       aria-label="Mobile navigation menu"
     >
-      <div className="absolute left-0 top-0 h-full w-72 overflow-y-auto bg-gray-300 shadow-xl dark:bg-gray-950">
+      {/* Background overlay: stays behind the navigation panel */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close mobile menu"
+        className="absolute inset-0 z-0 h-full w-full cursor-default bg-black/40"
+      />
+
+      {/* Navigation panel: stays above the background overlay */}
+      <div className="absolute left-0 top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-400 p-5 dark:border-gray-800">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-400 p-5 dark:border-gray-800">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             Menu
           </h2>
@@ -55,134 +66,78 @@ export default function MobileMenu({ open, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="relative z-10 rounded-lg p-2 text-gray-800 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-200 dark:hover:bg-gray-800"
           >
             <X size={22} />
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex flex-col py-2">
-          {/* Home */}
-          <Link
-            to="/"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+        {/* Navigation links */}
+        <nav className="flex flex-1 flex-col py-2">
+          <Link to="/" onClick={onClose} className={linkClasses}>
             <Home size={18} />
             Home
           </Link>
 
-          {/* Library */}
-          <Link
-            to="/library"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/library" onClick={onClose} className={linkClasses}>
             <LibraryBig size={18} />
             Library
           </Link>
 
-          {/* Courses */}
-          <Link
-            to="/courses"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/courses" onClick={onClose} className={linkClasses}>
             <BookOpen size={18} />
             Courses
           </Link>
 
-          {/* Products */}
-          <Link
-            to="/products"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/products" onClick={onClose} className={linkClasses}>
             <ShoppingBag size={18} />
             Products
           </Link>
 
-          {/* Projects */}
-          <Link
-            to="/projects"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/projects" onClick={onClose} className={linkClasses}>
             <FolderKanban size={18} />
             Projects
           </Link>
 
-          {/* Services */}
-          <Link
-            to="/services"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/services" onClick={onClose} className={linkClasses}>
             <BriefcaseBusiness size={18} />
             Services
           </Link>
 
-          {/* About */}
-          <Link
-            to="/about"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/about" onClick={onClose} className={linkClasses}>
             <Info size={18} />
             About
           </Link>
 
-          {/* Contact */}
-          <Link
-            to="/contact"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/contact" onClick={onClose} className={linkClasses}>
             <Mail size={18} />
             Contact
           </Link>
 
-          {/* Help */}
-          <Link
-            to="/help"
-            onClick={onClose}
-            className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
+          <Link to="/help" onClick={onClose} className={linkClasses}>
             <CircleHelp size={18} />
             Help
           </Link>
 
-          {/* Authenticated User Options */}
+          {/* Authenticated user options */}
           {user && (
             <>
               <div className="my-2 border-t border-gray-400 dark:border-gray-800" />
 
-              {/* Profile */}
-              <Link
-                to="/profile"
-                onClick={onClose}
-                className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-              >
+              <Link to="/profile" onClick={onClose} className={linkClasses}>
                 <User size={18} />
                 Profile
               </Link>
 
-              {/* Settings */}
-              <Link
-                to="/settings"
-                onClick={onClose}
-                className="flex items-center gap-3 px-5 py-3 text-gray-800 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-              >
+              <Link to="/settings" onClick={onClose} className={linkClasses}>
                 <Settings size={18} />
                 Settings
               </Link>
 
-              {/* Logout */}
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 px-5 py-3 text-left text-red-500 transition hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30"
+                className="relative z-10 flex w-full items-center gap-3 px-5 py-3 text-left text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 dark:text-red-400 dark:hover:bg-red-950/30"
               >
                 <LogOut size={18} />
                 Logout
@@ -190,7 +145,7 @@ export default function MobileMenu({ open, onClose }) {
             </>
           )}
 
-          {/* Login / Register */}
+          {/* Login and register options */}
           {!user && (
             <>
               <div className="my-2 border-t border-gray-400 dark:border-gray-800" />
@@ -198,7 +153,7 @@ export default function MobileMenu({ open, onClose }) {
               <Link
                 to="/login"
                 onClick={onClose}
-                className="mx-4 my-1 rounded-lg border border-gray-400 px-4 py-3 text-center font-medium text-gray-800 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="relative z-10 mx-4 my-1 rounded-lg border border-gray-400 px-4 py-3 text-center font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 Login
               </Link>
@@ -206,7 +161,7 @@ export default function MobileMenu({ open, onClose }) {
               <Link
                 to="/register"
                 onClick={onClose}
-                className="mx-4 my-1 rounded-lg bg-blue-600 px-4 py-3 text-center font-medium text-white hover:bg-blue-700"
+                className="relative z-10 mx-4 my-1 rounded-lg bg-blue-600 px-4 py-3 text-center font-medium text-white transition-colors hover:bg-blue-700"
               >
                 Register
               </Link>
@@ -214,16 +169,6 @@ export default function MobileMenu({ open, onClose }) {
           )}
         </nav>
       </div>
-
-      {/* Background overlay */}
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label="Close mobile menu"
-        className="absolute inset-0 h-full w-full cursor-default bg-black/40"
-      />
     </div>
   );
 }
-
-
