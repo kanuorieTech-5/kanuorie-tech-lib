@@ -151,8 +151,8 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link to="/investors" className="transition hover:text-white">
-                Investors
+              <Link to="/Team" className="transition hover:text-white">
+                Leadership/Team
               </Link>
             </li>
 

@@ -19,39 +19,58 @@ export const getFeaturedTeamMembers = async () => {
 };
 
 /* ==========================================
-   ADMIN
+   ADMIN CREATE
 ========================================== */
 
-export const getTeamStats = async () => {
-  const { data } = await API.get("/team/stats");
-
-  return data;
-};
-
 export const createTeamMember = async (member) => {
-  const { data } = await API.post("/team", member);
+  const formData = new FormData();
+
+  Object.entries(member).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      if (key === "image" && value instanceof File) {
+        formData.append("image", value);
+      } else {
+        formData.append(key, value);
+      }
+    }
+  });
+
+  const { data } = await API.post("/team", formData);
 
   return data;
 };
+
+/* ==========================================
+   ADMIN UPDATE
+========================================== */
 
 export const updateTeamMember = async (id, member) => {
-  const { data } = await API.put(`/team/${id}`, member);
+  const formData = new FormData();
+
+  Object.entries(member).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      if (key === "image" && value instanceof File) {
+        formData.append("image", value);
+      } else {
+        formData.append(key, value);
+      }
+    }
+  });
+
+  const { data } = await API.put(
+    `/team/${id}`,
+    formData
+  );
 
   return data;
 };
+
+/* ==========================================
+   ADMIN DELETE
+========================================== */
 
 export const deleteTeamMember = async (id) => {
   const { data } = await API.delete(`/team/${id}`);
 
   return data;
 };
-
-export const reorderTeamMembers = async (items) => {
-  const { data } = await API.put("/team/reorder", {
-    items,
-  });
-
-  return data;
-};
-
-

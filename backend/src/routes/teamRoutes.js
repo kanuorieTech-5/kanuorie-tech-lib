@@ -4,6 +4,7 @@ const router = express.Router();
 
 const protect = require("../middleware/auth");
 const admin = require("../middleware/admin");
+const upload = require("../middleware/upload");
 
 const validate = require("../validators/validate");
 
@@ -16,8 +17,8 @@ const {
   createTeamMember,
   getTeamMembers,
   getTeamMember,
-  updateTeamMember,
   deleteTeamMember,
+  updateTeamMember,
   getFeaturedMembers,
   getTeamStats,
 } = require("../controllers/teamController");
@@ -32,7 +33,6 @@ router.get("/featured", getFeaturedMembers);
 
 /* =========================
    ADMIN STATISTICS
-   IMPORTANT: Must come before /:id
 ========================= */
 
 router.get(
@@ -56,6 +56,7 @@ router.post(
   "/",
   protect,
   admin,
+  upload.single("image"),
   createTeamValidator,
   validate,
   createTeamMember
@@ -69,6 +70,7 @@ router.put(
   "/:id",
   protect,
   admin,
+  upload.single("image"),
   updateTeamValidator,
   validate,
   updateTeamMember

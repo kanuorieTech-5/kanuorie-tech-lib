@@ -1,3 +1,4 @@
+const cloudinary = require("../config/cloudinary");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
@@ -8,7 +9,50 @@ const teamService = require("../services/teamService");
 ========================================== */
 
 const createTeamMember = asyncHandler(async (req, res) => {
-  const member = await teamService.create(req.body);
+  const data = {
+    ...req.body,
+  };
+
+  // Upload image if provided
+  if (req.file) {
+    const dataURI = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+      "base64"
+    )}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "kanuorietech/team",
+      resource_type: "image",
+      transformation: [
+        {
+          width: 1200,
+          crop: "limit",
+        },
+        {
+          quality: "auto",
+        },
+        {
+          fetch_format: "auto",
+        },
+      ],
+    });
+
+    data.image = result.secure_url;
+  }
+
+  // Convert multipart form values to correct types
+  if (data.featured !== undefined) {
+    data.featured = data.featured === "true";
+  }
+
+  if (data.active !== undefined) {
+    data.active = data.active === "true";
+  }
+
+  if (data.order !== undefined) {
+    data.order = Number(data.order);
+  }
+
+  const member = await teamService.create(data);
 
   return ApiResponse.success(
     res,
@@ -55,9 +99,51 @@ const getTeamMember = asyncHandler(async (req, res) => {
 ========================================== */
 
 const updateTeamMember = asyncHandler(async (req, res) => {
+  const data = {
+    ...req.body,
+  };
+
+  // Upload replacement image if selected
+  if (req.file) {
+    const dataURI = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+      "base64"
+    )}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "kanuorietech/team",
+      resource_type: "image",
+      transformation: [
+        {
+          width: 1200,
+          crop: "limit",
+        },
+        {
+          quality: "auto",
+        },
+        {
+          fetch_format: "auto",
+        },
+      ],
+    });
+
+    data.image = result.secure_url;
+  }
+
+  if (data.featured !== undefined) {
+    data.featured = data.featured === "true";
+  }
+
+  if (data.active !== undefined) {
+    data.active = data.active === "true";
+  }
+
+  if (data.order !== undefined) {
+    data.order = Number(data.order);
+  }
+
   const member = await teamService.update(
     req.params.id,
-    req.body
+    data
   );
 
   if (!member) {

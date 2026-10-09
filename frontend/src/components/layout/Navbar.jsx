@@ -1,20 +1,17 @@
 ﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
-
 import { Logo, SearchBar, NotificationBell, UserDropdown, MobileMenu } from ".";
-
 import { useAuth } from "../../contexts";
 
 export default function Navbar() {
   const { user } = useAuth();
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   return (
     <>
-      <header className="border-b bg-gray-300 dark:border-gray-800 dark:bg-gray-950">
+      <header className="relative z-30 w-full border-b border-gray-200 bg-gray-300 dark:border-gray-800 dark:bg-gray-950">
         <div className="mx-auto flex w-full items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
           {/* Logo */}
           <Logo />
@@ -67,16 +64,17 @@ export default function Navbar() {
                   Register
                 </Link>
               </>
-            )}
-
+            )}          
             {/* Mobile Menu Button */}
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="rounded-lg bg-gray-100 p-2 lg:hidden dark:bg-gray-800"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-0 bg-transparent p-2 text-gray-900 outline-none transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 lg:hidden dark:text-gray-100 dark:hover:bg-gray-800"
               aria-label="Open menu"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation-menu"
             >
-              <Menu size={24} />
+              <Menu size={24} strokeWidth={2} aria-hidden="true" />
             </button>
           </div>
         </div>

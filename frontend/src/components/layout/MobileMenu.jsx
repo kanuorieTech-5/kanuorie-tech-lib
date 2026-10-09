@@ -38,7 +38,8 @@ export default function MobileMenu({ open, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 lg:hidden"
+      id="mobile-navigation-menu"
+      className="fixed inset-0 z-[100] lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation menu"
@@ -219,7 +220,7 @@ export default function MobileMenu({ open, onClose }) {
         type="button"
         onClick={onClose}
         aria-label="Close mobile menu"
-        className="absolute inset-0 -z-10 bg-black/40"
+        className="absolute inset-0 h-full w-full cursor-default bg-black/40"
       />
     </div>
   );

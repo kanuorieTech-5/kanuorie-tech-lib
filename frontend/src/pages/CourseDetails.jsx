@@ -147,7 +147,7 @@ export default function CourseDetails() {
   const [loading, setLoading] = useState(true);
   const [enrollmentLoading, setEnrollmentLoading] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
-
+  const [openLessonContentId, setOpenLessonContentId] = useState(null);
   const [completingLesson, setCompletingLesson] = useState(null);
   const [completingModule, setCompletingModule] = useState(null);
   const [submittingAssessment, setSubmittingAssessment] = useState(null);
@@ -1616,30 +1616,7 @@ export default function CourseDetails() {
                                             {lesson.description}
                                           </p>
                                         )}
-
-                                        {lesson.lessonContent && (
-                                          <div
-                                            className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-                                            onClick={(event) =>
-                                              event.stopPropagation()
-                                            }
-                                          >
-                                            <div className="mb-3 flex items-center gap-2">
-                                              <BookOpen
-                                                size={18}
-                                                className="text-blue-600"
-                                              />
-                                              <h5 className="font-bold text-slate-900">
-                                                Lesson Content:
-                                              </h5>
-                                            </div>
-
-                                            <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
-                                              {lesson.lessonContent}
-                                            </div>
-                                          </div>
-                                        )}
-
+                                        
                                         <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
                                           <span className="inline-flex items-center gap-1.5">
                                             <Clock3 size={14} />
@@ -1660,6 +1637,52 @@ export default function CourseDetails() {
                                             </a>
                                           )}
                                         </div>
+
+                                        {lesson.lessonContent && (
+                                          <div className="mt-4">
+                                            <button
+                                              type="button"
+                                              onClick={(event) => {
+                                                event.stopPropagation();
+                                                setOpenLessonContentId((current) =>
+                                                  current === String(lessonId) ? null : String(lessonId),
+                                                );
+                                              }}
+                                              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-100"
+                                            >
+                                              <BookOpen size={17} />
+
+                                              {openLessonContentId === String(lessonId)
+                                                ? "Hide Lesson Content"
+                                                : "View Lesson Content"}
+
+                                              {openLessonContentId === String(lessonId) ? (
+                                                <ChevronUp size={16} />
+                                              ) : (
+                                                <ChevronDown size={16} />
+                                              )}
+                                            </button>
+
+                                            {openLessonContentId === String(lessonId) && (
+                                              <div
+                                                className="mt-4 rounded-2xl border border-blue-200 bg-blue-50/60 p-5"
+                                                onClick={(event) => event.stopPropagation()}
+                                              >
+                                                <div className="mb-3 flex items-center gap-2">
+                                                  <BookOpen size={18} className="text-blue-600" />
+
+                                                  <h5 className="font-bold text-slate-900">
+                                                    Lesson Content
+                                                  </h5>
+                                                </div>
+
+                                                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                                                  {lesson.lessonContent}
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                        )}
 
                                         {Array.isArray(lesson.resources) &&
                                           lesson.resources.length > 0 && (

@@ -792,10 +792,6 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* ==========================================
-          LEARNING BENEFITS
-      ========================================== */}
-
       <section className="bg-slate-50 py-10 lg:py-20">
         <div className="px-6">
           <SectionTitle
