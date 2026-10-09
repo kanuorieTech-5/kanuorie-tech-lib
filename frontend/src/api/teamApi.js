@@ -74,3 +74,14 @@ export const deleteTeamMember = async (id) => {
 
   return data;
 };
+
+
+/* ==========================================
+   ADMIN TEAM STATISTICS
+========================================== */
+
+export const getTeamStats = async () => {
+  const { data } = await API.get("/team/stats");
+
+  return data;
+};
