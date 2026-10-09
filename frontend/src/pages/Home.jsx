@@ -1,5 +1,4 @@
 ﻿import Hero from "../components/home/Hero";
-import ServiceTicker from "../components/home/ServiceTicker";
 import AboutPreview from "../components/home/AboutPreview";
 import ImageSlider from "../components/home/ImageSlider";
 import Features from "../components/home/Features";
@@ -19,8 +18,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
       <Hero />
-
-      <ServiceTicker />
 
       <AboutPreview />
 
