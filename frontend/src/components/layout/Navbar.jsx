@@ -11,8 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="relative z-30 w-full border-b border-gray-200 bg-gray-300 dark:border-gray-800 dark:bg-gray-950">
-        <div className="mx-auto flex w-full items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
+        <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-gray-300 dark:border-gray-800 dark:bg-gray-950">        <div className="mx-auto flex w-full items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
           {/* Logo */}
           <Logo />
 
