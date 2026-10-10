@@ -45,7 +45,7 @@ const communityRoutes = require("./routes/communityRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const certificateRoutes = require("./routes/certificateRoutes");
 const careerApplicationRoutes = require("./routes/careerApplicationRoutes");
-
+const affiliateRoutes = require("./routes/affiliateRoutes");
 const logger = require("./middleware/logger");
 const rateLimiter = require("./middleware/rateLimiter");
 const notFound = require("./middleware/notFound");
@@ -210,7 +210,7 @@ app.use(`${API}/newsletter`, newsletterRoutes);
 app.use(`${API}/notifications`, notificationRoutes);
 app.use(`${API}/contact`, contactRoutes);
 app.use(`${API}/upload`, uploadRoutes);
-
+app.use(`${API}/affiliate`, affiliateRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
