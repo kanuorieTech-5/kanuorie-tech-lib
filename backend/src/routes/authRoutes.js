@@ -6,6 +6,8 @@ const {
   getCurrentUser,
   updateProfile,
   changePassword,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/authController");
 
 const protect = require("../middleware/auth");
@@ -20,6 +22,11 @@ router.route("/register").post(register);
 
 router.route("/login").post(login);
 
+// Password recovery routes
+router.route("/forgot-password").post(forgotPassword);
+
+router.route("/reset-password").post(resetPassword);
+
 /* ==========================================
    PROTECTED ROUTES
 ========================================== */
@@ -28,10 +35,7 @@ router.route("/me").get(protect, getCurrentUser);
 
 router.route("/profile").put(protect, updateProfile);
 
-router.route("/change-password").put(
-  protect,
-  changePassword
-);
+router.route("/change-password").put(protect, changePassword);
 
 /* ==========================================
    EXPORT ROUTER

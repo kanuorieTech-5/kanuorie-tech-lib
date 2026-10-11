@@ -1,71 +1,70 @@
 ﻿import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
+
 import { useAuth } from "../contexts";
 import { register } from "../services";
-import { Button, Card, Input } from "../components/ui";
+import RegisterForm from "../components/forms/RegisterForm";
 
 export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const referralCode = (
-    searchParams.get("ref") || ""
-  ).trim().toUpperCase();
+  const referralCode = (searchParams.get("ref") || "")
+    .trim()
+    .toUpperCase();
 
   const { login } = useAuth();
-
   const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (form) => {
     if (loading) return;
 
     if (
-      !form.firstName.trim() ||
-      !form.lastName.trim() ||
-      !form.email.trim() ||
+      !form.firstName?.trim() ||
+      !form.lastName?.trim() ||
+      !form.email?.trim() ||
       !form.password
     ) {
       toast.error("Please complete all required fields.");
-
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       toast.error("Passwords do not match.");
-
       return;
     }
 
-    if (form.password.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+    if (form.password.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      return;
+    }
 
+    if (!form.userType) {
+      toast.error("Please select the option that best describes you.");
+      return;
+    }
+
+    if (!form.interests?.length) {
+      toast.error("Please select at least one area of interest.");
+      return;
+    }
+
+    if (!form.discoverySource) {
+      toast.error("Please tell us how you discovered KanuorieTech.");
       return;
     }
 
     try {
       setLoading(true);
 
+      const {
+        confirmPassword,
+        ...additionalRegistrationData
+      } = form;
+
       const registrationData = {
+        ...additionalRegistrationData,
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         email: form.email.trim().toLowerCase(),
@@ -74,12 +73,11 @@ export default function Register() {
       };
 
       const res = await register(registrationData);
-
       const authData = res?.data;
 
       if (!authData?.token || !authData?.user) {
         throw new Error(
-          "Registration succeeded but authentication data was not returned.",
+          "Registration succeeded but authentication data was not returned."
         );
       }
 
@@ -94,7 +92,7 @@ export default function Register() {
       toast.error(
         err.response?.data?.message ||
           err.message ||
-          "Registration failed. Please try again.",
+          "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -102,84 +100,13 @@ export default function Register() {
   };
 
   return (
-    <section className="flex min-h-[80vh] items-center justify-center px-6 py-16">
-      <Card className="w-full max-w-lg p-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Create Account</h1>
-
-          <p className="mt-2 text-sm text-gray-500">
-            Join KanuorieTech and start learning today.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid gap-5 md:grid-cols-2">
-            <Input
-              label="First Name"
-              name="firstName"
-              value={form.firstName}
-              onChange={handleChange}
-              autoComplete="given-name"
-              required
-            />
-
-            <Input
-              label="Last Name"
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-              autoComplete="family-name"
-              required
-            />
-          </div>
-
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            autoComplete="email"
-            required
-          />
-
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            autoComplete="new-password"
-            required
-          />
-
-          <Input
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            autoComplete="new-password"
-            required
-          />
-
-          <Button type="submit" loading={loading} fullWidth>
-            Create Account
-          </Button>
-        </form>
-
-        <p className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?
-          <Link
-            to="/login"
-            className="ml-2 font-medium text-blue-600 hover:text-blue-700"
-          >
-            Login
-          </Link>
-        </p>
-      </Card>
+    <section className="min-h-[80vh] bg-slate-50 px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto w-full">
+        <RegisterForm
+          onSubmit={handleSubmit}
+          loading={loading}
+        />
+      </div>
     </section>
   );
 }
-
-

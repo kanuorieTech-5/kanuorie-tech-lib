@@ -1,5 +1,6 @@
 const User = require("../models/User");
-
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
@@ -450,6 +451,204 @@ const changePassword = asyncHandler(
     );
   }
 );
+/* ==========================================
+   FORGOT PASSWORD
+========================================== */
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const email = String(req.body.email || "")
+    .trim()
+    .toLowerCase();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new ApiError(400, "Please provide a valid email address.");
+  }
+
+  const user = await User.findOne({ email });
+
+  // Avoid revealing whether an account exists.
+  if (!user) {
+    return ApiResponse.success(
+      res,
+      null,
+      "If an account exists for that email, password reset instructions will be sent."
+    );
+  }
+
+  // Generate a cryptographically secure reset token.
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // Store only the hash of the token in the database.
+  user.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Token expires after 10 minutes.
+  user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  await user.save({ validateBeforeSave: false });
+
+  const frontendUrl = (
+    process.env.FRONTEND_URL ||
+    process.env.CLIENT_URL ||
+    ""
+  )
+    .split(",")[0]
+    .trim()
+    .replace(/\/+$/, "");
+
+  if (!frontendUrl) {
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save({ validateBeforeSave: false });
+
+    throw new ApiError(
+      500,
+      "Password reset is not configured correctly."
+    );
+  }
+
+  const resetUrl =
+    `${frontendUrl}/reset-password?token=${encodeURIComponent(resetToken)}`;
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Reset Your KanuorieTech Password",
+      text: [
+        `Hello ${user.firstName},`,
+        "",
+        "We received a request to reset your KanuorieTech password.",
+        "",
+        `Open this link to choose a new password: ${resetUrl}`,
+        "",
+        "This link expires in 10 minutes.",
+        "If you did not request a password reset, you can ignore this email.",
+      ].join("\n"),
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;color:#0f172a">
+          <h2 style="color:#2563eb">KanuorieTech</h2>
+          <h3>Reset Your Password</h3>
+          <p>Hello ${escapeHtml(user.firstName)},</p>
+          <p>We received a request to reset your KanuorieTech password.</p>
+          <p style="margin:28px 0">
+            <a href="${resetUrl}"
+               style="background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 22px;border-radius:10px;display:inline-block">
+              Reset Password
+            </a>
+          </p>
+          <p>This link expires in <strong>10 minutes</strong>.</p>
+          <p>If you did not request a password reset, you can safely ignore this email.</p>
+          <hr style="border:0;border-top:1px solid #e2e8f0;margin:28px 0" />
+          <p style="font-size:12px;color:#64748b">KanuorieTech Account Security</p>
+        </div>
+      `,
+    });
+  } catch (error) {
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+
+    await user.save({ validateBeforeSave: false });
+
+    console.error("Password reset email delivery failed:", error.message);
+
+    throw new ApiError(
+      500,
+      "Unable to send the password reset email. Please try again later."
+    );
+  }
+
+  return ApiResponse.success(
+    res,
+    null,
+    "If an account exists for that email, password reset instructions will be sent."
+  );
+});
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[character];
+  });
+}
+
+/* ==========================================
+   RESET PASSWORD
+========================================== */
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password, confirmPassword } = req.body;
+
+  if (!token || !password) {
+    throw new ApiError(
+      400,
+      "Reset token and new password are required."
+    );
+  }
+
+  if (typeof password !== "string" || password.length < 8) {
+    throw new ApiError(
+      400,
+      "Password must be at least 8 characters long."
+    );
+  }
+
+  if (password.length > 128) {
+    throw new ApiError(
+      400,
+      "Password cannot exceed 128 characters."
+    );
+  }
+
+  if (
+    confirmPassword !== undefined &&
+    password !== confirmPassword
+  ) {
+    throw new ApiError(400, "Passwords do not match.");
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(String(token))
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: new Date() },
+  }).select("+password");
+
+  if (!user) {
+    throw new ApiError(
+      400,
+      "This password reset link is invalid or has expired."
+    );
+  }
+
+  // User.js already hashes modified passwords in its pre-save hook.
+  user.password = password;
+  user.passwordResetToken = null;
+  user.passwordResetExpires = null;
+
+  await user.save();
+
+  return ApiResponse.success(
+    res,
+    null,
+    "Password reset successfully. You can now log in with your new password."
+  );
+});
 
 /* ==========================================
    EXPORTS
@@ -461,4 +660,6 @@ module.exports = {
   getCurrentUser,
   updateProfile,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };

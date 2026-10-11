@@ -25,7 +25,7 @@ const Input = forwardRef(
       required = false,
 
       disabled = false,
-
+      showPasswordToggle = true,
       ...props
     },
     ref,
@@ -69,7 +69,7 @@ const Input = forwardRef(
               {
                 "pl-11": leftIcon || variant === "search",
 
-                "pr-11": rightIcon || isPassword || loading,
+                "pr-11": rightIcon || (isPassword && showPasswordToggle) || loading,
 
                 "border-red-500": error,
 
@@ -91,7 +91,7 @@ const Input = forwardRef(
 
           {/* Password */}
 
-          {isPassword && !loading && (
+          {isPassword && showPasswordToggle && !loading && (
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}

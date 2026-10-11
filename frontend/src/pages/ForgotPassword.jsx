@@ -1,53 +1,66 @@
 ﻿import { useState } from "react";
 import toast from "react-hot-toast";
+
 import { forgotPassword } from "../services";
-import { Card, Button } from "../components/common";
-import { Input } from "../components/ui";
+import ForgotPasswordForm from "../components/forms/ForgotPasswordForm";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async ({ email }) => {
+    if (loading) return;
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
 
     try {
       setLoading(true);
+      setSuccess(false);
+      setSubmittedEmail(normalizedEmail);
 
-      await forgotPassword(email);
+      await forgotPassword(normalizedEmail);
 
-      toast.success("Password reset link sent.");
+      setSuccess(true);
+      toast.success("Password reset request submitted.");
+    } catch (error) {
+      console.error("Forgot password error:", error);
 
-      setEmail("");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Unable to send reset email.");
+      toast.error(
+        error?.response?.data?.message ||
+          "Unable to send reset email. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="mb-8 text-center text-3xl font-bold">Forgot Password</h1>
+    <section className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4 py-12 sm:px-6 sm:py-16">
+      <div className="w-full max-w-md">
+        <ForgotPasswordForm
+          key={success ? "success" : "form"}
+          onSubmit={handleSubmit}
+          loading={loading}
+          success={success}
+          initialEmail={submittedEmail}
+        />
 
-        <form onSubmit={submit} className="space-y-5">
-          <Input
-            label="Email Address"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <Button type="submit" loading={loading} fullWidth>
-            Send Reset Link
-          </Button>
-        </form>
-      </Card>
+        {success && (
+          <button
+            type="button"
+            onClick={() => setSuccess(false)}
+            className="mt-4 w-full text-center text-sm font-medium text-blue-600 transition hover:text-blue-700"
+          >
+            Try another email address
+          </button>
+        )}
+      </div>
     </section>
   );
 }
-
-
