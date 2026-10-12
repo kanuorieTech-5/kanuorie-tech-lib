@@ -3,4 +3,5 @@ module.exports = {
   ApiResponse: require("./ApiResponse"),
   asyncHandler: require("./asyncHandler"),
   generateToken: require("./generateToken"),
+  sendEmail: require("./sendEmail"),
 };

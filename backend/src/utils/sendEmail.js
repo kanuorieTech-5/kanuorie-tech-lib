@@ -1,42 +1,53 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+let resendClient;
+
+const getResendClient = () => {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is missing from environment variables.");
+  }
+
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+
+  return resendClient;
+};
 
 const sendEmail = async ({ to, subject, text, html }) => {
-  const {
-    SMTP_HOST,
-    SMTP_PORT,
-    SMTP_USER,
-    SMTP_PASS,
-    SMTP_FROM,
-  } = process.env;
+  const from = process.env.RESEND_FROM;
 
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_FROM) {
+  if (!from) {
+    throw new Error("RESEND_FROM is missing from environment variables.");
+  }
+
+  if (!to || !subject || (!text && !html)) {
     throw new Error(
-      "Email service is not configured. Check your SMTP environment variables."
+      "Email recipient, subject, and message content are required."
     );
   }
 
-  const port = Number(SMTP_PORT || 587);
+  const resend = getResendClient();
 
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port,
-    secure: port === 465,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
-    },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000,
-  });
-
-  return transporter.sendMail({
-    from: SMTP_FROM,
-    to,
+  const { data, error } = await resend.emails.send({
+    from,
+    to: Array.isArray(to) ? to : [to],
     subject,
-    text,
-    html,
+    ...(text ? { text } : {}),
+    ...(html ? { html } : {}),
   });
+
+  if (error) {
+    console.error("Resend email delivery failed:", {
+      name: error.name,
+      message: error.message,
+      statusCode: error.statusCode,
+    });
+
+    throw new Error("Unable to send email through Resend.");
+  }
+
+  return data;
 };
 
 module.exports = sendEmail;
