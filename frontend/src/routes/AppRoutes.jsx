@@ -48,7 +48,7 @@ const PaystackCallback = lazy(() => import("../pages/PaystackCallback"),);
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
-
+const ResetPassword = lazy(() => import("../pages/ResetPassword"));
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Notifications = lazy(() => import("../pages/Notifications"));
@@ -190,6 +190,7 @@ export default function AppRoutes() {
 
             <Route path="register" element={<Register />} />
             <Route path="ForgotPassword" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
           </Route>
         </Route>
 
