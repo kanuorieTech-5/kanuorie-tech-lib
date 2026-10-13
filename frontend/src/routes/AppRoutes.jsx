@@ -191,6 +191,8 @@ export default function AppRoutes() {
             <Route path="register" element={<Register />} />
             <Route path="ForgotPassword" element={<ForgotPassword />} />
             <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="/reset-password/:token"element={<ResetPassword />}
+            />
           </Route>
         </Route>
 
@@ -206,7 +208,7 @@ export default function AppRoutes() {
 
             <Route path="notifications" element={<Notifications />} />
 
-<Route path="certificates" element={<Certificates />} />
+            <Route path="certificates" element={<Certificates />} />
           </Route>
         </Route>
 
