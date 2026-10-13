@@ -20,7 +20,7 @@ export default function ResetPassword() {
     try {
       setLoading(true);
 
-      await resetPassword(token, password);
+      await resetPassword({ token, password, });
 
       toast.success("Password updated.");
 
