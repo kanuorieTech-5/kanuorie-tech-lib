@@ -8,6 +8,10 @@ const API = axios.create({
   },
 });
 
+/* ==========================================
+   REQUEST INTERCEPTOR
+========================================== */
+
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("kanuorietech_token");
@@ -17,8 +21,7 @@ API.interceptors.request.use(
     }
 
     if (config.data instanceof FormData) {
-      // Let the browser/Axios set the correct
-      // multipart/form-data boundary automatically.
+      // Let Axios set the multipart boundary automatically.
       delete config.headers["Content-Type"];
       delete config.headers["content-type"];
     }
@@ -28,15 +31,26 @@ API.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+/* ==========================================
+   RESPONSE INTERCEPTOR
+========================================== */
+
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Clear expired or invalid authentication credentials.
       localStorage.removeItem("kanuorietech_token");
-
       localStorage.removeItem("kanuorietech_user");
 
-      if (!window.location.pathname.includes("/login")) {
+      const pathname = window.location.pathname;
+
+      const isLoginPage = pathname.startsWith("/login");
+      const isPasswordResetPage = pathname.startsWith("/reset-password");
+
+      // Keep password-reset errors on the reset form so the user
+      // can see the error and request a new reset link if necessary.
+      if (!isLoginPage && !isPasswordResetPage) {
         window.location.href = "/login";
       }
     }
@@ -46,5 +60,3 @@ API.interceptors.response.use(
 );
 
 export default API;
-
-
