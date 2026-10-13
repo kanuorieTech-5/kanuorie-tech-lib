@@ -185,15 +185,23 @@ export default function AppRoutes() {
         ========================= */}
 
         <Route element={<AuthLayout />}>
+          {/* Routes handled by PublicRoute */}
           <Route element={<PublicRoute />}>
             <Route path="login" element={<Login />} />
-
             <Route path="register" element={<Register />} />
             <Route path="ForgotPassword" element={<ForgotPassword />} />
-            <Route path="reset-password" element={<ResetPassword />} />
-            <Route path="/reset-password/:token"element={<ResetPassword />}
-            />
           </Route>
+
+          {/* Password reset must not be redirected by PublicRoute */}
+          <Route
+            path="reset-password"
+            element={<ResetPassword />}
+          />
+
+          <Route
+            path="reset-password/:token"
+            element={<ResetPassword />}
+          />
         </Route>
 
         {/* =========================
