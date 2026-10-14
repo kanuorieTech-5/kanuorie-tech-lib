@@ -1004,7 +1004,7 @@ export default function CourseDetails() {
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:py-24">
+        <div className="relative px-6 py-16 sm:py-20 lg:py-24">
           <Link
             to="/courses"
             className="mb-10 inline-flex items-center gap-2 text-sm font-medium text-blue-400 transition hover:text-blue-300"
@@ -1267,7 +1267,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       <section className="bg-slate-50 py-10 sm:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className=" px-6">
           <SectionTitle
             title="Requirements"
             subtitle="What you need before starting."
@@ -1316,7 +1316,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       <section className="py-10 sm:py-10">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="What You'll Learn"
             subtitle="Skills you'll gain by completing this course."
@@ -2400,7 +2400,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       <section className="py-10 sm:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="Meet Your Instructor"
             subtitle="Learn from experienced professionals."
@@ -2435,7 +2435,7 @@ export default function CourseDetails() {
 
       {relatedCourses.length > 0 && (
         <section className="bg-slate-50 py-10 sm:py-24">
-          <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto px-6">
             <SectionTitle
               title="Related Courses"
               subtitle="Continue learning with these courses."

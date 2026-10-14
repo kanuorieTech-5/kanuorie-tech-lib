@@ -151,7 +151,7 @@ export default function Services() {
   return (
     <>
       <section className="bg-slate-950 py-16 text-white lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           {/* HEADER */}
 
           <div className="mb-12">

@@ -83,7 +83,7 @@ export default function Contact() {
       </section>
 
       <section className="py-12">
-        <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2">
+        <div className="mx-auto grid gap-16 px-6 lg:grid-cols-2">
           <div>
             <SectionTitle
               Badge="Send a Message"
@@ -137,7 +137,7 @@ export default function Contact() {
         </div>
       </section>
       <section className="bg-slate-50 py-10">
-        <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid gap-6 px-6 md:grid-cols-2 lg:grid-cols-4">
           {contactInfo.map((item) => (
             <Card key={item.title} className="p-8 text-center">
               <item.icon className="mx-auto mb-5 h-10 w-10 text-blue-600" />

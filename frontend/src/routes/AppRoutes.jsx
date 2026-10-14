@@ -1,20 +1,16 @@
 ﻿import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AdminLayout from "../layouts/AdminLayout";
-
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import AdminRoute from "./AdminRoute";
-
 import ScrollToTop from "../components/common/ScrollToTop";
 /* =========================
    PUBLIC PAGES
 ========================= */
-
 const Home = lazy(() => import("../pages/Home"));
 const About = lazy(() => import("../pages/About"));
 const Contact = lazy(() => import("../pages/Contact"));
@@ -22,19 +18,14 @@ const Help = lazy(() => import("../pages/Help"));
 const Learning = lazy(() => import("../pages/Learning"));
 const LearningDetails = lazy(() => import("../pages/LearningDetails"));
 const Library = lazy(() => import("../pages/Library"));
-
 const Courses = lazy(() => import("../pages/Courses"));
 const CourseDetails = lazy(() => import("../pages/CourseDetails"));
-
 const Products = lazy(() => import("../pages/Products"));
 const ProductDetails = lazy(() => import("../pages/ProductDetails"));
-
 const Projects = lazy(() => import("../pages/Projects"));
 const ProjectDetails = lazy(() => import("../pages/ProjectDetails"));
-
 const Services = lazy(() => import("../pages/Services"));
 const ServiceDetails = lazy(() => import("../pages/ServiceDetails"));
-
 const Blog = lazy(() => import("../pages/Blog"));
 const BlogDetails = lazy(() => import("../pages/BlogDetails"));
 const Careers = lazy(() => import("../pages/Careers"));
@@ -49,42 +40,29 @@ const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("../pages/ResetPassword"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Notifications = lazy(() => import("../pages/Notifications"));
 const Certificates = lazy(() => import("../pages/Certificates"));
 const VerifyCertificate = lazy(() => import("../pages/VerifyCertificate"));
-
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
-
 const CookiePolicy = lazy(() => import("../pages/CookiePolicy"));
-
 const TermsOfService = lazy(() => import("../pages/TermsOfService"));
 
 /* =========================
    ADMIN DASHBOARD
 ========================= */
-
 const AdminDashboard = lazy(() => import("../pages/Admin"));
-
 const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
-
 const AdminLearning = lazy(() => import("../pages/admin/AdminLearning"));
-
 const AdminCourses = lazy(() => import("../pages/admin/AdminCourses"));
-
 const AdminProducts = lazy(() => import("../pages/admin/AdminProducts"));
-
 const AdminProjects = lazy(() => import("../pages/admin/AdminProjects"));
-
 const AdminServices = lazy(() => import("../pages/admin/AdminServices"));
-
 const AdminBlog = lazy(() => import("../pages/admin/AdminBlog"));
-
 const AdminTestimonials = lazy(() => import("../pages/admin/AdminTestimonials"));
-
 const AdminFAQ = lazy(() => import("../pages/admin/AdminFAQ"));
-
 const AdminNewsletter = lazy(() => import("../pages/admin/AdminNewsletter"));
 const AdminCareers = lazy(() => import("../pages/admin/AdminCareers"));
 const AdminTeam = lazy(() => import("../pages/admin/AdminTeam"));
@@ -112,71 +90,34 @@ export default function AppRoutes() {
 
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
-
           <Route path="about" element={<About />} />
-
           <Route path="contact" element={<Contact />} />
-
           <Route path="help" element={<Help />} />
-
-            <Route
-              path="verify-certificate"
-              element={<VerifyCertificate />}
-            />
-
-            <Route
-              path="verify-certificate/:certificateId"
-              element={<VerifyCertificate />}
-            />
-
+          <Route path="verify-certificate" element={<VerifyCertificate />} />
+          <Route path="verify-certificate/:certificateId" element={<VerifyCertificate />} />
           <Route path="Learning" element={<Learning />} />
-
           <Route path="Learning/:id" element={<LearningDetails />} />
-
           <Route path="library" element={<Library />} />
-
           <Route path="courses" element={<Courses />} />
-
           <Route path="courses/:id" element={<CourseDetails />} />
-
           <Route path="products" element={<Products />} />
-
           <Route path="products/:id" element={<ProductDetails />} />
-
           <Route path="projects" element={<Projects />} />
-
           <Route path="projects/:id" element={<ProjectDetails />} />
-
           <Route path="services" element={<Services />} />
-
           <Route path="services/:id" element={<ServiceDetails />} />
-
           <Route path="blog" element={<Blog />} />
-
           <Route path="blog/:id" element={<BlogDetails />} />
-
           <Route path="careers" element={<Careers />} />
-
           <Route path="team" element={<Team />} />
-
           <Route path="faq" element={<FAQ />} />
-
           <Route path="testimonials" element={<Testimonials />} />
-
           <Route path="community" element={<Community />} />
-
           <Route path="affiliate" element={<Affiliate />} />
-
           <Route path="payments" element={<Payments />} />
-          <Route
-            path="payments/paystack/callback"
-            element={<PaystackCallback />}
-          />
-
+          <Route path="payments/paystack/callback" element={<PaystackCallback />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
-
           <Route path="cookie-policy" element={<CookiePolicy />} />
-
           <Route path="terms-of-service" element={<TermsOfService />} />
         </Route>
 
@@ -210,12 +151,10 @@ export default function AppRoutes() {
 
         <Route element={<DashboardLayout />}>
           <Route element={<ProtectedRoute />}>
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
-
             <Route path="settings" element={<Settings />} />
-
             <Route path="notifications" element={<Notifications />} />
-
             <Route path="certificates" element={<Certificates />} />
           </Route>
         </Route>
@@ -232,31 +171,21 @@ export default function AppRoutes() {
 
               {/* Users */}
               <Route path="users" element={<AdminUsers />} />
-
               <Route path="careers" element={<AdminCareers />} />
-
               <Route path="team" element={<AdminTeam />} />
 
               {/* Content */}
               <Route path="learning" element={<AdminLearning />} />
-
               <Route path="courses" element={<AdminCourses />} />
-
               <Route path="products" element={<AdminProducts />} />
-
               <Route path="projects" element={<AdminProjects />} />
-
               <Route path="services" element={<AdminServices />} />
-
               <Route path="blog" element={<AdminBlog />} />
-
               <Route path="testimonials" element={<AdminTestimonials />} />
-
               <Route path="faq" element={<AdminFAQ />} />
 
               {/* Communication */}
               <Route path="newsletter" element={<AdminNewsletter />} />
-
               <Route path="notifications" element={<AdminNotifications />} />
             </Route>
           </Route>

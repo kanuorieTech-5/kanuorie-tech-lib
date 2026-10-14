@@ -52,7 +52,8 @@ export default function TeamApplicationForm({ loading = false, onSubmit }) {
         />
 
         <Input
-          label="Portfolio / GitHub"
+          label="Portfolio / GitHub / Linkedin Url"
+          placeholder="https:..."
           name="portfolio"
           value={form.portfolio}
           onChange={handleChange}

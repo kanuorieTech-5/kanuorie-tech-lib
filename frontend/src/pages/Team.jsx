@@ -79,7 +79,7 @@ export default function Team() {
 
   return (
     <section className="min-h-screen bg-gray-50 px-6 py-12">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto">
 
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <span className="mb-3 inline-block text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">

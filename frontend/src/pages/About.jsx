@@ -368,7 +368,7 @@ export default function About() {
           WHAT WE DO
       ===================================================== */}
       <section className="bg-slate-50 py-4">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
               Our Ecosystem
@@ -425,7 +425,7 @@ export default function About() {
           MISSION & VISION
       ===================================================== */}
       <section className="bg-slate-50 py-10 text-white dark:bg-slate-900 dark:text-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -487,7 +487,7 @@ export default function About() {
           CORE VALUES
       ===================================================== */}
       <section className="bg-slate-950 py-10 text-white dark:bg-slate-900 dark:text-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
               What Guides Us

@@ -120,7 +120,7 @@ export default function ProjectDetails() {
   return (
     <main className="bg-white">
       <section className="border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-14">
+        <div className="mx-auto px-6 py-10 lg:px-8 lg:py-14">
           <Link
             to="/projects"
             className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
@@ -149,7 +149,7 @@ export default function ProjectDetails() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+      <section className="mx-auto px-6 py-12 lg:px-8 lg:py-16">
         <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr]">
           <div>
             {/* Main Image */}
@@ -347,7 +347,7 @@ export default function ProjectDetails() {
 
       {project.description && (
         <section className="border-t border-gray-100 bg-gray-50">
-          <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
+          <div className="mx-auto px-6 py-14 lg:px-8">
             <div className="max-w-4xl">
               <p className="mb-3 text-sm font-bold uppercase tracking-wider text-blue-600">
                 About the Project
@@ -366,7 +366,7 @@ export default function ProjectDetails() {
       )}
 
       <section className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+        <div className="mx-auto px-6 py-10 lg:px-8">
           <Link
             to="/projects"
             className="inline-flex items-center gap-2 font-semibold text-blue-600 transition hover:text-blue-700"

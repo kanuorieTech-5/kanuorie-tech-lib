@@ -49,6 +49,23 @@ const updateProfile = asyncHandler(async (req, res) => {
     avatar,
     phone,
     bio,
+    userType,
+    interests,
+    generalInterests,
+    discoverySource,
+    discoverySourceOther,
+    learningLevel,
+    learningGoals,
+    businessType,
+    businessNeeds,
+    projectTimeline,
+    careerGoal,
+    experienceLevel,
+    preferredOpportunities,
+    techStack,
+    collaborationInterests,
+    otherInterest,
+    marketingConsent,
     settings,
   } = req.body;
 
@@ -137,6 +154,87 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   if (bio !== undefined) {
     user.bio = bio;
+  }
+
+    /* ----------------------------------------
+     REGISTRATION PREFERENCES
+  ---------------------------------------- */
+
+  const allowedUserTypes = [
+    "student",
+    "business_owner",
+    "career_seeker",
+    "developer",
+    "partner",
+    "general",
+  ];
+
+  if (userType !== undefined) {
+    if (!allowedUserTypes.includes(userType)) {
+      throw new ApiError(400, "Invalid user type.");
+    }
+
+    user.userType = userType;
+  }
+
+  const stringFields = [
+    "discoverySource",
+    "discoverySourceOther",
+    "learningLevel",
+    "businessType",
+    "projectTimeline",
+    "careerGoal",
+    "experienceLevel",
+    "techStack",
+    "otherInterest",
+  ];
+
+  stringFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      user[field] = String(req.body[field]).trim();
+    }
+  });
+
+  const arrayFields = [
+    "interests",
+    "generalInterests",
+    "learningGoals",
+    "businessNeeds",
+    "preferredOpportunities",
+    "collaborationInterests",
+  ];
+
+  arrayFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      const value = req.body[field];
+
+      if (!Array.isArray(value)) {
+        throw new ApiError(
+          400,
+          `${field} must be an array.`
+        );
+      }
+
+      user[field] = [
+        ...new Set(
+          value
+            .filter((item) => typeof item === "string")
+            .map((item) => item.trim())
+            .filter(Boolean)
+        ),
+      ];
+    }
+  });
+
+  if (marketingConsent !== undefined) {
+    if (typeof marketingConsent !== "boolean") {
+      throw new ApiError(
+        400,
+        "Marketing consent must be a boolean."
+      );
+    }
+
+    user.marketingConsent = marketingConsent;
   }
 
   /* ----------------------------------------
@@ -240,6 +338,23 @@ const updateProfile = asyncHandler(async (req, res) => {
       role: user.role,
       isVerified: user.isVerified,
       settings: user.settings,
+      userType: user.userType,
+      interests: user.interests,
+      generalInterests: user.generalInterests || [],
+      discoverySource: user.discoverySource,
+      discoverySourceOther: user.discoverySourceOther,
+      learningLevel: user.learningLevel,
+      learningGoals: user.learningGoals,
+      businessType: user.businessType,
+      businessNeeds: user.businessNeeds,
+      projectTimeline: user.projectTimeline,
+      careerGoal: user.careerGoal,
+      experienceLevel: user.experienceLevel,
+      preferredOpportunities: user.preferredOpportunities,
+      techStack: user.techStack,
+      collaborationInterests: user.collaborationInterests,
+      otherInterest: user.otherInterest,
+      marketingConsent: user.marketingConsent,
     },
     "Profile updated successfully."
   );

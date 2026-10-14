@@ -48,7 +48,7 @@ export default function Help() {
     <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
       {/* HERO */}
       <section className="bg-slate-950 py-10 text-white dark:bg-slate-900">
-        <div className="mx-auto max-w-7xl px-6 text-center">
+        <div className="mx-auto px-6 text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10">
             <HelpCircle className="h-9 w-9 text-cyan-400" aria-hidden="true" />
           </div>
@@ -66,7 +66,7 @@ export default function Help() {
 
       {/* HELP CATEGORIES */}
       <section className="bg-slate-50 py-10 dark:bg-slate-950">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             Badge="Help Center"
             title="Find What You Need"

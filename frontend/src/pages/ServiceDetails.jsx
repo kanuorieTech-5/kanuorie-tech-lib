@@ -80,7 +80,7 @@ export default function ServiceDetails() {
   ========================================== */
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <section className="mx-auto px-6 py-16 lg:px-8">
       {/* BACK LINK */}
 
       <div className="mb-8">

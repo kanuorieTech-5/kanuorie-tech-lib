@@ -241,7 +241,7 @@ export default function BookDetails() {
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:py-24">
+        <div className="relative mx-auto px-6 py-16 lg:py-24">
           <Link
             to="/books"
             className="mb-10 inline-flex items-center gap-2 text-blue-400 transition hover:text-blue-300"
@@ -452,7 +452,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       <section className="pb-24">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="About This Book"
             subtitle="Discover what this resource offers and how it can support your learning journey."
@@ -501,7 +501,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       <section className="bg-slate-50 ">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="What You'll Learn"
             subtitle="Key concepts and practical skills covered in this resource."
@@ -526,7 +526,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       <section className="py-10 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="Table of Contents"
             subtitle="A quick overview of the topics covered inside this book."
@@ -558,7 +558,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       <section className="bg-slate-50 py-10 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="Specifications"
             subtitle="Technical information about this publication."
@@ -581,7 +581,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       <section className="py-10 lg:py-20 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto px-6">
           <SectionTitle
             title="About the Author"
             subtitle="Learn more about the creator behind this resource."
@@ -627,7 +627,7 @@ export default function BookDetails() {
 
       {fallbackRelatedBooks.length > 0 && (
         <section className="bg-slate-50 py-10 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto px-6">
             <SectionTitle
               title="Related Books"
               subtitle="Continue your learning journey with more resources from the KanuorieTech Library."

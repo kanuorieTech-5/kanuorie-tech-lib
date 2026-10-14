@@ -796,7 +796,7 @@ function SavedResourcesSection({
 
   return (
     <section className="py-16">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto px-6 lg:px-8">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
@@ -1077,7 +1077,7 @@ function LearningDashboard({
 
   return (
     <section className="border-y border-slate-200 bg-white py-10 dark:border-slate-800 dark:bg-slate-900">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto px-6 lg:px-8">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
             <Sparkles size={20} />
@@ -1971,7 +1971,7 @@ export default function Learning() {
 
         <div className="absolute -bottom-40 left-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="relative mx-auto px-6 py-20 lg:px-8 lg:py-28">
           <motion.div
             initial={{
               opacity: 0,
@@ -2060,7 +2060,7 @@ export default function Learning() {
         id="my-learning"
         className="scroll-mt-24 py-16 lg:py-20"
       >
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           <div className="mb-10">
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
               <GraduationCap size={20} />
@@ -2230,7 +2230,7 @@ export default function Learning() {
         id="explore-courses"
         className="scroll-mt-24 border-t border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900 lg:py-20"
       >
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
               <BookOpen size={20} />

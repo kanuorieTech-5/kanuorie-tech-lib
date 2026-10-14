@@ -236,7 +236,6 @@ export default function ProductDetails() {
           className="
             relative
             mx-auto
-            max-w-7xl
             px-6
             lg:px-8
           "
@@ -554,21 +553,10 @@ export default function ProductDetails() {
       ===================================================== */}
 
       <section
-        className="
-          bg-slate-50
-          px-6
-          py-16
-          lg:px-8
-          lg:py-20
-        "
+        className=" bg-slate-50 px-6 py-16 lg:px-8 lg:py-20"
       >
         <div
-          className="
-            mx-auto
-            grid
-            max-w-7xl
-            gap-8
-            lg:grid-cols-[1fr_360px]
+          className="mx-auto grid gap-8lg:grid-cols-[1fr_360px]
           "
         >
           {/* Main content */}
@@ -592,36 +580,21 @@ export default function ProductDetails() {
             <Card className="p-6 sm:p-8">
               <div className="mb-8">
                 <p
-                  className="
-                    mb-2
-                    text-sm
-                    font-semibold
-                    uppercase
-                    tracking-wider
-                    text-blue-600
-                  "
+                  className="mb-2 text-sm font-semibold
+                    uppercase tracking-wider text-blue-600"
                 >
                   About this technology
                 </p>
 
                 <h2
-                  className="
-                    text-3xl
-                    font-bold
-                    text-slate-900
-                  "
+                  className="text-3xlfont-bold text-slate-900"
                 >
                   {product.name}
                 </h2>
               </div>
 
               <div
-                className="
-                  whitespace-pre-line
-                  text-base
-                  leading-8
-                  text-slate-600
-                "
+                className=" whitespace-pre-line text-base leading-8 text-slate-600"
               >
                 {product.description ||
                   "No detailed description has been provided yet."}
@@ -632,12 +605,7 @@ export default function ProductDetails() {
               {technologies.length > 0 && (
                 <div className="mt-10">
                   <h3
-                    className="
-                      mb-4
-                      text-lg
-                      font-bold
-                      text-slate-900
-                    "
+                    className="mb-4 text-lg font-bold text-slate-900"
                   >
                     Technologies & Tags
                   </h3>
@@ -646,15 +614,7 @@ export default function ProductDetails() {
                     {technologies.map((technology) => (
                       <span
                         key={technology}
-                        className="
-                            rounded-full
-                            bg-slate-100
-                            px-3
-                            py-1.5
-                            text-sm
-                            font-medium
-                            text-slate-700
-                          "
+                        className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700"
                       >
                         {technology}
                       </span>

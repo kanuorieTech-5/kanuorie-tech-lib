@@ -1,4 +1,4 @@
-﻿import { motion } from "framer-motion";
+﻿import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -14,10 +14,15 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import TeamApplicationForm from "../components/forms/TeamApplicationForm";
 import { submitCareerApplication } from "../api/careerApplicationApi";
+
+/* ==========================================
+   ANIMATION
+========================================== */
 
 const fadeUp = {
   hidden: {
@@ -33,6 +38,10 @@ const fadeUp = {
     },
   },
 };
+
+/* ==========================================
+   OPPORTUNITIES
+========================================== */
 
 const opportunities = [
   {
@@ -73,6 +82,10 @@ const opportunities = [
   },
 ];
 
+/* ==========================================
+   BENEFITS
+========================================== */
+
 const benefits = [
   {
     title: "Learn & Grow",
@@ -100,6 +113,10 @@ const benefits = [
   },
 ];
 
+/* ==========================================
+   HIRING PROCESS
+========================================== */
+
 const process = [
   {
     number: "01",
@@ -126,6 +143,10 @@ const process = [
       "Successful applicants receive the next steps and begin working with the KanuorieTech team.",
   },
 ];
+
+/* ==========================================
+   FAQ
+========================================== */
 
 const faqs = [
   {
@@ -155,53 +176,114 @@ const faqs = [
   },
 ];
 
+/* ==========================================
+   CAREERS PAGE
+========================================== */
+
 export default function Careers() {
   const [selectedOpportunity, setSelectedOpportunity] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleApplication = async (form) => {
-  if (loading) return;
+  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
 
-  setLoading(true);
-  setError("");
-
-  try {
-    const application = {
-      ...form,
-      position:
-        form.position?.trim() ||
-        selectedOpportunity ||
-        "General Application",
-    };
-
-    await submitCareerApplication(application);
-
-    setSubmitted(true);
-  } catch (err) {
-    console.error("Career application submission failed:", err);
-
-    setError(
-      err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Unable to submit your application right now. Please try again.",
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+  /* ==========================================
+     OPEN APPLICATION MODAL
+  ========================================== */
 
   const openApplication = (position = "") => {
+    if (loading) return;
+
     setSelectedOpportunity(position);
     setSubmitted(false);
+    setError("");
+    setIsApplicationOpen(true);
+  };
 
-    window.setTimeout(() => {
-      document
-        .getElementById("apply")
-        ?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
+  /* ==========================================
+     CLOSE APPLICATION MODAL
+  ========================================== */
+
+  const closeApplication = () => {
+    if (loading) return;
+
+    setIsApplicationOpen(false);
+  };
+
+  /* ==========================================
+     MODAL SCROLL LOCK + ESCAPE KEY
+  ========================================== */
+
+  useEffect(() => {
+    if (!isApplicationOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape" && !loading) {
+        setIsApplicationOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isApplicationOpen, loading]);
+
+  /* ==========================================
+     SUBMIT APPLICATION
+  ========================================== */
+
+  const handleApplication = async (form) => {
+    if (loading) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const application = {
+        ...form,
+        position:
+          form.position?.trim() ||
+          selectedOpportunity ||
+          "General Application",
+      };
+
+      await submitCareerApplication(application);
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Career application submission failed:", err);
+
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Unable to submit your application right now. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ==========================================
+     RESET MODAL
+  ========================================== */
+
+  const finishApplication = () => {
+    if (loading) return;
+
+    setIsApplicationOpen(false);
+    setSelectedOpportunity("");
+    setSubmitted(false);
+    setError("");
   };
 
   return (
@@ -209,10 +291,11 @@ export default function Careers() {
       {/* =========================================
           HERO
       ========================================= */}
+
       <section className="relative overflow-hidden bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(37,99,235,0.25),transparent_35%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.16),transparent_35%)]" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
+        <div className="relative mx-auto px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -226,7 +309,9 @@ export default function Careers() {
 
             <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
               Build the future of{" "}
-              <span className="text-blue-400">technology and learning.</span>
+              <span className="text-blue-400">
+                technology and learning.
+              </span>
             </h1>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300 sm:text-xl">
@@ -259,7 +344,8 @@ export default function Careers() {
       {/* =========================================
           WHY JOIN
       ========================================= */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+
+      <section className="mx-auto px-6 py-16 lg:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -300,7 +386,9 @@ export default function Careers() {
                   <Icon className="h-5 w-5" />
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold">{benefit.title}</h3>
+                <h3 className="mt-5 text-lg font-bold">
+                  {benefit.title}
+                </h3>
 
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {benefit.description}
@@ -314,8 +402,9 @@ export default function Careers() {
       {/* =========================================
           OPEN OPPORTUNITIES
       ========================================= */}
+
       <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="mx-auto px-6 py-16 lg:px-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
@@ -408,7 +497,8 @@ export default function Careers() {
       {/* =========================================
           EARLY CAREER + COLLABORATION
       ========================================= */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+
+      <section className="mx-auto px-6 py-16 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div
             initial="hidden"
@@ -478,8 +568,9 @@ export default function Careers() {
       {/* =========================================
           INSTRUCTOR
       ========================================= */}
+
       <section className="border-y border-slate-200 bg-slate-100">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="mx-auto px-6 py-16 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
             <div>
               <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
@@ -513,7 +604,8 @@ export default function Careers() {
       {/* =========================================
           HIRING PROCESS
       ========================================= */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+
+      <section className="mx-auto px-6 py-16 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
             Our Process
@@ -550,154 +642,9 @@ export default function Careers() {
       </section>
 
       {/* =========================================
-          APPLICATION
-      ========================================= */}
-      <section id="apply" className="border-y border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-            <div className="lg:sticky lg:top-24">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
-                Join KanuorieTech
-              </p>
-
-              <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-                Tell us what you can build.
-              </h2>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                Whether you're applying for a role, internship, instructor
-                opportunity, or collaboration, introduce yourself and show us
-                what you can bring.
-              </p>
-
-              <div className="mt-7 space-y-4">
-                <div className="flex gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-                  <p className="text-sm text-slate-600">
-                    Tell us about your experience and interests.
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-                  <p className="text-sm text-slate-600">
-                    Share your portfolio, GitHub, or relevant work.
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-                  <p className="text-sm text-slate-600">
-                    We'll review your application and contact you if there's
-                    a suitable next step.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                <div className="flex gap-3">
-                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
-
-                  <div>
-                    <p className="font-semibold text-blue-950">
-                      Prefer email?
-                    </p>
-
-                    <p className="mt-1 text-sm leading-6 text-blue-800">
-                      You can also contact the KanuorieTech team directly
-                      through the contact page.
-                    </p>
-
-                    <Link
-                      to="/contact"
-                      className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-blue-700"
-                    >
-                      Contact us
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              {submitted ? (
-                <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
-                    <CheckCircle2 className="h-7 w-7" />
-                  </div>
-
-                  <h3 className="mt-5 text-2xl font-black text-emerald-950">
-                    Application received
-                  </h3>
-
-                  <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-emerald-800">
-                    Thank you for your interest in KanuorieTech. Your
-                    application has been submitted successfully. Our team will
-                    review your application and contact you if there is a
-                    suitable next step.
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSubmitted(false);
-                      setSelectedOpportunity("");
-                      setError("");
-                    }}
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
-                  >
-                    Submit another application
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  {error && (
-                    <div
-                      role="alert"
-                      className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-                    >
-                      {error}
-                    </div>
-                  )}
-
-                  {selectedOpportunity && (
-                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-                          Applying for
-                        </p>
-
-                        <p className="mt-1 text-sm font-bold text-blue-950">
-                          {selectedOpportunity}
-                        </p>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedOpportunity("")}
-                        className="rounded-lg p-2 text-blue-600 transition hover:bg-blue-100"
-                        aria-label="Clear selected position"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  <TeamApplicationForm
-                    loading={loading}
-                    onSubmit={handleApplication}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================
           FAQ
       ========================================= */}
+
       <section className="mx-auto max-w-4xl px-6 py-16 lg:px-8">
         <div className="text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
@@ -720,9 +667,8 @@ export default function Careers() {
               >
                 <button
                   type="button"
-                  onClick={() =>
-                    setOpenFaq(isOpen ? null : index)
-                  }
+                  onClick={() => setOpenFaq(isOpen ? null : index)}
+                  aria-expanded={isOpen}
                   className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left sm:px-6"
                 >
                   <span className="font-semibold text-slate-900">
@@ -750,8 +696,9 @@ export default function Careers() {
       {/* =========================================
           FINAL CTA
       ========================================= */}
+
       <section className="bg-slate-950">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center lg:px-8">
+        <div className="mx-auto px-6 py-16 text-center lg:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400">
             <UserPlus className="h-7 w-7" />
           </div>
@@ -775,8 +722,134 @@ export default function Careers() {
           </button>
         </div>
       </section>
+
+      {/* =========================================
+          APPLICATION MODAL
+      ========================================= */}
+
+      <AnimatePresence>
+        {isApplicationOpen && (
+          <motion.div
+            key="application-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                closeApplication();
+              }
+            }}
+            className="fixed inset-0 z-[200] flex items-center justify-center overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-sm sm:p-6"
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="application-modal-title"
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+            >
+              {/* Modal header */}
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-8">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                    Careers at KanuorieTech
+                  </p>
+
+                  <h2
+                    id="application-modal-title"
+                    className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+                  >
+                    {submitted
+                      ? "Application received"
+                      : "Apply for an opportunity"}
+                  </h2>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {submitted
+                      ? "Thank you for your interest in joining our team."
+                      : "Tell us about yourself, your skills, and what you can contribute."}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={closeApplication}
+                  disabled={loading}
+                  aria-label="Close application form"
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Modal body */}
+              <div className="max-h-[calc(100dvh-140px)] overflow-y-auto p-5 sm:p-8">
+                {submitted ? (
+                  <div className="py-8 text-center">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+                      <CheckCircle2 className="h-8 w-8" />
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-black text-slate-900">
+                      Your application was submitted!
+                    </h3>
+
+                    <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">
+                      Our team will review your application and contact you if
+                      there is a suitable next step.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={finishApplication}
+                      className="mt-6 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                    >
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    {selectedOpportunity && (
+                      <div className="mb-5 flex items-center gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                          <BriefcaseBusiness className="h-5 w-5" />
+                        </div>
+
+                        <div>
+                          <p className="text-xs font-semibold text-blue-600">
+                            Applying for
+                          </p>
+
+                          <p className="mt-1 font-bold text-blue-950">
+                            {selectedOpportunity}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {error && (
+                      <div
+                        role="alert"
+                        className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                      >
+                        {error}
+                      </div>
+                    )}
+
+                    <TeamApplicationForm
+                      loading={loading}
+                      onSubmit={handleApplication}
+                    />
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-

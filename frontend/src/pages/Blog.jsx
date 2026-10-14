@@ -257,7 +257,7 @@ export default function Blog() {
       </section>
 
       <section className="bg-white py-12 lg:py-14">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto  px-6 lg:px-8">
           <label htmlFor="blog-search" className="sr-only">
             Search articles
           </label>
@@ -273,7 +273,7 @@ export default function Blog() {
 
       {featuredPost ? (
         <section className="bg-slate-50 py-10">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto px-6 lg:px-8">
             <SectionTitle title="Featured Article" subtitle="Editor's pick" />
 
             <Card
@@ -376,7 +376,7 @@ export default function Blog() {
 
       {currentBlogs.length > 0 && (
         <section className="bg-white py-10 text-white dark:bg-slate-900 dark:text-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto px-6 lg:px-8">
             <SectionTitle
               title="Latest Articles"
               subtitle="Stay updated with technology"

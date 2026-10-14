@@ -7,12 +7,30 @@ const ApiError = require("../utils/ApiError");
 const generateToken = require("../utils/generateToken");
 const Affiliate = require("../models/Affiliate");
 const AffiliateReferral = require("../models/AffiliateReferral");
+
 const register = asyncHandler(async (req, res) => {
   const {
     firstName,
     lastName,
     email,
     password,
+    userType,
+    interests,
+    generalInterests,
+    discoverySource,
+    discoverySourceOther,
+    learningLevel,
+    learningGoals,
+    businessType,
+    businessNeeds,
+    projectTimeline,
+    careerGoal,
+    experienceLevel,
+    preferredOpportunities,
+    techStack,
+    collaborationInterests,
+    otherInterest,
+    marketingConsent,
   } = req.body;
 
   // Validate required fields
@@ -28,73 +46,155 @@ const register = asyncHandler(async (req, res) => {
     );
   }
 
-  const normalizedEmail = email
-    .trim()
-    .toLowerCase();
+  const normalizedEmail = email.trim().toLowerCase();
 
-  // Check existing user
+  // Check whether the email already exists
   const existingUser = await User.findOne({
     email: normalizedEmail,
   });
 
   if (existingUser) {
-    throw new ApiError(
-      409,
-      "Email already exists."
-    );
+    throw new ApiError(409, "Email already exists.");
   }
 
-  // Create user
+  // Safely normalize multiple-choice answers
+  const normalizeArray = (value) => {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .filter((item) => typeof item === "string")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  };
+
+  // Create the user and save registration preferences to MongoDB
   const user = await User.create({
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     email: normalizedEmail,
     password,
+
+    userType: [
+      "student",
+      "business_owner",
+      "career_seeker",
+      "developer",
+      "partner",
+      "general",
+    ].includes(userType)
+      ? userType
+      : "general",
+
+    interests: normalizeArray(interests),
+    generalInterests: normalizeArray(generalInterests),
+
+    discoverySource:
+      typeof discoverySource === "string"
+        ? discoverySource.trim()
+        : "",
+
+    discoverySourceOther:
+      discoverySource === "other" &&
+      typeof discoverySourceOther === "string"
+        ? discoverySourceOther.trim()
+        : "",
+
+    learningLevel:
+      typeof learningLevel === "string"
+        ? learningLevel.trim()
+        : "",
+
+    learningGoals: normalizeArray(learningGoals),
+
+    businessType:
+      typeof businessType === "string"
+        ? businessType.trim()
+        : "",
+
+    businessNeeds: normalizeArray(businessNeeds),
+
+    projectTimeline:
+      typeof projectTimeline === "string"
+        ? projectTimeline.trim()
+        : "",
+
+    careerGoal:
+      typeof careerGoal === "string"
+        ? careerGoal.trim()
+        : "",
+
+    experienceLevel:
+      typeof experienceLevel === "string"
+        ? experienceLevel.trim()
+        : "",
+
+    preferredOpportunities: normalizeArray(
+      preferredOpportunities
+    ),
+
+    techStack:
+      typeof techStack === "string"
+        ? techStack.trim()
+        : "",
+
+    collaborationInterests: normalizeArray(
+      collaborationInterests
+    ),
+
+    otherInterest:
+      typeof otherInterest === "string"
+        ? otherInterest.trim()
+        : "",
+
+    marketingConsent: marketingConsent === true,
   });
+
   /* ==========================================
-   RECORD AFFILIATE REGISTRATION
-========================================== */
+     RECORD AFFILIATE REGISTRATION
+  ========================================== */
 
-const referralCode = String(
-  req.body.referralCode || ""
-)
-  .trim()
-  .toUpperCase();
+  const referralCode = String(
+    req.body.referralCode || ""
+  )
+    .trim()
+    .toUpperCase();
 
-if (referralCode) {
-  try {
-    const affiliate = await Affiliate.findOne({
-      referralCode,
-      status: "active",
-    });
+  if (referralCode) {
+    try {
+      const affiliate = await Affiliate.findOne({
+        referralCode,
+        status: "active",
+      });
 
-    if (
-      affiliate &&
-      affiliate.user.toString() !== user._id.toString()
-    ) {
-      // A registered user can only be attributed once.
-      const existingReferral =
-        await AffiliateReferral.findOne({
-          referredUser: user._id,
-        });
+      if (
+        affiliate &&
+        affiliate.user.toString() !== user._id.toString()
+      ) {
+        // A user can only be attributed to one affiliate.
+        const existingReferral =
+          await AffiliateReferral.findOne({
+            referredUser: user._id,
+          });
 
-      if (!existingReferral) {
-        await AffiliateReferral.create({
-          affiliate: affiliate._id,
-          referralCode: affiliate.referralCode,
-          referredUser: user._id,
-          status: "registered",
-        });
+        if (!existingReferral) {
+          await AffiliateReferral.create({
+            affiliate: affiliate._id,
+            referralCode: affiliate.referralCode,
+            referredUser: user._id,
+            status: "registered",
+          });
+        }
       }
+    } catch (error) {
+      // Affiliate tracking must not prevent account creation.
+      console.error(
+        "Affiliate registration tracking error:",
+        error.message
+      );
     }
-  } catch (error) {
-    // Referral tracking must not prevent account creation.
-    console.error(
-      "Affiliate registration tracking error:",
-      error.message
-    );
   }
-}
 
   // Generate authentication token
   const token = generateToken(user._id);
@@ -103,7 +203,6 @@ if (referralCode) {
     res,
     {
       token,
-
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -114,6 +213,25 @@ if (referralCode) {
         bio: user.bio,
         role: user.role,
         isVerified: user.isVerified,
+
+        // Saved registration preferences
+        userType: user.userType,
+        interests: user.interests,
+        generalInterests: user.generalInterests,
+        discoverySource: user.discoverySource,
+        discoverySourceOther: user.discoverySourceOther,
+        learningLevel: user.learningLevel,
+        learningGoals: user.learningGoals,
+        businessType: user.businessType,
+        businessNeeds: user.businessNeeds,
+        projectTimeline: user.projectTimeline,
+        careerGoal: user.careerGoal,
+        experienceLevel: user.experienceLevel,
+        preferredOpportunities: user.preferredOpportunities,
+        techStack: user.techStack,
+        collaborationInterests: user.collaborationInterests,
+        otherInterest: user.otherInterest,
+        marketingConsent: user.marketingConsent,
       },
     },
     "Account created successfully.",

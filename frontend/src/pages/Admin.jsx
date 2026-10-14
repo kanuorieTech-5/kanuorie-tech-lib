@@ -3,10 +3,7 @@ import {
   DashboardHeader,
   WelcomeBanner,
   StatsGrid,
-  LatestLearning,
-  LatestCourses,
   LatestOrders,
-  LatestUsers,
   RecentActivity,
   QuickActions,
   RevenueSummary,
@@ -92,7 +89,7 @@ export default function Admin() {
   ======================================== */
   if (error) {
     return (
-      <section className="mx-auto max-w-7xl px-6 py-10">
+      <section className="mx-auto px-6 py-10">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
           <h2 className="text-lg font-semibold text-red-700">
             Dashboard unavailable

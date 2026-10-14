@@ -19,14 +19,14 @@ const userSchema = new mongoose.Schema(
       maxlength: 50,
     },
 
-   email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true,
-    match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
-  },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
+    },
 
     password: {
       type: String,
@@ -51,6 +51,109 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: 500,
       default: "",
+    },
+
+   // Registration preferences and onboarding answers
+    userType: {
+      type: String,
+      enum: [
+        "student",
+        "business_owner",
+        "career_seeker",
+        "developer",
+        "partner",
+        "general",
+      ],
+      default: "general",
+    },
+
+    interests: {
+      type: [String],
+      default: [],
+    },
+
+    generalInterests: {
+      type: [String],
+      default: [],
+    },
+
+    discoverySource: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    discoverySourceOther: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    learningLevel: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    learningGoals: {
+      type: [String],
+      default: [],
+    },
+
+    businessType: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    businessNeeds: {
+      type: [String],
+      default: [],
+    },
+
+    projectTimeline: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    careerGoal: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    experienceLevel: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    preferredOpportunities: {
+      type: [String],
+      default: [],
+    },
+
+    techStack: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    collaborationInterests: {
+      type: [String],
+      default: [],
+    },
+
+    otherInterest: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    marketingConsent: {
+      type: Boolean,
+      default: false,
     },
 
     role: {

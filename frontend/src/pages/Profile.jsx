@@ -28,6 +28,7 @@ export default function Profile() {
   const fileInputRef = useRef(null);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -35,6 +36,24 @@ export default function Profile() {
     email: "",
     phone: "",
     bio: "",
+
+    userType: "general",
+    interests: [],
+    generalInterests: [],
+    discoverySource: "",
+    discoverySourceOther: "",
+    learningLevel: "",
+    learningGoals: [],
+    businessType: "",
+    businessNeeds: [],
+    projectTimeline: "",
+    careerGoal: "",
+    experienceLevel: "",
+    preferredOpportunities: [],
+    techStack: [],
+    collaborationInterests: [],
+    otherInterest: "",
+    marketingConsent: false,
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -52,6 +71,45 @@ export default function Profile() {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const buildFormData = (profile = {}) => ({
+    firstName: profile.firstName || "",
+    lastName: profile.lastName || "",
+    email: profile.email || "",
+    phone: profile.phone || "",
+    bio: profile.bio || "",
+    userType: profile.userType || "general",
+    interests: Array.isArray(profile.interests) ? profile.interests : [],
+    generalInterests: Array.isArray(profile.generalInterests)
+      ? profile.generalInterests
+      : [],
+    discoverySource: profile.discoverySource || "",
+    discoverySourceOther: profile.discoverySourceOther || "",
+    learningLevel: profile.learningLevel || "",
+    learningGoals: Array.isArray(profile.learningGoals)
+      ? profile.learningGoals
+      : [],
+    businessType: profile.businessType || "",
+    businessNeeds: Array.isArray(profile.businessNeeds)
+      ? profile.businessNeeds
+      : [],
+    projectTimeline: profile.projectTimeline || "",
+    careerGoal: profile.careerGoal || "",
+    experienceLevel: profile.experienceLevel || "",
+    preferredOpportunities: Array.isArray(profile.preferredOpportunities)
+      ? profile.preferredOpportunities
+      : [],
+    techStack: Array.isArray(profile.techStack)
+      ? profile.techStack
+      : typeof profile.techStack === "string" && profile.techStack.trim()
+        ? profile.techStack.split(",").map((item) => item.trim()).filter(Boolean)
+        : [],
+    collaborationInterests: Array.isArray(profile.collaborationInterests)
+      ? profile.collaborationInterests
+      : [],
+    otherInterest: profile.otherInterest || "",
+    marketingConsent: profile.marketingConsent === true,
+  });
+
   /* ==========================================
      LOAD USER INTO FORM
   ========================================== */
@@ -59,13 +117,7 @@ export default function Profile() {
   useEffect(() => {
     if (!user) return;
 
-    setFormData({
-      firstName: user.firstName || "",
-      lastName: user.lastName || "",
-      email: user.email || "",
-      phone: user.phone || "",
-      bio: user.bio || "",
-    });
+    setFormData(buildFormData(user));
   }, [user]);
 
   /* ==========================================
@@ -88,13 +140,7 @@ export default function Profile() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    setFormData({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      bio: user?.bio || "",
-    });
+    setFormData(buildFormData(user));
 
     setSelectedFile(null);
 
@@ -134,6 +180,25 @@ export default function Profile() {
     setFormData((previous) => ({
       ...previous,
       [name]: value,
+    }));
+  };
+
+  const handleArrayChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
+    }));
+  };
+
+  const handlePreferenceArrayChange = (name, values) => {
+    setFormData((previous) => ({
+      ...previous,
+      [name]: values,
     }));
   };
 
@@ -257,6 +322,23 @@ export default function Profile() {
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         bio: formData.bio.trim(),
+        userType: formData.userType,
+        interests: formData.interests,
+        generalInterests: formData.generalInterests,
+        discoverySource: formData.discoverySource.trim(),
+        discoverySourceOther: formData.discoverySourceOther.trim(),
+        learningLevel: formData.learningLevel.trim(),
+        learningGoals: formData.learningGoals,
+        businessType: formData.businessType.trim(),
+        businessNeeds: formData.businessNeeds,
+        projectTimeline: formData.projectTimeline.trim(),
+        careerGoal: formData.careerGoal.trim(),
+        experienceLevel: formData.experienceLevel.trim(),
+        preferredOpportunities: formData.preferredOpportunities,
+        techStack: formData.techStack.join(","),
+        collaborationInterests: formData.collaborationInterests,
+        otherInterest: formData.otherInterest.trim(),
+        marketingConsent: formData.marketingConsent,
       };
 
       if (!payload.firstName) {
@@ -297,6 +379,96 @@ export default function Profile() {
     }
   };
 
+  const formatLabel = (value = "") =>
+    value
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+
+  const registrationDetails = [
+    {
+      label: "Account Type",
+      value: user?.userType,
+    },
+    {
+      label: "Interests",
+      value: user?.interests,
+    },
+    {
+      label: "General Interests",
+      value: user?.generalInterests,
+    },
+    {
+      label: "How You Found Us",
+      value:
+        user?.discoverySource === "other"
+          ? user?.discoverySourceOther || "Other"
+          : user?.discoverySource,
+    },
+    {
+      label: "Learning Level",
+      value: user?.learningLevel,
+    },
+    {
+      label: "Learning Goals",
+      value: user?.learningGoals,
+    },
+    {
+      label: "Business Type",
+      value: user?.businessType,
+    },
+    {
+      label: "Business Needs",
+      value: user?.businessNeeds,
+    },
+    {
+      label: "Project Timeline",
+      value: user?.projectTimeline,
+    },
+    {
+      label: "Career Goal",
+      value: user?.careerGoal,
+    },
+    {
+      label: "Experience Level",
+      value: user?.experienceLevel,
+    },
+    {
+      label: "Preferred Opportunities",
+      value: user?.preferredOpportunities,
+    },
+    {
+      label: "Technology Stack",
+      value: user?.techStack,
+    },
+    {
+      label: "Collaboration Interests",
+      value: user?.collaborationInterests,
+    },
+    {
+      label: "Other Interests",
+      value: user?.otherInterest,
+    },
+    {
+      label: "Marketing Emails",
+      value:
+        typeof user?.marketingConsent === "boolean"
+          ? user.marketingConsent
+            ? "Opted in"
+            : "Not opted in"
+          : "",
+    },
+  ].filter((item) => {
+    if (Array.isArray(item.value)) {
+      return item.value.length > 0;
+    }
+
+    return (
+      item.value !== undefined &&
+      item.value !== null &&
+      String(item.value).trim() !== ""
+    );
+  });
+
   /* ==========================================
      AVATAR DISPLAY
   ========================================== */
@@ -323,9 +495,265 @@ export default function Profile() {
     );
   }
 
-  /* ==========================================
-     PAGE
-  ========================================== */
+  const PREFERENCE_OPTIONS = {
+  userType: [
+    { label: "Student / Learner", value: "student" },
+    { label: "Career / Job Seeker", value: "career_seeker" },
+    { label: "Developer / Tech Professional", value: "developer" },
+    { label: "Partner / Affiliate / Collaborator", value: "partner" },
+    { label: "Business Owner / Entrepreneur", value: "business_owner" },
+    { label: "General User / Exploring", value: "general" },
+  ],
+
+  interests: [
+    { label: "Web Development", value: "web_development" },
+    { label: "Programming", value: "programming" },
+    { label: "Online Courses & Certifications", value: "online_courses" },
+    { label: "Books & Learning Resources", value: "books" },
+    { label: "Website & Software Services", value: "software_services" },
+    { label: "E-commerce Solutions", value: "ecommerce" },
+    { label: "Mobile Apps & Custom Applications", value: "mobile_apps" },
+    { label: "Job Opportunities", value: "jobs" },
+    { label: "Internships", value: "internships" },
+    { label: "Freelancing & Career Growth", value: "freelancing" },
+    { label: "Community & Networking", value: "community" },
+    { label: "Affiliate Marketing & Partnerships", value: "affiliate" },
+    { label: "Artificial Intelligence", value: "ai" },
+    { label: "UI/UX Design", value: "ui_ux" },
+  ],
+
+  discoverySource: [
+    { label: "Google / Search Engine", value: "google" },
+    { label: "YouTube", value: "youtube" },
+    { label: "TikTok", value: "tiktok" },
+    { label: "Instagram", value: "instagram" },
+    { label: "Facebook", value: "facebook" },
+    { label: "LinkedIn", value: "linkedin" },
+    { label: "WhatsApp / Telegram", value: "whatsapp" },
+    { label: "Friend / Family / Colleague", value: "friend" },
+    { label: "Referral Link", value: "referral" },
+    { label: "Online Community / Forum", value: "community" },
+    { label: "Advertisement", value: "advertisement" },
+    { label: "Event / Workshop / Training", value: "event" },
+    { label: "Other", value: "other" },
+    { label: "I don't remember", value: "unknown" },
+  ],
+
+  learningLevel: [
+    { label: "Beginner", value: "beginner" },
+    { label: "Intermediate", value: "intermediate" },
+    { label: "Advanced", value: "advanced" },
+    { label: "Still exploring", value: "exploring" },
+  ],
+
+  learningGoals: [
+    { label: "HTML & CSS", value: "html_css" },
+    { label: "JavaScript", value: "javascript" },
+    { label: "React & Frontend Development", value: "react" },
+    { label: "Backend Development", value: "backend" },
+    { label: "Full-Stack Development", value: "fullstack" },
+    { label: "UI/UX Design", value: "ui_ux" },
+    { label: "Databases & APIs", value: "databases" },
+    { label: "Python Programming", value: "python" },
+    { label: "AI & Machine Learning", value: "ai" },
+    { label: "Professional Certifications", value: "certification" },
+    { label: "Building a Portfolio", value: "portfolio" },
+  ],
+
+  generalInterests: [
+    { label: "Technology", value: "technology" },
+    { label: "Entrepreneurship", value: "entrepreneurship" },
+    { label: "Digital Creativity", value: "digital_creativity" },
+    { label: "Research & Innovation", value: "research" },
+    { label: "Education", value: "education" },
+    { label: "I'm still exploring", value: "not_sure" },
+  ],
+
+  businessType: [
+    { label: "Startup", value: "startup" },
+    { label: "Small Business", value: "small_business" },
+    { label: "Medium-Sized Business", value: "medium_business" },
+    { label: "Large Enterprise", value: "enterprise" },
+    { label: "E-commerce Business", value: "ecommerce" },
+    { label: "Education / Training", value: "education" },
+    { label: "Personal Brand", value: "personal_brand" },
+    { label: "Nonprofit Organization", value: "nonprofit" },
+    { label: "Other Business Type", value: "other" },
+  ],
+
+  businessNeeds: [
+    { label: "Business Website", value: "business_website" },
+    { label: "E-commerce Store", value: "ecommerce" },
+    { label: "Web Application", value: "web_app" },
+    { label: "Mobile Application", value: "mobile_app" },
+    { label: "Business Automation", value: "automation" },
+    { label: "Custom Software", value: "custom_software" },
+    { label: "Website Maintenance", value: "maintenance" },
+    { label: "Branding & Digital Design", value: "branding" },
+    { label: "Digital Marketing", value: "marketing" },
+    { label: "Technical Consultation", value: "consultation" },
+  ],
+
+  projectTimeline: [
+    { label: "As soon as possible", value: "immediately" },
+    { label: "Within one month", value: "within_month" },
+    { label: "Within three months", value: "within_three_months" },
+    { label: "Within six months", value: "within_six_months" },
+    { label: "Just researching for now", value: "researching" },
+  ],
+
+  careerGoal: [
+    { label: "Frontend Developer", value: "frontend_developer" },
+    { label: "Backend Developer", value: "backend_developer" },
+    { label: "Full-Stack Developer", value: "fullstack_developer" },
+    { label: "Mobile App Developer", value: "mobile_developer" },
+    { label: "UI/UX Designer", value: "ui_ux_designer" },
+    { label: "Data Analyst", value: "data_analyst" },
+    { label: "AI / Machine Learning Engineer", value: "ai_engineer" },
+    { label: "Cybersecurity Professional", value: "cybersecurity" },
+    { label: "Tech Entrepreneur", value: "tech_entrepreneur" },
+    { label: "Other Technology Career", value: "other_tech" },
+  ],
+
+  experienceLevel: [
+    { label: "No experience yet", value: "no_experience" },
+    { label: "Entry-level", value: "entry_level" },
+    { label: "Intermediate", value: "intermediate" },
+    { label: "Experienced", value: "experienced" },
+    { label: "Professional", value: "professional" },
+  ],
+
+  preferredOpportunities: [
+    { label: "Full-Time Jobs", value: "full_time" },
+    { label: "Part-Time Jobs", value: "part_time" },
+    { label: "Remote Opportunities", value: "remote" },
+    { label: "Onsite Opportunities", value: "onsite" },
+    { label: "Hybrid Opportunities", value: "hybrid" },
+    { label: "Internships", value: "internship" },
+    { label: "Freelance Projects", value: "freelance" },
+    { label: "Scholarships", value: "scholarships" },
+    { label: "Mentorship", value: "mentorship" },
+  ],
+
+  techStack: [
+    { label: "HTML", value: "html" },
+    { label: "CSS", value: "css" },
+    { label: "JavaScript", value: "javascript" },
+    { label: "TypeScript", value: "typescript" },
+    { label: "React", value: "react" },
+    { label: "Angular", value: "angular" },
+    { label: "Vue", value: "vue" },
+    { label: "Tailwind CSS", value: "tailwind_css" },
+    { label: "Node.js", value: "node_js" },
+    { label: "Express.js", value: "express_js" },
+    { label: "MongoDB", value: "mongodb" },
+    { label: "SQL", value: "sql" },
+    { label: "Python", value: "python" },
+    { label: "Git & GitHub", value: "git_github" },
+  ],
+
+  collaborationInterests: [
+    { label: "Affiliate Programme", value: "affiliate" },
+    { label: "Business Partnership", value: "business" },
+    { label: "Teaching / Training", value: "teaching" },
+    { label: "Content Collaboration", value: "content" },
+    { label: "Community Building", value: "community" },
+    { label: "Technology Projects", value: "technology" },
+    { label: "Open-Source Projects", value: "open_source" },
+    { label: "Mentorship", value: "mentorship" },
+  ],
+};
+
+const PreferenceSelect = ({
+  label,
+  name,
+  value,
+  options,
+  onChange,
+}) => (
+  <label className="block space-y-2">
+    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+      {label}
+    </span>
+
+    <select
+      name={name}
+      value={value || ""}
+      onChange={onChange}
+      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+    >
+      <option value="">Select an option</option>
+
+      {options.map((option) => {
+        const item =
+          typeof option === "string"
+            ? { label: option, value: option }
+            : option;
+
+        return (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        );
+      })}
+    </select>
+  </label>
+);
+
+const PreferenceCheckboxGroup = ({
+  label,
+  name,
+  options,
+  values = [],
+  onChange,
+}) => (
+  <fieldset className="space-y-3">
+    <legend className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+      {label}
+    </legend>
+
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {options.map((option) => {
+        const item =
+          typeof option === "string"
+            ? { label: option, value: option }
+            : option;
+
+        const checked = values.includes(item.value);
+
+        return (
+          <label
+            key={item.value}
+            className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm transition ${
+              checked
+                ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
+                : "border-slate-200 hover:border-blue-400 dark:border-slate-700"
+            }`}
+          >
+            <input
+              type="checkbox"
+              name={name}
+              value={item.value}
+              checked={checked}
+              onChange={(event) => {
+                const nextValues = event.target.checked
+                  ? [...new Set([...values, item.value])]
+                  : values.filter((value) => value !== item.value);
+
+                onChange(name, nextValues);
+              }}
+              className="h-4 w-4 shrink-0 accent-blue-600"
+            />
+
+            <span className="text-slate-700 dark:text-slate-200">
+              {item.label}
+            </span>
+          </label>
+        );
+      })}
+    </div>
+  </fieldset>
+);
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950 sm:px-6 lg:px-8">
@@ -365,9 +793,9 @@ export default function Profile() {
 
               <div className="flex items-end gap-4">
                 <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
-                  {user.avatar ? (
+                  {displayAvatar ? (
                     <img
-                      src={user.avatar}
+                      src={displayAvatar}
                       alt={`${user.firstName} ${user.lastName}`}
                       className="h-full w-full object-cover"
                     />
@@ -480,6 +908,51 @@ export default function Profile() {
               </div>
             </div>
 
+            {/* REGISTRATION PREFERENCES */}
+              {registrationDetails.length > 0 && (
+                <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
+                  <div className="mb-5">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Your Interests & Preferences
+                    </h3>
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      The information you shared when joining KanuorieTech.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {registrationDetails.map((item) => (
+                      <div
+                        key={item.label}
+                        className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
+                      >
+                        <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                          {item.label}
+                        </p>
+
+                        {Array.isArray(item.value) ? (
+                          <div className="flex flex-wrap gap-2">
+                            {item.value.map((value) => (
+                              <span
+                                key={value}
+                                className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                              >
+                                {formatLabel(value)}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
+                            {formatLabel(String(item.value))}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+              
             {/* BIO */}
 
             <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
@@ -493,13 +966,13 @@ export default function Profile() {
             </div>
           </div>
           <button
-              type="button"
-              onClick={openEditModal}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
-             >
-              <Edit3 className="h-4 w-4" />
-              Edit Profile
-            </button>
+            type="button"
+            onClick={openEditModal}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            >
+            <Edit3 className="h-4 w-4" />
+            Edit Profile
+          </button>
         </div>
       </div>
 
@@ -901,6 +1374,163 @@ export default function Profile() {
                     className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
                   />
                 </div>
+
+                {/* REGISTRATION PREFERENCES */}
+
+                <section className="space-y-5 border-t border-gray-200 pt-6 dark:border-gray-800">
+                  <div className="space-y-6">
+  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+    Your Preferences
+  </h3>
+
+  <PreferenceSelect
+    label="What best describes you?"
+    name="userType"
+    value={formData.userType}
+    options={PREFERENCE_OPTIONS.userType}
+    onChange={handleChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="What are you interested in?"
+    name="interests"
+    options={PREFERENCE_OPTIONS.interests}
+    values={formData.interests}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="What else interests you?"
+    name="generalInterests"
+    options={PREFERENCE_OPTIONS.generalInterests}
+    values={formData.generalInterests}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceSelect
+    label="How did you discover KanuorieTech?"
+    name="discoverySource"
+    value={formData.discoverySource}
+    options={PREFERENCE_OPTIONS.discoverySource}
+    onChange={handleChange}
+  />
+
+  {formData.discoverySource === "other" && (
+    <label className="block space-y-2">
+      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+        Please specify your discovery source
+      </span>
+
+      <input
+        name="discoverySourceOther"
+        value={formData.discoverySourceOther}
+        onChange={handleChange}
+        placeholder="Enter your source"
+        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
+      />
+    </label>
+  )}
+
+  <PreferenceSelect
+    label="What is your learning level?"
+    name="learningLevel"
+    value={formData.learningLevel}
+    options={PREFERENCE_OPTIONS.learningLevel}
+    onChange={handleChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="What do you want to achieve?"
+    name="learningGoals"
+    options={PREFERENCE_OPTIONS.learningGoals}
+    values={formData.learningGoals}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceSelect
+    label="What type of business do you have?"
+    name="businessType"
+    value={formData.businessType}
+    options={PREFERENCE_OPTIONS.businessType}
+    onChange={handleChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="What services does your business need?"
+    name="businessNeeds"
+    options={PREFERENCE_OPTIONS.businessNeeds}
+    values={formData.businessNeeds}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceSelect
+    label="When do you plan to start your project?"
+    name="projectTimeline"
+    value={formData.projectTimeline}
+    options={PREFERENCE_OPTIONS.projectTimeline}
+    onChange={handleChange}
+  />
+
+  <PreferenceSelect
+    label="What is your career goal?"
+    name="careerGoal"
+    value={formData.careerGoal}
+    options={PREFERENCE_OPTIONS.careerGoal}
+    onChange={handleChange}
+  />
+
+  <PreferenceSelect
+    label="How much experience do you have?"
+    name="experienceLevel"
+    value={formData.experienceLevel}
+    options={PREFERENCE_OPTIONS.experienceLevel}
+    onChange={handleChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="What opportunities interest you?"
+    name="preferredOpportunities"
+    options={PREFERENCE_OPTIONS.preferredOpportunities}
+    values={formData.preferredOpportunities}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="Which technologies do you know or want to learn?"
+    name="techStack"
+    options={PREFERENCE_OPTIONS.techStack}
+    values={formData.techStack}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <PreferenceCheckboxGroup
+    label="How would you like to collaborate?"
+    name="collaborationInterests"
+    options={PREFERENCE_OPTIONS.collaborationInterests}
+    values={formData.collaborationInterests}
+    onChange={handlePreferenceArrayChange}
+  />
+
+  <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+    <input
+      type="checkbox"
+      checked={formData.marketingConsent}
+      onChange={(event) =>
+        setFormData((previous) => ({
+          ...previous,
+          marketingConsent: event.target.checked,
+        }))
+      }
+      className="mt-1 h-4 w-4 accent-blue-600"
+    />
+
+    <span className="text-sm text-slate-700 dark:text-slate-200">
+      I agree to receive KanuorieTech updates, learning resources, and
+      relevant opportunities.
+    </span>
+  </label>
+</div>
+                </section>
 
                 {/* ACTIONS */}
 
