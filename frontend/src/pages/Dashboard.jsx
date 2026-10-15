@@ -104,8 +104,9 @@ function getItemText(item) {
 }
 
 function getPreferences(user) {
-  return [
+  const fields = [
     user?.interests,
+    user?.generalInterests,
     user?.learningGoals,
     user?.businessNeeds,
     user?.preferredOpportunities,
@@ -115,11 +116,23 @@ function getPreferences(user) {
     user?.userType,
     user?.learningLevel,
     user?.experienceLevel,
+    user?.businessType,
+    user?.projectTimeline,
+    user?.discoverySource,
     user?.otherInterest,
-  ]
-    .flatMap((value) =>
-      Array.isArray(value) ? value : value ? [value] : [],
-    )
+  ];
+
+  return fields
+    .flatMap((value) => {
+      if (Array.isArray(value)) return value;
+
+      // The backend stores techStack as a comma-separated string.
+      if (typeof value === "string" && value.includes(",")) {
+        return value.split(",");
+      }
+
+      return value ? [value] : [];
+    })
     .map((value) =>
       normalizeText(
         typeof value === "object"
@@ -127,7 +140,7 @@ function getPreferences(user) {
           : value,
       ),
     )
-    .filter(Boolean);
+  .filter(Boolean);
 }
 
 const PREFERENCE_ALIASES = {
@@ -486,6 +499,64 @@ export default function Dashboard() {
     (item) => getProgressValue(item) > 0,
   );
 
+  const formatPreference = (value) =>
+    String(value || "")
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+  const profileGroups = [
+    {
+      label: "Account type",
+      values: user?.userType ? [user.userType] : [],
+    },
+    {
+      label: "Interests",
+      values: user?.interests || [],
+    },
+    {
+      label: "General interests",
+      values: user?.generalInterests || [],
+    },
+    {
+      label: "Learning goals",
+      values: user?.learningGoals || [],
+    },
+    {
+      label: "Learning level",
+      values: user?.learningLevel ? [user.learningLevel] : [],
+    },
+    {
+      label: "Career goal",
+      values: user?.careerGoal ? [user.careerGoal] : [],
+    },
+    {
+      label: "Experience level",
+      values: user?.experienceLevel ? [user.experienceLevel] : [],
+    },
+    {
+      label: "Technology stack",
+      values: Array.isArray(user?.techStack)
+        ? user.techStack
+        : String(user?.techStack || "")
+            .split(",")
+            .filter(Boolean),
+    },
+    {
+      label: "Preferred opportunities",
+      values: user?.preferredOpportunities || [],
+    },
+    {
+      label: "Business needs",
+      values: user?.businessNeeds || [],
+    },
+    {
+      label: "Collaboration interests",
+      values: user?.collaborationInterests || [],
+    },
+  ].filter((group) => group.values.length > 0);
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-8 pb-10">
       <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-indigo-700 to-slate-900 p-6 text-white shadow-lg sm:p-9">
@@ -504,13 +575,6 @@ export default function Dashboard() {
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            to="/courses"
-            className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-blue-800 transition hover:bg-blue-50"
-          >
-            Explore courses
-          </Link>
-
-          <Link
             to="/profile"
             className="rounded-xl border border-white/40 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
@@ -519,44 +583,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            label: "Available courses",
-            value: data.courses.length,
-            href: "/courses",
-          },
-          {
-            label: "Learning resources",
-            value: data.learning.length,
-            href: "/Learning",
-          },
-          {
-            label: "Saved resources",
-            value: data.saved.length,
-            href: "/library",
-          },
-          {
-            label: "Courses in progress",
-            value: displayProgress.length,
-            href: "/courses",
-          },
-        ].map((stat) => (
-          <Link
-            key={stat.label}
-            to={stat.href}
-            className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
-          >
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {stat.label}
-            </p>
-
-            <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
-              {loading ? "—" : stat.value}
-            </p>
-          </Link>
-        ))}
-      </section>
+      
 
       {errors.length > 0 && (
         <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
@@ -565,8 +592,99 @@ export default function Dashboard() {
         </p>
       )}
 
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8">
+  <div className="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+        PERSONALIZED EXPERIENCE
+      </p>
+
+      <h2 className="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
+        Your profile preferences
+      </h2>
+
+      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        Your saved interests, learning goals, and career preferences help
+        personalize your KanuorieTech experience.
+      </p>
+    </div>
+
+    <Link
+      to="/profile"
+      className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+    >
+      Edit profile
+    </Link>
+  </div>
+
+  {profileGroups.length > 0 ? (
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {profileGroups.map((group) => (
+        <div
+          key={group.label}
+          className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700"
+        >
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {group.label}
+          </h3>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {group.values.map((value, index) => (
+              <span
+                key={`${group.label}-${value}-${index}`}
+                className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
+              >
+                {formatPreference(value)}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-6 text-center dark:border-slate-700">
+      <p className="font-semibold text-slate-800 dark:text-white">
+        Your preferences haven't been added yet.
+      </p>
+
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        Complete your profile to personalize your recommendations.
+      </p>
+
+      <Link
+        to="/profile"
+        className="mt-4 inline-block font-semibold text-blue-600 dark:text-blue-400"
+      >
+        Complete your profile →
+      </Link>
+    </div>
+  )}
+</section>
+
+<section>
+        <SectionHeading title="Services for your goals" link="/services" />
+
+        {loading ? (
+          <EmptySection>Loading services…</EmptySection>
+        ) : recommendedServices.length ? (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {recommendedServices.map((item, index) => (
+              <ResourceCard
+                key={getId(item) || `${getTitle(item)}-${index}`}
+                item={item}
+                type="service"
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptySection>
+            No services are available to recommend right now.
+          </EmptySection>
+        )}
+      </section>
+
       <section>
-        <SectionHeading title="Recommended for you" link="/courses" />
+        <SectionHeading title="Recommended Courses for you" link="/courses" />
 
         <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
           {preferences.length
@@ -741,28 +859,6 @@ export default function Dashboard() {
         ) : (
           <EmptySection>
             There are no products to recommend right now.
-          </EmptySection>
-        )}
-      </section>
-
-      <section>
-        <SectionHeading title="Services for your goals" link="/services" />
-
-        {loading ? (
-          <EmptySection>Loading services…</EmptySection>
-        ) : recommendedServices.length ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {recommendedServices.map((item, index) => (
-              <ResourceCard
-                key={getId(item) || `${getTitle(item)}-${index}`}
-                item={item}
-                type="service"
-              />
-            ))}
-          </div>
-        ) : (
-          <EmptySection>
-            No services are available to recommend right now.
           </EmptySection>
         )}
       </section>

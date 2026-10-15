@@ -12,7 +12,11 @@ import { useAuth } from "../../contexts";
 
 export default function UserDropdown() {
   const { user, logout } = useAuth();
-
+  const firstName =
+  user?.firstName ||
+  user?.name?.trim().split(/\s+/)[0] ||
+  user?.username ||
+  "there";
   const [open, setOpen] = useState(false);
 
   const menuRef = useRef(null);
@@ -32,7 +36,7 @@ export default function UserDropdown() {
   if (!user) return null;
 
   return (
-    <div ref={menuRef} className="relative">
+    <div ref={menuRef} className="relative z-50 flex items-center gap-2 p-">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-100"
@@ -45,6 +49,9 @@ export default function UserDropdown() {
           alt={user.name}
           className="h-9 w-9 rounded-full object-cover"
         />
+        <p className="hidden text-sm font-medium text-gray-800 md:block">
+          {user.name}
+        </p>
 
         <span className="hidden md:block">{user.name}</span>
 
@@ -53,22 +60,6 @@ export default function UserDropdown() {
 
       {open && (
         <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border bg-white shadow-xl">
-          <Link
-            to="/profile"
-            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
-          >
-            <User size={18} />
-            Profile
-          </Link>
-
-          <Link
-            to="/settings"
-            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
-          >
-            <Settings size={18} />
-            Settings
-          </Link>
-
           {user.role === "admin" && (
             <Link
               to="/admin"
@@ -78,14 +69,6 @@ export default function UserDropdown() {
               Dashboard
             </Link>
           )}
-
-          <button
-            onClick={logout}
-            className="flex w-full items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
         </div>
       )}
     </div>

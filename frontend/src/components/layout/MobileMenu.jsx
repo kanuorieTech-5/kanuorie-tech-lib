@@ -3,6 +3,7 @@ import {
   X,
   User,
   Settings,
+  Bell,
   Home,
   LibraryBig,
   BookOpen,
@@ -16,10 +17,17 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../contexts";
-
+import UserDropdown from "./UserDropdown";
 export default function MobileMenu({ open, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const firstName =
+    user?.firstName ||
+    user?.name?.trim().split(/\s+/)[0] ||
+    user?.username ||
+    "there";
+  const isAdmin =
+    user?.role === "admin" || user?.isAdmin === true;
 
   if (!open) {
     return null;
@@ -46,7 +54,7 @@ export default function MobileMenu({ open, onClose }) {
       aria-modal="true"
       aria-label="Mobile navigation menu"
     >
-      {/* Background overlay: stays behind the navigation panel */}
+      {/* Background overlay */}
       <button
         type="button"
         onClick={onClose}
@@ -54,7 +62,7 @@ export default function MobileMenu({ open, onClose }) {
         className="absolute inset-0 z-0 h-full w-full cursor-default bg-black/40"
       />
 
-      {/* Navigation panel: stays above the background overlay */}
+      {/* Navigation panel */}
       <div className="absolute left-0 top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950">
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-400 p-5 dark:border-gray-800">
@@ -72,8 +80,52 @@ export default function MobileMenu({ open, onClose }) {
           </button>
         </div>
 
-        {/* Navigation links */}
+        {/* Main navigation */}
         <nav className="flex flex-1 flex-col py-2">
+          {/* Welcome banner */}
+          {user && (
+            <section className="mx-4 my-4 overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 via-indigo-700 to-slate-900 p-5 text-white shadow-lg">
+               <div className="mt-4 flex items-center gap-3">
+                <img
+                  src={
+                    user.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user.name || user.username || "User"
+                    )}&background=ffffff&color=1d4ed8&bold=true`
+                  }
+                  alt={`${user.name || user.username || "User"}'s avatar`}
+                  className="h-14 w-14 shrink-0 rounded-full border-2 border-white/70 object-cover shadow-md"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src =
+                      "https://ui-avatars.com/api/?name=User&background=ffffff&color=1d4ed8";
+                  }}
+                />
+
+                <div className="min-w-0">
+                  <h2 className="text-xl font-extrabold">
+                    Welcome back, {firstName}!
+                  </h2>
+                  
+                </div>
+              </div>
+
+              <Link
+                to="/profile"
+                onClick={onClose}
+                className="mt-4 inline-flex rounded-xl border border-white/40 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                My Profile
+              </Link>
+            </section>
+          )}
+
+          {/* Admin dropdown */}
+          {user?.role === "admin" && (
+            <div className="mx-4 mb-3">
+              <UserDropdown />
+            </div>
+          )}
           <Link to="/" onClick={onClose} className={linkClasses}>
             <Home size={18} />
             Home
@@ -119,36 +171,39 @@ export default function MobileMenu({ open, onClose }) {
             Help
           </Link>
 
-          {/* Authenticated user options */}
+          {/* Account navigation */}
           {user && (
             <>
-              <div className="my-2 border-t border-gray-400 dark:border-gray-800" />
+              <div className="mx-5 my-3 border-t border-gray-400 dark:border-gray-800" />
+                <Link
+                  to="/notifications"
+                  onClick={onClose}
+                  className={linkClasses}
+                >
+                  <Bell size={18} />
+                  Notifications
+                </Link>
 
-              <Link to="/profile" onClick={onClose} className={linkClasses}>
-                <User size={18} />
-                Profile
-              </Link>
+                <Link to="/settings" onClick={onClose} className={linkClasses}>
+                  <Settings size={18} />
+                  Settings
+                </Link>
 
-              <Link to="/settings" onClick={onClose} className={linkClasses}>
-                <Settings size={18} />
-                Settings
-              </Link>
-
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="relative z-10 flex w-full items-center gap-3 px-5 py-3 text-left text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 dark:text-red-400 dark:hover:bg-red-950/30"
-              >
-                <LogOut size={18} />
-                Logout
-              </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="relative z-10 mt-3 flex w-full items-center gap-3 px-5 py-3 text-left text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 dark:text-red-400 dark:hover:bg-red-950/30"
+                >
+                  <LogOut size={18} />
+                  Logout
+                </button>
             </>
           )}
 
-          {/* Login and register options */}
+          {/* Guest navigation */}
           {!user && (
             <>
-              <div className="my-2 border-t border-gray-400 dark:border-gray-800" />
+              <div className="mx-5 my-3 border-t border-gray-400 dark:border-gray-800" />
 
               <Link
                 to="/login"

@@ -1,10 +1,10 @@
 ﻿import { createContext, useContext, useEffect, useState } from "react";
-
 import { getSettings, updateSettings } from "../api/userApi";
 
 const ThemeContext = createContext(null);
 
 const STORAGE_KEY = "kanuorietech-theme";
+const TOKEN_KEY = "kanuorietech_token";
 
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
@@ -29,23 +29,16 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const root = document.documentElement;
 
-    let shouldUseDark;
-
-    if (theme === "dark") {
-      shouldUseDark = true;
-    } else if (theme === "light") {
-      shouldUseDark = false;
-    } else {
-      shouldUseDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
+    const shouldUseDark =
+      theme === "dark"
+        ? true
+        : theme === "light"
+          ? false
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     setDarkMode(shouldUseDark);
 
-    if (shouldUseDark) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    root.classList.toggle("dark", shouldUseDark);
 
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
@@ -59,23 +52,34 @@ export function ThemeProvider({ children }) {
 
     const loadUserTheme = async () => {
       try {
+        // Public visitors should use their local/system theme.
+        const token = localStorage.getItem(TOKEN_KEY);
+
+        if (!token) {
+          return;
+        }
+
         const response = await getSettings();
 
         const settings =
-          response?.data?.settings || response?.data || response?.settings;
+          response?.data?.settings ||
+          response?.data ||
+          response?.settings;
 
         const savedTheme = settings?.theme;
 
-        if (mounted && ["light", "dark", "system"].includes(savedTheme)) {
+        if (
+          mounted &&
+          ["light", "dark", "system"].includes(savedTheme)
+        ) {
           setTheme(savedTheme);
           localStorage.setItem(STORAGE_KEY, savedTheme);
         }
       } catch (error) {
-        /*
-         * A visitor may not be authenticated.
-         * In that case, keep the local/system theme.
-         */
-        console.debug("Unable to load account theme:", error?.message || error);
+        console.debug(
+          "Unable to load account theme:",
+          error?.message || error,
+        );
       } finally {
         if (mounted) {
           setLoadingTheme(false);
@@ -99,22 +103,23 @@ export function ThemeProvider({ children }) {
       return;
     }
 
-    /* Apply immediately */
+    // Update the interface immediately.
     setTheme(newTheme);
+    localStorage.setItem(STORAGE_KEY, newTheme);
+
+    // Do not call protected APIs for logged-out visitors.
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    if (!token) {
+      return;
+    }
 
     try {
       await updateSettings({
         theme: newTheme,
       });
-
-      localStorage.setItem(STORAGE_KEY, newTheme);
     } catch (error) {
       console.error("Failed to save theme preference:", error);
-
-      /*
-       * Keep the UI responsive even if the
-       * server request fails.
-       */
     }
   };
 
@@ -124,7 +129,6 @@ export function ThemeProvider({ children }) {
 
   const toggleTheme = async () => {
     const nextTheme = darkMode ? "light" : "dark";
-
     await setThemePreference(nextTheme);
   };
 
@@ -152,5 +156,3 @@ export function useTheme() {
 
   return context;
 }
-
-

@@ -29,6 +29,16 @@ export default function Register() {
       toast.error("Please complete all required fields.");
       return;
     }
+    console.log("Register page password check:", {
+      passwordLength: form.password?.length,
+      confirmPasswordLength: form.confirmPassword?.length,
+      passwordsMatch: form.password === form.confirmPassword,
+    });
+
+    if (!form.confirmPassword) {
+      toast.error("Please confirm your password.");
+      return;
+    }
 
     if (form.password !== form.confirmPassword) {
       toast.error("Passwords do not match.");
@@ -100,8 +110,8 @@ export default function Register() {
   };
 
   return (
-    <section className="min-h-[80vh] bg-slate-50 px-4 py-12 sm:px-6 sm:py-16">
-      <div className="mx-auto w-full">
+    <section className="min-h-[80vh] bg-slate-50 px-2 py-2 sm:px-2 sm:py-2 lg:px-2 lg:py-2">
+      <div className="">
         <RegisterForm
           onSubmit={handleSubmit}
           loading={loading}

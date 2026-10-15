@@ -1,6 +1,10 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts";
+import { getCourses } from "../api/courseApi";
+import { getLearningResources } from "../api/LearningApi";
+import { getProgress } from "../api/progressApi";
+import { getSavedResources } from "../api/libraryApi";
 import {
   User,
   Mail,
@@ -21,15 +25,17 @@ import {
   CreditCard,
   ArrowUpRight,
 } from "lucide-react";
-
 export default function Profile() {
   const { user, updateProfile, uploadAvatar, loading: authLoading } = useAuth();
-
+  const [stats, setStats] = useState({
+    courses: 0,
+    learning: 0,
+    saved: 0,
+    inProgress: 0,
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
   const fileInputRef = useRef(null);
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  
-
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -55,22 +61,12 @@ export default function Profile() {
     otherInterest: "",
     marketingConsent: false,
   });
-
   const [selectedFile, setSelectedFile] = useState(null);
-
   const [previewUrl, setPreviewUrl] = useState("");
-
-  /* ==========================================
-     UI STATE
-  ========================================== */
-
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-
   const [successMessage, setSuccessMessage] = useState("");
-
   const [errorMessage, setErrorMessage] = useState("");
-
   const buildFormData = (profile = {}) => ({
     firstName: profile.firstName || "",
     lastName: profile.lastName || "",
@@ -109,6 +105,81 @@ export default function Profile() {
     otherInterest: profile.otherInterest || "",
     marketingConsent: profile.marketingConsent === true,
   });
+
+  useEffect(() => {
+  let cancelled = false;
+
+  const loadProfileStats = async () => {
+    setStatsLoading(true);
+
+    try {
+      const [coursesResult, learningResult, savedResult, progressResult] =
+        await Promise.allSettled([
+          getCourses({ limit: 100 }),
+          getLearningResources({ limit: 100 }),
+          getSavedResources(),
+          getProgress(),
+        ]);
+
+      if (cancelled) return;
+
+      const extractArray = (result) => {
+        if (result.status !== "fulfilled") return [];
+
+        const response = result.value;
+
+        if (Array.isArray(response)) return response;
+
+        const data = response?.data;
+
+        if (Array.isArray(data)) return data;
+
+        if (Array.isArray(data?.courses)) return data.courses;
+        if (Array.isArray(data?.learning)) return data.learning;
+        if (Array.isArray(data?.resources)) return data.resources;
+        if (Array.isArray(data?.savedResources)) return data.savedResources;
+        if (Array.isArray(data?.progress)) return data.progress;
+
+        return [];
+      };
+
+      const courses = extractArray(coursesResult);
+      const learning = extractArray(learningResult);
+      const saved = extractArray(savedResult);
+      const progress = extractArray(progressResult);
+
+      const inProgress = progress.filter((item) => {
+        const status = String(item?.status || "").toLowerCase();
+        const percentage = Number(item?.percentage || 0);
+
+        return (
+          status === "in_progress" ||
+          status === "in-progress" ||
+          (percentage > 0 && percentage < 100)
+        );
+      });
+
+      setStats({
+        courses: courses.length,
+        learning: learning.length,
+        saved: saved.length,
+        inProgress: inProgress.length,
+      });
+    } catch (error) {
+      console.error("Failed to load profile statistics:", error);
+    } finally {
+      if (!cancelled) {
+        setStatsLoading(false);
+      }
+    }
+  };
+
+  loadProfileStats();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   /* ==========================================
      LOAD USER INTO FORM
@@ -756,8 +827,8 @@ const PreferenceCheckboxGroup = ({
 );
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 sm:px-6 lg:px-8">
+      <div className="mx-auto">
         {/* ======================================
             PAGE HEADER
         ====================================== */}
@@ -787,7 +858,7 @@ const PreferenceCheckboxGroup = ({
 
           {/* PROFILE CONTENT */}
 
-          <div className="px-5 pb-7 sm:px-8">
+          <div className="px-1 pb-7 sm:px-5 lg:px-7">
             <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
               {/* AVATAR */}
 
@@ -908,53 +979,7 @@ const PreferenceCheckboxGroup = ({
               </div>
             </div>
 
-            {/* REGISTRATION PREFERENCES */}
-              {registrationDetails.length > 0 && (
-                <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
-                  <div className="mb-5">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      Your Interests & Preferences
-                    </h3>
-
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      The information you shared when joining KanuorieTech.
-                    </p>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {registrationDetails.map((item) => (
-                      <div
-                        key={item.label}
-                        className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-                      >
-                        <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {item.label}
-                        </p>
-
-                        {Array.isArray(item.value) ? (
-                          <div className="flex flex-wrap gap-2">
-                            {item.value.map((value) => (
-                              <span
-                                key={value}
-                                className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                              >
-                                {formatLabel(value)}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
-                            {formatLabel(String(item.value))}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-              
             {/* BIO */}
-
             <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 About Me
@@ -964,7 +989,51 @@ const PreferenceCheckboxGroup = ({
                 {user.bio || "You haven't added a bio yet."}
               </p>
             </div>
-          </div>
+
+            {/* REGISTRATION PREFERENCES */}
+            {registrationDetails.length > 0 && (
+              <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
+                <div className="mb-5">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Interests & Preferences
+                  </h3>
+
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    A summary of your registration preferences and interests.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {registrationDetails.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
+                    >
+                      <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {item.label}
+                      </p>
+
+                      {Array.isArray(item.value) ? (
+                        <div className="flex flex-wrap gap-2">
+                          {item.value.map((value) => (
+                            <span
+                              key={value}
+                              className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                            >
+                              {formatLabel(value)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
+                          {formatLabel(String(item.value))}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           <button
             type="button"
             onClick={openEditModal}
@@ -974,6 +1043,76 @@ const PreferenceCheckboxGroup = ({
             Edit Profile
           </button>
         </div>
+      </div>
+      {/* PROFILE STATISTICS */}
+        <section className="mt-6">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              Learning Overview
+            </h3>
+
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              A quick look at your learning activity on KanuorieTech.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                label: "Available Courses",
+                value: stats.courses,
+                href: "/courses",
+                icon: BookOpen,
+                color: "text-blue-600 bg-blue-100 dark:bg-blue-950",
+              },
+              {
+                label: "Learning Resources",
+                value: stats.learning,
+                href: "/Learning",
+                icon: BookOpen,
+                color: "text-purple-600 bg-purple-100 dark:bg-purple-950",
+              },
+              {
+                label: "Saved Resources",
+                value: stats.saved,
+                href: "/Learning",
+                icon: Bookmark,
+                color: "text-amber-600 bg-amber-100 dark:bg-amber-950",
+              },
+              {
+                label: "Courses in Progress",
+                value: stats.inProgress,
+                href: "/courses",
+                icon: Award,
+                color: "text-green-600 bg-green-100 dark:bg-green-950",
+              },
+            ].map((stat) => {
+              const Icon = stat.icon;
+
+              return (
+                <Link
+                  key={stat.label}
+                  to={stat.href}
+                  className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {stat.label}
+                    </span>
+
+                    <span className={`rounded-xl p-2 ${stat.color}`}>
+                      <Icon className="h-5 w-5" />
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
+                    {statsLoading ? "—" : stat.value}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
       </div>
 
       {/* ======================================
@@ -1375,161 +1514,200 @@ const PreferenceCheckboxGroup = ({
                   />
                 </div>
 
+                <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  {[
+                    {
+                      label: "Available courses",
+                      value: data.courses.length,
+                      href: "/courses",
+                    },
+                    {
+                      label: "Learning resources",
+                      value: data.learning.length,
+                      href: "/Learning",
+                    },
+                    {
+                      label: "Saved resources",
+                      value: data.saved.length,
+                      href: "/library",
+                    },
+                    {
+                      label: "Courses in progress",
+                      value: displayProgress.length,
+                      href: "/courses",
+                    },
+                  ].map((stat) => (
+                    <Link
+                      key={stat.label}
+                      to={stat.href}
+                      className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                    >
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        {stat.label}
+                      </p>
+          
+                      <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
+                        {loading ? "—" : stat.value}
+                      </p>
+                    </Link>
+                  ))}
+                </section>
+
                 {/* REGISTRATION PREFERENCES */}
 
                 <section className="space-y-5 border-t border-gray-200 pt-6 dark:border-gray-800">
                   <div className="space-y-6">
-  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-    Your Preferences
-  </h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Your Preferences
+                    </h3>
 
-  <PreferenceSelect
-    label="What best describes you?"
-    name="userType"
-    value={formData.userType}
-    options={PREFERENCE_OPTIONS.userType}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="What best describes you?"
+                      name="userType"
+                      value={formData.userType}
+                      options={PREFERENCE_OPTIONS.userType}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="What are you interested in?"
-    name="interests"
-    options={PREFERENCE_OPTIONS.interests}
-    values={formData.interests}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="What are you interested in?"
+                      name="interests"
+                      options={PREFERENCE_OPTIONS.interests}
+                      values={formData.interests}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="What else interests you?"
-    name="generalInterests"
-    options={PREFERENCE_OPTIONS.generalInterests}
-    values={formData.generalInterests}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="What else interests you?"
+                      name="generalInterests"
+                      options={PREFERENCE_OPTIONS.generalInterests}
+                      values={formData.generalInterests}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceSelect
-    label="How did you discover KanuorieTech?"
-    name="discoverySource"
-    value={formData.discoverySource}
-    options={PREFERENCE_OPTIONS.discoverySource}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="How did you discover KanuorieTech?"
+                      name="discoverySource"
+                      value={formData.discoverySource}
+                      options={PREFERENCE_OPTIONS.discoverySource}
+                      onChange={handleChange}
+                    />
 
-  {formData.discoverySource === "other" && (
-    <label className="block space-y-2">
-      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-        Please specify your discovery source
-      </span>
+                    {formData.discoverySource === "other" && (
+                      <label className="block space-y-2">
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                          Please specify your discovery source
+                        </span>
 
-      <input
-        name="discoverySourceOther"
-        value={formData.discoverySourceOther}
-        onChange={handleChange}
-        placeholder="Enter your source"
-        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
-      />
-    </label>
-  )}
+                        <input
+                          name="discoverySourceOther"
+                          value={formData.discoverySourceOther}
+                          onChange={handleChange}
+                          placeholder="Enter your source"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
+                        />
+                      </label>
+                    )}
 
-  <PreferenceSelect
-    label="What is your learning level?"
-    name="learningLevel"
-    value={formData.learningLevel}
-    options={PREFERENCE_OPTIONS.learningLevel}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="What is your learning level?"
+                      name="learningLevel"
+                      value={formData.learningLevel}
+                      options={PREFERENCE_OPTIONS.learningLevel}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="What do you want to achieve?"
-    name="learningGoals"
-    options={PREFERENCE_OPTIONS.learningGoals}
-    values={formData.learningGoals}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="What do you want to achieve?"
+                      name="learningGoals"
+                      options={PREFERENCE_OPTIONS.learningGoals}
+                      values={formData.learningGoals}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceSelect
-    label="What type of business do you have?"
-    name="businessType"
-    value={formData.businessType}
-    options={PREFERENCE_OPTIONS.businessType}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="What type of business do you have?"
+                      name="businessType"
+                      value={formData.businessType}
+                      options={PREFERENCE_OPTIONS.businessType}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="What services does your business need?"
-    name="businessNeeds"
-    options={PREFERENCE_OPTIONS.businessNeeds}
-    values={formData.businessNeeds}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="What services does your business need?"
+                      name="businessNeeds"
+                      options={PREFERENCE_OPTIONS.businessNeeds}
+                      values={formData.businessNeeds}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceSelect
-    label="When do you plan to start your project?"
-    name="projectTimeline"
-    value={formData.projectTimeline}
-    options={PREFERENCE_OPTIONS.projectTimeline}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="When do you plan to start your project?"
+                      name="projectTimeline"
+                      value={formData.projectTimeline}
+                      options={PREFERENCE_OPTIONS.projectTimeline}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceSelect
-    label="What is your career goal?"
-    name="careerGoal"
-    value={formData.careerGoal}
-    options={PREFERENCE_OPTIONS.careerGoal}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="What is your career goal?"
+                      name="careerGoal"
+                      value={formData.careerGoal}
+                      options={PREFERENCE_OPTIONS.careerGoal}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceSelect
-    label="How much experience do you have?"
-    name="experienceLevel"
-    value={formData.experienceLevel}
-    options={PREFERENCE_OPTIONS.experienceLevel}
-    onChange={handleChange}
-  />
+                    <PreferenceSelect
+                      label="How much experience do you have?"
+                      name="experienceLevel"
+                      value={formData.experienceLevel}
+                      options={PREFERENCE_OPTIONS.experienceLevel}
+                      onChange={handleChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="What opportunities interest you?"
-    name="preferredOpportunities"
-    options={PREFERENCE_OPTIONS.preferredOpportunities}
-    values={formData.preferredOpportunities}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="What opportunities interest you?"
+                      name="preferredOpportunities"
+                      options={PREFERENCE_OPTIONS.preferredOpportunities}
+                      values={formData.preferredOpportunities}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="Which technologies do you know or want to learn?"
-    name="techStack"
-    options={PREFERENCE_OPTIONS.techStack}
-    values={formData.techStack}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="Which technologies do you know or want to learn?"
+                      name="techStack"
+                      options={PREFERENCE_OPTIONS.techStack}
+                      values={formData.techStack}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <PreferenceCheckboxGroup
-    label="How would you like to collaborate?"
-    name="collaborationInterests"
-    options={PREFERENCE_OPTIONS.collaborationInterests}
-    values={formData.collaborationInterests}
-    onChange={handlePreferenceArrayChange}
-  />
+                    <PreferenceCheckboxGroup
+                      label="How would you like to collaborate?"
+                      name="collaborationInterests"
+                      options={PREFERENCE_OPTIONS.collaborationInterests}
+                      values={formData.collaborationInterests}
+                      onChange={handlePreferenceArrayChange}
+                    />
 
-  <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-    <input
-      type="checkbox"
-      checked={formData.marketingConsent}
-      onChange={(event) =>
-        setFormData((previous) => ({
-          ...previous,
-          marketingConsent: event.target.checked,
-        }))
-      }
-      className="mt-1 h-4 w-4 accent-blue-600"
-    />
+                    <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                      <input
+                        type="checkbox"
+                        checked={formData.marketingConsent}
+                        onChange={(event) =>
+                          setFormData((previous) => ({
+                            ...previous,
+                            marketingConsent: event.target.checked,
+                          }))
+                        }
+                        className="mt-1 h-4 w-4 accent-blue-600"
+                      />
 
-    <span className="text-sm text-slate-700 dark:text-slate-200">
-      I agree to receive KanuorieTech updates, learning resources, and
-      relevant opportunities.
-    </span>
-  </label>
-</div>
+                      <span className="text-sm text-slate-700 dark:text-slate-200">
+                        I agree to receive KanuorieTech updates, learning resources, and
+                        relevant opportunities.
+                      </span>
+                    </label>
+                  </div>
                 </section>
 
                 {/* ACTIONS */}

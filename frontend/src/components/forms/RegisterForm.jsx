@@ -355,6 +355,12 @@ export default function RegisterForm({
         return false;
       }
 
+      console.log("Password check:", {
+        passwordLength: form.password.length,
+        confirmPasswordLength: form.confirmPassword.length,
+        passwordsMatch: form.password === form.confirmPassword,
+      });
+
       if (form.password !== form.confirmPassword) {
         setError("Your passwords do not match.");
         return false;
@@ -411,45 +417,41 @@ export default function RegisterForm({
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
+  event.preventDefault();
+  setError("");
 
-    if (step !== 4) {
-      handleNext();
-      return;
-    }
+  if (step !== 4) {
+    handleNext();
+    return;
+  }
 
-    if (!validateStep()) return;
+  if (!validateStep()) return;
 
-    const {
-      confirmPassword,
-      ...registrationData
-    } = form;
-
-    // Keep techStack compatible with a backend String field.
-    const payload = {
-      ...registrationData,
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      email: form.email.trim().toLowerCase(),
-      discoverySourceOther:
-        form.discoverySource === "other"
-          ? form.discoverySourceOther.trim()
-          : "",
-      otherInterest: form.otherInterest,
-      techStack: form.techStack,
-    };
-
-    try {
-      await onSubmit?.(payload);
-    } catch (submitError) {
-      setError(
-        submitError?.response?.data?.message ||
-          submitError?.message ||
-          "We couldn't create your account. Please try again."
-      );
-    }
+  // Keep confirmPassword for validation in Register.jsx.
+  // Register.jsx removes it before sending data to the backend.
+  const payload = {
+    ...form,
+    firstName: form.firstName.trim(),
+    lastName: form.lastName.trim(),
+    email: form.email.trim().toLowerCase(),
+    discoverySourceOther:
+      form.discoverySource === "other"
+        ? form.discoverySourceOther.trim()
+        : "",
+    otherInterest: form.otherInterest,
+    techStack: form.techStack,
   };
+
+  try {
+    await onSubmit?.(payload);
+  } catch (submitError) {
+    setError(
+      submitError?.response?.data?.message ||
+        submitError?.message ||
+        "We couldn't create your account. Please try again."
+    );
+  }
+};
 
   const renderCheckboxGroup = (
     title,
@@ -625,7 +627,7 @@ export default function RegisterForm({
 
       default:
         return (
-          <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-6">
+          <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-4">
             <h3 className="text-xl font-bold text-slate-900">
               Explore KanuorieTech
             </h3>
@@ -674,12 +676,8 @@ export default function RegisterForm({
   const progress = (step / 4) * 100;
 
   return (
-    <Card className="mx-auto w-full max-w-3xl p-5 sm:p-8">
-      <div className="mb-8">
-        <p className="mb-2 text-sm font-bold uppercase tracking-wider text-blue-600">
-          Join our community
-        </p>
-
+    <Card className="p-1 sm:p-5">
+      <div className="mb-6 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Create Your Account
         </h2>
@@ -907,16 +905,7 @@ export default function RegisterForm({
         {/* STEP 4: DISCOVERY AND CONSENT */}
         {step === 4 && (
           <section className="space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">
-                One Last Thing
-              </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
-                Help us understand how you found KanuorieTech and choose
-                whether you'd like to receive updates.
-              </p>
-            </div>
-
+            
             <SelectField
               label="How did you discover KanuorieTech?"
               name="discoverySource"
@@ -959,7 +948,7 @@ export default function RegisterForm({
                 />
 
                 <span>
-                  I'd like to receive occasional KanuorieTech news, learning
+                  I'd like to receive occasional KanuorieTech news, project updates, learning
                   resources, product updates and relevant opportunities by
                   email. I understand I can unsubscribe at any time.
                 </span>
@@ -967,10 +956,10 @@ export default function RegisterForm({
             </div>
 
             <div className="rounded-xl bg-blue-50 p-4 text-sm leading-6 text-blue-900">
-              <strong>You're almost there!</strong>
+              <strong>Great!</strong>
               <p className="mt-1">
                 Your preferences will help us personalize your experience.
-                You can update your profile details and preferences later.
+                You can edit and update your profile details and preferences anytime.
               </p>
             </div>
           </section>
@@ -1007,7 +996,7 @@ export default function RegisterForm({
               disabled={loading}
               fullWidth
             >
-              Continue to Step {step + 1}
+              Next
             </Button>
           ) : (
             <Button

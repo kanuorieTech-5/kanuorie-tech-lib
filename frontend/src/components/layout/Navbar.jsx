@@ -41,9 +41,11 @@ export default function Navbar() {
             {/* Notifications - logged in users */}
             {user && <NotificationBell />}
 
-            {/* Admin User Dropdown - desktop only */}
+            {/* Admin User Dropdown - hidden on small screens */}
             {user?.role === "admin" && (
-              <UserDropdown className="hidden lg:block" />
+              <div className="hidden lg:block">
+                <UserDropdown />
+              </div>
             )}
 
             {/* Login / Register - logged out users only */}
