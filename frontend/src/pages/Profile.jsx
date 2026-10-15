@@ -827,17 +827,12 @@ const PreferenceCheckboxGroup = ({
 );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="mx-auto">
-        {/* ======================================
-            PAGE HEADER
-        ====================================== */}
-
         <div className="mb-8">
-          {/* <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
             Account
-          </p> */}
-
+          </p>
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -850,201 +845,189 @@ const PreferenceCheckboxGroup = ({
             </div>
           </div>
         </div>
-
         <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          {/* COVER */}
-
           <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 sm:h-40" />
-
-          {/* PROFILE CONTENT */}
-
-          <div className="px-1 pb-7 sm:px-5 lg:px-7">
-            <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
-              {/* AVATAR */}
-
-              <div className="flex items-end gap-4">
-                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
-                  {displayAvatar ? (
-                    <img
-                      src={displayAvatar}
-                      alt={`${user.firstName} ${user.lastName}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    initials
-                  )}
-                </div>
-
-                <div className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {user.firstName} {user.lastName}
-                    </h2>
-
-                    {user.role === "admin" && (
-                      <ShieldCheck className="h-5 w-5 text-blue-600" />
+            <div className="px-1 pb-7 sm:px-5 lg:px-7">
+              <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
+                {/* AVATAR */}
+                <div className="flex items-end gap-4">
+                  <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
+                    {displayAvatar ? (
+                      <img
+                        src={displayAvatar}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      initials
                     )}
                   </div>
+                  <div className="pb-2">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {user.firstName} {user.lastName}
+                      </h2>
 
-                  <p className="mt-1 text-gray-500 dark:text-gray-400">
-                    {user.role === "admin"
-                      ? "Administrator"
-                      : "KanuorieTech User"}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* INFORMATION */}
-
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              {/* EMAIL */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
-                    <Mail className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Email Address
-                    </p>
-
-                    <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* PHONE */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
-                    <Phone className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Phone Number
-                    </p>
-
-                    <p className="mt-1 font-semibold text-gray-900 dark:text-white">
-                      {user.phone || "Not provided"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ROLE */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
-                    <User className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Account Role
-                    </p>
-
-                    <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
-                      {user.role || "user"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* STATUS */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
-                    <CheckCircle2 className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Account Status
-                    </p>
-
-                    <p className="mt-1 font-semibold text-emerald-600">
-                      Active
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* BIO */}
-            <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                About Me
-              </p>
-
-              <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
-                {user.bio || "You haven't added a bio yet."}
-              </p>
-            </div>
-
-            {/* REGISTRATION PREFERENCES */}
-            {registrationDetails.length > 0 && (
-              <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
-                <div className="mb-5">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Interests & Preferences
-                  </h3>
-
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    A summary of your registration preferences and interests.
-                  </p>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {registrationDetails.map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-                    >
-                      <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {item.label}
-                      </p>
-
-                      {Array.isArray(item.value) ? (
-                        <div className="flex flex-wrap gap-2">
-                          {item.value.map((value) => (
-                            <span
-                              key={value}
-                              className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                            >
-                              {formatLabel(value)}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
-                          {formatLabel(String(item.value))}
-                        </p>
+                      {user.role === "admin" && (
+                        <ShieldCheck className="h-5 w-5 text-blue-600" />
                       )}
                     </div>
-                  ))}
+
+                    <p className="mt-1 text-gray-500 dark:text-gray-400">
+                      {user.role === "admin"
+                        ? "Administrator"
+                        : "KanuorieTech User"}
+                    </p>
+                  </div>
                 </div>
-              </section>
-            )}
-          <button
-            type="button"
-            onClick={openEditModal}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
-            >
-            <Edit3 className="h-4 w-4" />
-            Edit Profile
-          </button>
+              </div>
+
+              {/* INFORMATION */}
+              <div className="mt-10 grid gap-5 md:grid-cols-2">
+                {/* EMAIL */}
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Email Address
+                      </p>
+                      <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* PHONE */}
+
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
+                      <Phone className="h-5 w-5" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Phone Number
+                      </p>
+
+                      <p className="mt-1 font-semibold text-gray-900 dark:text-white">
+                        {user.phone || "Not provided"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ROLE */}
+
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
+                      <User className="h-5 w-5" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Account Role
+                      </p>
+
+                      <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
+                        {user.role || "user"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STATUS */}
+
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
+                      <CheckCircle2 className="h-5 w-5" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Account Status
+                      </p>
+
+                      <p className="mt-1 font-semibold text-emerald-600">
+                        Active
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* BIO */}
+              <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  About Me
+                </p>
+
+                <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
+                  {user.bio || "You haven't added a bio yet."}
+                </p>
+              </div>
+
+              {/* REGISTRATION PREFERENCES */}
+              {registrationDetails.length > 0 && (
+                <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
+                  <div className="mb-5">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Interests & Preferences
+                    </h3>
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      A summary of your registration preferences and interests.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {registrationDetails.map((item) => (
+                      <div
+                        key={item.label}
+                        className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
+                      >
+                        <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                          {item.label}
+                        </p>
+
+                        {Array.isArray(item.value) ? (
+                          <div className="flex flex-wrap gap-2">
+                            {item.value.map((value) => (
+                              <span
+                                key={value}
+                                className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                              >
+                                {formatLabel(value)}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
+                            {formatLabel(String(item.value))}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            <button
+              type="button"
+              onClick={openEditModal}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
+              >
+              <Edit3 className="h-4 w-4" />
+              Edit Profile
+            </button>
+          </div>
         </div>
-      </div>
-      {/* PROFILE STATISTICS */}
+        {/* PROFILE STATISTICS */}
         <section className="mt-6">
           <div className="mb-4">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">

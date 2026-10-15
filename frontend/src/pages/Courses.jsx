@@ -13,7 +13,6 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-
 import {
   Card,
   Button,
@@ -21,17 +20,13 @@ import {
   Pagination,
   SectionTitle,
 } from "../components/common";
-
 import { SearchBar } from "../components/layout";
-
-import { Newsletter, CTA } from "../components/home";
-
+import { CTA } from "../components/home";
 import {
   getCourses,
   enrollCourse,
   initializePaystackCoursePayment,
 } from "../services";
-
 import { FaMoneyBill } from "react-icons/fa";
 
 const PER_PAGE = 9;
@@ -348,7 +343,7 @@ export default function Courses() {
           />
 
           {/* Filters */}
-          <section className="bg-slate-200 py-1">
+          <section className="bg-slate-200 py-1 dark:bg-slate-900">
             <div className="px-6">
               <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
                 <SearchBar
@@ -371,7 +366,7 @@ export default function Courses() {
                       className={`rounded-full px-5 py-2 transition ${
                         difficulty === level
                           ? "bg-blue-600 text-white"
-                          : "bg-slate-100 hover:bg-slate-200"
+                          : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                       }`}
                     >
                       {level}
@@ -453,48 +448,48 @@ export default function Courses() {
                     {/* Details */}
                     <div className="space-y-6 p-6 sm:p-8">
                       <div>
-                        <p className="leading-7 text-slate-600">
+                        <p className="leading-7 text-slate-600 dark:text-slate-300">
                           {featuredCourse.description}
                         </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="rounded-2xl bg-slate-50 p-4">
+                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
                           <Clock3 size={20} className="text-blue-600" />
 
-                          <p className="mt-2 text-sm text-slate-500">
+                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                             Duration
                           </p>
 
-                          <strong className="text-slate-900">
+                          <strong className="text-slate-900 dark:text-slate-100">
                             {featuredCourse.duration || "8 Weeks"}
                           </strong>
                         </div>
 
-                        <div className="rounded-2xl bg-slate-50 p-4">
+                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
                           <Star
                             size={20}
                             className="text-yellow-500"
                             fill="currentColor"
                           />
 
-                          <p className="mt-2 text-sm text-slate-500">
+                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                             Rating
                           </p>
 
-                          <strong className="text-slate-900">
+                          <strong className="text-slate-900 dark:text-slate-100">
                             {featuredCourse.rating || "5.0"}
                           </strong>
                         </div>
 
-                        <div className="rounded-2xl bg-slate-50 p-4">
+                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
                           <FaMoneyBill
                             size={20}
                             className="text-yellow-500"
                             fill="currentColor"
                           />
 
-                          <p className="text-sm text-slate-500">
+                          <p className="text-sm text-slate-500 dark:text-slate-400">
                             Course Access
                           </p>
 
@@ -505,21 +500,21 @@ export default function Courses() {
                           </span>
                         </div>
 
-                        <div className="rounded-2xl bg-slate-50 p-4">
+                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
                           <Award size={20} className="text-yellow-500" />
 
-                          <p className="mt-2 text-sm text-slate-500">
+                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                             Certificate
                           </p>
 
-                          <strong className="text-slate-900">
+                          <strong className="text-slate-900 dark:text-slate-100">
                             Available
                           </strong>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-2xl font-black text-slate-900">
+                        <span className="text-2xl font-black text-slate-900 dark:text-slate-100">
                           {formatPrice(featuredCourse)}
                         </span>
                       </div>
@@ -585,7 +580,7 @@ export default function Courses() {
                             className="mt-0.5 shrink-0 text-blue-600"
                           />
 
-                          <p className="text-sm leading-6 text-slate-600">
+                          <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
                             This is a premium course. Complete payment through
                             Paystack to unlock enrollment and access the
                             curriculum.
@@ -663,7 +658,7 @@ export default function Courses() {
 
                       {/* Content */}
                       <div className="p-6">
-                        <div className="mb-5 flex items-center justify-between text-sm text-slate-500">
+                        <div className="mb-5 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
                           <span className="flex items-center gap-2">
                             <Clock3 size={16} />
                             {course.duration || "8 Weeks"}
@@ -675,16 +670,16 @@ export default function Courses() {
                           </span>
                         </div>
 
-                        <h3 className="text-2xl font-bold text-slate-900">
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                           {course.title}
                         </h3>
 
-                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600">
+                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600 dark:text-slate-300">
                           {course.description}
                         </p>
 
                         <div className="mt-6 flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-slate-500">
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                             <Users size={18} />
 
                             <span>
@@ -760,15 +755,15 @@ export default function Courses() {
             ) : null
           ) : filteredCourses.length === 0 ? (
             <Card className="mt-16 py-10 text-center">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
                 <Search className="text-blue-600" size={36} />
               </div>
 
-              <h3 className="mt-8 text-3xl font-bold text-slate-900">
+              <h3 className="mt-8 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 No Courses Found
               </h3>
 
-              <p className="mx-auto mt-4 max-w-lg leading-8 text-slate-600">
+              <p className="mx-auto mt-4 max-w-lg leading-8 text-slate-600 dark:text-slate-300">
                 We couldn't find any courses matching your search. Try another
                 keyword or change the selected difficulty.
               </p>
@@ -792,7 +787,7 @@ export default function Courses() {
         </div>
       </section>
 
-      <section className="bg-slate-50 py-10 lg:py-20">
+      <section className="bg-slate-50 py-10 dark:bg-slate-950 lg:py-20">
         <div className="px-6">
           <SectionTitle
             title="Why Learn With KanuorieTech?"
@@ -818,14 +813,14 @@ export default function Courses() {
                 description: "Gain practical skills employers are looking for.",
               },
             ].map((item) => (
-              <Card key={item.title} hover className="text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+              <Card key={item.title} hover className="text-center text-slate-900 dark:text-slate-100">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
                   <BookOpen className="text-blue-600" size={28} />
                 </div>
 
                 <h3 className="mt-6 text-xl font-bold">{item.title}</h3>
 
-                <p className="mt-4 leading-7 text-slate-600">
+                <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
                   {item.description}
                 </p>
               </Card>
@@ -833,11 +828,7 @@ export default function Courses() {
           </div>
         </div>
       </section>
-
-      <Newsletter />
       <CTA />
     </>
   );
 }
-
-

@@ -3,77 +3,158 @@ import { Bookmark, Check, BookOpen } from "lucide-react";
 
 import { Card, Button, Badge } from "../common";
 
-export default function ResourceCard({ resource, isSaved, saving, onSave }) {
+export default function ResourceCard({
+  resource,
+  isSaved,
+  saving,
+  onSave,
+}) {
   return (
-    <Card className="group overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-xl h-100 p-">
+    <Card
+      className="
+        group flex h-full flex-col overflow-hidden
+        rounded-2xl border border-slate-200
+        bg-white p-0 shadow-sm
+        transition-all duration-300
+        hover:-translate-y-1 hover:shadow-xl
+        dark:border-gray-800 dark:bg-gray-900
+      "
+    >
       {/* Image */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <img
           src={
             resource.image ||
             resource.img ||
             resource.coverImage ||
-            "https://via.placeholder.com/150"
+            "https://placehold.co/600x400?text=Learning+Resource"
           }
-          alt={resource.title}
-          className="max-h-50 w-full object-cover"
+          alt={resource.title || "Learning resource"}
+          loading="lazy"
+          className="
+            h-48 w-full object-cover
+            transition-transform duration-500
+            group-hover:scale-105
+            sm:h-52
+          "
         />
-        <div className="absolute left-4 top-4">
+
+        {/* Category */}
+        <div className="absolute left-3 top-3">
           <Badge>{resource.category || "General"}</Badge>
         </div>
       </div>
+
       {/* Content */}
-      <div className="p-2">
-        <h3 className="line-clamp-2 text-xl font-bold text-slate-500">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        {/* Title */}
+        <h3
+          className="
+            line-clamp-2 text-lg font-bold
+            text-slate-400 transition-colors
+            group-hover:text-blue-600
+            dark:text-gray-100 dark:group-hover:text-blue-400
+            sm:text-xl
+          "
+        >
           {resource.title}
         </h3>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
-          {resource.description || "Explore this learning resource."}
+
+        {/* Description */}
+        <p
+          className="
+            mt-3 line-clamp-3 flex-1
+            text-sm leading-6 text-slate-600
+            dark:text-gray-400
+          "
+        >
+          {resource.description ||
+            "Explore this learning resource."}
         </p>
-        <div className=" mt-2 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+
+        {/* Resource status */}
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <div
+            className="
+              flex items-center gap-2 text-sm
+              text-slate-500 dark:text-gray-400
+            "
+          >
             <BookOpen size={16} />
-            Resource
+            <span>Resource</span>
           </div>
+
           {isSaved && (
-            <div className="flex items-center gap-1 text-sm text-green-600">
+            <div
+              className="
+                flex items-center gap-1 text-sm font-medium
+                text-green-600 dark:text-green-400
+              "
+            >
               <Check size={16} />
-              Saved
+              <span>Saved</span>
             </div>
           )}
         </div>
-        <div className="mt-4 flex gap-3">
+
+        {/* Actions */}
+        <div className="mt-5 flex items-center gap-3">
           {resource.link ? (
             <a
               href={resource.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1"
+              className="min-w-0 flex-1"
             >
               <Button fullWidth>Read</Button>
             </a>
           ) : (
             <Link
               to={`/library/${resource.resourceId || resource._id}`}
-              className="flex-1"
+              className="min-w-0 flex-1"
             >
               <Button fullWidth>Read</Button>
             </Link>
           )}
 
           <button
-            // disabled={saving || isSaved}
-            onClick={() => onSave(resource)}
-            className="flex items-center justify-center
-              rounded-lg border px-4 transition hover:bg-blue-600
-              disabled:cursor-not-allowed bg-white"
+            type="button"
+            onClick={() => onSave?.(resource)}
+            disabled={saving}
+            aria-label={
+              isSaved
+                ? `Remove ${resource.title} from saved resources`
+                : `Save ${resource.title}`
+            }
+            aria-pressed={Boolean(isSaved)}
+            title={isSaved ? "Saved resource" : "Save resource"}
+            className="
+              flex h-11 w-11 shrink-0 items-center justify-center
+              rounded-xl border
+              border-slate-200 bg-slate-50
+              text-slate-600
+              transition-all duration-200
+              hover:border-blue-500 hover:bg-blue-600
+              hover:text-white
+              disabled:cursor-not-allowed disabled:opacity-50
+              dark:border-gray-700 dark:bg-gray-800
+              dark:text-gray-300
+              dark:hover:border-blue-500 dark:hover:bg-blue-600
+              dark:hover:text-white
+              focus-visible:outline-none
+              focus-visible:ring-2 focus-visible:ring-blue-500
+              focus-visible:ring-offset-2
+              dark:focus-visible:ring-offset-gray-900
+            "
           >
-            {isSaved ? <Check size={18} /> : <Bookmark size={18} />}
+            {isSaved ? (
+              <Check size={18} />
+            ) : (
+              <Bookmark size={18} />
+            )}
           </button>
         </div>
       </div>
     </Card>
   );
 }
-
-
