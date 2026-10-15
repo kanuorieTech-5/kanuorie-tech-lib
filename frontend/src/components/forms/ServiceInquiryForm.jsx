@@ -47,23 +47,12 @@ export default function ServiceInquiryForm({ onSubmit, loading = false }) {
           name="service"
           value={form.service}
           onChange={change}
+          required
           options={[
-            {
-              label: "Web Development",
-              value: "web",
-            },
-            {
-              label: "Mobile App",
-              value: "mobile",
-            },
-            {
-              label: "UI/UX Design",
-              value: "uiux",
-            },
-            {
-              label: "Consulting",
-              value: "consulting",
-            },
+            { label: "Web Development", value: "web" },
+            { label: "Mobile App", value: "mobile" },
+            { label: "UI/UX Design", value: "uiux" },
+            { label: "Consulting", value: "consulting" },
           ]}
         />
 
@@ -89,5 +78,6 @@ export default function ServiceInquiryForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
+
 
 

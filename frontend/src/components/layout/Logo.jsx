@@ -28,7 +28,7 @@ export default function Logo({ size = "md", showText = true }) {
 
       {showText && (
         <div>
-          <h1 className={`font-bold text-slate-900 ${current.text}`}>
+          <h1 className={`font-bold text-blue-400 ${current.text}`}>
             KanuorieTech
           </h1>
 

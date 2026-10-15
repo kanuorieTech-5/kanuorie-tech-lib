@@ -12,6 +12,7 @@ import {
 } from "../components/dashboard";
 
 import { getAdminDashboard } from "../services";
+import ServiceEnquiriesPanel from "../components/dashboard/ServiceEnquiriesPanel";
 
 export default function Admin() {
   const [dashboard, setDashboard] = useState(null);
@@ -209,6 +210,8 @@ export default function Admin() {
 
       <QuickActions />
 
+      <ServiceEnquiriesPanel />
+
       <div className="grid gap-8 xl:grid-cols-2">
         <LatestOrders orders={orders} />
       </div>
@@ -217,5 +220,6 @@ export default function Admin() {
     </div>
   );
 }
+
 
 

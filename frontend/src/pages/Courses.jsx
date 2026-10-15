@@ -580,7 +580,7 @@ export default function Courses() {
                             className="mt-0.5 shrink-0 text-blue-600"
                           />
 
-                          <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                          <p className="text-sm leading-6 text-slate-900 dark:text-slate-900">
                             This is a premium course. Complete payment through
                             Paystack to unlock enrollment and access the
                             curriculum.
