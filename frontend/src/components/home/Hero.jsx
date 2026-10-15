@@ -112,23 +112,6 @@ export default function Hero() {
               <Button size="lg">Get Started</Button>
             </Link>
           </motion.div>
-          {/* <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: .6 }}
-            className="mt-3 grid grid-cols-2 gap-8 md:grid-cols-4"
-          >
-            {stats.map((item) => (
-              <div key={item.label}>
-                <h2 className="text-3xl font-bold text-blue-400">
-                  {item.value}
-                </h2>
-                <p className="mt-1 text-sm text-slate-300">
-                  {item.label}
-                </p>
-              </div>
-            ))}
-          </motion.div> */}
         </div>
         {/* RIGHT */}
         <motion.div
