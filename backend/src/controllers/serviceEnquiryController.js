@@ -5,18 +5,63 @@ const ApiError = require("../utils/ApiError");
 
 const serviceLabels = {
   web: "Web Development",
-  mobile: "Mobile App",
+  mobile: "Mobile App Development",
   uiux: "UI/UX Design",
-  consulting: "Consulting",
+  consulting: "Technology Consulting",
+  ecommerce: "E-commerce Website",
+  redesign: "Website Redesign",
+  api: "API Integration",
+  maintenance: "Website Maintenance & Support",
+  other: "Other",
 };
+
+const allowedContactMethods = ["email", "whatsapp", "phone"];
 
 const createServiceEnquiry = asyncHandler(async (req, res) => {
   const name = String(req.body.name || "").trim();
-  const email = String(req.body.email || "").trim().toLowerCase();
-  const service = String(req.body.service || "").trim();
-  const budget = String(req.body.budget || "").trim();
-  const message = String(req.body.message || "").trim();
+  const email = String(req.body.email || "")
+    .trim()
+    .toLowerCase();
 
+  const service = String(req.body.service || "").trim();
+  const phone = String(req.body.phone || "").trim();
+  const company = String(req.body.company || "").trim();
+  const projectType = String(req.body.projectType || "").trim();
+  const budget = String(req.body.budget || "").trim();
+  const timeline = String(req.body.timeline || "").trim();
+  const preferredContact = String(
+    req.body.preferredContact || "email"
+  )
+    .trim()
+    .toLowerCase();
+
+  const message = String(req.body.message || "").trim();
+  const referenceUrl = String(req.body.referenceUrl || "").trim();
+  const additionalRequirements = String(
+    req.body.additionalRequirements || ""
+  ).trim();
+
+  // Conditional service-specific answers
+  const platform = String(req.body.platform || "").trim();
+  const designType = String(req.body.designType || "").trim();
+  const apiDetails = String(req.body.apiDetails || "").trim();
+  const maintenanceNeeds = String(
+    req.body.maintenanceNeeds || ""
+  ).trim();
+  const websiteType = String(req.body.websiteType || "").trim();
+
+  const projectRequirements = Array.isArray(req.body.projectRequirements)
+    ? [
+        ...new Set(
+          req.body.projectRequirements
+            .filter((item) => typeof item === "string")
+            .map((item) => item.trim())
+            .filter(Boolean)
+        ),
+      ]
+    : [];
+
+  // Validate required fields
   if (!name || !email || !service || !message) {
     throw new ApiError(
       400,
@@ -32,18 +77,73 @@ const createServiceEnquiry = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please select a valid service.");
   }
 
+  if (message.length < 10) {
+    throw new ApiError(
+      400,
+      "Please provide at least 10 characters describing your project."
+    );
+  }
+
+  if (message.length > 5000) {
+    throw new ApiError(
+      400,
+      "Project details cannot exceed 5000 characters."
+    );
+  }
+
+  if (additionalRequirements.length > 2000) {
+    throw new ApiError(
+      400,
+      "Additional requirements cannot exceed 2000 characters."
+    );
+  }
+
+  if (apiDetails.length > 2000 || maintenanceNeeds.length > 2000) {
+    throw new ApiError(
+      400,
+      "Service-specific details cannot exceed 2000 characters."
+    );
+  }
+
+  if (!allowedContactMethods.includes(preferredContact)) {
+    throw new ApiError(
+      400,
+      "Please select a valid preferred contact method."
+    );
+  }
+
+  // Save the enquiry and its conditional answers
   const enquiry = await Contact.create({
     name,
     email,
+    phone,
+    company,
+
     subject: serviceLabels[service],
     service: serviceLabels[service],
+    projectType,
     budget,
+    timeline,
+    preferredContact,
+
+    referenceUrl,
     message,
+    additionalRequirements,
+    projectRequirements,
+
+    platform,
+    designType,
+    apiDetails,
+    maintenanceNeeds,
+    websiteType,
+
     inquiryType: serviceLabels[service],
     isServiceInquiry: true,
+
     status: "new",
     isRead: false,
     replied: false,
+
     ipAddress: req.ip || "",
   });
 
@@ -76,12 +176,16 @@ const getServiceEnquiries = asyncHandler(async (req, res) => {
 
   if (req.query.search) {
     const search = String(req.query.search).trim().slice(0, 100);
+
+    // Escape special regex characters entered by the user
     const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(escaped, "i");
 
     filter.$or = [
       { name: regex },
       { email: regex },
+      { phone: regex },
+      { company: regex },
       { service: regex },
       { subject: regex },
       { message: regex },
@@ -95,6 +199,7 @@ const getServiceEnquiries = asyncHandler(async (req, res) => {
       .skip(skip)
       .limit(limit)
       .lean(),
+
     Contact.countDocuments(filter),
   ]);
 
