@@ -28,6 +28,16 @@ const {
   deleteLearningResource,
 } = require("../controllers/learningController");
 
+const {
+  getOperationsAffiliates,
+  updateOperationsAffiliateStatus,
+  getOperationsPayouts,
+  updateOperationsPayoutStatus,
+  getOperationsCommunityReports,
+  updateOperationsCommunityReport,
+  updateOperationsCommunityPost,
+} = require("../controllers/adminOperationsController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -134,5 +144,48 @@ router
   .route("/learning/:id")
   .put(updateLearningResource)
   .delete(deleteLearningResource);
+
+/* ==========================================
+  PLATFORM OPERATIONS
+========================================== */
+
+// Affiliates
+router.get(
+  "/operations/affiliates",
+  getOperationsAffiliates
+);
+
+router.patch(
+  "/operations/affiliates/:id/status",
+  updateOperationsAffiliateStatus
+);
+
+// Affiliate payouts
+router.get(
+  "/operations/payouts",
+  getOperationsPayouts
+);
+
+router.patch(
+  "/operations/payouts/:id/status",
+  updateOperationsPayoutStatus
+);
+
+// Community reports
+router.get(
+  "/operations/community-reports",
+  getOperationsCommunityReports
+);
+
+router.patch(
+  "/operations/community-reports/:id/status",
+  updateOperationsCommunityReport
+);
+
+// Community post moderation
+router.patch(
+  "/operations/community-posts/:id/status",
+  updateOperationsCommunityPost
+);
 
 module.exports = router;

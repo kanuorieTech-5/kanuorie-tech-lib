@@ -3,14 +3,12 @@ import {
   DashboardHeader,
   WelcomeBanner,
   StatsGrid,
-  LatestOrders,
   RecentActivity,
   QuickActions,
   RevenueSummary,
   SalesOverview,
   PlatformOperationsOverview,
 } from "../components/dashboard";
-
 import { getAdminDashboard } from "../services";
 import ServiceEnquiriesPanel from "../components/dashboard/ServiceEnquiriesPanel";
 
@@ -31,13 +29,6 @@ export default function Admin() {
 
         if (!mounted) return;
 
-        /*
-         * Support common API response structures:
-         *
-         * response
-         * response.data
-         * response.data.data
-         */
         const data =
           response?.data?.data ??
           response?.data ??
@@ -124,44 +115,12 @@ export default function Admin() {
   }
 
   const stats = dashboard?.stats ?? {};
-
-  const learningResources =
-    dashboard?.learningResources ??
-    dashboard?.books ??
-    dashboard?.latestBooks ??
-    [];
-
-  const courses =
-    dashboard?.courses ??
-    dashboard?.latestCourses ??
-    [];
-
-  const orders =
-    dashboard?.orders ??
-    dashboard?.latestOrders ??
-    [];
-
-  const users =
-    dashboard?.users ??
-    dashboard?.latestUsers ??
-    [];
-
   const activities =
     dashboard?.activities ??
     dashboard?.recentActivity ??
     [];
-
   const revenue = dashboard?.revenue ?? {};
-
   const sales = dashboard?.sales ?? {};
-
-  /*
-   * Platform operations
-   *
-   * The backend now returns a dedicated database-backed
-   * operations object. Keep the legacy top-level fallbacks
-   * for compatibility with older API responses.
-   */
   const operations = dashboard?.operations ?? {
     team: dashboard?.team ?? {},
     affiliates: dashboard?.affiliates ?? {},
@@ -195,28 +154,17 @@ export default function Admin() {
       />
 
       <WelcomeBanner />
-
+      <RecentActivity activities={activities} />
       <StatsGrid stats={stats} />
-
       <div className="grid gap-8 xl:grid-cols-2">
         <RevenueSummary data={revenue} />
-
         <SalesOverview data={sales} />
       </div>
-
       <PlatformOperationsOverview
         operations={operations}
       />
-
       <QuickActions />
-
       <ServiceEnquiriesPanel />
-
-      <div className="grid gap-8 xl:grid-cols-2">
-        <LatestOrders orders={orders} />
-      </div>
-
-      <RecentActivity activities={activities} />
     </div>
   );
 }

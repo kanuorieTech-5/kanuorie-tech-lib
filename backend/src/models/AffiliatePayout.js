@@ -9,6 +9,13 @@ const affiliatePayoutSchema = new mongoose.Schema(
       index: true,
     },
 
+    referrals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "AffiliateReferral",
+      },
+    ],
+
     amount: {
       type: Number,
       required: true,

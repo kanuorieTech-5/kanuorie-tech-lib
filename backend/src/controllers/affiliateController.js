@@ -546,85 +546,117 @@ const updatePayoutInformation = async (
    REQUEST PAYOUT
 ========================================== */
 
-const requestAffiliatePayout = async (
-  req,
-  res,
-  next
-) => {
+const requestAffiliatePayout = async (req, res, next) => {
+  let session;
   try {
-    const affiliate = await Affiliate.findOne({
-      user: req.user._id,
-    });
+    const affiliate = await Affiliate.findOne({ user: req.user._id });
 
     if (!affiliate) {
-      return res.status(404).json({
-        success: false,
-        message: "Affiliate account not found.",
-      });
+      return res.status(404).json({ success: false, message: "Affiliate account not found." });
     }
-
     if (affiliate.status !== "active") {
-      return res.status(400).json({
-        success: false,
-        message: "Your affiliate account is not active.",
-      });
+      return res.status(400).json({ success: false, message: "Your affiliate account is not active." });
     }
-
     if (!affiliate.payoutMethod) {
-      return res.status(400).json({
-        success: false,
-        message: "Please configure your payout information first.",
-      });
+      return res.status(400).json({ success: false, message: "Please configure your payout information first." });
     }
 
-    const pendingResult =
-      await AffiliateReferral.aggregate([
-        {
-          $match: {
-            affiliate: affiliate._id,
-            commissionStatus: "approved",
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            total: {
-              $sum: "$commissionAmount",
-            },
-          },
-        },
-      ]);
+    session = await AffiliatePayout.startSession();
+    let createdPayoutId;
 
-    const amount =
-      pendingResult[0]?.total || 0;
+    await session.withTransaction(async () => {
+      // Re-check inside the transaction to avoid ordinary duplicate outstanding requests.
+      const existingPayout = await AffiliatePayout.findOne({
+        affiliate: affiliate._id,
+        status: { $in: ["requested", "processing"] },
+      }).select("_id status").session(session);
 
-    if (amount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "There are no approved earnings available for payout.",
-      });
-    }
+      if (existingPayout) {
+        const error = new Error("You already have an outstanding payout request.");
+        error.statusCode = 409;
+        throw error;
+      }
 
-    const payout = await AffiliatePayout.create({
-      affiliate: affiliate._id,
-      amount,
-      currency: "USD",
-      payoutMethod: affiliate.payoutMethod,
-      payoutDetails: affiliate.payoutDetails,
-    });
+      // Exclude commissions linked to older outstanding payouts that predate reservations.
+      const outstandingPayouts = await AffiliatePayout.find({
+        affiliate: affiliate._id,
+        status: { $in: ["requested", "processing"] },
+      }).select("referrals").session(session);
+      const alreadyLinkedIds = outstandingPayouts.flatMap((item) => item.referrals || []);
 
-    await AffiliateReferral.updateMany(
-      {
+      const referralFilter = {
         affiliate: affiliate._id,
         commissionStatus: "approved",
-      },
-      {
-        $set: {
-          commissionStatus: "paid",
-          paidAt: new Date(),
-        },
+        commissionAmount: { $gt: 0 },
+        _id: { $nin: alreadyLinkedIds },
+        $or: [
+          { payoutReservation: null },
+          { payoutReservation: { $exists: false } },
+        ],
+      };
+
+      const referrals = await AffiliateReferral.find(referralFilter)
+        .select("_id commissionAmount commissionCurrency")
+        .session(session);
+
+      if (!referrals.length) {
+        const error = new Error("There are no approved earnings available for payout.");
+        error.statusCode = 400;
+        throw error;
       }
-    );
+
+      const currencies = [...new Set(referrals.map((item) =>
+        String(item.commissionCurrency || "USD").toUpperCase()
+      ))];
+      if (currencies.length !== 1 || currencies[0] !== "USD") {
+        const error = new Error("These commissions cannot be paid together because their currencies are not all USD.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const amount = referrals.reduce((total, referral) =>
+        total + (Number(referral.commissionAmount) || 0), 0
+      );
+      if (!Number.isFinite(amount) || amount <= 0) {
+        const error = new Error("The payout amount is invalid.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const [payout] = await AffiliatePayout.create([{
+        affiliate: affiliate._id,
+        referrals: referrals.map((referral) => referral._id),
+        amount,
+        currency: "USD",
+        payoutMethod: affiliate.payoutMethod,
+        payoutDetails: affiliate.payoutDetails,
+        status: "requested",
+        requestedAt: new Date(),
+      }], { session });
+
+      // Claim only commissions that are still approved and unreserved.
+      const reservationUpdate = await AffiliateReferral.updateMany(
+        {
+          ...referralFilter,
+          _id: { $in: referrals.map((referral) => referral._id) },
+        },
+        { $set: { payoutReservation: payout._id } },
+        { session }
+      );
+
+      if (reservationUpdate.modifiedCount !== referrals.length) {
+        const error = new Error("Some commissions were reserved by another payout request. Please retry.");
+        error.statusCode = 409;
+        throw error;
+      }
+
+      createdPayoutId = payout._id;
+    });
+
+    const payout = await AffiliatePayout.findById(createdPayoutId);
+    if (!payout) {
+      return res.status(500).json({ success: false, message: "Payout was created but could not be retrieved." });
+    }
 
     return res.status(201).json({
       success: true,
@@ -632,14 +664,14 @@ const requestAffiliatePayout = async (
       data: {
         payout: {
           ...payout.toObject(),
-          payoutDetails: formatPayoutDetails(
-            payout.payoutDetails
-          ),
+          payoutDetails: formatPayoutDetails(payout.payoutDetails),
         },
       },
     });
   } catch (error) {
     next(error);
+  } finally {
+    if (session) await session.endSession();
   }
 };
 

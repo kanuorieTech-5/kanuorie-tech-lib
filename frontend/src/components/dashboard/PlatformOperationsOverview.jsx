@@ -1,4 +1,5 @@
-﻿import {
+﻿import { useEffect, useState } from "react";
+import {
   Users,
   Handshake,
   GraduationCap,
@@ -12,6 +13,7 @@
   Clock3,
   CheckCircle2,
   XCircle,
+  X,
 } from "lucide-react";
 
 /* ========================================
@@ -36,22 +38,6 @@ function formatCurrency(value) {
   if (value === null || value === undefined || value === "") {
     return "0";
   }
-
-  /*
-   * Backend may return:
-   *
-   * 1250
-   *
-   * or:
-   *
-   * {
-   *   USD: 1250,
-   *   NGN: 50000
-   * }
-   *
-   * We keep currencies separate rather than adding
-   * different currencies together.
-   */
 
   if (typeof value === "number") {
     return value.toLocaleString();
@@ -98,7 +84,21 @@ function Metric({
   formatter = formatNumber,
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div
+      data-metric-card
+      data-metric-label={label}
+      data-metric-value={formatter(value)}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${label}`}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      }}
+      className="cursor-pointer rounded-xl border border-slate-200 bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">
@@ -143,7 +143,11 @@ function Section({
   children,
 }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section
+      data-operations-section
+      data-section-title={title}
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+    >
       <div className="mb-5 flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
           <Icon size={20} />
@@ -213,10 +217,54 @@ export default function PlatformOperationsOverview({
     feedback = {},
   } = operations;
 
+  const [selectedMetric, setSelectedMetric] = useState(null);
+
+useEffect(() => {
+  if (!selectedMetric) return;
+
+  const handleEscape = (event) => {
+    if (event.key === "Escape") {
+      setSelectedMetric(null);
+    }
+  };
+
+  document.addEventListener("keydown", handleEscape);
+  document.body.style.overflow = "hidden";
+
+  return () => {
+    document.removeEventListener("keydown", handleEscape);
+    document.body.style.overflow = "";
+  };
+}, [selectedMetric]);
+
+const handleMetricClick = (event) => {
+  const card = event.target.closest("[data-metric-card]");
+
+  if (!card) return;
+
+  const section = card.closest("[data-operations-section]");
+
+  if (!section) return;
+
+  const relatedMetrics = Array.from(
+    section.querySelectorAll("[data-metric-card]")
+  ).map((metric) => ({
+    label: metric.dataset.metricLabel,
+    value: metric.dataset.metricValue,
+  }));
+
+  setSelectedMetric({
+    label: card.dataset.metricLabel,
+    value: card.dataset.metricValue,
+    section: section.dataset.sectionTitle,
+    relatedMetrics,
+  });
+};
+
   const complianceConfigured = compliance.configured !== false;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" onClick={handleMetricClick}>
       <Section
         title="Team Overview"
         description="Monitor team members, roles and account status."
@@ -654,6 +702,101 @@ export default function PlatformOperationsOverview({
           }
         />
       </Section>
+            {selectedMetric && (
+        <div
+          className="fixed inset-0 z-[300] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedMetric(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="operations-modal-title"
+            className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-slate-200 bg-white p-5">
+              <div>
+                <p className="text-sm font-medium text-blue-600">
+                  {selectedMetric.section}
+                </p>
+
+                <h2
+                  id="operations-modal-title"
+                  className="mt-1 text-xl font-bold text-slate-900"
+                >
+                  {selectedMetric.label}
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  View this metric and its related section statistics.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMetric(null)}
+                aria-label="Close modal"
+                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-6 p-5">
+              <div className="rounded-xl bg-blue-50 p-5">
+                <p className="text-sm font-medium text-blue-700">
+                  {selectedMetric.label}
+                </p>
+
+                <p className="mt-2 break-words text-3xl font-bold text-slate-900">
+                  {selectedMetric.value}
+                </p>
+
+                <p className="mt-1 text-sm text-slate-600">
+                  Current dashboard value
+                </p>
+              </div>
+
+              <div>
+                <h3 className="mb-3 font-semibold text-slate-900">
+                  Related statistics
+                </h3>
+
+                <div className="space-y-2">
+                  {selectedMetric.relatedMetrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      className={`flex items-center justify-between gap-4 rounded-xl border p-3 ${
+                        metric.label === selectedMetric.label
+                          ? "border-blue-300 bg-blue-50"
+                          : "border-slate-200 bg-white"
+                      }`}
+                    >
+                      <span className="text-sm text-slate-600">
+                        {metric.label}
+                      </span>
+
+                      <span className="break-words text-right text-sm font-bold text-slate-900">
+                        {metric.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-200 p-4 text-right">
+              <button
+                type="button"
+                onClick={() => setSelectedMetric(null)}
+                className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

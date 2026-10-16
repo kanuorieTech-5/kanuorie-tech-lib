@@ -29,6 +29,13 @@ const affiliateReferralSchema = new mongoose.Schema(
       default: null,
       index: true,
     },
+    // The payout currently reserving this commission. Cleared if that payout is rejected.
+    payoutReservation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AffiliatePayout",
+      default: null,
+      index: true,
+    },
 
     status: {
       type: String,
