@@ -1,5 +1,5 @@
 ﻿const CareerApplication = require("../models/CareerApplication");
-
+const Team = require("../models/Team");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
@@ -165,6 +165,7 @@ const getApplication = asyncHandler(async (req, res) => {
 
 /* ==========================================
    UPDATE APPLICATION STATUS
+   AUTO-ADD ACCEPTED APPLICANTS TO TEAM
 ========================================== */
 
 const updateApplicationStatus = asyncHandler(
@@ -188,15 +189,68 @@ const updateApplicationStatus = asyncHandler(
     }
 
     const application =
-      await CareerApplication.findById(
-        req.params.id
-      );
+      await CareerApplication.findById(req.params.id);
 
     if (!application) {
       throw new ApiError(
         404,
         "Career application not found."
       );
+    }
+
+    let teamMember = null;
+    let teamMemberCreated = false;
+
+    // Automatically onboard applicants when accepted.
+    if (status === "Accepted") {
+      // First, check whether this application already
+      // has a linked team member.
+      teamMember = await Team.findOne({
+        careerApplication: application._id,
+      });
+
+      if (!teamMember) {
+        teamMember = await Team.findOne({
+          $and: [
+            {
+              email: application.email.trim().toLowerCase(),
+            },
+            {
+              email: { $ne: "" },
+            },
+          ],
+        });
+
+        if (teamMember) {
+          if (!teamMember.careerApplication) {
+            teamMember.careerApplication = application._id;
+            await teamMember.save();
+          }
+        } else {
+          const nameParts = application.fullName
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+          const firstName = nameParts.shift();
+          const lastName =
+            nameParts.join(" ") || "Applicant";
+
+          teamMember = await Team.create({
+            firstName,
+            lastName,
+            position: application.position,
+            bio: application.coverLetter || "",
+            email: application.email.trim().toLowerCase(),
+            careerApplication: application._id,
+            createdBy: req.user?._id,
+            active: true,
+            featured: false,
+          });
+
+          teamMemberCreated = true;
+        }
+      }
     }
 
     application.status = status;
@@ -207,8 +261,16 @@ const updateApplicationStatus = asyncHandler(
 
     return ApiResponse.success(
       res,
-      application,
-      "Application status updated successfully."
+      {
+        application,
+        teamMember,
+        teamMemberCreated,
+      },
+      status === "Accepted"
+        ? teamMemberCreated
+          ? "Application accepted and applicant added to the team."
+          : "Application accepted. The existing team member was retained."
+        : "Application status updated successfully."
     );
   }
 );

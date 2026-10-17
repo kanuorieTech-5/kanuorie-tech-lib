@@ -20,6 +20,7 @@ import { Card, Button, Loader } from "../../components/common";
 
 import {
   deleteCareerApplication,
+  getCareerApplication,
   getCareerApplicationStats,
   getCareerApplications,
   markCareerApplicationRead,
@@ -27,7 +28,6 @@ import {
   updateCareerApplicationNotes,
   updateCareerApplicationStatus,
 } from "../../api";
-
 
 const STATUSES = [
   "New",
@@ -276,10 +276,13 @@ export default function AdminCareers() {
           status,
         );
 
-      const updated =
+      const payload =
         response?.data?.data ??
         response?.data ??
         response;
+
+      const updated =
+        payload?.application ?? payload;
 
       setApplications((current) =>
         current.map((item) =>
@@ -304,7 +307,18 @@ export default function AdminCareers() {
           : current,
       );
 
-      toast.success("Application status updated.");
+           await loadData(true);
+
+      if (status === "Accepted") {
+        toast.success(
+          payload?.teamMemberCreated
+            ? "Applicant accepted and added to the team!"
+            : "Applicant accepted. Existing team member retained.",
+        );
+      } else {
+        toast.success("Application status updated.");
+      }
+
     } catch (err) {
       console.error(
         "Failed to update application status:",
@@ -500,20 +514,7 @@ export default function AdminCareers() {
         closeApplication();
       }
 
-      setStats((current) => ({
-        ...current,
-        total: Math.max(
-          0,
-          Number(current.total || 0) - 1,
-        ),
-        unread:
-          application.isRead
-            ? Number(current.unread || 0)
-            : Math.max(
-                0,
-                Number(current.unread || 0) - 1,
-              ),
-      }));
+     await loadData(true);
 
       toast.success("Application deleted.");
     } catch (err) {
@@ -643,66 +644,111 @@ export default function AdminCareers() {
         </Button>
       </div>
 
-
       {/* STATS */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          {
+            label: "Total Applications",
+            value: stats.total,
+            icon: BriefcaseBusiness,
+            color: "blue",
+          },
+          {
+            label: "Unread",
+            value: stats.unread,
+            icon: Mail,
+            color: "amber",
+          },
+          {
+            label: "New",
+            value: stats.statuses.new,
+            icon: FileText,
+            color: "slate",
+          },
+          {
+            label: "Reviewing",
+            value: stats.statuses.reviewing,
+            icon: Clock3,
+            color: "purple",
+          },
+          {
+            label: "Shortlisted",
+            value: stats.statuses.shortlisted,
+            icon: UserRound,
+            color: "indigo",
+          },
+          {
+            label: "Interview",
+            value: stats.statuses.interview,
+            icon: MessageSquare,
+            color: "cyan",
+          },
+          {
+            label: "Accepted",
+            value: stats.statuses.accepted,
+            icon: CheckCircle2,
+            color: "emerald",
+          },
+          {
+            label: "Rejected",
+            value: stats.statuses.rejected,
+            icon: X,
+            color: "rose",
+          },
+        ].map((item) => {
+          const Icon = item.icon;
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          const colors = {
+            blue: "bg-blue-100 text-blue-600",
+            amber: "bg-amber-100 text-amber-600",
+            slate: "bg-slate-100 text-slate-600",
+            purple: "bg-purple-100 text-purple-600",
+            indigo: "bg-indigo-100 text-indigo-600",
+            cyan: "bg-cyan-100 text-cyan-600",
+            emerald: "bg-emerald-100 text-emerald-600",
+            rose: "bg-rose-100 text-rose-600",
+          };
+
+          return (
+            <Card
+              key={item.label}
+              className="p-5"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">
+                    {item.label}
+                  </p>
+
+                  <p className="mt-3 text-3xl font-bold text-slate-900">
+                    {item.value}
+                  </p>
+                </div>
+
+                <div
+                  className={`rounded-xl p-3 ${colors[item.color]}`}
+                >
+                  <Icon size={22} />
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+
         <Card className="p-5">
           <p className="text-sm font-medium text-slate-500">
-            Total Applications
+            Acceptance Rate
           </p>
 
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.total}
-            </p>
-
-            <div className="rounded-xl bg-blue-100 p-3 text-blue-600">
-              <BriefcaseBusiness size={22} />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-5">
-          <p className="text-sm font-medium text-slate-500">
-            Unread
-          </p>
-
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.unread}
-            </p>
-
-            <div className="rounded-xl bg-amber-100 p-3 text-amber-600">
-              <Mail size={22} />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-5">
-          <p className="text-sm font-medium text-slate-500">
-            Reviewing
-          </p>
-
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.statuses.reviewing}
-            </p>
-
-            <div className="rounded-xl bg-purple-100 p-3 text-purple-600">
-              <Clock3 size={22} />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-5">
-          <p className="text-sm font-medium text-slate-500">
-            Shortlisted
-          </p>
-
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.statuses.shortlisted}
+            <p className="text-3xl font-bold text-emerald-700">
+              {stats.total
+                ? `${Math.round(
+                    (stats.statuses.accepted /
+                      stats.total) *
+                      100,
+                  )}%`
+                : "0%"}
             </p>
 
             <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600">
@@ -710,11 +756,31 @@ export default function AdminCareers() {
             </div>
           </div>
         </Card>
+
+        <Card className="p-5">
+          <p className="text-sm font-medium text-slate-500">
+            Rejection Rate
+          </p>
+
+          <div className="mt-3 flex items-center justify-between">
+            <p className="text-3xl font-bold text-rose-700">
+              {stats.total
+                ? `${Math.round(
+                    (stats.statuses.rejected /
+                      stats.total) *
+                      100,
+                  )}%`
+                : "0%"}
+            </p>
+
+            <div className="rounded-xl bg-rose-100 p-3 text-rose-600">
+              <X size={22} />
+            </div>
+          </div>
+        </Card>
       </div>
 
-
       {/* FILTERS */}
-
       <Card className="p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-md">

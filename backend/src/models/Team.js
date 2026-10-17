@@ -38,6 +38,12 @@ const teamSchema = new mongoose.Schema(
       trim: true,
     },
 
+    careerApplication: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CareerApplication",
+      default: null,
+    },
+
     phone: {
       type: String,
       default: "",
@@ -113,6 +119,16 @@ teamSchema.index({
   active: 1,
   order: 1,
 });
+
+teamSchema.index(
+  { careerApplication: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      careerApplication: { $type: "objectId" },
+    },
+  }
+);
 
 teamSchema.set("toJSON", { virtuals: true });
 teamSchema.set("toObject", { virtuals: true });
