@@ -38,6 +38,16 @@ const {
   updateOperationsCommunityPost,
 } = require("../controllers/adminOperationsController");
 
+const {
+  getOperationsInquiries,
+  updateOperationsInquiryStatus,
+  getOperationsEnrollments,
+  getOperationsCertificates,
+  getOperationsPayments,
+  getOperationsIssues,
+  getOperationsFeedback,
+} = require("../controllers/adminOperationsRecordsController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -186,6 +196,52 @@ router.patch(
 router.patch(
   "/operations/community-posts/:id/status",
   updateOperationsCommunityPost
+);
+
+/* ==========================================
+   PLATFORM OPERATION RECORDS
+   Protected by router-level protect + adminOnly
+========================================== */
+
+// Investors and partners
+router.get(
+  "/operations/inquiries",
+  getOperationsInquiries
+);
+
+router.patch(
+  "/operations/inquiries/:id/status",
+  updateOperationsInquiryStatus
+);
+
+// Learner enrollments and progress
+router.get(
+  "/operations/enrollments",
+  getOperationsEnrollments
+);
+
+// Certificates
+router.get(
+  "/operations/certificates",
+  getOperationsCertificates
+);
+
+// Payments: read-only
+router.get(
+  "/operations/payments",
+  getOperationsPayments
+);
+
+// Issues
+router.get(
+  "/operations/issues",
+  getOperationsIssues
+);
+
+// Feedback
+router.get(
+  "/operations/feedback",
+  getOperationsFeedback
 );
 
 module.exports = router;
