@@ -17,6 +17,7 @@ import {
   Mail,
   Bell,
   Menu,
+  Lightbulb,
   X,
 } from "lucide-react";
 
@@ -35,6 +36,11 @@ const adminLinks = [
     name: "Careers",
     path: "/admin/careers",
     icon: BriefcaseBusiness,
+  },
+  {
+    name: "Opportunities",
+    path: "/admin/opportunities",
+    icon: Lightbulb,
   },
   {
     name: "Team",

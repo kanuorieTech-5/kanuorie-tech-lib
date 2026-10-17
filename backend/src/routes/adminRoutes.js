@@ -48,6 +48,14 @@ const {
   getOperationsFeedback,
 } = require("../controllers/adminOperationsRecordsController");
 
+const {
+  createOpportunity,
+  getOpportunities,
+  getOpportunity,
+  updateOpportunity,
+  deleteOpportunity,
+} = require("../controllers/opportunityController");
+
 const protect = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 
@@ -243,5 +251,20 @@ router.get(
   "/operations/feedback",
   getOperationsFeedback
 );
+
+/* ==========================================
+   OPPORTUNITIES
+========================================== */
+
+router
+  .route("/opportunities")
+  .get(getOpportunities)
+  .post(createOpportunity);
+
+router
+  .route("/opportunities/:id")
+  .get(getOpportunity)
+  .put(updateOpportunity)
+  .delete(deleteOpportunity);
 
 module.exports = router;

@@ -68,7 +68,9 @@ const AdminTeam = lazy(() => import("../pages/admin/AdminTeam"));
 const AdminNotifications = lazy(
   () => import("../pages/admin/AdminNotifications"),
 );
-
+const AdminOpportunities = lazy(
+  () => import("../pages/admin/AdminOpportunities")
+);
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 export default function AppRoutes() {
@@ -179,6 +181,7 @@ export default function AppRoutes() {
               <Route path="projects" element={<AdminProjects />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="blog" element={<AdminBlog />} />
+              <Route path="opportunities" element={<AdminOpportunities />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faq" element={<AdminFAQ />} />
 

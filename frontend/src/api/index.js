@@ -38,4 +38,4 @@ export * from "./uploadApi";
 // Payments
 export * from "./paymentApi";
 export * from "./affiliateApi";
-
+export * from "./opportunityApi";

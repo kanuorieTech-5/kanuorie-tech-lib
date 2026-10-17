@@ -80,6 +80,78 @@ const opportunities = [
       "Share your expertise by creating practical courses, lessons, workshops, and learning resources.",
     icon: GraduationCap,
   },
+  {
+    title: "Freelance / Collaboration",
+    category: "Collaboration",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Work on flexible projects and collaborations with the KanuorieTech team.",
+    icon: UserPlus,
+  },
+  {
+    title: "General Application",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Apply for general opportunities or roles that don't fit the specific categories listed.",
+    icon: Mail,
+  },
+  {
+    title: "Internship / Early Career",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Gain valuable experience and mentorship while contributing to real-world projects.",
+    icon: UserRound,
+  },
+  {
+    title: "HR / Administration",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Support the HR and administration functions within the organization.",
+    icon: User,
+  },
+  {
+    title: "Marketing / Communications",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Support the marketing and communications functions within the organization.",
+    icon: MessageSquare,
+  },
+  {
+    title: "Design / UX",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Create intuitive and engaging user experiences for digital products and platforms.",
+    icon: Palette,
+  },
+  {
+    title: "Community / Support",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Support the community and provide assistance to users and stakeholders.",
+    icon: Users,
+  },
+  {
+    title: "Accounting / Specialist",
+    category: "General",
+    type: "Part-time / Contract",
+    location: "Remote",
+    description:
+      "Support the accounting and financial functions within the organization.",
+    icon: FileText,
+  }
 ];
 
 /* ==========================================
