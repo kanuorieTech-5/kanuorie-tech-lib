@@ -140,104 +140,127 @@ const updateOperationsPayoutStatus = async (
   next
 ) => {
   const { status, reference, rejectionReason } = req.body;
-  const allowedStatuses = ["processing", "paid", "rejected"];
+
+  const allowedStatuses = [
+    "processing",
+    "paid",
+    "rejected",
+  ];
 
   if (!allowedStatuses.includes(status)) {
-    return res.status(400).json({ success: false, message: "Invalid payout status." });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid payout status.",
+    });
   }
+
   if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(400).json({ success: false, message: "Invalid payout ID." });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid payout ID.",
+    });
   }
+
   if (status === "paid" && !String(reference || "").trim()) {
     return res.status(400).json({
       success: false,
-      message: "Enter the payment reference before marking a payout as paid.",
+      message:
+        "Enter the payment reference before marking a payout as paid.",
     });
   }
-  if (status === "rejected" && !String(rejectionReason || "").trim()) {
+
+  if (
+    status === "rejected" &&
+    !String(rejectionReason || "").trim()
+  ) {
     return res.status(400).json({
       success: false,
       message: "Provide a reason for rejecting this payout.",
     });
   }
 
-  let session;
+  const session = await mongoose.startSession();
+
   try {
-    session = await mongoose.startSession();
     let updatedPayout;
 
     await session.withTransaction(async () => {
-      const payout = await AffiliatePayout.findById(req.params.id).session(session);
+      const payout = await AffiliatePayout.findById(
+        req.params.id
+      ).session(session);
+
       if (!payout) {
         const error = new Error("Payout request not found.");
         error.statusCode = 404;
         throw error;
       }
+
       if (!["requested", "processing"].includes(payout.status)) {
-        const error = new Error(`This payout has already been ${payout.status} and cannot be processed again.`);
+        const error = new Error(
+          `This payout has already been ${payout.status} and cannot be processed again.`
+        );
         error.statusCode = 409;
         throw error;
       }
 
       const now = new Date();
-      const referralIds = payout.referrals || [];
 
       if (status === "paid") {
+        const referralIds = payout.referrals || [];
+
+        // Older payout records without linked referrals must be
+        // reconciled before this endpoint can mark them as paid.
         if (!referralIds.length) {
-          const error = new Error("This payout has no linked commission records. Reconcile it before marking it paid.");
+          const error = new Error(
+            "This payout has no linked commission records. Reconcile it before marking it paid."
+          );
           error.statusCode = 409;
           throw error;
         }
 
-        // Accept unreserved legacy records, but never pay a commission reserved by a different payout.
-        const eligibleFilter = {
+        const eligibleReferrals = await AffiliateReferral.find({
           _id: { $in: referralIds },
           affiliate: payout.affiliate,
           commissionStatus: "approved",
-          $or: [
-            { payoutReservation: payout._id },
-            { payoutReservation: null },
-            { payoutReservation: { $exists: false } },
-          ],
-        };
-        const eligibleReferrals = await AffiliateReferral.find(eligibleFilter)
+        })
           .select("_id")
           .session(session);
 
         if (eligibleReferrals.length !== referralIds.length) {
-          const error = new Error("The linked commissions have changed or are reserved by another payout. Review this payout before proceeding.");
+          const error = new Error(
+            "The linked commissions have changed or are no longer eligible. Review this payout before proceeding."
+          );
           error.statusCode = 409;
           throw error;
         }
 
         const referralUpdate = await AffiliateReferral.updateMany(
-          eligibleFilter,
-          { $set: { commissionStatus: "paid", paidAt: now, payoutReservation: payout._id } },
+          {
+            _id: { $in: referralIds },
+            affiliate: payout.affiliate,
+            commissionStatus: "approved",
+          },
+          {
+            $set: {
+              commissionStatus: "paid",
+              paidAt: now,
+            },
+          },
           { session }
         );
+
         if (referralUpdate.modifiedCount !== referralIds.length) {
-          const error = new Error("Not all linked commissions could be marked paid. The payout update was cancelled.");
+          const error = new Error(
+            "Not all linked commissions could be marked paid. The payout update was cancelled."
+          );
           error.statusCode = 409;
           throw error;
         }
       }
 
-      if (status === "rejected" && referralIds.length) {
-        // Only release records owned by this payout; never clear another payout's reservation.
-        await AffiliateReferral.updateMany(
-          {
-            _id: { $in: referralIds },
-            affiliate: payout.affiliate,
-            commissionStatus: "approved",
-            payoutReservation: payout._id,
-          },
-          { $set: { payoutReservation: null } },
-          { session }
-        );
-      }
-
       payout.status = status;
       payout.processedAt = now;
+
       if (status === "paid") {
         payout.paidAt = now;
         payout.reference = String(reference).trim();
@@ -246,31 +269,37 @@ const updateOperationsPayoutStatus = async (
         payout.rejectionReason = String(rejectionReason).trim();
         payout.paidAt = null;
       }
+
       await payout.save({ session });
+
       updatedPayout = payout._id;
     });
 
     const result = await AffiliatePayout.findById(updatedPayout)
       .populate({
         path: "affiliate",
-        populate: { path: "user", select: "firstName lastName email" },
+        populate: {
+          path: "user",
+          select: "firstName lastName email",
+        },
       })
       .populate("referrals")
       .lean();
 
     return res.status(200).json({
       success: true,
-      message: status === "paid"
-        ? "Payout marked paid and linked commissions updated."
-        : status === "rejected"
-          ? "Payout request rejected and its commission reservations released."
-          : "Payout moved to processing.",
+      message:
+        status === "paid"
+          ? "Payout marked paid and linked commissions updated."
+          : status === "rejected"
+            ? "Payout request rejected."
+            : "Payout moved to processing.",
       data: { payout: result },
     });
   } catch (error) {
     next(error);
   } finally {
-    if (session) await session.endSession();
+    await session.endSession();
   }
 };
 

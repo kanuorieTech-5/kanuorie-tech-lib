@@ -15,7 +15,7 @@ import {
   XCircle,
   X,
 } from "lucide-react";
-
+import * as operationsApi from "../../api/operationsApi";
 /* ========================================
    VALUE FORMATTERS
 ======================================== */
@@ -219,8 +219,75 @@ export default function PlatformOperationsOverview({
 
   const [selectedMetric, setSelectedMetric] = useState(null);
 
-useEffect(() => {
-  if (!selectedMetric) return;
+  const [operationRecords, setOperationRecords] = useState([]);
+  const [recordsLoading, setRecordsLoading] = useState(false);
+  const [recordsError, setRecordsError] = useState("");
+  const [actionLoading, setActionLoading] = useState("");
+
+  const getRecordsCategory = (section, label) => {
+    if (section === "Affiliates & Payouts") {
+      return ["Pending Payouts", "Paid Payouts", "Total Commission",
+        "Pending Commission"].includes(label)
+        ? "payouts"
+        : "affiliates";
+    }
+
+    if (section === "Investors & Partners") return "inquiries";
+    if (section === "Course Enrollment Overview") return "enrollments";
+    if (section === "Certificates Issued") return "certificates";
+    if (section === "Payment Activities") return "payments";
+    if (section === "Issues & Support") return "issues";
+    if (section === "Feedback & Reviews") return "feedback";
+    if (section === "Compliance Overview") return "compliance";
+
+    return "none";
+  };
+
+  const loadOperationRecords = async (category) => {
+    if (!category || ["none", "compliance"].includes(category)) {
+      setOperationRecords([]);
+      return;
+    }
+
+    setRecordsLoading(true);
+    setRecordsError("");
+
+    try {
+      const loaders = {
+        affiliates: operationsApi.getOperationsAffiliates,
+        payouts: operationsApi.getOperationsPayouts,
+        inquiries: operationsApi.getOperationsInquiries,
+        enrollments: operationsApi.getOperationsEnrollments,
+        certificates: operationsApi.getOperationsCertificates,
+        payments: operationsApi.getOperationsPayments,
+        issues: operationsApi.getOperationsIssues,
+        feedback: operationsApi.getOperationsFeedback,
+      };
+
+      const records = await loaders[category]();
+      setOperationRecords(records);
+    } catch (error) {
+      setOperationRecords([]);
+      setRecordsError(
+        error.response?.data?.message ||
+          "Unable to load records. Check your admin access and API connection."
+      );
+    } finally {
+      setRecordsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedMetric?.category) {
+      loadOperationRecords(selectedMetric.category);
+    } else {
+      setOperationRecords([]);
+      setRecordsError("");
+    }
+  }, [selectedMetric?.category]);
+
+  useEffect(() => {
+    if (!selectedMetric) return;
 
   const handleEscape = (event) => {
     if (event.key === "Escape") {
@@ -239,11 +306,9 @@ useEffect(() => {
 
 const handleMetricClick = (event) => {
   const card = event.target.closest("[data-metric-card]");
-
   if (!card) return;
 
   const section = card.closest("[data-operations-section]");
-
   if (!section) return;
 
   const relatedMetrics = Array.from(
@@ -253,12 +318,84 @@ const handleMetricClick = (event) => {
     value: metric.dataset.metricValue,
   }));
 
+  const label = card.dataset.metricLabel;
+  const sectionTitle = section.dataset.sectionTitle;
+
+  const category = getRecordsCategory(sectionTitle, label);
+
+  setOperationRecords([]);
+  setRecordsError("");
+
   setSelectedMetric({
-    label: card.dataset.metricLabel,
+    label,
     value: card.dataset.metricValue,
-    section: section.dataset.sectionTitle,
+    section: sectionTitle,
+    category,
     relatedMetrics,
   });
+};
+
+const handleRecordAction = async (record, status) => {
+  const category = selectedMetric?.category;
+  const id = record._id;
+
+  if (!id || !category) return;
+
+  let action;
+
+  if (category === "affiliates") {
+    action = () =>
+      operationsApi.updateOperationsAffiliateStatus(id, status);
+  } else if (category === "inquiries") {
+    action = () =>
+      operationsApi.updateOperationsInquiryStatus(id, status);
+  } else if (category === "issues") {
+    action = () =>
+      operationsApi.updateOperationsIssueStatus(id, status);
+  } else if (category === "payouts") {
+    let reference;
+    let rejectionReason;
+
+    if (status === "paid") {
+      reference = window.prompt(
+        "Enter the actual payout payment reference:"
+      );
+
+      if (!reference?.trim()) return;
+    }
+
+    if (status === "rejected") {
+      rejectionReason = window.prompt(
+        "Enter the reason for rejecting this payout:"
+      );
+
+      if (!rejectionReason?.trim()) return;
+    }
+
+    action = () =>
+      operationsApi.updateOperationsPayoutStatus(id, {
+        status,
+        reference,
+        rejectionReason,
+      });
+  } else {
+    return;
+  }
+
+  setActionLoading(id);
+  setRecordsError("");
+
+  try {
+    await action();
+    await loadOperationRecords(category);
+  } catch (error) {
+    setRecordsError(
+      error.response?.data?.message ||
+        "The action failed. Please try again."
+    );
+  } finally {
+    setActionLoading("");
+  }
 };
 
   const complianceConfigured = compliance.configured !== false;
@@ -702,7 +839,7 @@ const handleMetricClick = (event) => {
           }
         />
       </Section>
-            {selectedMetric && (
+      {selectedMetric && (
         <div
           className="fixed inset-0 z-[300] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
           onClick={() => setSelectedMetric(null)}
@@ -714,76 +851,284 @@ const handleMetricClick = (event) => {
             className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-slate-200 bg-white p-5">
+
+            <section className="space-y-4 border-b border-slate-200 p-5">
               <div>
-                <p className="text-sm font-medium text-blue-600">
-                  {selectedMetric.section}
-                </p>
-
-                <h2
-                  id="operations-modal-title"
-                  className="mt-1 text-xl font-bold text-slate-900"
-                >
-                  {selectedMetric.label}
-                </h2>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  View this metric and its related section statistics.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedMetric(null)}
-                aria-label="Close modal"
-                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="space-y-6 p-5">
-              <div className="rounded-xl bg-blue-50 p-5">
-                <p className="text-sm font-medium text-blue-700">
-                  {selectedMetric.label}
-                </p>
-
-                <p className="mt-2 break-words text-3xl font-bold text-slate-900">
-                  {selectedMetric.value}
-                </p>
-
-                <p className="mt-1 text-sm text-slate-600">
-                  Current dashboard value
-                </p>
-              </div>
-
-              <div>
-                <h3 className="mb-3 font-semibold text-slate-900">
-                  Related statistics
+                <h3 className="font-semibold text-slate-900">
+                  {selectedMetric.category === "issues"
+                    ? "Community Reports"
+                    : selectedMetric.category === "inquiries"
+                      ? "Investor & Partner Inquiries"
+                      : selectedMetric.category === "affiliates"
+                        ? "Affiliate Records"
+                        : selectedMetric.category === "payouts"
+                          ? "Payout Requests"
+                          : selectedMetric.category === "enrollments"
+                            ? "Learner Enrollments"
+                            : selectedMetric.category === "certificates"
+                              ? "Certificate Records"
+                              : selectedMetric.category === "payments"
+                                ? "Payment Transactions"
+                                : selectedMetric.category === "feedback"
+                                  ? "Feedback & Testimonials"
+                                  : "Records"}
                 </h3>
 
-                <div className="space-y-2">
-                  {selectedMetric.relatedMetrics.map((metric) => (
-                    <div
-                      key={metric.label}
-                      className={`flex items-center justify-between gap-4 rounded-xl border p-3 ${
-                        metric.label === selectedMetric.label
-                          ? "border-blue-300 bg-blue-50"
-                          : "border-slate-200 bg-white"
-                      }`}
-                    >
-                      <span className="text-sm text-slate-600">
-                        {metric.label}
-                      </span>
-
-                      <span className="break-words text-right text-sm font-bold text-slate-900">
-                        {metric.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <p className="mt-1 text-sm text-slate-500">
+                  Data loaded from the protected KanuorieTech API.
+                </p>
               </div>
-            </div>
+
+              {recordsLoading && (
+                <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                  Loading records…
+                </p>
+              )}
+
+              {!recordsLoading && recordsError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                  {recordsError}
+                  <button
+                    type="button"
+                    onClick={() => loadOperationRecords(selectedMetric.category)}
+                    className="ml-2 font-semibold underline"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {!recordsLoading &&
+                !recordsError &&
+                selectedMetric.category === "compliance" && (
+                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                    Not configured. No dedicated compliance data source is connected.
+                  </p>
+                )}
+
+              {!recordsLoading &&
+                !recordsError &&
+                selectedMetric.category === "none" && (
+                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                    A dedicated record view is not configured for this metric yet.
+                  </p>
+                )}
+
+              {!recordsLoading &&
+                !recordsError &&
+                !["none", "compliance"].includes(selectedMetric.category) &&
+                operationRecords.length === 0 && (
+                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                    No records were found.
+                  </p>
+                )}
+
+              {!recordsLoading &&
+                !recordsError &&
+                operationRecords.map((record) => {
+                  const person = (value) => {
+                    if (!value) return "Unknown";
+                    if (typeof value === "string") return value;
+
+                    return [
+                      value.firstName,
+                      value.lastName,
+                    ].filter(Boolean).join(" ") ||
+                      value.name ||
+                      value.email ||
+                      "Unknown";
+                  };
+
+                  const date = (value) =>
+                    value ? new Date(value).toLocaleString() : "—";
+
+                  const status =
+                    record.status ||
+                    record.commissionStatus ||
+                    (record.active === false ? "inactive" : "");
+
+                  const statusOptions = {
+                    affiliates: ["pending", "active", "suspended", "inactive"],
+                    payouts: ["processing", "paid", "rejected"],
+                    inquiries: ["new", "contacted", "in-progress", "completed", "cancelled"],
+                    issues: ["pending", "reviewed", "dismissed", "actioned"],
+                  };
+
+                  const canUpdate = Boolean(statusOptions[selectedMetric.category]);
+
+                  return (
+                    <article
+                      key={record._id}
+                      className="space-y-3 rounded-xl border border-slate-200 p-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <h4 className="break-words font-semibold text-slate-900">
+                            {selectedMetric.category === "affiliates"
+                              ? person(record.user)
+                              : selectedMetric.category === "payouts"
+                                ? person(record.affiliate?.user)
+                                : selectedMetric.category === "inquiries"
+                                  ? record.name
+                                  : selectedMetric.category === "enrollments"
+                                    ? person(record.user)
+                                    : selectedMetric.category === "certificates"
+                                      ? record.recipientName
+                                      : selectedMetric.category === "payments"
+                                        ? person(record.user)
+                                        : selectedMetric.category === "issues"
+                                          ? record.post?.title || "Community report"
+                                          : record.name || "Feedback"}
+                          </h4>
+
+                          <p className="mt-1 break-all text-sm text-slate-500">
+                            {selectedMetric.category === "affiliates"
+                              ? record.user?.email
+                              : selectedMetric.category === "payouts"
+                                ? record.affiliate?.user?.email
+                                : selectedMetric.category === "inquiries"
+                                  ? record.email
+                                  : selectedMetric.category === "enrollments"
+                                    ? record.user?.email
+                                    : selectedMetric.category === "certificates"
+                                      ? record.certificateId
+                                      : selectedMetric.category === "payments"
+                                        ? record.providerReference
+                                        : selectedMetric.category === "issues"
+                                          ? `${record.reason || "Report"} · ${person(record.reporter)}`
+                                          : record.company || record.position || ""}
+                          </p>
+                        </div>
+
+                        {status && (
+                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
+                            {String(status).replaceAll("_", " ")}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="space-y-1 text-sm text-slate-600">
+                        {selectedMetric.category === "affiliates" && (
+                          <>
+                            <p>Referral code: {record.referralCode || "—"}</p>
+                            <p>Commission rate: {record.commissionRate ?? 0}%</p>
+                            <p>Joined: {date(record.createdAt)}</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "payouts" && (
+                          <>
+                            <p>Amount: {record.currency || "USD"} {Number(record.amount || 0).toLocaleString()}</p>
+                            <p>Requested: {date(record.requestedAt || record.createdAt)}</p>
+                            {record.reference && <p>Payment reference: {record.reference}</p>}
+                            {record.rejectionReason && <p>Reason: {record.rejectionReason}</p>}
+                          </>
+                        )}
+
+                        {selectedMetric.category === "inquiries" && (
+                          <>
+                            <p>Type: {record.inquiryType}</p>
+                            <p>Company: {record.company || "—"}</p>
+                            <p>Phone: {record.phone || "—"}</p>
+                            <p>Subject: {record.subject}</p>
+                            <p className="whitespace-pre-wrap break-words">{record.message}</p>
+                            <p>Received: {date(record.createdAt)}</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "enrollments" && (
+                          <>
+                            <p>Course: {record.course?.title || "Course unavailable"}</p>
+                            <p>Progress: {Number(record.percentage || 0)}%</p>
+                            <p>Certificate issued: {record.certificateIssued ? "Yes" : "No"}</p>
+                            <p>Last updated: {date(record.updatedAt)}</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "certificates" && (
+                          <>
+                            <p>Course: {record.courseTitle || record.course?.title || "—"}</p>
+                            <p>Completed: {date(record.completionDate)}</p>
+                            <p>Issued: {date(record.issuedAt)}</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "payments" && (
+                          <>
+                            <p>Amount: {record.currency || "USD"} {Number(record.amount || 0).toLocaleString()}</p>
+                            <p>Provider: {record.provider || "—"}</p>
+                            <p>Method: {record.paymentMethod || "—"}</p>
+                            <p>Created: {date(record.createdAt)}</p>
+                            <p>Paid: {date(record.paidAt)}</p>
+                            {record.failureReason && <p>Failure reason: {record.failureReason}</p>}
+                            <p className="font-medium text-slate-700">Read-only transaction record</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "issues" && (
+                          <>
+                            <p>Reported by: {person(record.reporter)} ({record.reporter?.email || "—"})</p>
+                            <p>Reason: {record.reason}</p>
+                            <p className="whitespace-pre-wrap break-words">{record.details || "No additional details."}</p>
+                            <p>Reported: {date(record.createdAt)}</p>
+                          </>
+                        )}
+
+                        {selectedMetric.category === "feedback" && (
+                          <>
+                            <p>Rating: {record.rating ?? "—"} / 5</p>
+                            <p className="whitespace-pre-wrap break-words">{record.message}</p>
+                            <p>Received: {date(record.createdAt)}</p>
+                            <p>Visibility: {record.active ? "Active" : "Inactive"}</p>
+                          </>
+                        )}
+                      </div>
+
+                      {canUpdate && (
+                        <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+                          <label
+                            htmlFor={`operation-status-${record._id}`}
+                            className="text-xs font-medium text-slate-600"
+                          >
+                            Update status
+                          </label>
+
+                          <select
+                            id={`operation-status-${record._id}`}
+                            value={status}
+                            disabled={actionLoading === record._id}
+                            onChange={(event) =>
+                              handleRecordAction(record, event.target.value)
+                            }
+                            className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 disabled:opacity-50"
+                          >
+                            {!statusOptions[selectedMetric.category].includes(status) && (
+                              <option value={status}>{status || "Unknown"}</option>
+                            )}
+
+                            {statusOptions[selectedMetric.category].map((option) => (
+                              <option
+                                key={option}
+                                value={option}
+                                disabled={
+                                  selectedMetric.category === "payouts" &&
+                                  ["paid", "rejected"].includes(status)
+                                }
+                              >
+                                {option.replaceAll("-", " ").replaceAll("_", " ")}
+                              </option>
+                            ))}
+                          </select>
+
+                          {actionLoading === record._id && (
+                            <span className="text-xs text-slate-500">Saving…</span>
+                          )}
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+            </section>
 
             <div className="border-t border-slate-200 p-4 text-right">
               <button
