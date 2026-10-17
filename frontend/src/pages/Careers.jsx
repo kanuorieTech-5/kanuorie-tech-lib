@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 
 import TeamApplicationForm from "../components/forms/TeamApplicationForm";
 import { submitCareerApplication } from "../api/careerApplicationApi";
-
+import { getPublicOpportunities } from "../api/opportunityApi";
 /* ==========================================
    ANIMATION
 ========================================== */
@@ -40,148 +40,33 @@ const fadeUp = {
 };
 
 /* ==========================================
-   OPPORTUNITIES
-========================================== */
-
-const opportunities = [
-  {
-    title: "Frontend Developer",
-    category: "Engineering",
-    type: "Full-time / Contract",
-    location: "Remote",
-    description:
-      "Build responsive, accessible, and engaging web experiences using modern frontend technologies.",
-    icon: Code2,
-  },
-  {
-    title: "Backend Developer",
-    category: "Engineering",
-    type: "Full-time / Contract",
-    location: "Remote",
-    description:
-      "Help build reliable APIs, services, databases, and backend systems powering KanuorieTech products.",
-    icon: BriefcaseBusiness,
-  },
-  {
-    title: "Technical Content Creator",
-    category: "Content",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Create practical technology content, tutorials, short-form videos, and educational resources.",
-    icon: Laptop,
-  },
-  {
-    title: "Technology Instructor",
-    category: "Education",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Share your expertise by creating practical courses, lessons, workshops, and learning resources.",
-    icon: GraduationCap,
-  },
-  {
-    title: "Freelance / Collaboration",
-    category: "Collaboration",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Work on flexible projects and collaborations with the KanuorieTech team.",
-    icon: UserPlus,
-  },
-  {
-    title: "General Application",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Apply for general opportunities or roles that don't fit the specific categories listed.",
-    icon: Mail,
-  },
-  {
-    title: "Internship / Early Career",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Gain valuable experience and mentorship while contributing to real-world projects.",
-    icon: UserRound,
-  },
-  {
-    title: "HR / Administration",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Support the HR and administration functions within the organization.",
-    icon: User,
-  },
-  {
-    title: "Marketing / Communications",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Support the marketing and communications functions within the organization.",
-    icon: MessageSquare,
-  },
-  {
-    title: "Design / UX",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Create intuitive and engaging user experiences for digital products and platforms.",
-    icon: Palette,
-  },
-  {
-    title: "Community / Support",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Support the community and provide assistance to users and stakeholders.",
-    icon: Users,
-  },
-  {
-    title: "Accounting / Specialist",
-    category: "General",
-    type: "Part-time / Contract",
-    location: "Remote",
-    description:
-      "Support the accounting and financial functions within the organization.",
-    icon: FileText,
-  }
-];
-
-/* ==========================================
-   BENEFITS
+   WHY JOIN KANUORIETECH
 ========================================== */
 
 const benefits = [
   {
-    title: "Learn & Grow",
+    icon: Code2,
+    title: "Build Real Projects",
     description:
-      "Develop your skills through practical projects, collaboration, and continuous learning.",
+      "Contribute to practical technology projects and build experience solving real-world problems.",
+  },
+  {
     icon: GraduationCap,
+    title: "Continuous Learning",
+    description:
+      "Develop your skills through hands-on experience, knowledge sharing, and continuous learning.",
   },
   {
-    title: "Real-World Projects",
-    description:
-      "Work on digital products, educational platforms, and technology solutions with practical impact.",
-    icon: Rocket,
-  },
-  {
-    title: "Remote-Friendly",
-    description:
-      "Collaborate from wherever you work best while staying connected with the wider team.",
-    icon: Laptop,
-  },
-  {
-    title: "Build Together",
-    description:
-      "Work with developers, educators, designers, creators, and technology professionals.",
     icon: Users,
+    title: "Collaborative Team",
+    description:
+      "Work with developers, educators, creators, and other professionals who share ideas and learn together.",
+  },
+  {
+    icon: Rocket,
+    title: "Make an Impact",
+    description:
+      "Help create digital products and learning experiences that empower people through technology.",
   },
 ];
 
@@ -261,7 +146,9 @@ export default function Careers() {
   const [error, setError] = useState("");
 
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
-
+  const [opportunities, setOpportunities] = useState([]);
+  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
+  const [opportunitiesError, setOpportunitiesError] = useState("");
   /* ==========================================
      OPEN APPLICATION MODAL
   ========================================== */
@@ -284,6 +171,43 @@ export default function Careers() {
 
     setIsApplicationOpen(false);
   };
+
+  useEffect(() => {
+  let isMounted = true;
+
+  const fetchOpportunities = async () => {
+    try {
+      setOpportunitiesLoading(true);
+      setOpportunitiesError("");
+
+      const response = await getPublicOpportunities({ limit: 100 });
+      const result = response?.data ?? response;
+      const items = Array.isArray(result?.items) ? result.items : [];
+
+      if (isMounted) {
+        setOpportunities(items);
+      }
+    } catch (err) {
+      console.error("Failed to load career opportunities:", err);
+
+      if (isMounted) {
+        setOpportunitiesError(
+          "We couldn't load opportunities right now. Please try again shortly."
+        );
+      }
+    } finally {
+      if (isMounted) {
+        setOpportunitiesLoading(false);
+      }
+    }
+  };
+
+  fetchOpportunities();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
 
   /* ==========================================
      MODAL SCROLL LOCK + ESCAPE KEY
@@ -475,7 +399,10 @@ export default function Careers() {
           OPEN OPPORTUNITIES
       ========================================= */}
 
-      <section className="border-y border-slate-200 bg-white">
+      <section
+        id="open-opportunities"
+        className="border-y border-slate-200 bg-white"
+      >
         <div className="mx-auto px-6 py-16 lg:px-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -488,88 +415,336 @@ export default function Careers() {
               </h2>
 
               <p className="mt-3 max-w-2xl text-slate-600">
-                Explore the types of opportunities available across
-                engineering, education, content, and collaboration.
+                Explore current jobs, internships, scholarships, grants,
+                fellowships, and other opportunities published by KanuorieTech.
               </p>
             </div>
 
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-600">
-              <span className="h-2 w-2 rounded-full bg-blue-500" />
-              Opportunities updated as roles become available
+              <span
+                className={`h-2 w-2 rounded-full ${
+                  opportunitiesLoading
+                    ? "animate-pulse bg-amber-500"
+                    : opportunitiesError
+                      ? "bg-red-500"
+                      : "bg-emerald-500"
+                }`}
+              />
+
+              {opportunitiesLoading
+                ? "Loading opportunities"
+                : opportunitiesError
+                  ? "Unable to load opportunities"
+                  : `${opportunities.length} open ${
+                      opportunities.length === 1
+                        ? "opportunity"
+                        : "opportunities"
+                    }`}
             </div>
           </div>
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {opportunities.map((opportunity, index) => {
-              const Icon = opportunity.icon;
-
-              return (
-                <motion.article
-                  key={opportunity.title}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
-                  variants={fadeUp}
-                  transition={{ delay: index * 0.05 }}
-                  className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg sm:p-7"
+          {/* Loading state */}
+          {opportunitiesLoading && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="mt-10 grid gap-5 lg:grid-cols-2"
+            >
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-7"
                 >
-                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-                        <Icon className="h-6 w-6" />
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-slate-200" />
 
-                      <div>
-                        <h3 className="text-xl font-bold">
-                          {opportunity.title}
-                        </h3>
-
-                        <p className="mt-1 text-sm font-medium text-blue-600">
-                          {opportunity.category}
-                        </p>
-                      </div>
+                    <div className="flex-1">
+                      <div className="h-5 w-2/3 rounded bg-slate-200" />
+                      <div className="mt-3 h-3 w-1/3 rounded bg-slate-200" />
                     </div>
-
-                    <span className="w-fit rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
-                      {opportunity.type}
-                    </span>
                   </div>
 
-                  <p className="mt-5 text-sm leading-7 text-slate-600">
-                    {opportunity.description}
-                  </p>
+                  <div className="mt-6 h-3 w-full rounded bg-slate-200" />
+                  <div className="mt-3 h-3 w-4/5 rounded bg-slate-200" />
+                  <div className="mt-6 h-4 w-1/3 rounded bg-slate-200" />
+                </div>
+              ))}
+            </div>
+          )}
 
-                  <div className="mt-5 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500">
-                    <span className="inline-flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4" />
-                      {opportunity.location}
-                    </span>
+          {/* Error state */}
+          {!opportunitiesLoading && opportunitiesError && (
+            <div
+              role="alert"
+              className="mt-10 rounded-2xl border border-red-200 bg-red-50 p-6 text-center"
+            >
+              <p className="font-bold text-red-800">
+                We couldn't load opportunities.
+              </p>
 
-                    <span className="inline-flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      Applications welcome
-                    </span>
-                  </div>
+              <p className="mt-2 text-sm leading-6 text-red-700">
+                {opportunitiesError}
+              </p>
 
-                  <button
-                    type="button"
-                    onClick={() => openApplication(opportunity.title)}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition group-hover:text-blue-700"
-                  >
-                    Apply for this opportunity
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </motion.article>
-              );
-            })}
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpportunitiesError("");
+                  setOpportunitiesLoading(true);
+
+                  getPublicOpportunities({ limit: 100 })
+                    .then((response) => {
+                      const result = response?.data ?? response;
+                      const items = Array.isArray(result?.items)
+                        ? result.items
+                        : [];
+
+                      setOpportunities(items);
+                    })
+                    .catch((err) => {
+                      console.error(
+                        "Failed to reload career opportunities:",
+                        err,
+                      );
+
+                      setOpportunitiesError(
+                        "We couldn't load opportunities right now. Please try again shortly.",
+                      );
+                    })
+                    .finally(() => {
+                      setOpportunitiesLoading(false);
+                    });
+                }}
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-red-700"
+              >
+                Try again
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!opportunitiesLoading &&
+            !opportunitiesError &&
+            opportunities.length === 0 && (
+              <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center sm:px-10">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+                  <BriefcaseBusiness className="h-7 w-7" />
+                </div>
+
+                <h3 className="mt-5 text-xl font-black text-slate-900">
+                  No open opportunities right now
+                </h3>
+
+                <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">
+                  We don't have any published opportunities at the moment.
+                  You can still introduce yourself and join our talent network
+                  for future opportunities.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => openApplication()}
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                >
+                  Join the Talent Network
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+          {/* Live opportunities */}
+          {!opportunitiesLoading &&
+            !opportunitiesError &&
+            opportunities.length > 0 && (
+              <div className="mt-10 grid gap-5 lg:grid-cols-2">
+                {opportunities.map((opportunity, index) => {
+                  const typeLabel = String(
+                    opportunity.type || "other",
+                  )
+                    .replace(/[-_]/g, " ")
+                    .replace(/\b\w/g, (character) =>
+                      character.toUpperCase(),
+                    );
+
+                  const workModeLabel = String(
+                    opportunity.workMode || "",
+                  )
+                    .replace(/[-_]/g, " ")
+                    .replace(/\b\w/g, (character) =>
+                      character.toUpperCase(),
+                    );
+
+                  const deadline = opportunity.deadline
+                    ? new Date(opportunity.deadline)
+                    : null;
+
+                  const hasValidDeadline =
+                    deadline &&
+                    !Number.isNaN(deadline.getTime());
+
+                  const applicationUrl =
+                    typeof opportunity.applicationUrl === "string"
+                      ? opportunity.applicationUrl.trim()
+                      : "";
+
+                  const applicationEmail =
+                    typeof opportunity.applicationEmail === "string"
+                      ? opportunity.applicationEmail.trim()
+                      : "";
+
+                  const isExternalApplication =
+                    Boolean(applicationUrl);
+
+                  const isEmailApplication =
+                    !applicationUrl && Boolean(applicationEmail);
+
+                  return (
+                    <motion.article
+                      key={opportunity._id || opportunity.slug || opportunity.title}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.1 }}
+                      variants={fadeUp}
+                      transition={{ delay: Math.min(index * 0.05, 0.3) }}
+                      className="group flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6 transition duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg sm:p-7"
+                    >
+                      {/* Opportunity heading */}
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex gap-4">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                            <BriefcaseBusiness className="h-6 w-6" />
+                          </div>
+
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="text-xl font-bold text-slate-900">
+                                {opportunity.title}
+                              </h3>
+
+                              {opportunity.featured && (
+                                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-800">
+                                  Featured
+                                </span>
+                              )}
+                            </div>
+
+                            {opportunity.organization && (
+                              <p className="mt-1 text-sm font-medium text-blue-600">
+                                {opportunity.organization}
+                              </p>
+                            )}
+
+                            {opportunity.category && (
+                              <p className="mt-1 text-xs text-slate-500">
+                                {opportunity.category}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <span className="w-fit shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
+                          {typeLabel}
+                        </span>
+                      </div>
+
+                      {/* Description */}
+                      <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">
+                        {opportunity.description ||
+                          "Explore this opportunity and its application requirements."}
+                      </p>
+
+                      {/* Location and work arrangement */}
+                      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-medium text-slate-500">
+                        {opportunity.location && (
+                          <span className="inline-flex items-center gap-1.5">
+                            <MapPin className="h-4 w-4 shrink-0" />
+                            {opportunity.location}
+                          </span>
+                        )}
+
+                        {workModeLabel &&
+                          opportunity.workMode !== "not-applicable" && (
+                            <span className="inline-flex items-center gap-1.5">
+                              <Laptop className="h-4 w-4 shrink-0" />
+                              {workModeLabel}
+                            </span>
+                          )}
+
+                        {hasValidDeadline && (
+                          <span className="inline-flex items-center gap-1.5">
+                            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                            Deadline:{" "}
+                            {deadline.toLocaleDateString(undefined, {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Tags */}
+                      {Array.isArray(opportunity.tags) &&
+                        opportunity.tags.length > 0 && (
+                          <div className="mt-5 flex flex-wrap gap-2">
+                            {opportunity.tags.slice(0, 6).map((tag, tagIndex) => (
+                              <span
+                                key={`${tag}-${tagIndex}`}
+                                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                      {/* Application action */}
+                      <div className="mt-auto pt-6">
+                        {isExternalApplication ? (
+                          <a
+                            href={applicationUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-700"
+                          >
+                            Apply externally
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </a>
+                        ) : isEmailApplication ? (
+                          <a
+                            href={`mailto:${applicationEmail}?subject=${encodeURIComponent(
+                              `Application: ${opportunity.title}`,
+                            )}`}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-700"
+                          >
+                            Apply by email
+                            <Mail className="h-4 w-4" />
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              openApplication(opportunity.title)
+                            }
+                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-700"
+                          >
+                            Apply for this opportunity
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </button>
+                        )}
+                      </div>
+                    </motion.article>
+                  );
+                })}
+              </div>
+            )}
         </div>
       </section>
 
       {/* =========================================
           EARLY CAREER + COLLABORATION
       ========================================= */}
-
       <section className="mx-auto px-6 py-16 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div
@@ -672,6 +847,7 @@ export default function Careers() {
           </div>
         </div>
       </section>
+
 
       {/* =========================================
           HIRING PROCESS
