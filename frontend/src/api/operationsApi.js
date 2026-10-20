@@ -33,6 +33,18 @@ export const getOperationsIssues = (params = {}) =>
 export const getOperationsFeedback = () =>
   getItems("/admin/operations/feedback");
 
+export const getOperationsReports = (params = {}) =>
+  getItems("/admin/operations/reports", params);
+
+export const updateOperationsReportStatus = async (id, status) => {
+  const { data } = await API.patch(
+    `/admin/operations/reports/${id}/status`,
+    { status }
+  );
+
+  return data;
+};
+
 /* ==========================================
    PLATFORM OPERATIONS — SUPPORTED ACTIONS
 ========================================== */

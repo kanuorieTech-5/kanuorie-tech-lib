@@ -293,6 +293,73 @@ const getOperationsFeedback = async (req, res, next) => {
   }
 };
 
+const getOperationsReports = async (req, res, next) => {
+  try {
+    const reports = await Contact.find({ isReport: true })
+      .sort({ createdAt: -1 })
+      .select(
+        "name email subject message reportCategory status isRead createdAt updatedAt"
+      )
+      .lean();
+
+    return sendSuccess(res, "Reports retrieved successfully.", reports);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const updateOperationsReportStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = [
+      "new",
+      "contacted",
+      "in-progress",
+      "completed",
+      "cancelled",
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid report status.",
+      });
+    }
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid report ID.",
+      });
+    }
+
+    const report = await Contact.findOneAndUpdate(
+      { _id: id, isReport: true },
+      { $set: { status } },
+      { new: true, runValidators: true }
+    ).select(
+      "name email subject message reportCategory status isRead createdAt updatedAt"
+    );
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Report status updated successfully.",
+      data: { item: report },
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getOperationsInquiries,
   updateOperationsInquiryStatus,
@@ -301,4 +368,6 @@ module.exports = {
   getOperationsPayments,
   getOperationsIssues,
   getOperationsFeedback,
+  getOperationsReports,
+  updateOperationsReportStatus,
 };

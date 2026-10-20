@@ -68,6 +68,17 @@ const contactSchema = new mongoose.Schema(
       default: "General",
     },
 
+    isReport: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    reportCategory: {
+      type: String,
+      enum: ["Complaint", "Compliance", "Feedback"],
+      default: undefined,
+    },
+
     isServiceInquiry: {
       type: Boolean,
       default: false,
@@ -195,5 +206,5 @@ contactSchema.index({ isRead: 1, createdAt: -1 });
 contactSchema.index({ inquiryType: 1 });
 contactSchema.index({ isServiceInquiry: 1, createdAt: -1 });
 contactSchema.index({ isServiceInquiry: 1, status: 1 });
-
+contactSchema.index({ isReport: 1, reportCategory: 1, createdAt: -1 });
 module.exports = mongoose.model("Contact", contactSchema);

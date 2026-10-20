@@ -204,8 +204,8 @@ function StatusBadge({ type = "neutral", children }) {
 
 export default function PlatformOperationsOverview({
   operations = {},
-}) {
-  const {
+  }) {
+    const {
     team = {},
     affiliates = {},
     investorsPartners = {},
@@ -215,6 +215,7 @@ export default function PlatformOperationsOverview({
     compliance = {},
     issues = {},
     feedback = {},
+    reports = {},
   } = operations;
 
   const [selectedMetric, setSelectedMetric] = useState(null);
@@ -238,9 +239,10 @@ export default function PlatformOperationsOverview({
     if (section === "Payment Activities") return "payments";
     if (section === "Issues & Support") return "issues";
     if (section === "Feedback & Reviews") return "feedback";
+    if (section === "Compliance Overview" && label === "Complaints & Reports") {
+        return "reports";
+      }
     if (section === "Compliance Overview") return "compliance";
-
-    return "none";
   };
 
   const loadOperationRecords = async (category) => {
@@ -262,6 +264,7 @@ export default function PlatformOperationsOverview({
         payments: operationsApi.getOperationsPayments,
         issues: operationsApi.getOperationsIssues,
         feedback: operationsApi.getOperationsFeedback,
+        reports: operationsApi.getOperationsReports,
       };
 
       const records = await loaders[category]();
@@ -335,6 +338,7 @@ const handleMetricClick = (event) => {
   });
 };
 
+
 const handleRecordAction = async (record, status) => {
   const category = selectedMetric?.category;
   const id = record._id;
@@ -352,6 +356,9 @@ const handleRecordAction = async (record, status) => {
   } else if (category === "issues") {
     action = () =>
       operationsApi.updateOperationsIssueStatus(id, status);
+  } else if (category === "reports") {
+    action = () =>
+      operationsApi.updateOperationsReportStatus(id, status);
   } else if (category === "payouts") {
     let reference;
     let rejectionReason;
@@ -682,22 +689,19 @@ const handleRecordAction = async (record, status) => {
         }
         icon={ShieldCheck}
       >
-        <Metric
-          label="Compliance Items"
-          value={compliance.total}
-          icon={ShieldCheck}
-          formatter={(value) =>
-            formatConfiguredValue(value, complianceConfigured)
-          }
-          status={
-            !complianceConfigured && (
-              <StatusBadge type="neutral">
-                Not configured
-              </StatusBadge>
-            )
-          }
-        />
-
+      <Metric
+        label="Complaints & Reports"
+        value={reports.total}
+        icon={MessageSquare}
+        description="Complaints, compliance reports and contact feedback"
+        status={
+          reports.total !== undefined && (
+            <StatusBadge type="neutral">
+              Contact submissions
+            </StatusBadge>
+          )
+        }
+      />
         <Metric
           label="Compliant"
           value={compliance.compliant}
@@ -855,23 +859,25 @@ const handleRecordAction = async (record, status) => {
             <section className="space-y-4 border-b border-slate-200 p-5">
               <div>
                 <h3 className="font-semibold text-slate-900">
-                  {selectedMetric.category === "issues"
-                    ? "Community Reports"
-                    : selectedMetric.category === "inquiries"
-                      ? "Investor & Partner Inquiries"
-                      : selectedMetric.category === "affiliates"
-                        ? "Affiliate Records"
-                        : selectedMetric.category === "payouts"
-                          ? "Payout Requests"
-                          : selectedMetric.category === "enrollments"
-                            ? "Learner Enrollments"
-                            : selectedMetric.category === "certificates"
-                              ? "Certificate Records"
-                              : selectedMetric.category === "payments"
-                                ? "Payment Transactions"
-                                : selectedMetric.category === "feedback"
-                                  ? "Feedback & Testimonials"
-                                  : "Records"}
+                  {selectedMetric.category === "reports"
+                    ? "Complaints, Compliance & Feedback"
+                    : selectedMetric.category === "issues"
+                      ? "Community Reports"
+                      : selectedMetric.category === "inquiries"
+                        ? "Investor & Partner Inquiries"
+                        : selectedMetric.category === "affiliates"
+                          ? "Affiliate Records"
+                          : selectedMetric.category === "payouts"
+                            ? "Payout Requests"
+                            : selectedMetric.category === "enrollments"
+                              ? "Learner Enrollments"
+                              : selectedMetric.category === "certificates"
+                                ? "Certificate Records"
+                                : selectedMetric.category === "payments"
+                                  ? "Payment Transactions"
+                                  : selectedMetric.category === "feedback"
+                                    ? "Feedback & Testimonials"
+                                    : "Records"}
                 </h3>
 
                 <p className="mt-1 text-sm text-slate-500">
@@ -950,8 +956,21 @@ const handleRecordAction = async (record, status) => {
                   const statusOptions = {
                     affiliates: ["pending", "active", "suspended", "inactive"],
                     payouts: ["processing", "paid", "rejected"],
-                    inquiries: ["new", "contacted", "in-progress", "completed", "cancelled"],
+                    inquiries: [
+                      "new",
+                      "contacted",
+                      "in-progress",
+                      "completed",
+                      "cancelled",
+                    ],
                     issues: ["pending", "reviewed", "dismissed", "actioned"],
+                    reports: [
+                      "new",
+                      "contacted",
+                      "in-progress",
+                      "completed",
+                      "cancelled",
+                    ],
                   };
 
                   const canUpdate = Boolean(statusOptions[selectedMetric.category]);
@@ -963,7 +982,7 @@ const handleRecordAction = async (record, status) => {
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <h4 className="break-words font-semibold text-slate-900">
+                          <h4 className="break-words font-semibold text-slate-900">                           
                             {selectedMetric.category === "affiliates"
                               ? person(record.user)
                               : selectedMetric.category === "payouts"
@@ -978,10 +997,12 @@ const handleRecordAction = async (record, status) => {
                                         ? person(record.user)
                                         : selectedMetric.category === "issues"
                                           ? record.post?.title || "Community report"
-                                          : record.name || "Feedback"}
-                          </h4>
+                                          : selectedMetric.category === "reports"
+                                            ? record.subject || record.reportCategory || "Contact report"
+                                            : record.name || "Feedback"}
 
-                          <p className="mt-1 break-all text-sm text-slate-500">
+                          </h4>
+                          <p className="mt-1 break-all text-sm text-slate-500">                           
                             {selectedMetric.category === "affiliates"
                               ? record.user?.email
                               : selectedMetric.category === "payouts"
@@ -996,7 +1017,9 @@ const handleRecordAction = async (record, status) => {
                                         ? record.providerReference
                                         : selectedMetric.category === "issues"
                                           ? `${record.reason || "Report"} · ${person(record.reporter)}`
-                                          : record.company || record.position || ""}
+                                          : selectedMetric.category === "reports"
+                                            ? record.email
+                                            : record.company || record.position || ""}
                           </p>
                         </div>
 
@@ -1015,6 +1038,37 @@ const handleRecordAction = async (record, status) => {
                             <p>Joined: {date(record.createdAt)}</p>
                           </>
                         )}
+                        {selectedMetric.category === "reports" && (
+  <>
+    <p>
+      Category: {record.reportCategory || "Uncategorized"}
+    </p>
+
+    <p>
+      Subject: {record.subject || "—"}
+    </p>
+
+    <p>
+      Sender: {record.name || "Unknown"}
+    </p>
+
+    <p>
+      Email: {record.email || "—"}
+    </p>
+
+    <p className="whitespace-pre-wrap break-words">
+      Message: {record.message || "No message provided."}
+    </p>
+
+    <p>
+      Submitted: {date(record.createdAt)}
+    </p>
+
+    <p>
+      Last updated: {date(record.updatedAt)}
+    </p>
+  </>
+)}
 
                         {selectedMetric.category === "payouts" && (
                           <>

@@ -33,3 +33,8 @@ export const updateAdminServiceEnquiryStatus = async (id, status) => {
   );
   return data;
 };
+
+export const submitContactReport = async (report) => {
+  const { data } = await API.post("/contact/reports", report);
+  return data;
+};

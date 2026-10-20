@@ -44,10 +44,6 @@ const getStats = asyncHandler(async (req, res) => {
     1
   );
 
-  /* ==========================================
-     BASIC PLATFORM STATS
-  ========================================== */
-
   const [
     totalUsers,
     totalCourses,
@@ -101,10 +97,16 @@ const getStats = asyncHandler(async (req, res) => {
     positiveTestimonials,
     contactsNeedingResponse,
 
+    /* COMPLAINTS, COMPLIANCE & FEEDBACK REPORTS */
+    totalReports,
+    pendingReports,
+    resolvedReports,
+
     /* ORDERS */
     totalOrders,
     paidOrders,
   ] = await Promise.all([
+
     /* PLATFORM */
     User.countDocuments(),
     Course.countDocuments(),
@@ -203,6 +205,19 @@ const getStats = asyncHandler(async (req, res) => {
     }),
     Contact.countDocuments({
       replied: false,
+    }),
+
+    /* COMPLAINTS, COMPLIANCE & FEEDBACK REPORTS */
+    Contact.countDocuments({
+      isReport: true,
+    }),
+    Contact.countDocuments({
+      isReport: true,
+      status: { $in: ["new", "contacted", "in-progress"] },
+    }),
+    Contact.countDocuments({
+      isReport: true,
+      status: "completed",
     }),
 
     /* ORDERS */
@@ -575,6 +590,11 @@ const getStats = asyncHandler(async (req, res) => {
       positive: positiveTestimonials,
       needsResponse: contactsNeedingResponse,
     },
+    reports: {
+      total: totalReports,
+      pending: pendingReports,
+      resolved: resolvedReports,
+    },
   };
 
   /* ==========================================
@@ -630,6 +650,7 @@ const getStats = asyncHandler(async (req, res) => {
       compliance: operations.compliance,
       issues: operations.issues,
       feedback: operations.feedback,
+      reports: operations.reports,
 
       charts: {
         userGrowth,

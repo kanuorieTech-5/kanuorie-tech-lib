@@ -144,7 +144,7 @@ export default function Careers() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [expandedOpportunities, setExpandedOpportunities] = useState({});
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
   const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
@@ -557,7 +557,7 @@ export default function Careers() {
           {!opportunitiesLoading &&
             !opportunitiesError &&
             opportunities.length > 0 && (
-              <div className="mt-10 grid gap-5 lg:grid-cols-2">
+              <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
                 {opportunities.map((opportunity, index) => {
                   const typeLabel = String(
                     opportunity.type || "other",
@@ -640,49 +640,145 @@ export default function Careers() {
                                 {opportunity.category}
                               </p>
                             )}
+                            {/* Location and work arrangement */}
+                            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-medium text-slate-500">
+                              {opportunity.location && (
+                                <span className="inline-flex items-center gap-1.5">
+                                  <MapPin className="h-4 w-4 shrink-0" />
+                                  {opportunity.location}
+                                </span>
+                              )}
+
+                              {workModeLabel &&
+                                opportunity.workMode !== "not-applicable" && (
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <Laptop className="h-4 w-4 shrink-0" />
+                                    {workModeLabel}
+                                  </span>
+                                )}
+
+                              {hasValidDeadline && (
+                                <span className="inline-flex items-center gap-1.5">
+                                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                                  Deadline:{" "}
+                                  {deadline.toLocaleDateString(undefined, {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-
                         <span className="w-fit shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
                           {typeLabel}
                         </span>
                       </div>
 
-                      {/* Description */}
-                      <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">
-                        {opportunity.description ||
-                          "Explore this opportunity and its application requirements."}
+                      {/* Short Description */}
+                      <p className="mt-5 text-sm leading-7 text-slate-600">
+                        {opportunity.description
+                          ? opportunity.description.length > 180
+                            ? `${opportunity.description.slice(0, 180).trimEnd()}...`
+                            : opportunity.description
+                          : "Explore this opportunity and its application requirements."}
                       </p>
 
-                      {/* Location and work arrangement */}
-                      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-medium text-slate-500">
-                        {opportunity.location && (
-                          <span className="inline-flex items-center gap-1.5">
-                            <MapPin className="h-4 w-4 shrink-0" />
-                            {opportunity.location}
-                          </span>
-                        )}
+                      {/* Expandable Details Toggle */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedOpportunities((prev) => ({
+                            ...prev,
+                            [opportunity._id || opportunity.id || opportunity.slug]:
+                              !prev[
+                                opportunity._id || opportunity.id || opportunity.slug
+                              ],
+                          }))
+                        }
+                        className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-800"
+                      >
+                        {expandedOpportunities[
+                          opportunity._id || opportunity.id || opportunity.slug
+                        ]
+                          ? "Show Less"
+                          : "View More"}
 
-                        {workModeLabel &&
-                          opportunity.workMode !== "not-applicable" && (
-                            <span className="inline-flex items-center gap-1.5">
-                              <Laptop className="h-4 w-4 shrink-0" />
-                              {workModeLabel}
-                            </span>
-                          )}
+                        <ArrowRight
+                          className={`h-4 w-4 transition-transform ${
+                            expandedOpportunities[
+                              opportunity._id || opportunity.id || opportunity.slug
+                            ]
+                              ? "rotate-90"
+                              : ""
+                          }`}
+                        />
+                      </button>
 
-                        {hasValidDeadline && (
-                          <span className="inline-flex items-center gap-1.5">
-                            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
-                            Deadline:{" "}
-                            {deadline.toLocaleDateString(undefined, {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </span>
-                        )}
-                      </div>
+                      {/* Expanded Content */}
+                      {expandedOpportunities[
+                        opportunity._id || opportunity.id || opportunity.slug
+                      ] && (
+                        <div className="mt-5 space-y-6 border-t border-slate-200 pt-5">
+                          {/* Full Description */}
+                          <div>
+                            <h4 className="mb-2 text-sm font-bold text-slate-900">
+                              Full Description
+                            </h4>
+                            <p className="whitespace-pre-line text-sm leading-7 text-slate-600">
+                              {opportunity.description ||
+                                "No additional description provided."}
+                            </p>
+                          </div>
+
+                          {/* Requirements */}
+                          {Array.isArray(opportunity.requirements) &&
+                            opportunity.requirements.length > 0 && (
+                              <div>
+                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+                                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                                  Requirements
+                                </h4>
+
+                                <ul className="space-y-2.5">
+                                  {opportunity.requirements.map((requirement, i) => (
+                                    <li
+                                      key={`requirement-${i}`}
+                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600"
+                                    >
+                                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-blue-500" />
+                                      <span>{requirement}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                          {/* Benefits */}
+                          {Array.isArray(opportunity.benefits) &&
+                            opportunity.benefits.length > 0 && (
+                              <div>
+                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+                                  <GraduationCap className="h-5 w-5 text-emerald-600" />
+                                  What You'll Gain
+                                </h4>
+
+                                <ul className="space-y-2.5">
+                                  {opportunity.benefits.map((benefit, i) => (
+                                    <li
+                                      key={`benefit-${i}`}
+                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600"
+                                    >
+                                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-500" />
+                                      <span>{benefit}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      )}
 
                       {/* Tags */}
                       {Array.isArray(opportunity.tags) &&

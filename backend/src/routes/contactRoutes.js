@@ -2,6 +2,7 @@
 
 const {
   createMessage,
+  createReport,
   getMessages,
   getMessage,
   markAsRead,
@@ -25,7 +26,7 @@ const router = express.Router();
 
 router.post("/", createMessage);
 router.post("/service-enquiries", createServiceEnquiry);
-
+router.post("/reports", createReport);
 /* ADMIN SERVICE ENQUIRIES */
 
 router.get(

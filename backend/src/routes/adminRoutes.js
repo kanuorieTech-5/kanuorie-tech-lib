@@ -46,6 +46,8 @@ const {
   getOperationsPayments,
   getOperationsIssues,
   getOperationsFeedback,
+  getOperationsReports,
+  updateOperationsReportStatus,
 } = require("../controllers/adminOperationsRecordsController");
 
 const {
@@ -250,6 +252,13 @@ router.get(
 router.get(
   "/operations/feedback",
   getOperationsFeedback
+);
+
+router.get("/operations/reports", getOperationsReports);
+
+router.patch(
+  "/operations/reports/:id/status",
+  updateOperationsReportStatus
 );
 
 /* ==========================================

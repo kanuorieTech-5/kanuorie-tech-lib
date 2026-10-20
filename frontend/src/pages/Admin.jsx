@@ -144,6 +144,8 @@ export default function Admin() {
     compliance: dashboard?.compliance ?? {},
     issues: dashboard?.issues ?? {},
     feedback: dashboard?.feedback ?? {},
+    reports: dashboard?.reports ?? {},
+    charts: dashboard?.charts ?? {},
   };
 
   return (
