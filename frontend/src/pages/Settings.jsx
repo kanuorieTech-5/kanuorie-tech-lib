@@ -618,7 +618,7 @@ function SettingToggle({
         />
 
         <span className="relative h-7 w-12 rounded-full bg-gray-300 transition-colors peer-checked:bg-blue-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-500/20 dark:bg-gray-700">
-          <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+          <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-white dark:bg-slate-900 shadow transition-transform peer-checked:translate-x-5" />
         </span>
       </label>
     </div>

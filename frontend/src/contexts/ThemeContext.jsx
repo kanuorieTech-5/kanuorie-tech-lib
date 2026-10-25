@@ -28,19 +28,25 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const root = document.documentElement;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    const shouldUseDark =
-      theme === "dark"
-        ? true
-        : theme === "light"
-          ? false
-          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const applyTheme = () => {
+      const shouldUseDark =
+        theme === "dark" || (theme === "system" && mediaQuery.matches);
 
-    setDarkMode(shouldUseDark);
+      setDarkMode(shouldUseDark);
+      root.classList.toggle("dark", shouldUseDark);
+    };
 
-    root.classList.toggle("dark", shouldUseDark);
+    applyTheme();
 
     localStorage.setItem(STORAGE_KEY, theme);
+
+    if (theme === "system") {
+      mediaQuery.addEventListener("change", applyTheme);
+
+      return () => mediaQuery.removeEventListener("change", applyTheme);
+    }
   }, [theme]);
 
   /* ==========================================

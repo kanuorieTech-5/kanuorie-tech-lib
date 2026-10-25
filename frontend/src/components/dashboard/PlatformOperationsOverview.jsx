@@ -97,27 +97,27 @@ function Metric({
           event.currentTarget.click();
         }
       }}
-      className="cursor-pointer rounded-xl border border-slate-200 bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             {label}
           </p>
 
-          <p className="mt-2 break-words text-2xl font-bold text-slate-900">
+          <p className="mt-2 break-words text-2xl font-bold text-slate-900 dark:text-slate-100">
             {formatter(value)}
           </p>
 
           {description && (
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               {description}
             </p>
           )}
         </div>
 
         {Icon && (
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
             <Icon size={19} />
           </div>
         )}
@@ -146,20 +146,20 @@ function Section({
     <section
       data-operations-section
       data-section-title={title}
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm"
     >
       <div className="mb-5 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
           <Icon size={20} />
         </div>
 
         <div>
-          <h2 className="font-bold text-slate-900">
+          <h2 className="font-bold text-slate-900 dark:text-slate-100">
             {title}
           </h2>
 
           {description && (
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {description}
             </p>
           )}
@@ -852,13 +852,13 @@ const handleRecordAction = async (record, status) => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="operations-modal-title"
-            className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
 
-            <section className="space-y-4 border-b border-slate-200 p-5">
+            <section className="space-y-4 border-b border-slate-200 dark:border-slate-700 p-5">
               <div>
-                <h3 className="font-semibold text-slate-900">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                   {selectedMetric.category === "reports"
                     ? "Complaints, Compliance & Feedback"
                     : selectedMetric.category === "issues"
@@ -880,13 +880,13 @@ const handleRecordAction = async (record, status) => {
                                     : "Records"}
                 </h3>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Data loaded from the protected KanuorieTech API.
                 </p>
               </div>
 
               {recordsLoading && (
-                <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
                   Loading records…
                 </p>
               )}
@@ -907,7 +907,7 @@ const handleRecordAction = async (record, status) => {
               {!recordsLoading &&
                 !recordsError &&
                 selectedMetric.category === "compliance" && (
-                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                  <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
                     Not configured. No dedicated compliance data source is connected.
                   </p>
                 )}
@@ -915,7 +915,7 @@ const handleRecordAction = async (record, status) => {
               {!recordsLoading &&
                 !recordsError &&
                 selectedMetric.category === "none" && (
-                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                  <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
                     A dedicated record view is not configured for this metric yet.
                   </p>
                 )}
@@ -924,7 +924,7 @@ const handleRecordAction = async (record, status) => {
                 !recordsError &&
                 !["none", "compliance"].includes(selectedMetric.category) &&
                 operationRecords.length === 0 && (
-                  <p className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                  <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
                     No records were found.
                   </p>
                 )}
@@ -978,11 +978,11 @@ const handleRecordAction = async (record, status) => {
                   return (
                     <article
                       key={record._id}
-                      className="space-y-3 rounded-xl border border-slate-200 p-4"
+                      className="space-y-3 rounded-xl border border-slate-200 dark:border-slate-700 p-4"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <h4 className="break-words font-semibold text-slate-900">                           
+                          <h4 className="break-words font-semibold text-slate-900 dark:text-slate-100">                           
                             {selectedMetric.category === "affiliates"
                               ? person(record.user)
                               : selectedMetric.category === "payouts"
@@ -1002,7 +1002,7 @@ const handleRecordAction = async (record, status) => {
                                             : record.name || "Feedback"}
 
                           </h4>
-                          <p className="mt-1 break-all text-sm text-slate-500">                           
+                          <p className="mt-1 break-all text-sm text-slate-500 dark:text-slate-400">                           
                             {selectedMetric.category === "affiliates"
                               ? record.user?.email
                               : selectedMetric.category === "payouts"
@@ -1024,13 +1024,13 @@ const handleRecordAction = async (record, status) => {
                         </div>
 
                         {status && (
-                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
+                          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300">
                             {String(status).replaceAll("_", " ")}
                           </span>
                         )}
                       </div>
 
-                      <div className="space-y-1 text-sm text-slate-600">
+                      <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
                         {selectedMetric.category === "affiliates" && (
                           <>
                             <p>Referral code: {record.referralCode || "—"}</p>
@@ -1115,7 +1115,7 @@ const handleRecordAction = async (record, status) => {
                             <p>Created: {date(record.createdAt)}</p>
                             <p>Paid: {date(record.paidAt)}</p>
                             {record.failureReason && <p>Failure reason: {record.failureReason}</p>}
-                            <p className="font-medium text-slate-700">Read-only transaction record</p>
+                            <p className="font-medium text-slate-700 dark:text-slate-300">Read-only transaction record</p>
                           </>
                         )}
 
@@ -1142,7 +1142,7 @@ const handleRecordAction = async (record, status) => {
                         <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
                           <label
                             htmlFor={`operation-status-${record._id}`}
-                            className="text-xs font-medium text-slate-600"
+                            className="text-xs font-medium text-slate-600 dark:text-slate-400"
                           >
                             Update status
                           </label>
@@ -1154,7 +1154,7 @@ const handleRecordAction = async (record, status) => {
                             onChange={(event) =>
                               handleRecordAction(record, event.target.value)
                             }
-                            className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 disabled:opacity-50"
+                            className="min-w-0 rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 disabled:opacity-50"
                           >
                             {!statusOptions[selectedMetric.category].includes(status) && (
                               <option value={status}>{status || "Unknown"}</option>
@@ -1175,7 +1175,7 @@ const handleRecordAction = async (record, status) => {
                           </select>
 
                           {actionLoading === record._id && (
-                            <span className="text-xs text-slate-500">Saving…</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">Saving…</span>
                           )}
                         </div>
                       )}
@@ -1184,7 +1184,7 @@ const handleRecordAction = async (record, status) => {
                 })}
             </section>
 
-            <div className="border-t border-slate-200 p-4 text-right">
+            <div className="border-t border-slate-200 dark:border-slate-700 p-4 text-right">
               <button
                 type="button"
                 onClick={() => setSelectedMetric(null)}

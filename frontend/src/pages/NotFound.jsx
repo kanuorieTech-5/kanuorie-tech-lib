@@ -5,15 +5,15 @@ import { Button } from "../components/common";
 
 export default function NotFound() {
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-50 px-6">
+    <section className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950 px-6">
       <div className="max-w-2xl text-center">
         <h1 className="text-8xl font-extrabold text-blue-600">404</h1>
 
-        <h2 className="mt-6 text-4xl font-bold text-gray-900">
+        <h2 className="mt-6 text-4xl font-bold text-gray-900 dark:text-slate-100">
           Page Not Found
         </h2>
 
-        <p className="mt-4 text-lg leading-8 text-gray-600">
+        <p className="mt-4 text-lg leading-8 text-gray-600 dark:text-slate-400">
           Sorry, the page you are looking for doesn't exist, has been moved, or
           the URL may be incorrect.
         </p>
@@ -35,7 +35,7 @@ export default function NotFound() {
         <div className="mt-16">
           <Search className="mx-auto mb-4 h-12 w-12 text-blue-500" />
 
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-slate-400">
             If you believe this is an error, please contact our support team.
           </p>
         </div>

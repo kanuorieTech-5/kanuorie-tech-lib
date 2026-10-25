@@ -828,7 +828,6 @@ export default function Courses() {
           </div>
         </div>
       </section>
-      <CTA />
     </>
   );
 }

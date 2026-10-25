@@ -7,6 +7,7 @@ const ApiError = require("../utils/ApiError");
 const generateToken = require("../utils/generateToken");
 const Affiliate = require("../models/Affiliate");
 const AffiliateReferral = require("../models/AffiliateReferral");
+const createBusinessOwnerServiceRequest = require("../utils/businessOwnerServiceRequest");
 
 const register = asyncHandler(async (req, res) => {
   const {
@@ -69,6 +70,31 @@ const register = asyncHandler(async (req, res) => {
       .filter(Boolean);
   };
 
+  const allowedUserTypes = [
+    "student",
+    "business_owner",
+    "career_seeker",
+    "developer",
+    "partner",
+    "general",
+  ];
+  const normalizedUserType = allowedUserTypes.includes(userType)
+    ? userType
+    : "general";
+  const normalizedBusinessNeeds = normalizeArray(businessNeeds);
+
+  if (
+    normalizedUserType === "business_owner" &&
+    (typeof businessType !== "string" ||
+      !businessType.trim() ||
+      normalizedBusinessNeeds.length === 0)
+  ) {
+    throw new ApiError(
+      400,
+      "Business owners must provide a business type and at least one service need."
+    );
+  }
+
   // Create the user and save registration preferences to MongoDB
   const user = await User.create({
     firstName: firstName.trim(),
@@ -76,16 +102,7 @@ const register = asyncHandler(async (req, res) => {
     email: normalizedEmail,
     password,
 
-    userType: [
-      "student",
-      "business_owner",
-      "career_seeker",
-      "developer",
-      "partner",
-      "general",
-    ].includes(userType)
-      ? userType
-      : "general",
+    userType: normalizedUserType,
 
     interests: normalizeArray(interests),
     generalInterests: normalizeArray(generalInterests),
@@ -113,7 +130,7 @@ const register = asyncHandler(async (req, res) => {
         ? businessType.trim()
         : "",
 
-    businessNeeds: normalizeArray(businessNeeds),
+    businessNeeds: normalizedBusinessNeeds,
 
     projectTimeline:
       typeof projectTimeline === "string"
@@ -150,6 +167,19 @@ const register = asyncHandler(async (req, res) => {
 
     marketingConsent: marketingConsent === true,
   });
+
+  if (user.userType === "business_owner") {
+    try {
+      await createBusinessOwnerServiceRequest(user);
+    } catch (error) {
+      await User.deleteOne({ _id: user._id });
+      console.error("Failed to record business owner service request:", error);
+      throw new ApiError(
+        500,
+        "We couldn't record your business service request. Please try again."
+      );
+    }
+  }
 
   /* ==========================================
      RECORD AFFILIATE REGISTRATION

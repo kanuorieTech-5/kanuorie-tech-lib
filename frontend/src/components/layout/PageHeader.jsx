@@ -4,7 +4,7 @@
       <div>
         <h1 className="text-3xl font-bold">{title}</h1>
 
-        {subtitle && <p className="mt-2 text-gray-500">{subtitle}</p>}
+        {subtitle && <p className="mt-2 text-gray-500 dark:text-slate-400">{subtitle}</p>}
       </div>
 
       {actions && <div className="flex gap-3">{actions}</div>}

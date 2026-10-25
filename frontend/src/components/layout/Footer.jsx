@@ -21,6 +21,8 @@ export default function Footer() {
           <div className="flex items-center gap-5 text-xl mt-5">
             <a
               href="https://www.facebook.com/KanuorieTech"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech Facebook"
               className="transition hover:text-white"
             >
@@ -29,6 +31,8 @@ export default function Footer() {
 
             <a
               href="https://www.instagram.com/kanuorietech/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech Instagram"
               className="transition hover:text-white"
             >
@@ -36,7 +40,9 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
+              href="https://www.linkedin.com/in/orie-kanu-8b85683a6"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech LinkedIn"
               className="transition hover:text-white"
             >
@@ -45,6 +51,8 @@ export default function Footer() {
 
             <a
               href="https://github.com/kanuorieTech-5"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech GitHub"
               className="transition hover:text-white"
             >
@@ -145,13 +153,13 @@ export default function Footer() {
 
           <ul className="space-y-3">
             <li>
-              <Link to="/Careers" className="transition hover:text-white">
+              <Link to="/careers" className="transition hover:text-white">
                 Careers
               </Link>
             </li>
 
             <li>
-              <Link to="/Team" className="transition hover:text-white">
+              <Link to="/team" className="transition hover:text-white">
                 Leadership/Team
               </Link>
             </li>
@@ -163,8 +171,8 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link to="/pricing" className="transition hover:text-white">
-                Plans & Pricing
+              <Link to="/products" className="transition hover:text-white">
+                Products & Pricing
               </Link>
             </li>
 
@@ -212,16 +220,16 @@ export default function Footer() {
 
             <li>
               <Link
-                to="/refund-policy"
+                to="/terms-of-service#refunds"
                 className="transition hover:text-white"
               >
-                Refund Policy
+                Refunds & Cancellations
               </Link>
             </li>
 
             <li>
-              <Link to="/disclaimer" className="transition hover:text-white">
-                Disclaimer
+              <Link to="/terms-of-service#disclaimers" className="transition hover:text-white">
+                Disclaimers
               </Link>
             </li>
           </ul>
@@ -234,7 +242,7 @@ export default function Footer() {
       <div className="border-t border-slate-800">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-6 py-5 sm:flex-row">
           {/* Copyright */}
-          <p className="text-center text-sm text-gray-500 sm:text-left">
+          <p className="text-center text-sm text-gray-500 dark:text-slate-400 sm:text-left">
             © {year} KanuorieTech. All rights reserved.
           </p>
 
@@ -242,6 +250,8 @@ export default function Footer() {
           <div className="flex items-center gap-5 text-xl">
             <a
               href="https://www.facebook.com/KanuorieTech"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech Facebook"
               className="transition hover:text-white"
             >
@@ -250,6 +260,8 @@ export default function Footer() {
 
             <a
               href="https://www.instagram.com/kanuorietech/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech Instagram"
               className="transition hover:text-white"
             >
@@ -257,7 +269,9 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://www.linkedin.com/in/orie-kanu-8b85683a6?"
+              href="https://www.linkedin.com/in/orie-kanu-8b85683a6"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech LinkedIn"
               className="transition hover:text-white"
             >
@@ -266,6 +280,8 @@ export default function Footer() {
 
             <a
               href="https://github.com/kanuorieTech-5"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="KanuorieTech GitHub"
               className="transition hover:text-white"
             >

@@ -45,7 +45,7 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="py-12 text-center text-gray-500"
+                  className="py-12 text-center text-gray-500 dark:text-slate-400"
                 >
                   {emptyMessage}
                 </td>

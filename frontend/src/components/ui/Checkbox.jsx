@@ -7,7 +7,7 @@ export default function Checkbox({ label, className = "", ...props }) {
     >
       <input
         type="checkbox"
-        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        className="h-4 w-4 rounded border-gray-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
         {...props}
       />
 

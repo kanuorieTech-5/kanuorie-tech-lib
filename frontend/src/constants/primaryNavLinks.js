@@ -1,0 +1,15 @@
+export const primaryNavLinks = [
+  { label: "Peronal Profile", to: "/profile" },
+  { label: "Our Services", to: "/services" },
+  { label: "Our portfolio Projects", to: "/projects" },
+  { label: "Available Courses", to: "/courses" },
+  { label: "Resource Library", to: "/library" },
+  { label: "Creativity Tools", to: "/products" },
+  { label: "Careers/Opportunities", to: "/careers" },
+  { label: "Growth Insights", to: "/blog" },
+  { label: "About KanuorieTech", to: "/about" },
+  { label: "Help & Support", to: "/help" },
+  { label: "Reffer & Earn Programe", to: "/affiliate" },
+  { label: "Contact Us", to: "/contact" },
+  { lebel: "community", to: "/community" },
+];

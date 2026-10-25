@@ -59,11 +59,11 @@ export default function ProjectDetails() {
             <Layers3 size={30} />
           </div>
 
-          <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
             Project not found
           </h1>
 
-          <p className="mx-auto mb-8 max-w-xl leading-7 text-gray-600">
+          <p className="mx-auto mb-8 max-w-xl leading-7 text-gray-600 dark:text-slate-400">
             The project you are looking for may have been removed or is no
             longer available.
           </p>
@@ -118,8 +118,8 @@ export default function ProjectDetails() {
     activeImage || project.image || "/images/project-placeholder.jpg";
 
   return (
-    <main className="bg-white">
-      <section className="border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white">
+    <main className="bg-white dark:bg-slate-900">
+      <section className="border-b border-gray-100 dark:border-slate-800 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto px-6 py-10 lg:px-8 lg:py-14">
           <Link
             to="/projects"
@@ -136,12 +136,12 @@ export default function ProjectDetails() {
               </div>
             )}
 
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-slate-100 sm:text-5xl lg:text-6xl">
               {project.title}
             </h1>
 
             {project.description && (
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600 dark:text-slate-400">
                 {project.description}
               </p>
             )}
@@ -153,7 +153,7 @@ export default function ProjectDetails() {
         <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr]">
           <div>
             {/* Main Image */}
-            <div className="group overflow-hidden rounded-3xl border border-gray-100 bg-gray-50 shadow-xl">
+            <div className="group overflow-hidden rounded-3xl border border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-950 shadow-xl">
               <img
                 src={mainImage}
                 alt={project.title || "Project preview"}
@@ -170,7 +170,7 @@ export default function ProjectDetails() {
                 <div className="mb-4 flex items-center gap-2">
                   <ImageIcon size={18} className="text-blue-600" />
 
-                  <h2 className="text-lg font-bold text-gray-900">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">
                     Project Gallery
                   </h2>
                 </div>
@@ -211,8 +211,8 @@ export default function ProjectDetails() {
           <aside className="space-y-6">
             {/* Project Overview */}
             <Card className="overflow-hidden">
-              <div className="border-b border-gray-100 px-6 py-5">
-                <h2 className="text-xl font-bold text-gray-900">
+              <div className="border-b border-gray-100 dark:border-slate-800 px-6 py-5">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">
                   Project Overview
                 </h2>
               </div>
@@ -230,7 +230,7 @@ export default function ProjectDetails() {
                         Category
                       </p>
 
-                      <p className="mt-1 font-semibold text-gray-900">
+                      <p className="mt-1 font-semibold text-gray-900 dark:text-slate-100">
                         {project.category}
                       </p>
                     </div>
@@ -249,7 +249,7 @@ export default function ProjectDetails() {
                         Client
                       </p>
 
-                      <p className="mt-1 font-semibold text-gray-900">
+                      <p className="mt-1 font-semibold text-gray-900 dark:text-slate-100">
                         {project.client}
                       </p>
                     </div>
@@ -268,7 +268,7 @@ export default function ProjectDetails() {
                         Technologies
                       </p>
 
-                      <p className="mt-1 font-semibold text-gray-900">
+                      <p className="mt-1 font-semibold text-gray-900 dark:text-slate-100">
                         {technologies.length}{" "}
                         {technologies.length === 1
                           ? "Technology"
@@ -283,7 +283,7 @@ export default function ProjectDetails() {
             {/* Technologies */}
             {technologies.length > 0 && (
               <Card className="p-6">
-                <h2 className="mb-5 text-xl font-bold text-gray-900">
+                <h2 className="mb-5 text-xl font-bold text-gray-900 dark:text-slate-100">
                   Technologies Used
                 </h2>
 
@@ -303,7 +303,7 @@ export default function ProjectDetails() {
             {/* Actions */}
             {(project.liveDemo || project.github) && (
               <Card className="p-6">
-                <h2 className="mb-5 text-xl font-bold text-gray-900">
+                <h2 className="mb-5 text-xl font-bold text-gray-900 dark:text-slate-100">
                   Explore This Project
                 </h2>
 
@@ -346,18 +346,18 @@ export default function ProjectDetails() {
       </section>
 
       {project.description && (
-        <section className="border-t border-gray-100 bg-gray-50">
+        <section className="border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-950">
           <div className="mx-auto px-6 py-14 lg:px-8">
             <div className="max-w-4xl">
               <p className="mb-3 text-sm font-bold uppercase tracking-wider text-blue-600">
                 About the Project
               </p>
 
-              <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900">
+              <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
                 Project Details
               </h2>
 
-              <p className="text-lg leading-8 text-gray-600">
+              <p className="text-lg leading-8 text-gray-600 dark:text-slate-400">
                 {project.description}
               </p>
             </div>
@@ -365,7 +365,7 @@ export default function ProjectDetails() {
         </section>
       )}
 
-      <section className="border-t border-gray-100 bg-white">
+      <section className="border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="mx-auto px-6 py-10 lg:px-8">
           <Link
             to="/projects"

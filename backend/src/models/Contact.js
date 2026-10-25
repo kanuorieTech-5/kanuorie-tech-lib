@@ -85,6 +85,13 @@ const contactSchema = new mongoose.Schema(
       index: true,
     },
 
+    requesterUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      index: true,
+    },
+
     // Service enquiry details
     service: {
       type: String,

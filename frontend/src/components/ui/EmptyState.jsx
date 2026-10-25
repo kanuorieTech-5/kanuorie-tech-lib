@@ -3,7 +3,7 @@
     <div className="py-10 text-center">
       <h3 className="text-xl font-semibold">{title}</h3>
 
-      <p className="mt-2 text-gray-500">{description}</p>
+      <p className="mt-2 text-gray-500 dark:text-slate-400">{description}</p>
 
       {action && <div className="mt-6">{action}</div>}
     </div>

@@ -76,16 +76,16 @@ function CertificatePreview({ certificate, onClose }) {
       }}
     >
       <div className="mx-auto flex min-h-full max-w-5xl items-center justify-center">
-        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div className="w-full overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl">
           {/* MODAL HEADER */}
 
-          <div className="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+          <div className="flex flex-col gap-4 border-b border-slate-200 dark:border-slate-700 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
                 Certificate
               </p>
 
-              <h2 className="mt-1 text-lg font-bold text-slate-900">
+              <h2 className="mt-1 text-lg font-bold text-slate-900 dark:text-slate-100">
                 {getCourseTitle(certificate)}
               </h2>
             </div>
@@ -94,7 +94,7 @@ function CertificatePreview({ certificate, onClose }) {
               <button
                 type="button"
                 onClick={handlePrint}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50"
               >
                 <Printer className="h-4 w-4" />
                 Print / PDF
@@ -103,7 +103,7 @@ function CertificatePreview({ certificate, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                className="rounded-xl p-2.5 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
                 aria-label="Close certificate"
               >
                 <X className="h-5 w-5" />
@@ -113,10 +113,10 @@ function CertificatePreview({ certificate, onClose }) {
 
           {/* CERTIFICATE */}
 
-          <div className="bg-slate-100 p-4 sm:p-8">
+          <div className="bg-slate-100 dark:bg-slate-900 p-4 sm:p-8">
             <div
               id="certificate-print"
-              className="relative mx-auto aspect-[1.414/1] w-full max-w-4xl overflow-hidden border-[10px] border-slate-900 bg-white shadow-xl sm:border-[14px]"
+              className="relative mx-auto aspect-[1.414/1] w-full max-w-4xl overflow-hidden border-[10px] border-slate-900 bg-white dark:bg-slate-900 shadow-xl sm:border-[14px]"
             >
               {/* DECORATIVE BACKGROUND */}
 
@@ -127,7 +127,7 @@ function CertificatePreview({ certificate, onClose }) {
 
                 <div className="absolute inset-4 border border-blue-200 sm:inset-7" />
 
-                <div className="absolute inset-7 border border-slate-200 sm:inset-10" />
+                <div className="absolute inset-7 border border-slate-200 dark:border-slate-700 sm:inset-10" />
               </div>
 
               {/* CONTENT */}
@@ -142,7 +142,7 @@ function CertificatePreview({ certificate, onClose }) {
                     KanuorieTech
                   </p>
 
-                  <h1 className="mt-2 font-serif text-xl font-bold text-slate-900 sm:text-4xl">
+                  <h1 className="mt-2 font-serif text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-4xl">
                     Certificate of Completion
                   </h1>
 
@@ -150,15 +150,15 @@ function CertificatePreview({ certificate, onClose }) {
                 </div>
 
                 <div className="w-full">
-                  <p className="text-[8px] uppercase tracking-[0.2em] text-slate-500 sm:text-xs">
+                  <p className="text-[8px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 sm:text-xs">
                     This certificate is proudly presented to
                   </p>
 
-                  <h2 className="mt-2 break-words font-serif text-xl font-bold text-slate-900 sm:text-4xl">
+                  <h2 className="mt-2 break-words font-serif text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-4xl">
                     {getRecipientName(certificate)}
                   </h2>
 
-                  <p className="mx-auto mt-3 max-w-2xl text-[8px] leading-relaxed text-slate-600 sm:text-sm">
+                  <p className="mx-auto mt-3 max-w-2xl text-[8px] leading-relaxed text-slate-600 dark:text-slate-400 sm:text-sm">
                     For successfully completing the course
                   </p>
 
@@ -170,7 +170,7 @@ function CertificatePreview({ certificate, onClose }) {
                 <div className="w-full">
                   <div className="grid grid-cols-3 items-end gap-3 sm:gap-8">
                     <div className="border-t border-slate-300 pt-1 sm:pt-2">
-                      <p className="text-[7px] font-semibold text-slate-900 sm:text-xs">
+                      <p className="text-[7px] font-semibold text-slate-900 dark:text-slate-100 sm:text-xs">
                         {formatDate(
                           certificate?.completionDate ||
                             certificate?.issuedAt,
@@ -187,13 +187,13 @@ function CertificatePreview({ certificate, onClose }) {
                         <BadgeCheck className="h-5 w-5 text-blue-600 sm:h-8 sm:w-8" />
                       </div>
 
-                      <p className="mt-1 text-[6px] font-bold uppercase tracking-wider text-slate-500 sm:text-[9px]">
+                      <p className="mt-1 text-[6px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:text-[9px]">
                         Verified
                       </p>
                     </div>
 
                     <div className="border-t border-slate-300 pt-1 text-center sm:pt-2">
-                      <p className="text-[7px] font-semibold text-slate-900 sm:text-xs">
+                      <p className="text-[7px] font-semibold text-slate-900 dark:text-slate-100 sm:text-xs">
                         {getInstructor(certificate)}
                       </p>
 
@@ -213,16 +213,16 @@ function CertificatePreview({ certificate, onClose }) {
 
           {/* VERIFICATION */}
 
-          <div className="flex flex-col gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+          <div className="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
             <div className="flex min-w-0 items-center gap-3">
               <ShieldCheck className="h-5 w-5 shrink-0 text-emerald-600" />
 
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-900">
+                <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
                   Certificate ID
                 </p>
 
-                <p className="truncate text-xs text-slate-500">
+                <p className="truncate text-xs text-slate-500 dark:text-slate-400">
                   {certificateId}
                 </p>
               </div>

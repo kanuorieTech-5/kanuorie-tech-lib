@@ -29,7 +29,7 @@ export default function CTA() {
           -left-20 top-0 h-72
           w-72
           rounded-full
-          bg-white
+          bg-white dark:bg-slate-900
           blur-3xl
         "
         />
@@ -87,7 +87,7 @@ export default function CTA() {
 
             Badge="Get Started"
 
-            title="Ready To Build Something Amazing?"
+            title="Which of our services do you need?"
 
             subtitle="Whether you want to build a digital product, improve your technical skills, or access quality resources, KanuorieTech is ready to help."
           />
@@ -103,7 +103,7 @@ export default function CTA() {
             sm:flex-row
           "
           >
-            <Link to="/contact">
+            <Link to="/services">
               <Button size="lg">Start Your Project</Button>
             </Link>
 

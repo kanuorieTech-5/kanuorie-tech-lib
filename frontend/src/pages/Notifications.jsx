@@ -33,7 +33,7 @@ export default function Notifications() {
           <Card className="p-8 text-center">
             <h2 className="mb-2 text-xl font-semibold">No notifications yet</h2>
 
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-slate-400">
               You&apos;re all caught up. New notifications will appear here.
             </p>
           </Card>
@@ -61,12 +61,12 @@ export default function Notifications() {
                         />
                       )}
 
-                      <h2 className="font-bold text-gray-900">
+                      <h2 className="font-bold text-gray-900 dark:text-slate-100">
                         {notification?.title || "Notification"}
                       </h2>
                     </div>
 
-                    <p className="leading-7 text-gray-600">
+                    <p className="leading-7 text-gray-600 dark:text-slate-400">
                       {notification?.message || "You have a new notification."}
                     </p>
                   </div>

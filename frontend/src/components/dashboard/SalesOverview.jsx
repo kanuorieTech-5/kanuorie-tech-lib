@@ -14,7 +14,7 @@ export default function SalesOverview({ data = {} }) {
   const growth = sales.growth ?? sales.growthRate ?? sales.percentage ?? 0;
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
@@ -22,9 +22,9 @@ export default function SalesOverview({ data = {} }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Sales Overview</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Sales Overview</h2>
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Monitor your sales performance
             </p>
           </div>
@@ -37,7 +37,7 @@ export default function SalesOverview({ data = {} }) {
         <div className="rounded-2xl bg-blue-50 p-5">
           <p className="text-sm font-medium text-blue-600">Total Sales</p>
 
-          <p className="mt-2 text-2xl font-black text-slate-900">
+          <p className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-100">
             {Number(total || 0).toLocaleString()}
           </p>
         </div>
@@ -48,16 +48,16 @@ export default function SalesOverview({ data = {} }) {
           <div className="mt-2 flex items-center gap-2">
             <ShoppingCart size={20} className="text-emerald-600" />
 
-            <p className="text-2xl font-black text-slate-900">
+            <p className="text-2xl font-black text-slate-900 dark:text-slate-100">
               {Number(orders || 0).toLocaleString()}
             </p>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-slate-50 p-5">
-          <p className="text-sm font-medium text-slate-500">Today</p>
+        <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Today</p>
 
-          <p className="mt-2 text-xl font-bold text-slate-900">
+          <p className="mt-2 text-xl font-bold text-slate-900 dark:text-slate-100">
             {Number(today || 0).toLocaleString()}
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function SalesOverview({ data = {} }) {
         <div className="rounded-2xl bg-purple-50 p-5">
           <p className="text-sm font-medium text-purple-600">This Month</p>
 
-          <p className="mt-2 text-xl font-bold text-slate-900">
+          <p className="mt-2 text-xl font-bold text-slate-900 dark:text-slate-100">
             {Number(month || 0).toLocaleString()}
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function SalesOverview({ data = {} }) {
           {Number(growth || 0).toFixed(1)}%
         </span>
 
-        <span className="text-slate-500">sales growth</span>
+        <span className="text-slate-500 dark:text-slate-400">sales growth</span>
       </div>
     </section>
   );

@@ -31,12 +31,12 @@
   legal: [
     {
       label: "Privacy Policy",
-      path: "/privacy",
+      path: "/privacy-policy",
     },
 
     {
       label: "Terms & Conditions",
-      path: "/terms",
+      path: "/terms-of-service",
     },
   ],
 };

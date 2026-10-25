@@ -362,7 +362,7 @@ export default function CoursesPreview() {
                             </p>
 
                             {/* Course information */}
-                            <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
+                            <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
                               {course.level && (
                                 <span className="flex items-center gap-1.5">
                                   <GraduationCap className="h-4 w-4 text-cyan-400" />
@@ -504,7 +504,7 @@ export default function CoursesPreview() {
             }}
             className="mt-14 text-center"
           >
-            <p className="mb-5 text-sm text-slate-500">
+            <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">
               Ready to start building your future?
             </p>
 

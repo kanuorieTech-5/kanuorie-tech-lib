@@ -1,7 +1,6 @@
 ﻿import { Link, useNavigate } from "react-router-dom";
 import {
   X,
-  User,
   Settings,
   Bell,
   Home,
@@ -12,13 +11,19 @@ import {
   BriefcaseBusiness,
   Info,
   Mail,
-  CircleHelp,
   LogOut,
+  PlayCircle,
+  Award,
+  Bookmark,
+  Users,
+  Handshake,
+  WalletCards,
+  LifeBuoy,
 } from "lucide-react";
 
 import { useAuth } from "../../contexts";
 import UserDropdown from "./UserDropdown";
-export default function MobileMenu({ open, onClose }) {
+export default function MobileMenu({ open, onClose, side = "left" }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const firstName =
@@ -26,9 +31,6 @@ export default function MobileMenu({ open, onClose }) {
     user?.name?.trim().split(/\s+/)[0] ||
     user?.username ||
     "there";
-  const isAdmin =
-    user?.role === "admin" || user?.isAdmin === true;
-
   if (!open) {
     return null;
   }
@@ -63,7 +65,7 @@ export default function MobileMenu({ open, onClose }) {
       />
 
       {/* Navigation panel */}
-      <div className="absolute left-0 top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950">
+      <div className={`absolute ${side === "right" ? "right-0" : "left-0"} top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950`}>
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-400 p-5 dark:border-gray-800">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -141,9 +143,24 @@ export default function MobileMenu({ open, onClose }) {
             Courses
           </Link>
 
+          <Link to="/learning" onClick={onClose} className={linkClasses}>
+            <PlayCircle size={18} />
+            My Learning
+          </Link>
+
+          <Link to="/certificates" onClick={onClose} className={linkClasses}>
+            <Award size={18} />
+            Certificates
+          </Link>
+
+          <Link to="/saved-resources" onClick={onClose} className={linkClasses}>
+            <Bookmark size={18} />
+            Saved Resources
+          </Link>
+          
           <Link to="/products" onClick={onClose} className={linkClasses}>
             <ShoppingBag size={18} />
-            Products
+            Tools & Products
           </Link>
 
           <Link to="/projects" onClick={onClose} className={linkClasses}>
@@ -167,8 +184,23 @@ export default function MobileMenu({ open, onClose }) {
           </Link>
 
           <Link to="/help" onClick={onClose} className={linkClasses}>
-            <CircleHelp size={18} />
-            Help
+            <LifeBuoy size={18} />
+            Help & Support
+          </Link>
+
+          <Link to="/community" onClick={onClose} className={linkClasses}>
+            <Users size={18} />
+            Community
+          </Link>
+
+          <Link to="/affiliate" onClick={onClose} className={linkClasses}>
+            <Handshake size={18} />
+            Affiliate
+          </Link>
+
+          <Link to="/payments" onClick={onClose} className={linkClasses}>
+            <WalletCards size={18} />
+            Accounts & Payments
           </Link>
 
           {/* Account navigation */}

@@ -24,7 +24,7 @@ export default function PricingCard({
       <div className="my-6">
         <span className="text-5xl font-bold">${price}</span>
 
-        <span className="text-gray-500">{duration}</span>
+        <span className="text-gray-500 dark:text-slate-400">{duration}</span>
       </div>
 
       <ul className="space-y-3">

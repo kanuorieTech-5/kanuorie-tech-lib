@@ -56,7 +56,7 @@ export default function BlogDetails() {
         }}
       />
       <h1 className="mb-4 text-5xl font-bold">{blog.title}</h1>
-      <p className="mb-10 text-gray-500">
+      <p className="mb-10 text-gray-500 dark:text-slate-400">
         By {authorName}
         {blog.createdAt && (
           <>

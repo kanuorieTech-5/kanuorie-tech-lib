@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 
 import { Loader, Card } from "../components/common";
-import { getTeamMembers } from "../services";
+import { getTeamMembers } from "../services/team.service";
+import { normalizeTeamMembers } from "../utils/teamMembers";
 
 export default function Team() {
   const [team, setTeam] = useState([]);
@@ -23,26 +24,11 @@ export default function Team() {
         setLoading(true);
         setError("");
 
-        const response = await getTeamMembers();
+        const response = await getTeamMembers({ active: true, limit: 100 });
 
         if (!mounted) return;
 
-        /*
-         * Supports common API response structures:
-         *
-         * 1. { success: true, data: [...] }
-         * 2. { data: [...] }
-         * 3. [...]
-         */
-        const members = Array.isArray(response)
-          ? response
-          : Array.isArray(response?.data)
-            ? response.data
-            : Array.isArray(response?.data?.team)
-              ? response.data.team
-              : Array.isArray(response?.team)
-                ? response.team
-                : [];
+        const members = normalizeTeamMembers(response);
 
         setTeam(members);
       } catch (err) {
@@ -78,7 +64,7 @@ export default function Team() {
   }
 
   return (
-    <section className="min-h-screen bg-gray-50 px-6 py-12">
+    <section className="min-h-screen bg-gray-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto">
 
         <div className="mx-auto mb-14 max-w-3xl text-center">
@@ -86,11 +72,11 @@ export default function Team() {
             Leadership and Team
           </span>
 
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-slate-100 sm:text-5xl">
             Meet the People Behind KanuorieTech
           </h1>
 
-          <p className="mt-5 text-lg leading-8 text-gray-600">
+          <p className="mt-5 text-lg leading-8 text-gray-600 dark:text-slate-400">
             Meet the talented people behind KanuorieTech, working together to
             build meaningful digital solutions, innovative learning
             experiences, and technology that creates real impact.
@@ -104,12 +90,12 @@ export default function Team() {
         )}
 
         {!error && team.length === 0 && (
-          <div className="rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center shadow-sm">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          <div className="rounded-3xl border border-dashed border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-12 text-center shadow-sm">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-slate-100">
               Our team is coming soon
             </h2>
 
-            <p className="mx-auto mt-3 max-w-lg text-gray-600">
+            <p className="mx-auto mt-3 max-w-lg text-gray-600 dark:text-slate-400">
               We are currently updating our team information. Please check
               back soon to meet the people behind KanuorieTech.
             </p>
@@ -140,10 +126,10 @@ export default function Team() {
               return (
                 <Card
                   key={member._id || member.id}
-                  className="group overflow-hidden rounded-3xl border border-gray-100 bg-white p-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                  className="group overflow-hidden rounded-3xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                 >
                
-                  <div className="relative overflow-hidden bg-gray-100">
+                  <div className="relative overflow-hidden bg-gray-100 dark:bg-slate-900">
                     <img
                       src={image}
                       alt={name}
@@ -175,7 +161,7 @@ export default function Team() {
                   </div>
 
                   <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">
                       {name}
                     </h2>
 
@@ -184,7 +170,7 @@ export default function Team() {
                     </p>
 
                     {bio && (
-                      <p className="mt-4 line-clamp-3 text-sm leading-6 text-gray-600">
+                      <p className="mt-4 line-clamp-3 text-sm leading-6 text-gray-600 dark:text-slate-400">
                         {bio}
                       </p>
                     )}
@@ -194,14 +180,14 @@ export default function Team() {
                       socialLinks.twitter ||
                       socialLinks.website ||
                       member.email) && (
-                      <div className="mt-5 flex items-center gap-2 border-t border-gray-100 pt-4">
+                      <div className="mt-5 flex items-center gap-2 border-t border-gray-100 dark:border-slate-800 pt-4">
                         {socialLinks.linkedin && (
                           <a
                             href={socialLinks.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${name} LinkedIn`}
-                            className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
+                            className="rounded-lg p-2 text-gray-500 dark:text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
                           >
                             <Linkedin size={18} />
                           </a>
@@ -213,7 +199,7 @@ export default function Team() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${name} GitHub`}
-                            className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                            className="rounded-lg p-2 text-gray-500 dark:text-slate-400 transition hover:bg-gray-100 hover:text-gray-900"
                           >
                             <Github size={18} />
                           </a>
@@ -225,7 +211,7 @@ export default function Team() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${name} Twitter`}
-                            className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-500"
+                            className="rounded-lg p-2 text-gray-500 dark:text-slate-400 transition hover:bg-blue-50 hover:text-blue-500"
                           >
                             <Twitter size={18} />
                           </a>
@@ -237,7 +223,7 @@ export default function Team() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${name} Website`}
-                            className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                            className="rounded-lg p-2 text-gray-500 dark:text-slate-400 transition hover:bg-gray-100 hover:text-gray-900"
                           >
                             <Globe size={18} />
                           </a>
@@ -247,7 +233,7 @@ export default function Team() {
                           <a
                             href={`mailto:${member.email}`}
                             aria-label={`Email ${name}`}
-                            className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
+                            className="rounded-lg p-2 text-gray-500 dark:text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
                           >
                             <Mail size={18} />
                           </a>

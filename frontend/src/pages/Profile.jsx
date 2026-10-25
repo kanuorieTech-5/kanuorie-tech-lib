@@ -248,6 +248,25 @@ export default function Profile() {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    if (name === "userType") {
+      setFormData((previous) => ({
+        ...previous,
+        userType: value,
+        learningLevel: "",
+        learningGoals: [],
+        businessType: "",
+        businessNeeds: [],
+        projectTimeline: "",
+        careerGoal: "",
+        experienceLevel: "",
+        preferredOpportunities: [],
+        techStack: [],
+        collaborationInterests: [],
+        generalInterests: [],
+      }));
+      return;
+    }
+
     setFormData((previous) => ({
       ...previous,
       [name]: value,
@@ -424,9 +443,26 @@ export default function Profile() {
         throw new Error("Email address is required.");
       }
 
+      if (
+        payload.userType === "business_owner" &&
+        (!payload.businessType || payload.businessNeeds.length === 0)
+      ) {
+        throw new Error(
+          "Business owners must choose a business type and at least one service need."
+        );
+      }
+
+      const isBecomingBusinessOwner =
+        user?.userType !== "business_owner" &&
+        payload.userType === "business_owner";
+
       await updateProfile(payload);
 
-      setSuccessMessage("Profile updated successfully.");
+      setSuccessMessage(
+        isBecomingBusinessOwner
+          ? "Profile updated and your business service request was sent to Admin."
+          : "Profile updated successfully."
+      );
 
       /*
        * Give the user a moment to see the success
@@ -560,7 +596,7 @@ export default function Profile() {
         <div className="text-center">
           <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
 
-          <p className="text-gray-500">Loading profile...</p>
+          <p className="text-gray-500 dark:text-slate-400">Loading profile...</p>
         </div>
       </div>
     );
@@ -591,6 +627,15 @@ export default function Profile() {
     { label: "Affiliate Marketing & Partnerships", value: "affiliate" },
     { label: "Artificial Intelligence", value: "ai" },
     { label: "UI/UX Design", value: "ui_ux" },
+  ],
+
+  otherInterest: [
+    { label: "Technology", value: "technology" },
+    { label: "Entrepreneurship", value: "entrepreneurship" },
+    { label: "Digital Creativity", value: "digital_creativity" },
+    { label: "Research & Innovation", value: "research" },
+    { label: "Education", value: "education" },
+    { label: "I'm still exploring", value: "not_sure" },
   ],
 
   discoverySource: [
@@ -1291,7 +1336,7 @@ const PreferenceCheckboxGroup = ({
                 type="button"
                 onClick={closeEditModal}
                 disabled={saving || uploadingAvatar}
-                className="rounded-xl p-2 text-gray-500 transition hover: hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-white"
+                className="rounded-xl p-2 text-gray-500 dark:text-slate-400 transition hover: hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1354,7 +1399,7 @@ const PreferenceCheckboxGroup = ({
                   className="hidden"
                 />
 
-                <p className="mt-3 text-center text-xs text-gray-500">
+                <p className="mt-3 text-center text-xs text-gray-500 dark:text-slate-400">
                   JPG, PNG or WEBP. Maximum 5MB.
                 </p>
 
@@ -1497,45 +1542,6 @@ const PreferenceCheckboxGroup = ({
                   />
                 </div>
 
-                <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  {[
-                    {
-                      label: "Available courses",
-                      value: data.courses.length,
-                      href: "/courses",
-                    },
-                    {
-                      label: "Learning resources",
-                      value: data.learning.length,
-                      href: "/Learning",
-                    },
-                    {
-                      label: "Saved resources",
-                      value: data.saved.length,
-                      href: "/library",
-                    },
-                    {
-                      label: "Courses in progress",
-                      value: displayProgress.length,
-                      href: "/courses",
-                    },
-                  ].map((stat) => (
-                    <Link
-                      key={stat.label}
-                      to={stat.href}
-                      className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
-                    >
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {stat.label}
-                      </p>
-          
-                      <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
-                        {loading ? "—" : stat.value}
-                      </p>
-                    </Link>
-                  ))}
-                </section>
-
                 {/* REGISTRATION PREFERENCES */}
 
                 <section className="space-y-5 border-t border-gray-200 pt-6 dark:border-gray-800">
@@ -1560,13 +1566,23 @@ const PreferenceCheckboxGroup = ({
                       onChange={handlePreferenceArrayChange}
                     />
 
-                    <PreferenceCheckboxGroup
-                      label="What else interests you?"
-                      name="generalInterests"
-                      options={PREFERENCE_OPTIONS.generalInterests}
-                      values={formData.generalInterests}
-                      onChange={handlePreferenceArrayChange}
+                    <PreferenceSelect
+                      label="Other interests (optional)"
+                      name="otherInterest"
+                      value={formData.otherInterest}
+                      options={PREFERENCE_OPTIONS.otherInterest}
+                      onChange={handleChange}
                     />
+
+                    {formData.userType === "general" && (
+                      <PreferenceCheckboxGroup
+                        label="What else interests you?"
+                        name="generalInterests"
+                        options={PREFERENCE_OPTIONS.generalInterests}
+                        values={formData.generalInterests}
+                        onChange={handlePreferenceArrayChange}
+                      />
+                    )}
 
                     <PreferenceSelect
                       label="How did you discover KanuorieTech?"
@@ -1592,6 +1608,7 @@ const PreferenceCheckboxGroup = ({
                       </label>
                     )}
 
+                    {formData.userType === "student" && <>
                     <PreferenceSelect
                       label="What is your learning level?"
                       name="learningLevel"
@@ -1607,7 +1624,9 @@ const PreferenceCheckboxGroup = ({
                       values={formData.learningGoals}
                       onChange={handlePreferenceArrayChange}
                     />
+                    </>}
 
+                    {formData.userType === "business_owner" && <>
                     <PreferenceSelect
                       label="What type of business do you have?"
                       name="businessType"
@@ -1631,7 +1650,9 @@ const PreferenceCheckboxGroup = ({
                       options={PREFERENCE_OPTIONS.projectTimeline}
                       onChange={handleChange}
                     />
+                    </>}
 
+                    {formData.userType === "career_seeker" && <>
                     <PreferenceSelect
                       label="What is your career goal?"
                       name="careerGoal"
@@ -1655,15 +1676,27 @@ const PreferenceCheckboxGroup = ({
                       values={formData.preferredOpportunities}
                       onChange={handlePreferenceArrayChange}
                     />
+                    </>}
+
+                    {formData.userType === "developer" && <>
+                    <PreferenceSelect
+                      label="What is your experience level?"
+                      name="experienceLevel"
+                      value={formData.experienceLevel}
+                      options={PREFERENCE_OPTIONS.experienceLevel}
+                      onChange={handleChange}
+                    />
 
                     <PreferenceCheckboxGroup
-                      label="Which technologies do you know or want to learn?"
+                      label="Which technologies do you use or want to learn?"
                       name="techStack"
                       options={PREFERENCE_OPTIONS.techStack}
                       values={formData.techStack}
                       onChange={handlePreferenceArrayChange}
                     />
+                    </>}
 
+                    {formData.userType === "partner" && (
                     <PreferenceCheckboxGroup
                       label="How would you like to collaborate?"
                       name="collaborationInterests"
@@ -1671,6 +1704,7 @@ const PreferenceCheckboxGroup = ({
                       values={formData.collaborationInterests}
                       onChange={handlePreferenceArrayChange}
                     />
+                    )}
 
                     <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
                       <input
@@ -1690,6 +1724,14 @@ const PreferenceCheckboxGroup = ({
                         relevant opportunities.
                       </span>
                     </label>
+
+                    {formData.userType === "business_owner" && (
+                      <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200">
+                        {user?.userType === "business_owner"
+                          ? "Your business service request has been sent to Admin. These details help the team understand your needs, pls note that our team will contact you through email soon."
+                          : "Saving this profile as a business owner sends your selected services to Admin as a service request."}
+                      </p>
+                    )}
                   </div>
                 </section>
 

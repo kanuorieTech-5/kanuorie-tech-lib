@@ -256,7 +256,7 @@ export default function Blog() {
         </div>
       </section>
 
-      <section className="bg-white py-12 lg:py-14">
+      <section className="bg-white dark:bg-slate-900 py-12 lg:py-14">
         <div className="mx-auto  px-6 lg:px-8">
           <label htmlFor="blog-search" className="sr-only">
             Search articles
@@ -272,7 +272,7 @@ export default function Blog() {
       </section>
 
       {featuredPost ? (
-        <section className="bg-slate-50 py-10">
+        <section className="bg-slate-50 dark:bg-slate-950 py-10">
           <div className="mx-auto px-6 lg:px-8">
             <SectionTitle title="Featured Article" subtitle="Editor's pick" />
 
@@ -280,8 +280,8 @@ export default function Blog() {
               className="
                 mt-12
                 overflow-hidden
-                border-slate-200
-                bg-white
+                border-slate-200 dark:border-slate-700
+                bg-white dark:bg-slate-900
                 lg:grid
                 lg:grid-cols-2
               "
@@ -325,11 +325,11 @@ export default function Blog() {
                   </time>
                 </div>
 
-                <h2 className="text-3xl font-bold text-slate-900 lg:text-4xl">
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 lg:text-4xl">
                   {featuredPost?.title || "Featured Article"}
                 </h2>
 
-                <p className="mt-6 leading-8 text-slate-600">
+                <p className="mt-6 leading-8 text-slate-600 dark:text-slate-400">
                   {getExcerpt(featuredPost)}
                 </p>
 
@@ -349,14 +349,14 @@ export default function Blog() {
           </div>
         </section>
       ) : (
-        <section className="bg-slate-50 py-10">
+        <section className="bg-slate-50 dark:bg-slate-950 py-10">
           <div className="mx-auto max-w-4xl px-6">
             <Card className="p-12 text-center">
-              <h2 className="text-2xl font-bold text-slate-900">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 No articles found
               </h2>
 
-              <p className="mt-3 text-slate-600">
+              <p className="mt-3 text-slate-600 dark:text-slate-400">
                 Try a different search term.
               </p>
 
@@ -399,8 +399,8 @@ export default function Blog() {
                     className="
                       group
                       overflow-hidden
-                      border-slate-200
-                      bg-white
+                      border-slate-200 dark:border-slate-700
+                      bg-white dark:bg-slate-900
                     "
                   >
                     {/* IMAGE */}
@@ -451,13 +451,13 @@ export default function Blog() {
 
                       {/* TITLE */}
 
-                      <h3 className="mb-3 text-2xl font-bold text-slate-900">
+                      <h3 className="mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {title}
                       </h3>
 
                       {/* EXCERPT */}
 
-                      <p className="mb-6 line-clamp-3 text-slate-600">
+                      <p className="mb-6 line-clamp-3 text-slate-600 dark:text-slate-400">
                         {getExcerpt(blog, 120)}
                       </p>
 
@@ -488,10 +488,10 @@ export default function Blog() {
       )}
 
       {featuredPost && currentBlogs.length === 0 && (
-        <section className="bg-white pb-20">
+        <section className="bg-white dark:bg-slate-900 pb-20">
           <div className="mx-auto max-w-4xl px-6 text-center">
             {filteredBlogs.length === 1 && (
-              <p className="text-slate-500">
+              <p className="text-slate-500 dark:text-slate-400">
                 This is currently the only article available.
               </p>
             )}

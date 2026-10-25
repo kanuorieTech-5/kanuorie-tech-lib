@@ -4,11 +4,11 @@ import Avatar from "../common/Avatar";
 
 export default function AdminNavbar() {
   return (
-    <header className="flex items-center justify-between border-b bg-white px-8 py-4 shadow-sm">
+    <header className="flex items-center justify-between border-b bg-white dark:bg-slate-900 px-8 py-4 shadow-sm">
       <div>
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
-        <p className="text-sm text-gray-500">Welcome back</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Welcome back</p>
       </div>
 
       <div className="flex items-center gap-5">

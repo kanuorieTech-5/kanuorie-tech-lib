@@ -976,11 +976,11 @@ export default function CourseDetails() {
         <Card className="w-full max-w-2xl text-center">
           <BookOpen className="mx-auto text-blue-500" size={52} />
 
-          <h1 className="mt-6 text-2xl font-black text-slate-900 sm:text-3xl">
+          <h1 className="mt-6 text-2xl font-black text-slate-900 dark:text-slate-100 sm:text-3xl">
             Course unavailable
           </h1>
 
-          <p className="mx-auto mt-4 max-w-xl leading-7 text-slate-600">
+          <p className="mx-auto mt-4 max-w-xl leading-7 text-slate-600 dark:text-slate-400">
             Enrollment required! You need to enroll in this course to access the
             curriculum.
           </p>
@@ -1181,7 +1181,7 @@ export default function CourseDetails() {
       </section>
 
       {!isEnrolled && (
-        <section className="bg-slate-50 px-6 py-10 sm:py-14">
+        <section className="bg-slate-50 dark:bg-slate-950 px-6 py-10 sm:py-14">
           <div className="mx-auto max-w-5xl">
             <CoursePurchaseCard
               course={course}
@@ -1208,9 +1208,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Course Duration</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Duration</p>
 
-                  <p className="mt-1 font-bold text-slate-900">
+                  <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {formatCourseDuration(course.duration)}
                   </p>
                 </div>
@@ -1222,9 +1222,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Total Lessons</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Total Lessons</p>
 
-                  <p className="mt-1 font-bold text-slate-900">
+                  <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {totalLessons}
                   </p>
                 </div>
@@ -1236,9 +1236,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Course Instructor</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Instructor</p>
 
-                  <p className="mt-1 font-bold text-slate-900">
+                  <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {instructorName(course.instructor)}
                   </p>
                 </div>
@@ -1250,9 +1250,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Course Added</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Added</p>
 
-                  <p className="mt-1 font-bold text-slate-900">
+                  <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {formattedDate || "Recently"}
                   </p>
                 </div>
@@ -1266,7 +1266,7 @@ export default function CourseDetails() {
           REQUIREMENTS
       ================================================== */}
 
-      <section className="bg-slate-50 py-10 sm:py-24">
+      <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
         <div className=" px-6">
           <SectionTitle
             title="Requirements"
@@ -1285,7 +1285,7 @@ export default function CourseDetails() {
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700">{item}</span>
+                  <span className="leading-7 text-slate-700 dark:text-slate-300">{item}</span>
                 </Card>
               ))}
             </div>
@@ -1303,7 +1303,7 @@ export default function CourseDetails() {
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700">{item}</span>
+                  <span className="leading-7 text-slate-700 dark:text-slate-300">{item}</span>
                 </Card>
               ))}
             </div>
@@ -1334,7 +1334,7 @@ export default function CourseDetails() {
                     size={22}
                   />
 
-                  <p className="leading-7 text-slate-700">{item}</p>
+                  <p className="leading-7 text-slate-700 dark:text-slate-300">{item}</p>
                 </Card>
               ))}
             </div>
@@ -1342,7 +1342,7 @@ export default function CourseDetails() {
             <Card className="mx-auto mt-12 max-w-3xl text-center lg:mt-16">
               <BookOpen className="mx-auto text-blue-500" size={42} />
 
-              <p className="mt-4 text-slate-600">
+              <p className="mt-4 text-slate-600 dark:text-slate-400">
                 Course learning outcomes will be added soon.
               </p>
             </Card>
@@ -1355,7 +1355,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       {isEnrolled && (
-      <section className="bg-slate-50 py-10 sm:py-24">
+      <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
         <div className="mx-auto max-w-5xl px-6">
           <SectionTitle
             title="Course Curriculum"
@@ -1378,11 +1378,11 @@ export default function CourseDetails() {
                         Continue Learning
                       </p>
 
-                      <h3 className="mt-1 text-lg font-black text-slate-900 sm:text-xl">
+                      <h3 className="mt-1 text-lg font-black text-slate-900 dark:text-slate-100 sm:text-xl">
                         {currentLessonDetails.lesson.title || "Current Lesson"}
                       </h3>
 
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         {currentLessonDetails.module?.title ||
                           "Course Curriculum"}
                       </p>
@@ -1402,23 +1402,23 @@ export default function CourseDetails() {
             </div>
           )}
 
-          <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
             <div className="flex flex-col gap-5">
               <div>
-                <p className="text-sm font-semibold text-slate-500">
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Your course progress
                 </p>
 
                 <div className="mt-2 flex items-end gap-2">
-                  <span className="text-3xl font-black text-slate-900">
+                  <span className="text-3xl font-black text-slate-900 dark:text-slate-100">
                     {progressPercentage}%
                   </span>
 
-                  <span className="pb-1 text-sm text-slate-500">completed</span>
+                  <span className="pb-1 text-sm text-slate-500 dark:text-slate-400">completed</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
                 <CheckCircle2 className="text-green-500" size={20} />
                 <span>
                   {completedLessonsCount} of {totalLessons} lessons
@@ -1426,7 +1426,7 @@ export default function CourseDetails() {
               </div>
             </div>
 
-            <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100">
+            <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercentage}%` }}
@@ -1436,7 +1436,7 @@ export default function CourseDetails() {
             </div>
 
             {totalLearningHours && (
-              <div className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500">
+              <div className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                 <Clock3 size={16} />
                 Approximately {totalLearningHours} hours of lesson content
               </div>
@@ -1483,11 +1483,11 @@ export default function CourseDetails() {
                         </div>
 
                         <div className="min-w-0">
-                          <h3 className="truncate text-base font-bold text-slate-900 sm:text-lg">
+                          <h3 className="truncate text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">
                             {module.title || `Module ${moduleIndex + 1}`}
                           </h3>
 
-                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
+                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
                             <span>
                               {lessons.length}{" "}
                               {lessons.length === 1 ? "lesson" : "lessons"}
@@ -1521,18 +1521,18 @@ export default function CourseDetails() {
                         )}
 
                         {isOpen ? (
-                          <ChevronUp className="text-slate-500" size={22} />
+                          <ChevronUp className="text-slate-500 dark:text-slate-400" size={22} />
                         ) : (
-                          <ChevronDown className="text-slate-500" size={22} />
+                          <ChevronDown className="text-slate-500 dark:text-slate-400" size={22} />
                         )}
                       </div>
                     </button>
 
                     {isOpen && (
-                      <div className="border-t bg-white">
+                      <div className="border-t bg-white dark:bg-slate-900">
                         {module.description && (
                           <div className="border-b bg-slate-50/70 px-5 py-5 sm:px-6">
-                            <p className="leading-7 text-slate-600">
+                            <p className="leading-7 text-slate-600 dark:text-slate-400">
                               {module.description}
                             </p>
                           </div>
@@ -1593,7 +1593,7 @@ export default function CourseDetails() {
 
                                       <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
-                                          <h4 className="font-semibold text-slate-900">
+                                          <h4 className="font-semibold text-slate-900 dark:text-slate-100">
                                             {lessonIndex + 1}.{" "}
                                             {lesson.title || "Untitled Lesson"}
                                           </h4>
@@ -1612,12 +1612,12 @@ export default function CourseDetails() {
                                         </div>
 
                                         {lesson.description && (
-                                          <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">
+                                          <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                                             {lesson.description}
                                           </p>
                                         )}
                                         
-                                        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
+                                        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
                                           <span className="inline-flex items-center gap-1.5">
                                             <Clock3 size={14} />
                                             {formatLessonDuration(
@@ -1671,12 +1671,12 @@ export default function CourseDetails() {
                                                 <div className="mb-3 flex items-center gap-2">
                                                   <BookOpen size={18} className="text-blue-600" />
 
-                                                  <h5 className="font-bold text-slate-900">
+                                                  <h5 className="font-bold text-slate-900 dark:text-slate-100">
                                                     Lesson Content
                                                   </h5>
                                                 </div>
 
-                                                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                                                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
                                                   {lesson.lessonContent}
                                                 </div>
                                               </div>
@@ -1715,7 +1715,7 @@ export default function CourseDetails() {
                                             </div>
                                           )}
 
-                                        <div className="mt-5 border-t border-slate-200 pt-4">
+                                        <div className="mt-5 border-t border-slate-200 dark:border-slate-700 pt-4">
                                           {openNoteLessonId ===
                                           String(lessonId) ? (
                                             <div
@@ -1729,7 +1729,7 @@ export default function CourseDetails() {
                                                   size={18}
                                                   className="text-blue-600"
                                                 />
-                                                <p className="text-sm font-bold text-slate-900">
+                                                <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                                                   Lesson Note
                                                 </p>
                                               </div>
@@ -1746,7 +1746,7 @@ export default function CourseDetails() {
                                                 }
                                                 rows={4}
                                                 placeholder="Write something you want to remember about this lesson..."
-                                                className="mt-3 w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                                className="mt-3 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                               />
 
                                               <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -1770,7 +1770,7 @@ export default function CourseDetails() {
                                                     event.stopPropagation();
                                                     handleCancelNote();
                                                   }}
-                                                  className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                                                  className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
                                                 >
                                                   <X size={16} />
                                                   Cancel
@@ -1797,7 +1797,7 @@ export default function CourseDetails() {
                                                     <p className="text-xs font-bold uppercase tracking-wide text-amber-700">
                                                       My Note
                                                     </p>
-                                                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                                                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">
                                                       {
                                                         lessonNotes[
                                                           String(lessonId)
@@ -1814,7 +1814,7 @@ export default function CourseDetails() {
                                                       event.stopPropagation();
                                                       handleOpenNote(lessonId);
                                                     }}
-                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
                                                   >
                                                     <Pencil size={14} />
                                                     Edit
@@ -1828,7 +1828,7 @@ export default function CourseDetails() {
                                                         lessonId,
                                                       );
                                                     }}
-                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
+                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
                                                   >
                                                     <Trash2 size={14} />
                                                     Delete
@@ -1843,7 +1843,7 @@ export default function CourseDetails() {
                                                 event.stopPropagation();
                                                 handleOpenNote(lessonId);
                                               }}
-                                              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                                              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
                                             >
                                               <Plus size={17} />
                                               <StickyNote size={16} />
@@ -1859,7 +1859,7 @@ export default function CourseDetails() {
                             })}
                           </div>
                         ) : (
-                          <div className="px-5 py-6 text-sm text-slate-500 sm:px-6">
+                          <div className="px-5 py-6 text-sm text-slate-500 dark:text-slate-400 sm:px-6">
                             Lessons for this module will be added soon.
                           </div>
                         )}
@@ -1878,7 +1878,7 @@ export default function CourseDetails() {
 
                                   <div className="min-w-0">
                                     <div className="flex flex-wrap items-center gap-2">
-                                      <h4 className="font-bold text-slate-900">
+                                      <h4 className="font-bold text-slate-900 dark:text-slate-100">
                                         {assessment.title ||
                                           "Module Assessment"}
                                       </h4>
@@ -1897,17 +1897,17 @@ export default function CourseDetails() {
                                     </div>
 
                                     {assessment.description && (
-                                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
                                         {assessment.description}
                                       </p>
                                     )}
 
                                     {assessment.instructions && (
                                       <div className="mt-5">
-                                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                                           Instructions
                                         </p>
-                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
                                           {assessment.instructions}
                                         </p>
                                       </div>
@@ -1916,7 +1916,7 @@ export default function CourseDetails() {
                                     {Array.isArray(assessment.requirements) &&
                                       assessment.requirements.length > 0 && (
                                         <div className="mt-5">
-                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                                             Requirements
                                           </p>
 
@@ -1928,7 +1928,7 @@ export default function CourseDetails() {
                                               ) => (
                                                 <li
                                                   key={`${requirement}-${requirementIndex}`}
-                                                  className="flex items-start gap-2 text-sm leading-6 text-slate-700"
+                                                  className="flex items-start gap-2 text-sm leading-6 text-slate-700 dark:text-slate-300"
                                                 >
                                                   <CheckCircle2
                                                     className="mt-1 shrink-0 text-green-500"
@@ -1945,7 +1945,7 @@ export default function CourseDetails() {
                                     {Array.isArray(assessment.resources) &&
                                       assessment.resources.length > 0 && (
                                         <div className="mt-5">
-                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                                             Resources
                                           </p>
 
@@ -1966,7 +1966,7 @@ export default function CourseDetails() {
                                                     href={resource}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-50"
+                                                    className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-50"
                                                   >
                                                     Resource {resourceIndex + 1}
                                                     <ExternalLink size={13} />
@@ -1981,7 +1981,7 @@ export default function CourseDetails() {
                                 </div>
 
                                 <div className="shrink-0">
-                                  <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-500">
+                                  <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
                                     <ClipboardCheck size={17} />
                                     Assessment
                                   </span>
@@ -1990,13 +1990,13 @@ export default function CourseDetails() {
 
                               {assessment.submissionType &&
                                 assessment.submissionType !== "none" && (
-                                  <div className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
+                                  <div className="rounded-2xl border border-blue-200 bg-white dark:bg-slate-900 p-5 shadow-sm">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                       <div>
-                                        <p className="text-sm font-bold text-slate-900">
+                                        <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                                           Submit Your Assessment
                                         </p>
-                                        <p className="mt-1 text-xs leading-5 text-slate-500">
+                                        <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                                           Submit your work before marking this
                                           module as complete.
                                         </p>
@@ -2056,7 +2056,7 @@ export default function CourseDetails() {
                                             <div className="mt-5">
                                               <label
                                                 htmlFor={`assessment-text-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700"
+                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
                                               >
                                                 Your Response
                                               </label>
@@ -2072,7 +2072,7 @@ export default function CourseDetails() {
                                                 }
                                                 rows={7}
                                                 placeholder="Enter your assessment response..."
-                                                className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                                                className="mt-2 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm leading-7 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                                               />
                                             </div>
                                           )}
@@ -2082,7 +2082,7 @@ export default function CourseDetails() {
                                             <div className="mt-5">
                                               <label
                                                 htmlFor={`assessment-url-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700"
+                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
                                               >
                                                 Project URL
                                               </label>
@@ -2098,7 +2098,7 @@ export default function CourseDetails() {
                                                   )
                                                 }
                                                 placeholder="https://github.com/username/project"
-                                                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                                                className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                                               />
                                             </div>
                                           )}
@@ -2108,12 +2108,12 @@ export default function CourseDetails() {
                                             <div className="mt-5">
                                               <label
                                                 htmlFor={`assessment-file-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700"
+                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
                                               >
                                                 Assessment File
                                               </label>
 
-                                              <div className="mt-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50/40">
+                                              <div className="mt-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 p-4 transition hover:border-blue-300 hover:bg-blue-50/40">
                                                 <input
                                                   id={`assessment-file-${moduleKey}`}
                                                   type="file"
@@ -2124,10 +2124,10 @@ export default function CourseDetails() {
                                                         null,
                                                     )
                                                   }
-                                                  className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700"
+                                                  className="block w-full text-sm text-slate-600 dark:text-slate-400 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700"
                                                 />
 
-                                                <p className="mt-2 text-xs text-slate-500">
+                                                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                                                   Maximum file size: 10MB.
                                                 </p>
 
@@ -2145,7 +2145,7 @@ export default function CourseDetails() {
                                           )}
 
                                           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                            <p className="text-xs leading-5 text-slate-500">
+                                            <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                                               You can resubmit your work if you
                                               need to make changes.
                                             </p>
@@ -2225,10 +2225,10 @@ export default function CourseDetails() {
                             String(moduleKey);
 
                           return (
-                            <div className="border-t bg-white px-5 py-5 sm:px-6">
+                            <div className="border-t bg-white dark:bg-slate-900 px-5 py-5 sm:px-6">
                               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                  <p className="text-sm font-bold text-slate-900">
+                                  <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                                     Module Completion
                                   </p>
 
@@ -2237,7 +2237,7 @@ export default function CourseDetails() {
                                       You have completed this module.
                                     </p>
                                   ) : !allLessonsCompleted ? (
-                                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                                    <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                                       Complete all lessons in this module first.
                                     </p>
                                   ) : assessmentRequired &&
@@ -2247,7 +2247,7 @@ export default function CourseDetails() {
                                       completing this module.
                                     </p>
                                   ) : (
-                                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                                    <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                                       Your lessons and required assessment are
                                       complete. You can now mark this module as
                                       complete.
@@ -2303,7 +2303,7 @@ export default function CourseDetails() {
               })}
 
               {allLessons.length > 0 && (
-                <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:items-center sm:justify-between">
                   <Button
                     type="button"
                     variant="outline"
@@ -2319,7 +2319,7 @@ export default function CourseDetails() {
 
                   <div className="text-center">
                     {currentLessonIndex >= 0 && (
-                      <p className="text-xs font-semibold text-slate-500">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                         Lesson {currentLessonIndex + 1} of {allLessons.length}
                       </p>
                     )}
@@ -2343,11 +2343,11 @@ export default function CourseDetails() {
             <Card className="mt-12 text-center lg:mt-16">
               <BookOpen className="mx-auto text-blue-500" size={42} />
 
-              <h3 className="mt-5 text-xl font-bold text-slate-900">
+              <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">
                 Curriculum Coming Soon
               </h3>
 
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
                 The curriculum for this course is being prepared.
               </p>
             </Card>
@@ -2367,11 +2367,11 @@ export default function CourseDetails() {
           <Card className="text-center">
             <Award className="mx-auto text-yellow-500" size={60} />
 
-            <h2 className="mt-8 text-3xl font-black text-slate-900 sm:text-4xl">
+            <h2 className="mt-8 text-3xl font-black text-slate-900 dark:text-slate-100 sm:text-4xl">
               Earn Your Certificate
             </h2>
 
-            <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600">
+            <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600 dark:text-slate-400">
               Complete the required course lessons and assessments to receive
               your KanuorieTech Certificate of Completion.
             </p>
@@ -2414,11 +2414,11 @@ export default function CourseDetails() {
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">
                 {course.instructor || "KanuorieTech"}
               </h3>
 
-              <p className="mt-4 leading-8 text-slate-600">
+              <p className="mt-4 leading-8 text-slate-600 dark:text-slate-400">
                 Experienced software engineer passionate about helping
                 developers build practical skills through project-based
                 learning. Learn practical, real-world development skills through
@@ -2434,7 +2434,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       {relatedCourses.length > 0 && (
-        <section className="bg-slate-50 py-10 sm:py-24">
+        <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
           <div className="mx-auto px-6">
             <SectionTitle
               title="Related Courses"
@@ -2464,21 +2464,21 @@ export default function CourseDetails() {
                       )}
 
                       {item.category && (
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
                           {item.category}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="mt-4 line-clamp-2 text-xl font-bold text-slate-900">
+                    <h3 className="mt-4 line-clamp-2 text-xl font-bold text-slate-900 dark:text-slate-100">
                       {item.title}
                     </h3>
 
-                    <p className="mt-4 line-clamp-3 leading-7 text-slate-600">
+                    <p className="mt-4 line-clamp-3 leading-7 text-slate-600 dark:text-slate-400">
                       {item.description}
                     </p>
 
-                    <div className="mt-5 flex items-center gap-4 text-sm text-slate-500">
+                    <div className="mt-5 flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                       <span className="inline-flex items-center gap-1.5">
                         <Clock3 size={15} />
                         {formatCourseDuration(item.duration)}

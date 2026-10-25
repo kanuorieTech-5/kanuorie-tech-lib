@@ -51,7 +51,7 @@ export default function ResourceCard({
         <h3
           className="
             line-clamp-2 text-lg font-bold
-            text-slate-400 transition-colors
+            text-slate-900 transition-colors
             group-hover:text-blue-600
             dark:text-gray-100 dark:group-hover:text-blue-400
             sm:text-xl

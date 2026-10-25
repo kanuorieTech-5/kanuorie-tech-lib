@@ -56,7 +56,7 @@ export default function Newsletter() {
 
             placeholder="Enter your email"
 
-            className="flex-1 rounded-2xl border border-white/20 bg-white px-5 py-4 text-slate-900 outline-none"
+            className="flex-1 rounded-2xl border border-white/20 bg-white dark:bg-slate-900 px-5 py-4 text-slate-900 dark:text-slate-100 outline-none"
           />
 
           <Button

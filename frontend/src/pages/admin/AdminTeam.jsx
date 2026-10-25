@@ -77,18 +77,18 @@ function normalizeResponse(response) {
 
 function StatCard({ icon: Icon, label, value, description }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-bold text-slate-900">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
             {value}
           </p>
-          <p className="mt-1 text-xs text-slate-500">{description}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description}</p>
         </div>
 
-        <div className="rounded-xl bg-slate-100 p-3">
-          <Icon className="h-5 w-5 text-slate-700" />
+        <div className="rounded-xl bg-slate-100 dark:bg-slate-900 p-3">
+          <Icon className="h-5 w-5 text-slate-700 dark:text-slate-300" />
         </div>
       </div>
     </div>
@@ -115,7 +115,7 @@ function Toggle({ checked, onChange, label }) {
         />
       </span>
 
-      <span className="text-sm text-slate-700">
+      <span className="text-sm text-slate-700 dark:text-slate-300">
         {checked ? "Yes" : "No"}
       </span>
     </button>
@@ -366,11 +366,11 @@ export default function AdminTeam() {
             ADMINISTRATION
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Team Management
           </h1>
 
-          <p className="mt-2 max-w-2xl text-sm text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
             Manage KanuorieTech team members, profiles, visibility,
             featured members and display order.
           </p>
@@ -383,7 +383,7 @@ export default function AdminTeam() {
               loadMembers();
               loadStats();
             }}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm transition hover:bg-slate-50"
           >
             <RefreshCw className="h-4 w-4" />
             Refresh
@@ -445,7 +445,7 @@ export default function AdminTeam() {
       </div>
 
       {/* FILTERS */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
         <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto]">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -460,7 +460,7 @@ export default function AdminTeam() {
                 }));
               }}
               placeholder="Search name or position..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-cyan-500 focus:bg-white"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-cyan-500 focus:bg-white text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             />
           </div>
 
@@ -473,7 +473,7 @@ export default function AdminTeam() {
                 page: 1,
               }));
             }}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none focus:border-cyan-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-cyan-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -489,7 +489,7 @@ export default function AdminTeam() {
                 page: 1,
               }));
             }}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none focus:border-cyan-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-cyan-500"
           >
             <option value="all">All Members</option>
             <option value="featured">Featured Only</option>
@@ -499,36 +499,36 @@ export default function AdminTeam() {
       </div>
 
       {/* TABLE */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
         <div className="overflow-x-auto">
           <table className="min-w-full">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950">
               <tr>
-                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Member
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Position
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Contact
                 </th>
 
-                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Status
                 </th>
 
-                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Featured
                 </th>
 
-                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Order
                 </th>
 
-                <th className="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Actions
                 </th>
               </tr>
@@ -539,7 +539,7 @@ export default function AdminTeam() {
                 <tr>
                   <td
                     colSpan="7"
-                    className="px-5 py-16 text-center text-sm text-slate-500"
+                    className="px-5 py-16 text-center text-sm text-slate-500 dark:text-slate-400"
                   >
                     Loading team members...
                   </td>
@@ -552,11 +552,11 @@ export default function AdminTeam() {
                   >
                     <Users className="mx-auto h-10 w-10 text-slate-300" />
 
-                    <p className="mt-3 font-semibold text-slate-700">
+                    <p className="mt-3 font-semibold text-slate-700 dark:text-slate-300">
                       No team members found
                     </p>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                       Add your first team member to get started.
                     </p>
 
@@ -588,39 +588,39 @@ export default function AdminTeam() {
                               className="h-11 w-11 rounded-xl object-cover"
                             />
                           ) : (
-                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 font-semibold text-slate-600">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 font-semibold text-slate-600 dark:text-slate-400">
                               {(member.firstName?.[0] ?? "") +
                                 (member.lastName?.[0] ?? "")}
                             </div>
                           )}
 
                           <div>
-                            <p className="font-semibold text-slate-900">
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
                               {name || "Unnamed member"}
                             </p>
 
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                               Team ID: {member._id?.slice(-8)}
                             </p>
                           </div>
                         </div>
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-slate-700">
+                      <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">
                         {member.position || "—"}
                       </td>
 
                       <td className="px-5 py-4">
                         <div className="space-y-1">
                           {member.email && (
-                            <p className="flex items-center gap-2 text-xs text-slate-600">
+                            <p className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                               <Mail className="h-3.5 w-3.5" />
                               {member.email}
                             </p>
                           )}
 
                           {member.phone && (
-                            <p className="flex items-center gap-2 text-xs text-slate-600">
+                            <p className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                               <Phone className="h-3.5 w-3.5" />
                               {member.phone}
                             </p>
@@ -656,7 +656,7 @@ export default function AdminTeam() {
                         )}
                       </td>
 
-                      <td className="px-5 py-4 text-center text-sm font-semibold text-slate-700">
+                      <td className="px-5 py-4 text-center text-sm font-semibold text-slate-700 dark:text-slate-300">
                         {member.order ?? 0}
                       </td>
 
@@ -665,7 +665,7 @@ export default function AdminTeam() {
                           <button
                             type="button"
                             onClick={() => openEdit(member)}
-                            className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-700"
+                            className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 transition hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-700"
                             title="Edit"
                           >
                             <Pencil className="h-4 w-4" />
@@ -690,8 +690,8 @@ export default function AdminTeam() {
         </div>
 
         {/* PAGINATION */}
-        <div className="flex flex-col gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">
+        <div className="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-700 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Page {pagination.page} of {pagination.pages || 1}
             {" · "}
             {pagination.total ?? 0} members
@@ -707,7 +707,7 @@ export default function AdminTeam() {
                   page: previous.page - 1,
                 }))
               }
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -723,7 +723,7 @@ export default function AdminTeam() {
                   page: previous.page + 1,
                 }))
               }
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -734,16 +734,16 @@ export default function AdminTeam() {
       {/* MODAL */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
+          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-5">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                   {editingMember
                     ? "Edit Team Member"
                     : "Add Team Member"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Manage the member's public team profile.
                 </p>
               </div>
@@ -751,7 +751,7 @@ export default function AdminTeam() {
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-xl p-2 text-slate-500 hover:bg-slate-100"
+                className="rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -760,7 +760,7 @@ export default function AdminTeam() {
             <form onSubmit={handleSubmit} className="space-y-6 p-6">
               {/* BASIC INFO */}
               <section>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Basic Information
                 </h3>
 
@@ -772,7 +772,7 @@ export default function AdminTeam() {
                       updateField("firstName", event.target.value)
                     }
                     placeholder="First name"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -782,7 +782,7 @@ export default function AdminTeam() {
                       updateField("lastName", event.target.value)
                     }
                     placeholder="Last name"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -792,7 +792,7 @@ export default function AdminTeam() {
                       updateField("position", event.target.value)
                     }
                     placeholder="Position e.g. Founder & CEO"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -803,7 +803,7 @@ export default function AdminTeam() {
                       updateField("order", event.target.value)
                     }
                     placeholder="Display order"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -813,7 +813,7 @@ export default function AdminTeam() {
                       updateField("email", event.target.value)
                     }
                     placeholder="Email address"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -822,7 +822,7 @@ export default function AdminTeam() {
                       updateField("phone", event.target.value)
                     }
                     placeholder="Phone number"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <input
@@ -831,7 +831,7 @@ export default function AdminTeam() {
                       updateField("image", event.target.value)
                     }
                     placeholder="Profile image URL"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500 md:col-span-2"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 md:col-span-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
                   <textarea
@@ -841,14 +841,14 @@ export default function AdminTeam() {
                     }
                     placeholder="Short biography"
                     rows="5"
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500 md:col-span-2"
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 md:col-span-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
               </section>
 
               {/* SOCIAL LINKS */}
               <section>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Social Links
                 </h3>
 
@@ -864,7 +864,7 @@ export default function AdminTeam() {
                         )
                       }
                       placeholder="Facebook URL"
-                      className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
 
@@ -879,7 +879,7 @@ export default function AdminTeam() {
                         )
                       }
                       placeholder="Twitter / X URL"
-                      className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
 
@@ -894,7 +894,7 @@ export default function AdminTeam() {
                         )
                       }
                       placeholder="LinkedIn URL"
-                      className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
 
@@ -909,7 +909,7 @@ export default function AdminTeam() {
                         )
                       }
                       placeholder="GitHub URL"
-                      className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
 
@@ -924,21 +924,21 @@ export default function AdminTeam() {
                         )
                       }
                       placeholder="Instagram URL"
-                      className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 md:col-span-2"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 text-sm outline-none focus:border-cyan-500 md:col-span-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     />
                   </div>
                 </div>
               </section>
 
               {/* VISIBILITY */}
-              <section className="rounded-2xl bg-slate-50 p-5">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+              <section className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Visibility
                 </h3>
 
                 <div className="mt-4 flex flex-col gap-5 sm:flex-row sm:gap-10">
                   <div>
-                    <p className="mb-2 text-sm font-semibold text-slate-800">
+                    <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
                       Active
                     </p>
 
@@ -952,7 +952,7 @@ export default function AdminTeam() {
                   </div>
 
                   <div>
-                    <p className="mb-2 text-sm font-semibold text-slate-800">
+                    <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
                       Featured
                     </p>
 
@@ -968,12 +968,12 @@ export default function AdminTeam() {
               </section>
 
               {/* ACTIONS */}
-              <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={closeModal}
                   disabled={saving}
-                  className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 px-5 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 disabled:opacity-50"
                 >
                   Cancel
                 </button>

@@ -83,7 +83,7 @@ export default function Payments() {
   }, [search, transactions]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* =========================================
             HEADER
@@ -101,11 +101,11 @@ export default function Payments() {
                 Accounts & Payments
               </div>
 
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
                 Manage your payments
               </h1>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">
                 View your purchases, transactions, payment methods, and
                 billing information in one secure place.
               </p>
@@ -158,7 +158,7 @@ export default function Payments() {
           transition={{ delay: 0.1 }}
           className="mb-6 flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 sm:flex-row sm:items-center"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-slate-900">
             <ShieldCheck className="h-5 w-5 text-emerald-600" />
           </div>
 
@@ -182,7 +182,7 @@ export default function Payments() {
           animate="visible"
           variants={fadeUp}
           transition={{ delay: 0.15 }}
-          className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm"
         >
           {/* Tabs */}
           <div className="overflow-x-auto border-b border-slate-100">
@@ -222,11 +222,11 @@ export default function Payments() {
             <div>
               <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <div>
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                     Transaction History
                   </h2>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     View payments and transaction activity.
                   </p>
                 </div>
@@ -241,7 +241,7 @@ export default function Payments() {
                       setSearch(event.target.value)
                     }
                     placeholder="Search transactions..."
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-2.5 pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
               </div>
@@ -269,11 +269,11 @@ export default function Payments() {
           {activeTab === "purchases" && (
             <div>
               <div className="border-b border-slate-100 px-5 py-5 sm:px-6">
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                   Your Purchases
                 </h2>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Access your purchased courses, products, and digital
                   resources.
                 </p>
@@ -294,11 +294,11 @@ export default function Payments() {
             <div>
               <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <div>
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                     Payment Methods
                   </h2>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Manage the payment methods available for your account.
                   </p>
                 </div>
@@ -313,16 +313,16 @@ export default function Payments() {
               </div>
 
               <div className="px-5 py-12 sm:px-6">
-                <div className="mx-auto max-w-lg rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm">
+                <div className="mx-auto max-w-lg rounded-2xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 p-6 text-center">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-slate-900 shadow-sm">
                     <CreditCard className="h-7 w-7 text-slate-400" />
                   </div>
 
-                  <h3 className="mt-4 text-sm font-semibold text-slate-900">
+                  <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
                     No payment methods added
                   </h3>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                     Add a payment method when payment processing is enabled
                     for your account.
                   </p>
@@ -335,26 +335,26 @@ export default function Payments() {
           {activeTab === "billing" && (
             <div>
               <div className="border-b border-slate-100 px-5 py-5 sm:px-6">
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                   Billing Information
                 </h2>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Your billing details can be used for invoices and receipts.
                 </p>
               </div>
 
               <div className="p-5 sm:p-6">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-5">
                   <div className="flex items-start gap-3">
                     <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
 
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-900">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         Billing details
                       </h3>
 
-                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                      <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Your billing information will be connected to your
                         account profile and used when generating invoices or
                         receipts.
@@ -387,7 +387,7 @@ export default function Payments() {
 
                 <button
                   type="button"
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 transition hover:border-blue-200 hover:text-blue-600"
                 >
                   Update Billing Information
                   <ChevronRight className="h-4 w-4" />
@@ -411,14 +411,14 @@ function OverviewCard({
   icon: Icon,
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium text-slate-500 sm:text-sm">
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">
             {label}
           </p>
 
-          <p className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
+          <p className="mt-2 text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-2xl">
             {value}
           </p>
         </div>
@@ -467,18 +467,18 @@ function TransactionRow({ transaction }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-sm font-semibold text-slate-900">
+        <h3 className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
           {transaction.description}
         </h3>
 
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           {transaction.reference}
         </p>
       </div>
 
       <div className="flex items-center justify-between gap-4 sm:justify-end">
         <div className="text-left sm:text-right">
-          <p className="text-sm font-semibold text-slate-900">
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             {transaction.amount}
           </p>
 
@@ -519,15 +519,15 @@ function EmptyState({
 }) {
   return (
     <div className="px-5 py-14 text-center sm:px-6 sm:py-16">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-900">
         <Icon className="h-7 w-7 text-slate-400" />
       </div>
 
-      <h3 className="mt-4 text-sm font-semibold text-slate-900">
+      <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
         {title}
       </h3>
 
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
         {description}
       </p>
 
@@ -550,12 +550,12 @@ function EmptyState({
 
 function BillingField({ label, value }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-xs font-medium text-slate-500">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
         {label}
       </p>
 
-      <p className="mt-2 text-sm font-medium text-slate-700">
+      <p className="mt-2 text-sm font-medium text-slate-700 dark:text-slate-300">
         {value}
       </p>
     </div>

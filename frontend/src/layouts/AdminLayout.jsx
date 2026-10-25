@@ -6,7 +6,7 @@ import { DashboardTopbar, DashboardBreadcrumb } from "../components/dashboard";
 
 export default function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Sidebar */}
       <AdminSidebar />
 

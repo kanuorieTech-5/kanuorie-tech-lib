@@ -41,18 +41,18 @@ export default function LoginForm({ onSubmit, loading = false }) {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-8">
+    <Card className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-xl shadow-slate-200/50 sm:p-8">
       {/* HEADER */}
       <div className="mb-8">
         <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20">
           <LogIn size={26} aria-hidden="true" />
         </div>
 
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Welcome Back
         </h2>
 
-        <p className="mt-3 leading-6 text-slate-500">
+        <p className="mt-3 leading-6 text-slate-500 dark:text-slate-400">
           Sign in to continue learning, explore resources, and access your
           KanuorieTech dashboard.
         </p>
@@ -93,7 +93,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
               onClick={() => setShowPassword((previous) => !previous)}
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
-              className="absolute right-3 top-9 rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="absolute right-3 top-9 rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {showPassword ? (
                 <EyeOff size={18} aria-hidden="true" />
@@ -129,7 +129,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
         </Button>
 
         {/* REGISTER */}
-        <p className="pt-2 text-center text-sm text-slate-600">
+        <p className="pt-2 text-center text-sm text-slate-600 dark:text-slate-400">
           Don't have an account?{" "}
           <Link
             to="/register"

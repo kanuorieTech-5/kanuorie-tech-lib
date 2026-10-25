@@ -9,7 +9,7 @@ export default function StatCard({
   return (
     <Card className="flex items-center justify-between">
       <div>
-        <p className="text-sm text-gray-500">{title}</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400">{title}</p>
 
         <h3 className="mt-2 text-3xl font-bold">{value}</h3>
       </div>

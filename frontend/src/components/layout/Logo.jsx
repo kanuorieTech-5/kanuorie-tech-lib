@@ -32,7 +32,7 @@ export default function Logo({ size = "md", showText = true }) {
             KanuorieTech
           </h1>
 
-          <p className="text-xs text-gray-500">Learn • Build • Grow</p>
+          <p className="text-xs text-gray-500 dark:text-slate-400">Learn • Build • Grow</p>
         </div>
       )}
     </Link>

@@ -438,16 +438,6 @@ export default function Library() {
     try {
       setSavingKey(key);
 
-      /* ====================================
-         PAYLOAD
-
-         Only the resource reference and
-         display snapshot are sent.
-
-         No course modules/curriculum are
-         copied here.
-      ==================================== */
-
       const payload = {
         resourceId: String(resource.resourceId),
 
@@ -494,12 +484,6 @@ export default function Library() {
 
       setToast("Saved to your Library ✓");
 
-      /*
-       * Kept only for compatibility with
-       * older components/listeners.
-       *
-       * Backend remains the source of truth.
-       */
       window.dispatchEvent(new Event("library-update"));
     } catch (error) {
       console.error("Failed to save resource:", error);
@@ -586,16 +570,11 @@ export default function Library() {
           {toast}
         </div>
       )}
-
-      {/* ======================================
-          SEARCH + FILTER
-      ====================================== */}
-
       <section className="bg-slate-200 py-10">
         <div className="px-6">
           <h1 className="text-4xl font-bold">Digital Library</h1>
 
-          <p className="mt-4 max-w-2xl text-gray-600">
+          <p className="mt-4 max-w-2xl text-gray-600 dark:text-slate-400">
             Explore curated books, tutorials, courses, and resources designed
             for modern developers.
           </p>
@@ -624,9 +603,9 @@ export default function Library() {
         {loading ? (
           <div className="flex min-h-[300px] items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-300 dark:border-slate-600 border-t-blue-600" />
 
-              <p className="mt-4 text-sm text-gray-600">Loading library...</p>
+              <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">Loading library...</p>
             </div>
           </div>
         ) : paginatedResources.length > 0 ? (
@@ -659,11 +638,11 @@ export default function Library() {
                       behavior: "smooth",
                     });
                   }}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
+                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
                   Previous
                 </button>
 
-                <span className="min-w-[100px] text-center text-sm text-gray-600">
+                <span className="min-w-[100px] text-center text-sm text-gray-600 dark:text-slate-400">
                   Page {page} of {totalPages}
                 </span>
 
@@ -680,17 +659,17 @@ export default function Library() {
                       behavior: "smooth",
                     });
                   }}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
+                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
                   Next
                 </button>
               </div>
             )}
           </>
         ) : (
-          <div className="rounded-2xl border bg-white px-6 py-16 text-center shadow-sm">
+          <div className="rounded-2xl border bg-white dark:bg-slate-900 px-6 py-16 text-center shadow-sm">
             <h2 className="text-2xl font-bold">No resources found</h2>
 
-            <p className="mx-auto mt-3 max-w-md text-gray-600">
+            <p className="mx-auto mt-3 max-w-md text-gray-600 dark:text-slate-400">
               We couldn't find any resources matching your search or selected
               category.
             </p>
@@ -720,14 +699,6 @@ export default function Library() {
           onRemove={handleRemove}
         />
       )}
-
-      <Newsletter />
-
-      <CTA />
     </main>
   );
 }
-
-
-
-

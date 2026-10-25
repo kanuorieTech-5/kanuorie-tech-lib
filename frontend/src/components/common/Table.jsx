@@ -6,21 +6,21 @@
 }) {
   if (loading) {
     return (
-      <div className="rounded-xl border bg-white p-10 text-center">
+      <div className="rounded-xl border bg-white dark:bg-slate-900 p-10 text-center">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-xl border bg-white dark:bg-slate-900 shadow-sm">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-slate-100">
+        <thead className="bg-slate-100 dark:bg-slate-900">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.accessor}
-                className="px-6 py-4 text-left text-sm font-semibold text-slate-700"
+                className="px-6 py-4 text-left text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 {column.header}
               </th>
@@ -33,7 +33,7 @@
             <tr>
               <td
                 colSpan={columns.length}
-                className="py-10 text-center text-gray-500"
+                className="py-10 text-center text-gray-500 dark:text-slate-400"
               >
                 {emptyMessage}
               </td>

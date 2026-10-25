@@ -9,7 +9,7 @@ export default function Breadcrumb() {
   if (paths.length === 0) return null;
 
   return (
-    <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
+    <div className="mb-6 flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
       <Link to="/">Home</Link>
 
       {paths.map((item, index) => {

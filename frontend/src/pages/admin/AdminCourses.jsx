@@ -855,11 +855,11 @@ export default function AdminCourses() {
             </div>
 
             <div>
-              <h1 className="text-3xl font-black tracking-tight text-slate-900">
+              <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
                 Courses
               </h1>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Manage courses, modules, lessons, publishing and learning
                 content.
               </p>
@@ -905,7 +905,7 @@ export default function AdminCourses() {
 
       {/* FILTERS */}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1fr_180px_180px_180px]">
           <div className="relative">
             <Search
@@ -918,14 +918,14 @@ export default function AdminCourses() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search courses..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 py-3 pl-11 pr-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <select
             value={category}
             onChange={(event) => setCategory(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-blue-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="All">All Categories</option>
 
@@ -939,7 +939,7 @@ export default function AdminCourses() {
           <select
             value={level}
             onChange={(event) => setLevel(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-blue-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="All">All Levels</option>
 
@@ -953,7 +953,7 @@ export default function AdminCourses() {
           <select
             value={status}
             onChange={(event) => setStatus(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-blue-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="All">All Status</option>
 
@@ -966,20 +966,20 @@ export default function AdminCourses() {
 
       {/* COURSE TABLE */}
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
         {loading ? (
           <div className="flex min-h-[300px] items-center justify-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-blue-600" />
           </div>
         ) : filteredCourses.length === 0 ? (
           <div className="px-6 py-10 text-center">
             <BookOpen size={45} className="mx-auto text-slate-300" />
 
-            <h3 className="mt-5 text-lg font-bold text-slate-800">
+            <h3 className="mt-5 text-lg font-bold text-slate-800 dark:text-slate-200">
               No courses found
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Create your first course or adjust your filters.
             </p>
           </div>
@@ -987,7 +987,7 @@ export default function AdminCourses() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[950px]">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   <th className="px-6 py-4">Course</th>
 
                   <th className="px-6 py-4">Category</th>
@@ -1021,7 +1021,7 @@ export default function AdminCourses() {
 
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-slate-900">
+                            <h3 className="font-bold text-slate-900 dark:text-slate-100">
                               {course.title}
                             </h3>
 
@@ -1037,28 +1037,28 @@ export default function AdminCourses() {
                             )}
                           </div>
 
-                          <p className="mt-1 max-w-xs truncate text-sm text-slate-500">
+                          <p className="mt-1 max-w-xs truncate text-sm text-slate-500 dark:text-slate-400">
                             {course.instructor}
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="px-6 py-5 text-sm text-slate-600">
+                    <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
                       {course.category || "General"}
                     </td>
 
                     <td className="px-6 py-5">
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                      <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
                         {course.level || "Beginner"}
                       </span>
                     </td>
 
-                    <td className="px-6 py-5 text-sm font-medium text-slate-700">
+                    <td className="px-6 py-5 text-sm font-medium text-slate-700 dark:text-slate-300">
                       {getLessonCount(course)}
                     </td>
 
-                    <td className="px-6 py-5 text-sm font-medium text-slate-700">
+                    <td className="px-6 py-5 text-sm font-medium text-slate-700 dark:text-slate-300">
                       {Number(course.enrollments || 0).toLocaleString()}
                     </td>
 
@@ -1085,7 +1085,7 @@ export default function AdminCourses() {
                         <button
                           type="button"
                           onClick={() => openEditForm(course)}
-                          className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                          className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                           title="Edit course"
                         >
                           <Pencil size={17} />
@@ -1094,7 +1094,7 @@ export default function AdminCourses() {
                         <button
                           type="button"
                           onClick={() => handleDelete(course)}
-                          className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                          className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                           title="Delete course"
                         >
                           <Trash2 size={17} />
@@ -1113,16 +1113,16 @@ export default function AdminCourses() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 p-4 backdrop-blur-sm">
-          <div className="mx-auto my-6 max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="mx-auto my-6 max-w-5xl overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl">
             {/* FORM HEADER */}
 
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-5">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">
+                <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100">
                   {editingId ? "Edit Course" : "Create Course"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Add and manage your course content.
                 </p>
               </div>
@@ -1130,7 +1130,7 @@ export default function AdminCourses() {
               <button
                 type="button"
                 onClick={closeForm}
-                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                className="rounded-xl p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
               >
                 <X size={22} />
               </button>
@@ -1244,11 +1244,11 @@ export default function AdminCourses() {
                 {form.premium && (
                   <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 p-5">
                     <div className="mb-4">
-                      <h4 className="font-bold text-slate-900">
+                      <h4 className="font-bold text-slate-900 dark:text-slate-100">
                         Premium Course Pricing
                       </h4>
 
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Set the price learners must pay before they can access this course.
                       </p>
                     </div>
@@ -1272,11 +1272,11 @@ export default function AdminCourses() {
                     </div>
 
                     <div className="mt-4 rounded-xl border border-purple-100 bg-white/70 px-4 py-3">
-                      <p className="text-xs font-medium text-slate-500">
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                         Course price
                       </p>
 
-                      <p className="mt-1 text-lg font-black text-slate-900">
+                      <p className="mt-1 text-lg font-black text-slate-900 dark:text-slate-100">
                         {form.currency === "NGN" ? "₦" : "$"}
                         {Number(form.price || 0).toLocaleString()}
                       </p>
@@ -1321,10 +1321,10 @@ export default function AdminCourses() {
               >
                 <div className="space-y-5">
                   {form.modules.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center">
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 px-6 py-10 text-center">
                       <BookOpen size={35} className="mx-auto text-slate-300" />
 
-                      <p className="mt-3 text-sm font-medium text-slate-500">
+                      <p className="mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">
                         No modules added yet.
                       </p>
 
@@ -1339,11 +1339,11 @@ export default function AdminCourses() {
                       return (
                         <div
                           key={moduleIndex}
-                          className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                          className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
                         >
                           {/* MODULE HEADER */}
 
-                          <div className="flex items-center gap-3 bg-slate-50 px-4 py-4">
+                          <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-950 px-4 py-4">
                             <GripVertical
                               size={18}
                               className="text-slate-400"
@@ -1361,11 +1361,11 @@ export default function AdminCourses() {
                                   Module {moduleIndex + 1}
                                 </p>
 
-                                <p className="truncate font-bold text-slate-800">
+                                <p className="truncate font-bold text-slate-800 dark:text-slate-200">
                                   {module.title || "Untitled module"}
                                 </p>
 
-                                <p className="mt-1 text-xs text-slate-500">
+                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                   {module.lessons?.length || 0} lesson
                                   {module.lessons?.length === 1 ? "" : "s"}
                                 </p>
@@ -1421,11 +1421,11 @@ export default function AdminCourses() {
                               <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <h4 className="font-bold text-slate-800">
+                                    <h4 className="font-bold text-slate-800 dark:text-slate-200">
                                       Module Lessons
                                     </h4>
 
-                                    <p className="text-xs text-slate-500">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
                                       Add lessons belonging to this module.
                                     </p>
                                   </div>
@@ -1441,8 +1441,8 @@ export default function AdminCourses() {
                                 </div>
 
                                 {module.lessons?.length === 0 ? (
-                                  <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-6 text-center">
-                                    <p className="text-sm text-slate-500">
+                                  <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-5 py-6 text-center">
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
                                       No lessons in this module yet.
                                     </p>
                                   </div>
@@ -1450,7 +1450,7 @@ export default function AdminCourses() {
                                   module.lessons.map((lesson, lessonIndex) => (
                                     <div
                                       key={lessonIndex}
-                                      className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                                      className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-4"
                                     >
                                       <div className="mb-4 flex items-center justify-between">
                                         <div>
@@ -1458,7 +1458,7 @@ export default function AdminCourses() {
                                             Lesson {lessonIndex + 1}
                                           </p>
 
-                                          <p className="font-semibold text-slate-800">
+                                          <p className="font-semibold text-slate-800 dark:text-slate-200">
                                             {lesson.title || "Untitled lesson"}
                                           </p>
                                         </div>
@@ -1584,14 +1584,14 @@ export default function AdminCourses() {
                               </div>
                               {/* MODULE ASSESSMENT */}
 
-                              <div className="space-y-4 border-t border-slate-200 pt-6">
+                              <div className="space-y-4 border-t border-slate-200 dark:border-slate-700 pt-6">
                                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                   <div>
-                                    <h4 className="font-bold text-slate-800">
+                                    <h4 className="font-bold text-slate-800 dark:text-slate-200">
                                       Module Exercise / Project
                                     </h4>
 
-                                    <p className="text-xs text-slate-500">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
                                       Give learners a practical task to complete
                                       after this module.
                                     </p>
@@ -1771,12 +1771,12 @@ export default function AdminCourses() {
 
               {/* FORM ACTIONS */}
 
-              <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={closeForm}
                   disabled={saving}
-                  className="rounded-xl border border-slate-200 px-6 py-3 font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 px-6 py-3 font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50 disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -1809,10 +1809,10 @@ export default function AdminCourses() {
 
 function Stat({ label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
+      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
 
-      <p className="mt-2 text-3xl font-black text-slate-900">
+      <p className="mt-2 text-3xl font-black text-slate-900 dark:text-slate-100">
         {Number(value || 0).toLocaleString()}
       </p>
     </div>
@@ -1827,12 +1827,12 @@ function FormSection({ title, description, children }) {
   return (
     <section className="space-y-5">
       <div>
-        <h3 className="text-lg font-black text-slate-900">{title}</h3>
+        <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">{title}</h3>
 
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
       </div>
 
-      <div className="space-y-5 rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
+      <div className="space-y-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 p-5">
         {children}
       </div>
     </section>
@@ -1853,7 +1853,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-slate-700">
+      <span className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
         {label}
 
         {required && <span className="ml-1 text-red-500">*</span>}
@@ -1866,7 +1866,7 @@ function Field({
         value={value ?? ""}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       />
     </label>
   );
@@ -1886,7 +1886,7 @@ function TextAreaField({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-slate-700">
+      <span className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
         {label}
 
         {required && <span className="ml-1 text-red-500">*</span>}
@@ -1898,7 +1898,7 @@ function TextAreaField({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       />
     </label>
   );
@@ -1911,14 +1911,14 @@ function TextAreaField({
 function SelectField({ label, value, onChange, options }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-slate-700">
+      <span className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
         {label}
       </span>
 
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -1944,9 +1944,9 @@ function Toggle({ label, checked, onChange }) {
       }`}
     >
       <span>
-        <span className="block text-sm font-bold text-slate-800">{label}</span>
+        <span className="block text-sm font-bold text-slate-800 dark:text-slate-200">{label}</span>
 
-        <span className="mt-1 block text-xs text-slate-500">
+        <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
           {checked ? "Enabled" : "Disabled"}
         </span>
       </span>

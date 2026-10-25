@@ -36,7 +36,7 @@ export default function LibraryHero() {
               </Button>
             </Link>
 
-            <Link to="/Learning">
+            <Link to="/learning">
               <Button
                 variant="outline"
                 size="lg"

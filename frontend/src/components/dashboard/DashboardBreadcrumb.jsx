@@ -2,7 +2,7 @@
 
 export default function DashboardBreadcrumb({ items = [] }) {
   return (
-    <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
+    <div className="mb-6 flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
       {items.map((item, index) => (
         <div key={item.label} className="flex items-center gap-2">
           <span>{item.label}</span>

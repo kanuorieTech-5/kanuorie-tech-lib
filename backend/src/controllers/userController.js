@@ -9,6 +9,7 @@ const Learning = require("../models/Learning");
 const Course = require("../models/Course");
 const Notification = require("../models/Notification");
 const Progress = require("../models/Progress");
+const createBusinessOwnerServiceRequest = require("../utils/businessOwnerServiceRequest");
 
 /* ==========================================
    GET CURRENT USER PROFILE
@@ -40,6 +41,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
+
 
   const {
     firstName,
@@ -226,6 +228,16 @@ const updateProfile = asyncHandler(async (req, res) => {
     }
   });
 
+  if (
+    user.userType === "business_owner" &&
+    (!user.businessType?.trim() || !user.businessNeeds?.length)
+  ) {
+    throw new ApiError(
+      400,
+      "Business owners must provide a business type and at least one service need."
+    );
+  }
+
   if (marketingConsent !== undefined) {
     if (typeof marketingConsent !== "boolean") {
       throw new ApiError(
@@ -320,6 +332,10 @@ const updateProfile = asyncHandler(async (req, res) => {
         }
       });
     }
+  }
+
+  if (user.userType === "business_owner") {
+    await createBusinessOwnerServiceRequest(user);
   }
 
   await user.save();

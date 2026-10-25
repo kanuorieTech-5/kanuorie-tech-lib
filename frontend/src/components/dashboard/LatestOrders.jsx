@@ -43,7 +43,7 @@ export default function LatestOrders({ orders = [] }) {
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
@@ -51,9 +51,9 @@ export default function LatestOrders({ orders = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Latest Orders</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Latest Orders</h2>
 
-            <p className="text-sm text-slate-500">Recent customer orders</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Recent customer orders</p>
           </div>
         </div>
 
@@ -67,12 +67,12 @@ export default function LatestOrders({ orders = [] }) {
       </div>
 
       {latestOrders.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-6 py-10 text-center">
           <ShoppingBag className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700">No orders yet</p>
+          <p className="font-medium text-slate-700 dark:text-slate-300">No orders yet</p>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             New customer orders will appear here.
           </p>
         </div>
@@ -99,16 +99,16 @@ export default function LatestOrders({ orders = [] }) {
 
             return (
               <div key={id} className="flex items-center gap-4 py-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900 text-sm font-bold text-slate-600 dark:text-slate-400">
                   {String(customer).charAt(0).toUpperCase()}
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-slate-900">
+                  <p className="truncate font-semibold text-slate-900 dark:text-slate-100">
                     {customer}
                   </p>
 
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
                     ?{Number(amount || 0).toLocaleString()}
                   </p>
                 </div>

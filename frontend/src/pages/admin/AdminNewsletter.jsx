@@ -151,7 +151,7 @@ export default function AdminNewsletter() {
         <div className="text-center">
           <Loader />
 
-          <p className="mt-4 text-sm text-slate-500">
+          <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
             Loading newsletter subscribers...
           </p>
         </div>
@@ -167,9 +167,9 @@ export default function AdminNewsletter() {
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Newsletter</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Newsletter</h1>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Manage your newsletter subscribers.
           </p>
         </div>
@@ -213,9 +213,9 @@ export default function AdminNewsletter() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Newsletter</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Newsletter</h1>
 
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Manage your newsletter subscribers.
               </p>
             </div>
@@ -245,11 +245,11 @@ export default function AdminNewsletter() {
         <Card className="p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 Total Subscribers
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {totalSubscribers}
               </p>
             </div>
@@ -263,11 +263,11 @@ export default function AdminNewsletter() {
         <Card className="p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 Active Subscribers
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {totalSubscribers}
               </p>
             </div>
@@ -281,11 +281,11 @@ export default function AdminNewsletter() {
         <Card className="p-5">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 Latest Subscriber
               </p>
 
-              <p className="mt-2 truncate text-sm font-semibold text-slate-900">
+              <p className="mt-2 truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {latestSubscriber?.email || "No subscribers yet"}
               </p>
             </div>
@@ -313,7 +313,7 @@ export default function AdminNewsletter() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search subscribers..."
-            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
           />
         </div>
       </Card>
@@ -323,12 +323,12 @@ export default function AdminNewsletter() {
       ========================================== */}
 
       <Card className="overflow-hidden">
-        <div className="border-b border-slate-200 px-6 py-5">
+        <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="font-semibold text-slate-900">Subscribers</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-slate-100">Subscribers</h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {filteredSubscribers.length} subscriber
                 {filteredSubscribers.length !== 1 ? "s" : ""}
               </p>
@@ -338,15 +338,15 @@ export default function AdminNewsletter() {
 
         {filteredSubscribers.length === 0 ? (
           <div className="px-6 py-16 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900 text-slate-400">
               <Mail size={26} />
             </div>
 
-            <h3 className="mt-4 font-semibold text-slate-900">
+            <h3 className="mt-4 font-semibold text-slate-900 dark:text-slate-100">
               {search ? "No subscribers found" : "No subscribers yet"}
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               {search
                 ? "Try adjusting your search."
                 : "Newsletter subscribers will appear here."}
@@ -355,27 +355,27 @@ export default function AdminNewsletter() {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-slate-50">
+              <thead className="bg-slate-50 dark:bg-slate-950">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Email
                   </th>
 
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Status
                   </th>
 
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Subscribed
                   </th>
 
-                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Action
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:bg-slate-900">
                 {filteredSubscribers.map((subscriber) => {
                   const id = subscriber?._id || subscriber?.id;
 
@@ -388,7 +388,7 @@ export default function AdminNewsletter() {
                           </div>
 
                           <div>
-                            <p className="font-medium text-slate-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               {subscriber?.email || "�"}
                             </p>
                           </div>
@@ -402,7 +402,7 @@ export default function AdminNewsletter() {
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-sm text-slate-500">
+                      <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
                         {subscriber?.createdAt
                           ? new Date(subscriber.createdAt).toLocaleDateString()
                           : "�"}

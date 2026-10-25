@@ -228,11 +228,11 @@ export default function AdminNotifications() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Notifications
               </h1>
 
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Manage and send platform notifications.
               </p>
             </div>
@@ -275,18 +275,18 @@ export default function AdminNotifications() {
       {showCreateForm && (
         <Card className="p-6">
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
               Send Notification
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Send a notification to a specific user.
             </p>
           </div>
 
           <form onSubmit={handleCreate} className="grid gap-5">
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Recipient User ID
               </label>
 
@@ -295,13 +295,13 @@ export default function AdminNotifications() {
                 value={form.recipient}
                 onChange={handleChange}
                 placeholder="Enter user ID"
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
               />
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Title
                 </label>
 
@@ -310,12 +310,12 @@ export default function AdminNotifications() {
                   value={form.title}
                   onChange={handleChange}
                   placeholder="Notification title"
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Type
                 </label>
 
@@ -323,7 +323,7 @@ export default function AdminNotifications() {
                   name="type"
                   value={form.type}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
                 >
                   <option value="system">System</option>
 
@@ -339,7 +339,7 @@ export default function AdminNotifications() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Message
               </label>
 
@@ -349,7 +349,7 @@ export default function AdminNotifications() {
                 onChange={handleChange}
                 rows={5}
                 placeholder="Write your notification..."
-                className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
               />
             </div>
 
@@ -381,12 +381,12 @@ export default function AdminNotifications() {
       {showBroadcastForm && (
         <Card className="border-blue-200 bg-blue-50/50 p-6">
           <div className="mb-6">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900 dark:text-slate-100">
               <Megaphone size={20} className="text-blue-600" />
               Broadcast Notification
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Send this notification to every registered user.
             </p>
           </div>
@@ -394,7 +394,7 @@ export default function AdminNotifications() {
           <form onSubmit={handleBroadcast} className="space-y-5">
             <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Title
                 </label>
 
@@ -403,12 +403,12 @@ export default function AdminNotifications() {
                   value={form.title}
                   onChange={handleChange}
                   placeholder="Announcement title"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Type
                 </label>
 
@@ -416,7 +416,7 @@ export default function AdminNotifications() {
                   name="type"
                   value={form.type}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
                 >
                   <option value="announcement">Announcement</option>
 
@@ -432,7 +432,7 @@ export default function AdminNotifications() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Message
               </label>
 
@@ -442,7 +442,7 @@ export default function AdminNotifications() {
                 onChange={handleChange}
                 rows={5}
                 placeholder="Write your announcement..."
-                className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
               />
             </div>
 
@@ -472,19 +472,19 @@ export default function AdminNotifications() {
       ====================================== */}
 
       <Card className="overflow-hidden">
-        <div className="border-b border-slate-200 px-6 py-5">
+        <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                 Notification History
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Recent notifications sent through the platform.
               </p>
             </div>
 
-            <div className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
+            <div className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-sm font-semibold text-slate-600 dark:text-slate-400">
               {notifications.length}
             </div>
           </div>
@@ -494,11 +494,11 @@ export default function AdminNotifications() {
           <div className="px-6 py-16 text-center">
             <Bell size={42} className="mx-auto text-slate-300" />
 
-            <h3 className="mt-4 text-lg font-semibold text-slate-800">
+            <h3 className="mt-4 text-lg font-semibold text-slate-800 dark:text-slate-200">
               No notifications yet
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Notifications sent to users will appear here.
             </p>
           </div>
@@ -521,18 +521,18 @@ export default function AdminNotifications() {
 
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold text-slate-900">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                           {notification.title || "Untitled Notification"}
                         </h3>
 
                         {notification.type && (
-                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium capitalize text-slate-600">
+                          <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-2.5 py-1 text-xs font-medium capitalize text-slate-600 dark:text-slate-400">
                             {notification.type}
                           </span>
                         )}
                       </div>
 
-                      <p className="mt-1 line-clamp-2 text-sm text-slate-600">
+                      <p className="mt-1 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">
                         {notification.message}
                       </p>
 

@@ -2,7 +2,8 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Loader, Card, SectionTitle } from "../common";
-import { getTeamMembers } from "../../services";
+import { getTeamMembers } from "../../services/team.service";
+import { normalizeTeamMembers } from "../../utils/teamMembers";
 import CEOImage from "../../assets/CEO.jpeg";
 import Teamimage from "../../assets/team work.JPG";
 const FALLBACK_TEAM = [
@@ -49,15 +50,9 @@ export default function TeamPreview() {
 
     const fetchTeam = async () => {
       try {
-        const res = await getTeamMembers();
+        const res = await getTeamMembers({ active: true, limit: 100 });
 
-        const data = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-            ? res.data
-            : Array.isArray(res?.data?.team)
-              ? res.data.team
-              : [];
+        const data = normalizeTeamMembers(res);
 
         if (mounted) {
           setTeam(data);

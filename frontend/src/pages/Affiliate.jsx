@@ -332,10 +332,10 @@ export default function Affiliate() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-slate-50 px-4">
+      <div className="flex min-h-[60vh] items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
         <div className="text-center">
           <LoaderCircle className="mx-auto h-9 w-9 animate-spin text-blue-600" />
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             Loading your affiliate dashboard...
           </p>
         </div>
@@ -345,13 +345,13 @@ export default function Affiliate() {
 
   if (!dashboard && error) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-12">
-        <div className="mx-auto max-w-xl rounded-2xl border border-red-100 bg-white p-6 text-center shadow-sm">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-4 py-12">
+        <div className="mx-auto max-w-xl rounded-2xl border border-red-100 bg-white dark:bg-slate-900 p-6 text-center shadow-sm">
           <AlertCircle className="mx-auto h-10 w-10 text-red-500" />
-          <h1 className="mt-4 text-lg font-bold text-slate-900">
+          <h1 className="mt-4 text-lg font-bold text-slate-900 dark:text-slate-100">
             Unable to load affiliate dashboard
           </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{error}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{error}</p>
           <button
             type="button"
             onClick={() => loadDashboard()}
@@ -366,7 +366,7 @@ export default function Affiliate() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* HEADER */}
         <motion.div
@@ -382,11 +382,11 @@ export default function Affiliate() {
                 KanuorieTech Affiliate Program
               </div>
 
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
                 Grow with KanuorieTech
               </h1>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">
                 Share KanuorieTech with your network and track your referrals,
                 commissions, and payouts from one place.
               </p>
@@ -400,7 +400,7 @@ export default function Affiliate() {
                 onClick={() => loadDashboard(true)}
                 disabled={refreshing}
                 aria-label="Refresh affiliate dashboard"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 shadow-sm hover:bg-slate-50 disabled:opacity-50"
               >
                 <RefreshCw
                   className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
@@ -522,7 +522,7 @@ export default function Affiliate() {
                     type="button"
                     onClick={handleCopy}
                     disabled={!referralLink}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white dark:bg-slate-900 px-4 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {copied ? (
                       <>
@@ -574,14 +574,14 @@ export default function Affiliate() {
             return (
               <div
                 key={stat.label}
-                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+                className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm sm:p-5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-medium text-slate-500 sm:text-sm">
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">
                       {stat.label}
                     </p>
-                    <p className="mt-2 break-words text-xl font-bold text-slate-900 sm:text-2xl">
+                    <p className="mt-2 break-words text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-2xl">
                       {stat.value}
                     </p>
                   </div>
@@ -602,31 +602,31 @@ export default function Affiliate() {
             animate="visible"
             variants={fadeUp}
             transition={{ delay: 0.15 }}
-            className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm"
+            className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm"
           >
             <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
               <div>
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                   Referral History
                 </h2>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Recent referral activity from your account.
                 </p>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+              <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
                 {referrals.length}
               </span>
             </div>
 
             {referrals.length === 0 ? (
               <div className="px-5 py-14 text-center sm:px-6 sm:py-16">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-900">
                   <Users className="h-7 w-7 text-slate-400" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-slate-900">
+                <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
                   No referrals yet
                 </h3>
-                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
+                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500 dark:text-slate-400">
                   When someone registers using your referral link, their
                   referral activity will appear here.
                 </p>
@@ -634,7 +634,7 @@ export default function Affiliate() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[500px] text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <thead className="bg-slate-50 dark:bg-slate-950 text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                     <tr>
                       <th className="px-5 py-3 font-semibold">Referral</th>
                       <th className="px-5 py-3 font-semibold">Date</th>
@@ -652,20 +652,20 @@ export default function Affiliate() {
                       return (
                         <tr key={item._id} className="hover:bg-slate-50">
                           <td className="px-5 py-4">
-                            <p className="font-medium text-slate-800">
+                            <p className="font-medium text-slate-800 dark:text-slate-200">
                               {displayName || "Registered user"}
                             </p>
-                            <p className="mt-1 text-xs text-slate-500">
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                               {item.referralCode || "—"}
                             </p>
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4 text-slate-600">
+                          <td className="whitespace-nowrap px-5 py-4 text-slate-600 dark:text-slate-400">
                             {formatDate(item.createdAt)}
                           </td>
                           <td className="px-5 py-4">
                             <StatusBadge status={item.status} />
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-800">
+                          <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-800 dark:text-slate-200">
                             {formatMoney(
                               item.commissionAmount,
                               item.commissionCurrency || currency
@@ -680,7 +680,7 @@ export default function Affiliate() {
             )}
 
             {referrals.length > 0 && (
-              <div className="border-t border-slate-100 px-5 py-3 text-xs text-slate-500">
+              <div className="border-t border-slate-100 px-5 py-3 text-xs text-slate-500 dark:text-slate-400">
                 Showing the latest {referrals.length} referrals.
               </div>
             )}
@@ -695,16 +695,16 @@ export default function Affiliate() {
             className="space-y-6"
           >
             {/* EARNINGS SUMMARY */}
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
                   <Wallet className="h-5 w-5 text-emerald-600" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                     Earnings Summary
                   </h2>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Commission breakdown
                   </p>
                 </div>
@@ -729,10 +729,10 @@ export default function Affiliate() {
                     key={item.label}
                     className="flex items-center justify-between gap-3"
                   >
-                    <span className="text-sm text-slate-600">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">
                       {item.label}
                     </span>
-                    <span className="text-sm font-semibold text-slate-900">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {formatMoney(item.value, currency)}
                     </span>
                   </div>
@@ -751,22 +751,22 @@ export default function Affiliate() {
               {showPayoutHistory && (
                 <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
                   {payouts.length === 0 ? (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       No payout requests yet.
                     </p>
                   ) : (
                     payouts.map((payout) => (
                       <div
                         key={payout._id}
-                        className="rounded-xl bg-slate-50 p-3"
+                        className="rounded-xl bg-slate-50 dark:bg-slate-950 p-3"
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-semibold text-slate-800">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">
                             {formatMoney(payout.amount, payout.currency || currency)}
                           </span>
                           <StatusBadge status={payout.status} />
                         </div>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           {formatDate(payout.createdAt)}
                         </p>
                       </div>
@@ -777,56 +777,56 @@ export default function Affiliate() {
             </section>
 
             {/* PAYOUT INFORMATION */}
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
                   <CreditCard className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                     Payout Information
                   </h2>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Manage where commissions are sent.
                   </p>
                 </div>
               </div>
 
               {hasPayoutDetails ? (
-                <div className="mt-5 rounded-xl bg-slate-50 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                <div className="mt-5 rounded-xl bg-slate-50 dark:bg-slate-950 p-4">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                     Payout method
                   </p>
-                  <p className="mt-1 text-sm font-semibold capitalize text-slate-900">
+                  <p className="mt-1 text-sm font-semibold capitalize text-slate-900 dark:text-slate-100">
                     {affiliate.payoutMethod.replace(/_/g, " ")}
                   </p>
 
                   {affiliate.payoutDetails?.bankName && (
-                    <p className="mt-2 text-sm text-slate-600">
+                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                       Bank: {affiliate.payoutDetails.bankName}
                     </p>
                   )}
                   {affiliate.payoutDetails?.accountName && (
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                       Account: {affiliate.payoutDetails.accountName}
                     </p>
                   )}
                   {affiliate.payoutDetails?.accountNumber && (
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                       Account number: {affiliate.payoutDetails.accountNumber}
                     </p>
                   )}
                   {affiliate.payoutDetails?.paypalEmail && (
-                    <p className="mt-1 break-all text-sm text-slate-600">
+                    <p className="mt-1 break-all text-sm text-slate-600 dark:text-slate-400">
                       PayPal: {affiliate.payoutDetails.paypalEmail}
                     </p>
                   )}
                 </div>
               ) : (
-                <div className="mt-5 rounded-xl bg-slate-50 p-4">
+                <div className="mt-5 rounded-xl bg-slate-50 dark:bg-slate-950 p-4">
                   <div className="flex items-start gap-3">
                     <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-                    <p className="text-xs leading-5 text-slate-500">
+                    <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                       Add a payout method so your approved commissions can be
                       paid when eligible.
                     </p>
@@ -837,7 +837,7 @@ export default function Affiliate() {
               <button
                 type="button"
                 onClick={() => setShowPayoutForm((current) => !current)}
-                className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                className="mt-4 w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
               >
                 {showPayoutForm
                   ? "Cancel"
@@ -851,7 +851,7 @@ export default function Affiliate() {
                   <div>
                     <label
                       htmlFor="payoutMethod"
-                      className="mb-1.5 block text-sm font-medium text-slate-700"
+                      className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                     >
                       Payout method
                     </label>
@@ -860,7 +860,7 @@ export default function Affiliate() {
                       name="payoutMethod"
                       value={payoutForm.payoutMethod}
                       onChange={handlePayoutField}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                     >
                       <option value="bank_transfer">Bank transfer</option>
                       <option value="paypal">PayPal</option>
@@ -873,7 +873,7 @@ export default function Affiliate() {
                       <div>
                         <label
                           htmlFor="accountName"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
+                          className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                         >
                           Account name
                         </label>
@@ -884,7 +884,7 @@ export default function Affiliate() {
                           onChange={handlePayoutField}
                           required
                           autoComplete="name"
-                          className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                           placeholder="Account holder name"
                         />
                       </div>
@@ -892,7 +892,7 @@ export default function Affiliate() {
                       <div>
                         <label
                           htmlFor="accountNumber"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
+                          className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                         >
                           Account number
                         </label>
@@ -904,7 +904,7 @@ export default function Affiliate() {
                           required
                           inputMode="numeric"
                           autoComplete="off"
-                          className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                           placeholder="Bank account number"
                         />
                       </div>
@@ -912,7 +912,7 @@ export default function Affiliate() {
                       <div>
                         <label
                           htmlFor="bankName"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
+                          className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                         >
                           Bank name
                         </label>
@@ -922,7 +922,7 @@ export default function Affiliate() {
                           value={payoutForm.bankName}
                           onChange={handlePayoutField}
                           required
-                          className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                           placeholder="Name of your bank"
                         />
                       </div>
@@ -930,7 +930,7 @@ export default function Affiliate() {
                       <div>
                         <label
                           htmlFor="bankCode"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
+                          className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                         >
                           Bank code (optional)
                         </label>
@@ -939,7 +939,7 @@ export default function Affiliate() {
                           name="bankCode"
                           value={payoutForm.bankCode}
                           onChange={handlePayoutField}
-                          className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                           placeholder="Bank code"
                         />
                       </div>
@@ -950,7 +950,7 @@ export default function Affiliate() {
                     <div>
                       <label
                         htmlFor="paypalEmail"
-                        className="mb-1.5 block text-sm font-medium text-slate-700"
+                        className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                       >
                         PayPal email
                       </label>
@@ -962,7 +962,7 @@ export default function Affiliate() {
                         onChange={handlePayoutField}
                         required
                         autoComplete="email"
-                        className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
                         placeholder="you@example.com"
                       />
                     </div>
@@ -1007,15 +1007,15 @@ export default function Affiliate() {
                 {requestingPayout ? "Submitting..." : "Request Payout"}
               </button>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500">
+              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
                 Payout requests require an active account, saved payout
                 information, and approved earnings.
               </p>
             </section>
 
             {/* HOW IT WORKS */}
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="font-semibold text-slate-900">
+            <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
+              <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                 How Affiliate Works
               </h2>
 
@@ -1045,10 +1045,10 @@ export default function Affiliate() {
                       {step.number}
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-900">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {step.title}
                       </h3>
-                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                      <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                         {step.description}
                       </p>
                     </div>
@@ -1060,25 +1060,25 @@ export default function Affiliate() {
         </div>
 
         {/* EARNINGS LEDGER */}
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <section className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
           <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
-            <h2 className="font-semibold text-slate-900">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
               Commission History
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Commission records returned by your affiliate account.
             </p>
           </div>
 
           {earnings.length === 0 ? (
-            <div className="px-5 py-8 text-sm text-slate-500 sm:px-6">
+            <div className="px-5 py-8 text-sm text-slate-500 dark:text-slate-400 sm:px-6">
               No commission records yet. Commissions will appear here when
               eligible activity generates earnings.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[500px] text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <thead className="bg-slate-50 dark:bg-slate-950 text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Date</th>
                     <th className="px-5 py-3 font-semibold">Referral Code</th>
@@ -1089,16 +1089,16 @@ export default function Affiliate() {
                 <tbody className="divide-y divide-slate-100">
                   {earnings.map((item) => (
                     <tr key={item._id}>
-                      <td className="whitespace-nowrap px-5 py-4 text-slate-600">
+                      <td className="whitespace-nowrap px-5 py-4 text-slate-600 dark:text-slate-400">
                         {formatDate(item.createdAt)}
                       </td>
-                      <td className="px-5 py-4 font-medium text-slate-800">
+                      <td className="px-5 py-4 font-medium text-slate-800 dark:text-slate-200">
                         {item.referralCode || "—"}
                       </td>
                       <td className="px-5 py-4">
                         <StatusBadge status={item.commissionStatus} />
                       </td>
-                      <td className="whitespace-nowrap px-5 py-4 font-semibold text-slate-800">
+                      <td className="whitespace-nowrap px-5 py-4 font-semibold text-slate-800 dark:text-slate-200">
                         {formatMoney(
                           item.commissionAmount,
                           item.commissionCurrency || currency

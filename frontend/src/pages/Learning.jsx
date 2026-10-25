@@ -5,17 +5,12 @@ import {
   ArrowRight,
   Award,
   Bell,
-  BookOpen,
   CalendarDays,
   Check,
-  CheckCircle2,
-  Clock3,
   Flame,
   GraduationCap,
   Heart,
   Library,
-  PlayCircle,
-  Search,
   Sparkles,
   Trophy,
   Users,
@@ -25,7 +20,7 @@ import {
 } from "lucide-react";
 
 import { Card, Button, Loader, Badge } from "../components/common";
-import { getCourses, enrollCourse } from "../services/course.service";
+import { getCourses } from "../services/course.service";
 import { getProgress } from "../services/progress.service";
 import {
   getSavedResources,
@@ -240,292 +235,86 @@ function AutoCarousel({
 }
 
 /* ==========================================
-   COURSE CARD
-========================================== */
-
-function ExploreCourseCard({
-  course,
-  enrolled,
-  enrollingId,
-  onEnroll,
-  isWishlisted,
-  onToggleWishlist,
-}) {
-  const courseId = getCourseId(course);
-  const isEnrolling = enrollingId === courseId;
-
-  return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.2 }}
-      className="w-[300px] shrink-0 sm:w-[340px] lg:w-[380px]"
-    >
-      <Card className="flex h-full flex-col overflow-hidden p-0">
-        <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
-          <img
-            src={getCourseImage(course)}
-            alt={course?.title || "Course"}
-            className="h-full w-full object-cover transition duration-500 hover:scale-105"
-            onError={(event) => {
-              event.currentTarget.src =
-                "/images/course-placeholder.png";
-            }}
-          />
-
-          <div className="absolute left-4 top-4">
-            <Badge>{course?.category || "General"}</Badge>
-          </div>
-
-          {course?.premium && (
-            <div className="absolute right-4 top-4">
-              <Badge>Premium</Badge>
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={() => onToggleWishlist(courseId)}
-            aria-label={
-              isWishlisted
-                ? "Remove course from wishlist"
-                : "Add course to wishlist"
-            }
-            title={
-              isWishlisted
-                ? "Remove from wishlist"
-                : "Add to wishlist"
-            }
-            className={`absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full border shadow-lg backdrop-blur-md transition-all duration-200 ${
-              isWishlisted
-                ? "border-pink-200 bg-pink-500 text-white hover:bg-pink-600"
-                : "border-white/30 bg-black/40 text-white hover:bg-black/60"
-            }`}
-          >
-            <Heart
-              size={20}
-              fill={isWishlisted ? "currentColor" : "none"}
-            />
-          </button>
-        </div>
-
-        <div className="flex flex-1 flex-col p-6">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{course?.level || "Beginner"}</span>
-
-            <span>•</span>
-
-            <span className="flex items-center gap-1">
-              <Clock3 size={14} />
-              {formatDuration(course?.duration)}
-            </span>
-          </div>
-
-          <h3 className="mt-3 line-clamp-2 text-xl font-bold text-slate-900 dark:text-white">
-            {course?.title || "Untitled Course"}
-          </h3>
-
-          <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
-            {course?.description ||
-              "Explore this course and start learning with KanuorieTech."}
-          </p>
-
-          <div className="mt-6 flex gap-3">
-            {enrolled ? (
-              <Link
-                to={`/courses/${courseId}`}
-                className="flex-1"
-              >
-                <Button className="w-full">
-                  Continue
-                  <ArrowRight className="ml-2" size={17} />
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                className="flex-1"
-                disabled={isEnrolling}
-                onClick={() => onEnroll(courseId)}
-              >
-                {isEnrolling ? (
-                  "Enrolling..."
-                ) : (
-                  <>
-                    Enroll Now
-                    <ArrowRight
-                      className="ml-2"
-                      size={17}
-                    />
-                  </>
-                )}
-              </Button>
-            )}
-
-            <Link to={`/courses/${courseId}`}>
-              <Button variant="outline">
-                View
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </Card>
-    </motion.div>
-  );
-}
-
-/* ==========================================
-   LEARNING CARD
+   ENROLLED COURSE CARD
 ========================================== */
 
 function LearningCard({ item }) {
-  const course = item?.course;
-  const courseId = getCourseId(course);
-
+  const course = item?.course || item || {};
+  const courseId = getCourseId(item);
+  const title = course?.title || course?.name || "Untitled Course";
+  const instructor =
+    course?.instructor?.name ||
+    course?.instructor ||
+    course?.author?.name ||
+    course?.author ||
+    "KanuorieTech";
   const percentage = getProgressPercentage(item);
-  const completed = getCompletedCount(item);
-  const total = getTotalLessons(item);
-
-  const isCompleted =
-    percentage >= 100 ||
-    item?.status === "completed";
+  const completedLessons = getCompletedCount(item);
+  const totalLessons = getTotalLessons(item);
 
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
-      className="w-[300px] shrink-0 sm:w-[340px] lg:w-[380px]"
+      className="w-[300px] shrink-0 sm:w-[340px]"
     >
       <Card className="flex h-full flex-col overflow-hidden p-0">
-        <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+        <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
           <img
             src={getCourseImage(course)}
-            alt={course?.title || "Course"}
+            alt={title}
             className="h-full w-full object-cover transition duration-500 hover:scale-105"
             onError={(event) => {
-              event.currentTarget.src =
-                "/images/course-placeholder.png";
+              event.currentTarget.src = "/images/course-placeholder.png";
             }}
           />
-
-          <div className="absolute left-4 top-4">
-            {isCompleted ? (
-              <Badge>Completed</Badge>
-            ) : (
-              <Badge>In Progress</Badge>
-            )}
-          </div>
+          <span className="absolute left-4 top-4">
+            <Badge>{percentage >= 100 ? "Completed" : "In progress"}</Badge>
+          </span>
         </div>
 
-        <div className="flex flex-1 flex-col p-6">
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>
-              {course?.category || "General"}
-            </span>
-
-            <span>•</span>
-
-            <span>
-              {course?.level || "Beginner"}
-            </span>
-          </div>
-
-          <h3 className="mt-3 line-clamp-2 text-xl font-bold text-slate-900 dark:text-white">
-            {course?.title || "Course"}
-          </h3>
+        <div className="flex flex-1 flex-col p-5">
+          <h4 className="line-clamp-2 text-lg font-bold text-slate-900 dark:text-white">
+            {title}
+          </h4>
+          <p className="mt-2 truncate text-sm text-slate-500 dark:text-slate-400">
+            {instructor}
+          </p>
 
           <div className="mt-5">
-            <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="font-medium text-slate-600 dark:text-slate-400">
-                Progress
+            <div className="mb-2 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span>
+                {totalLessons > 0
+                  ? `${completedLessons} of ${totalLessons} lessons`
+                  : formatDuration(course?.duration)}
               </span>
-
-              <span className="font-bold text-blue-600 dark:text-blue-400">
-                {percentage}%
-              </span>
+              <span>{percentage}%</span>
             </div>
-
-            <div className="h-2.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+            <div
+              className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
+              role="progressbar"
+              aria-label={`${title} progress`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={percentage}
+            >
               <div
-                className="h-full rounded-full bg-blue-600 transition-all duration-500"
-                style={{
-                  width: `${percentage}%`,
-                }}
+                className="h-full rounded-full bg-blue-600 transition-[width]"
+                style={{ width: `${percentage}%` }}
               />
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-            <BookOpen size={16} />
-
-            {total > 0 ? (
-              <span>
-                {completed} of {total} lessons completed
-              </span>
-            ) : (
-              <span>
-                {completed} lessons completed
-              </span>
-            )}
-          </div>
-
-          <div className="mt-6">
-            <Link to={`/courses/${courseId}`}>
-              <Button className="w-full">
-                {isCompleted ? (
-                  <>
-                    <CheckCircle2
-                      className="mr-2"
-                      size={17}
-                    />
-                    Review Course
-                  </>
-                ) : (
-                  <>
-                    <PlayCircle
-                      className="mr-2"
-                      size={17}
-                    />
-                    Continue Learning
-                  </>
-                )}
-              </Button>
-            </Link>
-          </div>
+          <Link
+            to={courseId ? `/courses/${courseId}` : "/courses"}
+            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            {percentage >= 100 ? "Review course" : "Continue learning"}
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </Card>
     </motion.div>
-  );
-}
-
-/* ==========================================
-   EMPTY LEARNING STATE
-========================================== */
-
-function EmptyLearningState() {
-  return (
-    <Card className="py-14 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
-        <GraduationCap size={30} />
-      </div>
-
-      <h3 className="mt-6 text-2xl font-bold text-slate-900 dark:text-white">
-        Your learning journey starts here
-      </h3>
-
-      <p className="mx-auto mt-3 max-w-xl text-slate-500 dark:text-slate-400">
-        You haven't enrolled in a course yet. Explore the
-        available courses below and start learning.
-      </p>
-
-      <a href="#explore-courses">
-        <Button className="mt-6">
-          Explore Courses
-          <ArrowRight
-            className="ml-2"
-            size={17}
-          />
-        </Button>
-      </a>
-    </Card>
   );
 }
 
@@ -1121,7 +910,7 @@ function LearningDashboard({
                   {streak}
                 </p>
 
-                <p className="text-xs font-medium text-slate-500">
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                   {streak === 1 ? "day" : "days"}
                 </p>
               </div>
@@ -1511,7 +1300,7 @@ function LearningDashboard({
                   catalog and they will appear here.
                 </p>
 
-                <a href="#explore-courses">
+                <Link to="/courses">
                   <Button className="mt-5">
                     Explore Courses
                     <ArrowRight
@@ -1519,7 +1308,7 @@ function LearningDashboard({
                       size={17}
                     />
                   </Button>
-                </a>
+                </Link>
               </Card>
             ) : (
               <AutoCarousel speed={26}>
@@ -1623,74 +1412,23 @@ export default function Learning() {
   const [learning, setLearning] = useState([]);
   const [wishlist, setWishlist] = useState([]);
 
-  const [loadingCourses, setLoadingCourses] =
-    useState(true);
-
   const [loadingLearning, setLoadingLearning] =
     useState(isAuthenticated);
 
-  const [search, setSearch] = useState("");
-  const [category, setCategory] =
-    useState("All");
-  const [level, setLevel] =
-    useState("All");
-
-  const [enrollingId, setEnrollingId] =
-    useState(null);
-
-  const [error, setError] = useState("");
-
   /* ==========================================
-     LOAD PUBLIC COURSES
+     LOAD COURSES FOR WISHLIST
   ========================================== */
 
   useEffect(() => {
     let mounted = true;
-
-    const loadCourses = async () => {
-      try {
-        setLoadingCourses(true);
-        setError("");
-
-        const response =
-          await getCourses();
-
+    getCourses()
+      .then((response) => {
         if (!mounted) return;
-
-        const items =
-          getListFromResponse(response);
-
-        const publishedCourses =
-          items.filter(
-            (course) =>
-              course?.published !== false
-          );
-
-        setCourses(publishedCourses);
-      } catch (err) {
-        console.error(
-          "Failed to load courses:",
-          err
-        );
-
-        if (mounted) {
-          setError(
-            err?.response?.data?.message ||
-              "We couldn't load the course catalog."
-          );
-        }
-      } finally {
-        if (mounted) {
-          setLoadingCourses(false);
-        }
-      }
-    };
-
-    loadCourses();
-
-    return () => {
-      mounted = false;
-    };
+        const items = getListFromResponse(response);
+        setCourses(items.filter((course) => course?.published !== false));
+      })
+      .catch((err) => console.error("Failed to load courses:", err));
+    return () => { mounted = false; };
   }, []);
 
   /* ==========================================
@@ -1757,83 +1495,6 @@ export default function Learning() {
       )
     );
   }, [isAuthenticated]);
-
-  /* ==========================================
-     ENROLLED COURSE IDS
-  ========================================== */
-
-  const enrolledCourseIds = useMemo(() => {
-    return new Set(
-      learning
-        .map((item) =>
-          getCourseId(item?.course)
-        )
-        .filter(Boolean)
-        .map(String)
-    );
-  }, [learning]);
-
-  /* ==========================================
-     COURSE CATEGORIES
-  ========================================== */
-
-  const categories = useMemo(() => {
-    const values = courses
-      .map(
-        (course) => course?.category
-      )
-      .filter(Boolean);
-
-    return [
-      "All",
-      ...new Set(values),
-    ];
-  }, [courses]);
-
-  /* ==========================================
-     FILTERED COURSES
-  ========================================== */
-
-  const filteredCourses = useMemo(() => {
-    const normalizedSearch =
-      search.trim().toLowerCase();
-
-    return courses.filter((course) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        course?.title
-          ?.toLowerCase()
-          .includes(normalizedSearch) ||
-        course?.description
-          ?.toLowerCase()
-          .includes(normalizedSearch) ||
-        course?.category
-          ?.toLowerCase()
-          .includes(normalizedSearch) ||
-        course?.instructor
-          ?.toLowerCase()
-          .includes(normalizedSearch);
-
-      const matchesCategory =
-        category === "All" ||
-        course?.category === category;
-
-      const matchesLevel =
-        level === "All" ||
-        course?.level === level;
-
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesLevel
-      );
-    });
-  }, [
-    courses,
-    search,
-    category,
-    level,
-  ]);
 
   /* ==========================================
      CONTINUE LEARNING
@@ -1904,57 +1565,6 @@ export default function Learning() {
   };
 
   /* ==========================================
-     ENROLL
-  ========================================== */
-
-  const handleEnroll = async (courseId) => {
-    if (!isAuthenticated) {
-      window.location.href = "/login";
-      return;
-    }
-
-    if (!courseId) return;
-
-    try {
-      setEnrollingId(courseId);
-      setError("");
-
-      await enrollCourse(courseId);
-
-      const response =
-        await getProgress();
-
-      setLearning(
-        getListFromResponse(response)
-      );
-    } catch (err) {
-      console.error(
-        "Enrollment failed:",
-        err
-      );
-
-      setError(
-        err?.response?.data?.message ||
-          "We couldn't enroll you in this course."
-      );
-    } finally {
-      setEnrollingId(null);
-    }
-  };
-
-  /* ==========================================
-     LOADING
-  ========================================== */
-
-  if (loadingCourses) {
-    return (
-      <section className="flex min-h-[70vh] items-center justify-center">
-        <Loader />
-      </section>
-    );
-  }
-
-  /* ==========================================
      PAGE
   ========================================== */
 
@@ -2016,7 +1626,7 @@ export default function Learning() {
                 </Button>
               </a>
 
-              <a href="#explore-courses">
+              <Link to="/courses">
                 <Button variant="outline">
                   Explore Courses
                   <ArrowRight
@@ -2024,7 +1634,7 @@ export default function Learning() {
                     size={18}
                   />
                 </Button>
-              </a>
+              </Link>
 
               <a href="#saved-resources">
                 <Button variant="outline">
@@ -2223,237 +1833,28 @@ export default function Learning() {
       </section>
 
       {/* ======================================
-          EXPLORE COURSES
+          COURSES CTA
       ====================================== */}
 
-      <section
-        id="explore-courses"
-        className="scroll-mt-24 border-t border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900 lg:py-20"
-      >
-        <div className="mx-auto px-6 lg:px-8">
-          <div className="mb-8">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-              <BookOpen size={20} />
-
-              <span className="text-sm font-semibold uppercase tracking-wider">
-                Course Catalog
-              </span>
-            </div>
-
-            <h2 className="mt-2 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl">
-              Explore More Courses
-            </h2>
-
-            <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
-              Discover published KanuorieTech courses
-              and find your next learning opportunity.
-            </p>
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 py-16 text-white sm:py-20">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-cyan-400/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
+        <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-8">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/15 bg-white/10 text-blue-100">
+            <GraduationCap size={28} />
           </div>
-
-          {/* COURSE FILTERS */}
-
-          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_220px_180px]">
-            <label className="relative">
-              <span className="sr-only">
-                Search courses
-              </span>
-
-              <Search
-                size={18}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
-
-              <input
-                type="search"
-                value={search}
-                onChange={(event) =>
-                  setSearch(
-                    event.target.value
-                  )
-                }
-                placeholder="Search courses, skills, instructors..."
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              />
-            </label>
-
-            <label>
-              <span className="sr-only">
-                Filter by category
-              </span>
-
-              <select
-                value={category}
-                onChange={(event) =>
-                  setCategory(
-                    event.target.value
-                  )
-                }
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              >
-                {categories.map((item) => (
-                  <option
-                    key={item}
-                    value={item}
-                  >
-                    {item === "All"
-                      ? "All categories"
-                      : item}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              <span className="sr-only">
-                Filter by level
-              </span>
-
-              <select
-                value={level}
-                onChange={(event) =>
-                  setLevel(
-                    event.target.value
-                  )
-                }
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              >
-                {[
-                  "All",
-                  "Beginner",
-                  "Intermediate",
-                  "Advanced",
-                ].map((item) => (
-                  <option
-                    key={item}
-                    value={item}
-                  >
-                    {item === "All"
-                      ? "All levels"
-                      : item}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          {/* ERROR */}
-
-          {error && (
-            <Card className="mt-6 border-red-200 bg-red-50 p-5 dark:border-red-900/50 dark:bg-red-950/20">
-              <p className="text-sm font-medium text-red-700 dark:text-red-300">
-                {error}
-              </p>
-            </Card>
-          )}
-
-          {/* COURSE RESULTS */}
-
-          {filteredCourses.length === 0 ? (
-            <Card className="mt-10 py-14 text-center">
-              <Search
-                size={42}
-                className="mx-auto text-slate-400"
-              />
-
-              <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
-                No courses found
-              </h3>
-
-              <p className="mt-2 text-slate-500 dark:text-slate-400">
-                Try changing your search or
-                filters.
-              </p>
-            </Card>
-          ) : (
-            <div className="mt-10">
-              <div className="mb-5 flex items-center justify-between">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Showing{" "}
-                  <span className="font-semibold text-slate-900 dark:text-white">
-                    {filteredCourses.length}
-                  </span>{" "}
-                  {filteredCourses.length === 1
-                    ? "course"
-                    : "courses"}
-                </p>
-
-                <span className="hidden text-xs text-slate-400 sm:block">
-                  Auto-scrolling • Hover to pause
-                </span>
-              </div>
-
-              <AutoCarousel speed={26}>
-                {filteredCourses.map(
-                  (course) => {
-                    const courseId =
-                      getCourseId(course);
-
-                    const enrolled =
-                      enrolledCourseIds.has(
-                        String(courseId)
-                      );
-
-                    return (
-                      <ExploreCourseCard
-                        key={courseId}
-                        course={course}
-                        enrolled={enrolled}
-                        enrollingId={
-                          enrollingId
-                        }
-                        onEnroll={
-                          handleEnroll
-                        }
-                        isWishlisted={wishlist.some(
-                          (id) =>
-                            String(id) ===
-                            String(courseId)
-                        )}
-                        onToggleWishlist={
-                          toggleWishlist
-                        }
-                      />
-                    );
-                  }
-                )}
-              </AutoCarousel>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ======================================
-          FOOTER CTA
-      ====================================== */}
-
-      <section className="bg-slate-950 py-16 text-white">
-        <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-400">
-            <Sparkles size={27} />
-          </div>
-
-          <h2 className="mt-6 text-3xl font-black sm:text-4xl">
-            Keep learning. Keep building.
+          <p className="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-blue-100">Your next step starts here</p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+            Ready to build skills that move you forward?
           </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-400">
-            Build practical technology skills through
-            structured courses and hands-on learning
-            with KanuorieTech.
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg">
+            Explore the full KanuorieTech course catalog, find a course that fits your goals, and start learning at your own pace.
           </p>
-
-          <a href="#explore-courses">
-            <Button className="mt-7">
-              Find Your Next Course
-              <ArrowRight
-                className="ml-2"
-                size={18}
-              />
-            </Button>
-          </a>
+          <Link to="/courses" className="mt-8 inline-flex items-center justify-center gap-3 rounded-xl bg-white dark:bg-slate-900 px-7 py-4 text-base font-bold text-blue-800 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30">
+            Explore all courses <ArrowRight className="h-5 w-5" />
+          </Link>
         </div>
       </section>
     </main>
   );
 }
-

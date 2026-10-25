@@ -15,7 +15,7 @@ export default function CourseCard({ course }) {
 
         <h3 className="line-clamp-2 text-xl font-semibold">{course.title}</h3>
 
-        <p className="text-gray-500">{course.instructor}</p>
+        <p className="text-gray-500 dark:text-slate-400">{course.instructor}</p>
 
         <div className="flex justify-between">
           <span className="font-bold">${course.price}</span>

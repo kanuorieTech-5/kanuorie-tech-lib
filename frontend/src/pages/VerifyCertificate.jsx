@@ -188,7 +188,7 @@ const VerifyCertificate = () => {
           <motion.div
             initial={{ opacity: 0, y: 25, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl"
+            className="overflow-hidden rounded-3xl border border-white/10 bg-white dark:bg-slate-900 shadow-2xl"
           >
             {/* Status Banner */}
             <div
@@ -227,20 +227,20 @@ const VerifyCertificate = () => {
 
             {/* Certificate Details */}
             <div className="p-6 sm:p-8 lg:p-10">
-              <div className="mb-8 flex flex-col gap-5 border-b border-slate-200 pb-8 sm:flex-row sm:items-start sm:justify-between">
+              <div className="mb-8 flex flex-col gap-5 border-b border-slate-200 dark:border-slate-700 pb-8 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-600">
                     <Award className="h-5 w-5" />
                     KanuorieTech Certificate
                   </div>
 
-                  <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">
                     {certificate.courseTitle || "Course Certificate"}
                   </h2>
 
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                     Certificate ID:{" "}
-                    <span className="font-semibold text-slate-700">
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
                       {certificate.certificateId}
                     </span>
                   </p>
@@ -258,27 +258,27 @@ const VerifyCertificate = () => {
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
-                <div className="rounded-2xl bg-slate-50 p-5">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
                   <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Recipient
                   </p>
 
-                  <p className="text-lg font-bold text-slate-900">
+                  <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
                     {certificate.recipientName || "—"}
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-5">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
                   <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Instructor
                   </p>
 
-                  <p className="text-lg font-bold text-slate-900">
+                  <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
                     {certificate.instructor || "KanuorieTech"}
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-5">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
                   <div className="mb-2 flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-blue-500" />
                     <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -286,12 +286,12 @@ const VerifyCertificate = () => {
                     </p>
                   </div>
 
-                  <p className="font-semibold text-slate-900">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">
                     {formatDate(certificate.completionDate)}
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-5">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
                   <div className="mb-2 flex items-center gap-2">
                     <BadgeCheck className="h-4 w-4 text-blue-500" />
                     <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -299,7 +299,7 @@ const VerifyCertificate = () => {
                     </p>
                   </div>
 
-                  <p className="font-semibold text-slate-900">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">
                     {formatDate(certificate.issuedAt)}
                   </p>
                 </div>
@@ -307,8 +307,8 @@ const VerifyCertificate = () => {
 
               {/* Course Information */}
               {certificate.course && (
-                <div className="mt-6 rounded-2xl border border-slate-200 p-5">
-                  <h3 className="mb-4 font-bold text-slate-900">
+                <div className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+                  <h3 className="mb-4 font-bold text-slate-900 dark:text-slate-100">
                     Course Information
                   </h3>
 
@@ -316,7 +316,7 @@ const VerifyCertificate = () => {
                     {certificate.course.category && (
                       <div>
                         <p className="text-slate-400">Category</p>
-                        <p className="mt-1 font-semibold text-slate-700">
+                        <p className="mt-1 font-semibold text-slate-700 dark:text-slate-300">
                           {certificate.course.category}
                         </p>
                       </div>
@@ -325,7 +325,7 @@ const VerifyCertificate = () => {
                     {certificate.course.level && (
                       <div>
                         <p className="text-slate-400">Level</p>
-                        <p className="mt-1 font-semibold text-slate-700">
+                        <p className="mt-1 font-semibold text-slate-700 dark:text-slate-300">
                           {certificate.course.level}
                         </p>
                       </div>
@@ -334,7 +334,7 @@ const VerifyCertificate = () => {
                     {certificate.course.duration && (
                       <div>
                         <p className="text-slate-400">Duration</p>
-                        <p className="mt-1 font-semibold text-slate-700">
+                        <p className="mt-1 font-semibold text-slate-700 dark:text-slate-300">
                           {certificate.course.duration}
                         </p>
                       </div>
@@ -343,7 +343,7 @@ const VerifyCertificate = () => {
                     {certificate.course.language && (
                       <div>
                         <p className="text-slate-400">Language</p>
-                        <p className="mt-1 font-semibold text-slate-700">
+                        <p className="mt-1 font-semibold text-slate-700 dark:text-slate-300">
                           {certificate.course.language}
                         </p>
                       </div>
@@ -354,8 +354,8 @@ const VerifyCertificate = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-200 bg-slate-50 px-6 py-5 text-center sm:px-8">
-              <p className="text-xs leading-5 text-slate-500">
+            <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-6 py-5 text-center sm:px-8">
+              <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                 This verification result is provided by KanuorieTech.
                 The certificate ID above can be used to independently
                 verify this credential.
@@ -384,7 +384,7 @@ const VerifyCertificate = () => {
           </motion.div>
         )}
 
-        <p className="mt-8 text-center text-xs text-slate-500">
+        <p className="mt-8 text-center text-xs text-slate-500 dark:text-slate-400">
           © {new Date().getFullYear()} KanuorieTech. All rights reserved.
         </p>
       </div>

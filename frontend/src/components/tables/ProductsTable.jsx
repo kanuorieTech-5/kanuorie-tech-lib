@@ -40,7 +40,7 @@ export default function ProductsTable({
               shrink-0
               overflow-hidden
               rounded-lg
-              bg-slate-100
+              bg-slate-100 dark:bg-slate-900
             "
           >
             <img
@@ -59,7 +59,7 @@ export default function ProductsTable({
                 max-w-[220px]
                 truncate
                 font-semibold
-                text-slate-900
+                text-slate-900 dark:text-slate-100
               "
             >
               {product?.name || "Unnamed Product"}
@@ -71,7 +71,7 @@ export default function ProductsTable({
                   max-w-[220px]
                   truncate
                   text-xs
-                  text-slate-500
+                  text-slate-500 dark:text-slate-400
                 "
               >
                 {product.excerpt}
@@ -108,12 +108,12 @@ export default function ProductsTable({
       title: "Pricing",
       render: (product) => (
         <div>
-          <p className="font-semibold text-slate-900">
+          <p className="font-semibold text-slate-900 dark:text-slate-100">
             {getPricingLabel(product)}
           </p>
 
           {product?.pricingType && (
-            <p className="text-xs text-slate-500">{product.pricingType}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{product.pricingType}</p>
           )}
         </div>
       ),
@@ -173,7 +173,7 @@ export default function ProductsTable({
       key: "views",
       title: "Views",
       render: (product) => (
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-slate-600 dark:text-slate-400">
           {Number(product?.views || 0).toLocaleString()}
         </span>
       ),
@@ -203,8 +203,8 @@ export default function ProductsTable({
                 justify-center
                 rounded-lg
                 border
-                border-slate-200
-                text-slate-500
+                border-slate-200 dark:border-slate-700
+                text-slate-500 dark:text-slate-400
                 transition
                 hover:border-blue-500
                 hover:text-blue-600

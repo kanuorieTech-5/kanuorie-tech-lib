@@ -458,7 +458,7 @@ export default function AdminProjects() {
           className="flex flex-col gap-3 sm:flex-row"
         >
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
 
             <input
               type="search"
@@ -506,11 +506,11 @@ export default function AdminProjects() {
         /* Empty */
 
         <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-16 text-center">
-          <FolderKanban className="mx-auto h-12 w-12 text-slate-600" />
+          <FolderKanban className="mx-auto h-12 w-12 text-slate-600 dark:text-slate-400" />
 
           <h2 className="mt-5 text-lg font-semibold">No projects found</h2>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Create your first project to start building your portfolio.
           </p>
 
@@ -544,7 +544,7 @@ export default function AdminProjects() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <FolderKanban className="h-12 w-12 text-slate-700" />
+                      <FolderKanban className="h-12 w-12 text-slate-700 dark:text-slate-300" />
                     </div>
                   )}
 
@@ -579,7 +579,7 @@ export default function AdminProjects() {
                     {project.title}
                   </h2>
 
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                     {project.description}
                   </p>
 
@@ -590,7 +590,7 @@ export default function AdminProjects() {
                       {project.technologies.slice(0, 4).map((technology) => (
                         <span
                           key={technology}
-                          className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-600"
+                          className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400"
                         >
                           {technology}
                         </span>
@@ -600,7 +600,7 @@ export default function AdminProjects() {
 
                   {/* Meta */}
 
-                  <div className="mt-5 flex items-center gap-4 border-t border-white/10 pt-4 text-xs text-slate-500">
+                  <div className="mt-5 flex items-center gap-4 border-t border-white/10 pt-4 text-xs text-slate-500 dark:text-slate-400">
                     <span className="inline-flex items-center gap-1">
                       <Eye className="h-4 w-4" />
                       {project.views || 0} views
@@ -716,7 +716,7 @@ export default function AdminProjects() {
                   {editingProject ? "Edit Project" : "Create Project"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {editingProject
                     ? "Update your project information."
                     : "Add a new project to your portfolio."}
@@ -749,7 +749,7 @@ export default function AdminProjects() {
                     onChange={handleChange}
                     placeholder="e.g. KanuorieTech Website"
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -765,7 +765,7 @@ export default function AdminProjects() {
                     value={form.category}
                     onChange={handleChange}
                     placeholder="Web Development"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -781,7 +781,7 @@ export default function AdminProjects() {
                     value={form.client}
                     onChange={handleChange}
                     placeholder="Client name"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -799,7 +799,7 @@ export default function AdminProjects() {
                     placeholder="Describe the project..."
                     rows={6}
                     required
-                    className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -819,7 +819,7 @@ export default function AdminProjects() {
                           📎 Choose image from your computer
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           JPG, PNG, WEBP, GIF or SVG
                         </p>
                       </div>
@@ -871,7 +871,7 @@ export default function AdminProjects() {
                           }
                         }}
                         placeholder="https://..."
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                       />
                     </div>
                   </div>
@@ -880,7 +880,7 @@ export default function AdminProjects() {
                 {/* Technologies */}
 
                 <div className="md:col-span-2">
-                  <label className="mb-2 block text-sm font-medium text-slate-500">
+                  <label className="mb-2 block text-sm font-medium text-slate-500 dark:text-slate-400">
                     Technologies
                   </label>
 
@@ -889,10 +889,10 @@ export default function AdminProjects() {
                     value={form.technologies}
                     onChange={handleChange}
                     placeholder="React, Node.js, MongoDB, Tailwind CSS"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
 
-                  <p className="mt-2 text-xs text-slate-600">
+                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">
                     Separate technologies with commas.
                   </p>
                 </div>
@@ -913,7 +913,7 @@ export default function AdminProjects() {
                           📎 Choose multiple images
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           Select up to 10 images
                         </p>
                       </div>
@@ -968,10 +968,10 @@ export default function AdminProjects() {
                         onChange={handleChange}
                         placeholder={`https://image-1.jpg https://image-2.jpg`}
                         rows={4}
-                        className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                        className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                       />
 
-                      <p className="mt-2 text-xs text-slate-600">
+                      <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">
                         Add one image URL per line.
                       </p>
                     </div>
@@ -991,7 +991,7 @@ export default function AdminProjects() {
                     onChange={handleChange}
                     placeholder="https://github.com/..."
                     type="url"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -1008,7 +1008,7 @@ export default function AdminProjects() {
                     onChange={handleChange}
                     placeholder="https://..."
                     type="url"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
               </div>
@@ -1028,7 +1028,7 @@ export default function AdminProjects() {
                   <div>
                     <p className="font-medium text-white">Featured Project</p>
 
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Show this project prominently.
                     </p>
                   </div>
@@ -1046,7 +1046,7 @@ export default function AdminProjects() {
                   <div>
                     <p className="font-medium text-white">Published</p>
 
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Make this project visible publicly.
                     </p>
                   </div>

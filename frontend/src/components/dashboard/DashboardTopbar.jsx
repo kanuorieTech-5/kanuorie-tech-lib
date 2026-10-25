@@ -17,23 +17,23 @@ export default function DashboardTopbar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-700 bg-white/95 backdrop-blur">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left */}
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+            className="rounded-lg p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 lg:hidden"
           >
             <Menu size={22} />
           </button>
 
           <div>
-            <h1 className="text-lg font-bold text-slate-900">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
               {getPageTitle()}
             </h1>
 
-            <p className="hidden text-xs text-slate-500 sm:block">
+            <p className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">
               KanuorieTech Admin Panel
             </p>
           </div>
@@ -43,7 +43,7 @@ export default function DashboardTopbar() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="hidden rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 sm:block"
+            className="hidden rounded-lg p-2 text-slate-600 dark:text-slate-400 transition hover:bg-slate-100 sm:block"
             aria-label="Search"
           >
             <Search size={20} />
@@ -51,7 +51,7 @@ export default function DashboardTopbar() {
 
           <button
             type="button"
-            className="relative rounded-lg p-2 text-slate-600 transition hover:bg-slate-100"
+            className="relative rounded-lg p-2 text-slate-600 dark:text-slate-400 transition hover:bg-slate-100"
             aria-label="Notifications"
           >
             <Bell size={20} />
@@ -59,17 +59,17 @@ export default function DashboardTopbar() {
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
           </button>
 
-          <div className="ml-2 hidden items-center gap-3 border-l border-slate-200 pl-4 sm:flex">
+          <div className="ml-2 hidden items-center gap-3 border-l border-slate-200 dark:border-slate-700 pl-4 sm:flex">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
               A
             </div>
 
             <div className="hidden lg:block">
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Administrator
               </p>
 
-              <p className="text-xs text-slate-500">Admin</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Admin</p>
             </div>
           </div>
         </div>

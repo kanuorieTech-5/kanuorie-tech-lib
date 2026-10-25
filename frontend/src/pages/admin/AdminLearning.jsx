@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { Card, Button, Loader } from "../../components/common";
+import defaultResources from "../../data/resources";
 
 import {
   getAdminLearning,
@@ -75,6 +76,27 @@ function extractMeta(response) {
   );
 }
 
+function normalizeBundledResource(resource, index) {
+  return {
+    ...resource,
+    _id: `bundled-${resource.id || index}`,
+    title: resource.title || resource.name || "Untitled Resource",
+    description: resource.description || resource.desc || "",
+    author: resource.author || "KanuorieTech",
+    category: resource.category || "General",
+    image: resource.image || resource.img || "",
+    link: resource.link || "",
+    difficulty: resource.difficulty || "",
+    published: resource.published !== false,
+    premium: Boolean(resource.premium),
+    featured: Boolean(resource.featured),
+    price: Number(resource.price) || 0,
+    views: Number(resource.views) || 0,
+    downloads: Number(resource.downloads) || 0,
+    isBundledResource: true,
+  };
+}
+
 export default function AdminLearning() {
   const [learningResources, setlearningResources] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -93,8 +115,6 @@ export default function AdminLearning() {
   const [sort, setSort] = useState("newest");
 
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalLearning, setTotalLearning] = useState(0);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLearningResource, setEditingLearningResource] = useState(null);
@@ -106,63 +126,31 @@ export default function AdminLearning() {
       setLoading(true);
       setError("");
 
-      const params = {
-        page,
-        limit: PAGE_SIZE,
-      };
-
-      if (search.trim()) {
-        params.search = search.trim();
-      }
-
-      if (category) {
-        params.category = category;
-      }
-
-      if (difficulty) {
-        params.difficulty = difficulty;
-      }
-
-      if (premium !== "") {
-        params.premium = premium;
-      }
-
-      if (featured !== "") {
-        params.featured = featured;
-      }
-
-      if (sort) {
-        params.sort = sort;
-      }
-
-      const response = await getAdminLearning(params);
-
-      const data = extractData(response);
-      const meta = extractMeta(response);
-
-      setlearningResources(data);
-
-      setTotalLearning(
-        Number(meta.total) || Number(response?.total) || data.length,
+      const firstResponse = await getAdminLearning({ page: 1, limit: 100 });
+      const firstPage = extractData(firstResponse);
+      const pageCount = Math.max(1, Number(extractMeta(firstResponse).pages) || 1);
+      const remainingResponses = await Promise.all(
+        Array.from({ length: pageCount - 1 }, (_, index) =>
+          getAdminLearning({ page: index + 2, limit: 100 }),
+        ),
       );
+      const databaseResources = [
+        ...firstPage,
+        ...remainingResponses.flatMap(extractData),
+      ];
+      const bundledResources = defaultResources.map(normalizeBundledResource);
 
-      setTotalPages(
-        Number(meta.pages) ||
-          Math.max(
-            1,
-            Math.ceil((Number(meta.total) || data.length) / PAGE_SIZE),
-          ),
-      );
+      setlearningResources([...databaseResources, ...bundledResources]);
     } catch (err) {
       console.error("Failed to load learningResources:", err);
 
       setError(err?.response?.data?.message || "Unable to load learningResources.");
 
-      setlearningResources([]);
+      setlearningResources(defaultResources.map(normalizeBundledResource));
     } finally {
       setLoading(false);
     }
-  }, [page, search, category, difficulty, premium, featured, sort]);
+  }, []);
 
   const loadCategories = useCallback(async () => {
     try {
@@ -184,14 +172,72 @@ export default function AdminLearning() {
     loadCategories();
   }, [loadCategories]);
 
+  const availableCategories = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          ...categories,
+          ...defaultResources.map((resource) => resource.category).filter(Boolean),
+        ]),
+      ).sort((a, b) => String(a).localeCompare(String(b))),
+    [categories],
+  );
+
+  const filteredResources = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const matches = learningResources.filter((resource) => {
+      const searchableText = [
+        resource.title,
+        resource.description,
+        resource.desc,
+        resource.author,
+        resource.category,
+        resource.link,
+        ...(Array.isArray(resource.tags) ? resource.tags : []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      if (query && !searchableText.includes(query)) return false;
+      if (category && String(resource.category).toLowerCase() !== category.toLowerCase()) return false;
+      if (difficulty && !resource.isBundledResource && resource.difficulty !== difficulty) return false;
+      if (premium !== "" && Boolean(resource.premium) !== (premium === "true")) return false;
+      if (featured !== "" && Boolean(resource.featured) !== (featured === "true")) return false;
+      return true;
+    });
+
+    matches.sort((a, b) => {
+      if (sort === "oldest") {
+        return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+      }
+      if (sort === "downloads") return Number(b.downloads || 0) - Number(a.downloads || 0);
+      if (sort === "rating") return Number(b.rating || 0) - Number(a.rating || 0);
+      if (sort === "views") return Number(b.views || 0) - Number(a.views || 0);
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+
+    return matches;
+  }, [learningResources, search, category, difficulty, premium, featured, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredResources.length / PAGE_SIZE));
+  const visibleResources = filteredResources.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
   const stats = useMemo(() => {
     return {
-      total: totalLearning,
+      total: learningResources.length,
       published: learningResources.filter((learningResource) => learningResource.published).length,
       premium: learningResources.filter((learningResource) => learningResource.premium).length,
       featured: learningResources.filter((learningResource) => learningResource.featured).length,
     };
-  }, [learningResources, totalLearning]);
+  }, [learningResources]);
 
   const openCreateModal = () => {
     setEditingLearningResource(null);
@@ -362,9 +408,9 @@ export default function AdminLearning() {
             Content Management
           </p>
 
-          <h1 className="text-3xl font-bold text-slate-900">learningResources</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">learningResources</h1>
 
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
             Manage your digital library, publications and downloadable
             resources.
           </p>
@@ -390,9 +436,9 @@ export default function AdminLearning() {
       {/* FILTERS */}
       <Card className="p-5">
         <div className="mb-5 flex items-center gap-2">
-          <Filter className="h-5 w-5 text-slate-500" />
+          <Filter className="h-5 w-5 text-slate-500 dark:text-slate-400" />
 
-          <h2 className="font-semibold text-slate-900">Filters</h2>
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -407,7 +453,7 @@ export default function AdminLearning() {
                 setPage(1);
               }}
               placeholder="Search learningResources..."
-              className="w-full rounded-lg border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-slate-200 dark:border-slate-700 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             />
           </div>
 
@@ -418,11 +464,11 @@ export default function AdminLearning() {
               setCategory(event.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="">All Categories</option>
 
-            {categories.map((item) => (
+            {availableCategories.map((item) => (
               <option key={item} value={item}>
                 {item}
               </option>
@@ -436,7 +482,7 @@ export default function AdminLearning() {
               setDifficulty(event.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="">All Levels</option>
             <option value="Beginner">Beginner</option>
@@ -451,7 +497,7 @@ export default function AdminLearning() {
               setPremium(event.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="">All learningResources</option>
             <option value="true">Premium</option>
@@ -465,7 +511,7 @@ export default function AdminLearning() {
               setSort(event.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -482,7 +528,7 @@ export default function AdminLearning() {
               setFeatured(event.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100"
           >
             <option value="">Featured: All</option>
             <option value="true">Featured Only</option>
@@ -492,7 +538,7 @@ export default function AdminLearning() {
           <button
             type="button"
             onClick={resetFilters}
-            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
           >
             Reset Filters
           </button>
@@ -520,43 +566,43 @@ export default function AdminLearning() {
           <div className="flex min-h-[300px] items-center justify-center">
             <Loader />
           </div>
-        ) : learningResources.length === 0 ? (
+        ) : filteredResources.length === 0 ? (
           <EmptyState onAdd={openCreateModal} />
         ) : (
           <>
             {/* DESKTOP TABLE */}
             <div className="hidden overflow-x-auto lg:block">
               <table className="w-full">
-                <thead className="border-b border-slate-200 bg-slate-50">
+                <thead className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       learningResource
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Category
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Price
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Status
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Stats
                     </th>
 
-                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Actions
                     </th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                  {learningResources.map((learningResource) => (
+                  {visibleResources.map((learningResource) => (
                     <LearningRow
                       key={learningResource._id}
                       learningResource={learningResource}
@@ -571,7 +617,7 @@ export default function AdminLearning() {
 
             {/* MOBILE */}
             <div className="divide-y divide-slate-100 lg:hidden">
-              {learningResources.map((learningResource) => (
+              {visibleResources.map((learningResource) => (
                 <LearningMobileCard
                   key={learningResource._id}
                   learningResource={learningResource}
@@ -586,9 +632,9 @@ export default function AdminLearning() {
       </Card>
 
       {/* PAGINATION */}
-      {!loading && learningResources.length > 0 && (
+      {!loading && filteredResources.length > 0 && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Page {page} of {totalPages}
           </p>
 
@@ -597,7 +643,7 @@ export default function AdminLearning() {
               type="button"
               disabled={page <= 1}
               onClick={() => setPage((previous) => Math.max(1, previous - 1))}
-              className="rounded-lg border border-slate-200 p-2 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -610,7 +656,7 @@ export default function AdminLearning() {
               onClick={() =>
                 setPage((previous) => Math.min(totalPages, previous + 1))
               }
-              className="rounded-lg border border-slate-200 p-2 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -645,9 +691,9 @@ function Stat({ label, value, icon: Icon }) {
       </div>
 
       <div>
-        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
 
-        <p className="mt-1 text-2xl font-bold text-slate-900">
+        <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">
           {value.toLocaleString()}
         </p>
       </div>
@@ -671,9 +717,9 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
           />
 
           <div>
-            <p className="font-semibold text-slate-900">{learningResource.title}</p>
+            <p className="font-semibold text-slate-900 dark:text-slate-100">{learningResource.title}</p>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {learningResource.author || "Unknown"}
             </p>
           </div>
@@ -681,12 +727,12 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
       </td>
 
       <td className="px-6 py-4">
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+        <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400">
           {learningResource.category}
         </span>
       </td>
 
-      <td className="px-6 py-4 font-semibold text-slate-900">
+      <td className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">
         {Number(learningResource.price) > 0
           ? `₦${Number(learningResource.price).toLocaleString()}`
           : "Free"}
@@ -705,33 +751,39 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
         </div>
       </td>
 
-      <td className="px-6 py-4 text-sm text-slate-500">
+      <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
         <div>{Number(learningResource.views || 0).toLocaleString()} views</div>
 
         <div>{Number(learningResource.downloads || 0).toLocaleString()} downloads</div>
       </td>
 
       <td className="px-6 py-4">
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => onEdit(learningResource)}
-            className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-100"
-            title="Edit learningResource"
-          >
-            <Edit3 className="h-4 w-4" />
-          </button>
+        {learningResource.isBundledResource ? (
+          <span className="block text-right text-xs font-medium text-slate-500 dark:text-slate-400">
+            Bundled resource
+          </span>
+        ) : (
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => onEdit(learningResource)}
+              className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 transition hover:bg-slate-100"
+              title="Edit learningResource"
+            >
+              <Edit3 className="h-4 w-4" />
+            </button>
 
-          <button
-            type="button"
-            disabled={deletingId === learningResource._id}
-            onClick={() => onDelete(learningResource)}
-            className="rounded-lg border border-red-200 p-2 text-red-600 transition hover:bg-red-50 disabled:opacity-50"
-            title="Delete learningResource"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
+            <button
+              type="button"
+              disabled={deletingId === learningResource._id}
+              onClick={() => onDelete(learningResource)}
+              className="rounded-lg border border-red-200 p-2 text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+              title="Delete learningResource"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </td>
     </tr>
   );
@@ -752,9 +804,9 @@ function LearningMobileCard({ learningResource, onEdit, onDelete, deletingId }) 
         />
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-slate-900">{learningResource.title}</h3>
+          <h3 className="font-bold text-slate-900 dark:text-slate-100">{learningResource.title}</h3>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {learningResource.author || "Unknown"}
           </p>
 
@@ -777,22 +829,28 @@ function LearningMobileCard({ learningResource, onEdit, onDelete, deletingId }) 
         {learningResource.featured && <Status active label="Featured" />}
       </div>
 
-      <div className="mt-5 flex gap-2">
-        <Button variant="secondary" onClick={() => onEdit(learningResource)}>
-          <Edit3 className="mr-2 h-4 w-4" />
-          Edit
-        </Button>
+      {learningResource.isBundledResource ? (
+        <p className="mt-5 text-xs font-medium text-slate-500 dark:text-slate-400">
+          Bundled site resource
+        </p>
+      ) : (
+        <div className="mt-5 flex gap-2">
+          <Button variant="secondary" onClick={() => onEdit(learningResource)}>
+            <Edit3 className="mr-2 h-4 w-4" />
+            Edit
+          </Button>
 
-        <button
-          type="button"
-          disabled={deletingId === learningResource._id}
-          onClick={() => onDelete(learningResource)}
-          className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
-        >
-          <Trash2 className="mr-2 inline h-4 w-4" />
-          Delete
-        </button>
-      </div>
+          <button
+            type="button"
+            disabled={deletingId === learningResource._id}
+            onClick={() => onDelete(learningResource)}
+            className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+          >
+            <Trash2 className="mr-2 inline h-4 w-4" />
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -822,13 +880,13 @@ function Status({ active, label }) {
 function EmptyState({ onAdd }) {
   return (
     <div className="flex min-h-[320px] flex-col items-center justify-center px-6 text-center">
-      <div className="rounded-full bg-slate-100 p-5">
+      <div className="rounded-full bg-slate-100 dark:bg-slate-900 p-5">
         <BookOpen className="h-10 w-10 text-slate-400" />
       </div>
 
-      <h3 className="mt-5 text-xl font-bold text-slate-900">No learningResources found</h3>
+      <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">No learningResources found</h3>
 
-      <p className="mt-2 max-w-md text-sm text-slate-500">
+      <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
         There are no learningResources matching your current filters.
       </p>
 
@@ -847,15 +905,15 @@ function EmptyState({ onAdd }) {
 function LearningModal({ form, editingLearningResource, saving, onChange, onSubmit, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-      <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+      <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 shadow-2xl">
         {/* MODAL HEADER */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-5">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               {editingLearningResource ? "Edit learningResource" : "Add New learningResource"}
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {editingLearningResource
                 ? "Update the learningResource information."
                 : "Add a new resource to your digital library."}
@@ -866,7 +924,7 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
             type="button"
             onClick={onClose}
             disabled={saving}
-            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+            className="rounded-lg p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100"
           >
             <X className="h-5 w-5" />
           </button>
@@ -958,7 +1016,7 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
 
               {form.image && (
                 <div className="mt-5">
-                  <p className="mb-2 text-sm font-medium text-slate-700">
+                  <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                     Cover Preview
                   </p>
 
@@ -1061,7 +1119,7 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
           </div>
 
           {/* ACTIONS */}
-          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:justify-end">
             <Button
               type="button"
               variant="secondary"
@@ -1092,7 +1150,7 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
 function FormSection({ title, children }) {
   return (
     <section>
-      <h3 className="mb-5 text-lg font-bold text-slate-900">{title}</h3>
+      <h3 className="mb-5 text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h3>
 
       <div className="space-y-5">{children}</div>
     </section>
@@ -1102,13 +1160,13 @@ function FormSection({ title, children }) {
 function Input({ label, ...props }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">
+      <span className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
       </span>
 
       <input
         {...props}
-        className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm outline-none transition text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       />
     </label>
   );
@@ -1117,14 +1175,14 @@ function Input({ label, ...props }) {
 function TextArea({ label, ...props }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">
+      <span className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
       </span>
 
       <textarea
         {...props}
         rows={5}
-        className="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full resize-y rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm outline-none transition text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       />
     </label>
   );
@@ -1133,13 +1191,13 @@ function TextArea({ label, ...props }) {
 function Select({ label, options, ...props }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">
+      <span className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
       </span>
 
       <select
         {...props}
-        className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className="w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -1153,14 +1211,14 @@ function Select({ label, options, ...props }) {
 
 function Checkbox({ label, ...props }) {
   return (
-    <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 p-4 transition hover:bg-slate-50">
+    <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-700 p-4 transition hover:bg-slate-50">
       <input
         {...props}
         type="checkbox"
         className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
       />
 
-      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
     </label>
   );
 }

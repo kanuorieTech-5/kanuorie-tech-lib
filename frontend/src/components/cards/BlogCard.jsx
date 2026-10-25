@@ -15,7 +15,7 @@ export default function BlogCard({ post }) {
 
         <h3 className="line-clamp-2 text-xl font-semibold">{post.title}</h3>
 
-        <p className="line-clamp-3 text-gray-500">{post.excerpt}</p>
+        <p className="line-clamp-3 text-gray-500 dark:text-slate-400">{post.excerpt}</p>
 
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-400">{post.createdAt}</span>

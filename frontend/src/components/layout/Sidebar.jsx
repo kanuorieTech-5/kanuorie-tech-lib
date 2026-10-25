@@ -23,11 +23,9 @@ import { useAuth } from "../../contexts";
 const links = [
   { name: "Home", path: "/", icon: Home },
   { name: "Profile", path: "/profile", icon: User },
-  { name: "Library", path: "/library", icon: BookOpen },
-  { name: "Courses", path: "/courses", icon: GraduationCap },
-  { name: "My Learning", path: "/my-learning", icon: PlayCircle },
+  { name: "My Learning", path: "/learning", icon: PlayCircle },
   { name: "Certificates", path: "/certificates", icon: Award },
-  { name: "Saved Resources", path: "/learning", icon: Bookmark },
+  { name: "Saved Resources", path: "/saved-resources", icon: Bookmark },
   { name: "Community", path: "/community", icon: Users },
   { name: "Affiliate", path: "/affiliate", icon: Handshake },
   { name: "Accounts & Payments", path: "/payments", icon: WalletCards },

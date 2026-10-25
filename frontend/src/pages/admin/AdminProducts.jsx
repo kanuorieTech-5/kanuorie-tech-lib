@@ -89,7 +89,7 @@ function FormField({ label, required = false, children, hint }) {
 ========================================== */
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500";
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400";
 
 /* ==========================================
    ADMIN PRODUCTS
@@ -529,7 +529,7 @@ export default function AdminProducts() {
                 <tr>
                   <td
                     colSpan="6"
-                    className="px-6 py-16 text-center text-sm text-slate-500"
+                    className="px-6 py-16 text-center text-sm text-slate-500 dark:text-slate-400"
                   >
                     Loading products...
                   </td>
@@ -544,7 +544,7 @@ export default function AdminProducts() {
                         No products found
                       </h3>
 
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Add your first developer or business product.
                       </p>
                     </div>
@@ -573,7 +573,7 @@ export default function AdminProducts() {
                             {product.name}
                           </p>
 
-                          <p className="max-w-xs truncate text-xs text-slate-500">
+                          <p className="max-w-xs truncate text-xs text-slate-500 dark:text-slate-400">
                             {product.excerpt || product.description}
                           </p>
                         </div>
@@ -597,7 +597,7 @@ export default function AdminProducts() {
                         </p>
 
                         {product.pricingType && (
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
                             {product.pricingType}
                           </p>
                         )}
@@ -653,7 +653,7 @@ export default function AdminProducts() {
                             target="_blank"
                             rel="noopener noreferrer"
                             title="Visit website"
-                            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
+                            className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
                           >
                             <ExternalLink size={16} />
                           </a>
@@ -663,7 +663,7 @@ export default function AdminProducts() {
                           type="button"
                           onClick={() => handleEdit(product)}
                           title="Edit"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
+                          className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-white/10"
                         >
                           <Pencil size={16} />
                         </button>
@@ -672,7 +672,7 @@ export default function AdminProducts() {
                           type="button"
                           onClick={() => handleDelete(product)}
                           title="Delete"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
+                          className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -710,7 +710,7 @@ export default function AdminProducts() {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
+                className="rounded-xl p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
               >
                 <X size={20} />
               </button>
@@ -964,7 +964,7 @@ export default function AdminProducts() {
                           Featured Product
                         </p>
 
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           Highlight this product in featured sections.
                         </p>
                       </div>
@@ -984,7 +984,7 @@ export default function AdminProducts() {
                           Published
                         </p>
 
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           Make this product visible on the public hub.
                         </p>
                       </div>

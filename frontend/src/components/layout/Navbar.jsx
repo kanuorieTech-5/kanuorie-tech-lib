@@ -1,32 +1,22 @@
 ﻿import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Logo, SearchBar, NotificationBell, UserDropdown, MobileMenu } from ".";
 import { useAuth } from "../../contexts";
+import { primaryNavLinks } from "../../constants/primaryNavLinks";
 
 export default function Navbar() {
   const { user } = useAuth();
+  const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const isHome = pathname === "/";
 
   return (
     <>
         <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-gray-300 dark:border-gray-800 dark:bg-gray-950">        <div className="mx-auto flex w-full items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
           {/* Logo */}
           <Logo />
-
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 lg:flex">
-            <Link to="/">Home</Link>
-            <Link to="/library">Library</Link>
-            <Link to="/courses">Courses</Link>
-            <Link to="/products">Products</Link>
-            <Link to="/projects">Projects</Link>
-            <Link to="/services">Services</Link>
-            <Link to="/blog">Blog</Link>
-            <Link to="/contact">Contact</Link>
-            <Link to="/profile">Profile</Link>
-          </nav>
 
           {/* Search */}
           <div className="ml-auto hidden w-72 xl:block">
@@ -82,9 +72,11 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        side={isHome ? "right" : "left"}
+      />
     </>
   );
 }
-
-

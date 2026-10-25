@@ -10,7 +10,7 @@ export default function RecentActivity({ activities = [] }) {
           <div key={activity.id} className="border-b pb-3 last:border-none">
             <p className="font-medium">{activity.title}</p>
 
-            <p className="text-sm text-gray-500">{activity.time}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">{activity.time}</p>
           </div>
         ))}
       </div>

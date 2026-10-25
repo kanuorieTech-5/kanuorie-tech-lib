@@ -51,7 +51,7 @@ export const deleteAdminUser = async (id) => {
 ===================================================== */
 
 export const getAdminLearning = async (params = {}) => {
-  const { data } = await API.get(`/admin/learning?${params.toString()}`);
+  const { data } = await API.get("/admin/learning", { params });
 
   return data;
 };

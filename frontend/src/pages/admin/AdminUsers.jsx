@@ -195,9 +195,9 @@ export default function AdminUsers() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Users</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Users</p>
 
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {totalUsers}
               </p>
             </div>
@@ -211,11 +211,11 @@ export default function AdminUsers() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 Administrators
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {adminCount}
               </p>
             </div>
@@ -229,11 +229,11 @@ export default function AdminUsers() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 Regular Users
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-slate-900">
+              <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {regularUserCount}
               </p>
             </div>
@@ -252,7 +252,7 @@ export default function AdminUsers() {
       <Card className="overflow-hidden">
         {/* Toolbar */}
 
-        <div className="border-b border-slate-200 p-5">
+        <div className="border-b border-slate-200 dark:border-slate-700 p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             {/* Search */}
 
@@ -267,7 +267,7 @@ export default function AdminUsers() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by name or email..."
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
               />
             </div>
 
@@ -277,7 +277,7 @@ export default function AdminUsers() {
               <select
                 value={role}
                 onChange={(event) => setRole(event.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
               >
                 {ROLES.map((item) => (
                   <option key={item} value={item}>
@@ -322,11 +322,11 @@ export default function AdminUsers() {
           <div className="px-6 py-10 text-center">
             <Users size={42} className="mx-auto text-slate-300" />
 
-            <h3 className="mt-4 text-lg font-semibold text-slate-900">
+            <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
               No users found
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Try adjusting your search or role filter.
             </p>
           </div>
@@ -334,7 +334,7 @@ export default function AdminUsers() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[850px]">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   <th className="px-6 py-4">User</th>
 
                   <th className="px-6 py-4">Email</th>
@@ -368,13 +368,13 @@ export default function AdminUsers() {
                             {name.charAt(0).toUpperCase()}
                           </div>
 
-                          <span className="font-semibold text-slate-900">
+                          <span className="font-semibold text-slate-900 dark:text-slate-100">
                             {name}
                           </span>
                         </div>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-slate-600">
+                      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
                         {email}
                       </td>
 
@@ -385,7 +385,7 @@ export default function AdminUsers() {
                           onChange={(event) =>
                             handleRoleChange(userId, event.target.value)
                           }
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-blue-500"
+                          className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm font-medium outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
                         >
                           <option value="User">User</option>
 
@@ -393,7 +393,7 @@ export default function AdminUsers() {
                         </select>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-slate-500">
+                      <td className="px-6 py-5 text-sm text-slate-500 dark:text-slate-400">
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString()
                           : "—"}

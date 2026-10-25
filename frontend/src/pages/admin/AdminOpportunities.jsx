@@ -55,9 +55,9 @@ const opportunityTypes = [
 ];
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
-const labelClass = "mb-2 block text-sm font-semibold text-slate-700";
+const labelClass = "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300";
 
 const normalizeList = (value) =>
   String(value || "")
@@ -353,10 +353,10 @@ export default function AdminOpportunities() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
               Opportunities
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Create, publish, and manage opportunities independently of Careers.
             </p>
           </div>
@@ -373,7 +373,7 @@ export default function AdminOpportunities() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(220px,1fr)_190px_160px_170px_auto]">
           <div className="relative">
             <Search
@@ -435,7 +435,7 @@ export default function AdminOpportunities() {
             <button
               type="button"
               onClick={clearFilters}
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50"
             >
               <X size={16} className="mr-2" />
               Clear
@@ -443,7 +443,7 @@ export default function AdminOpportunities() {
           )}
         </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-4 text-xs text-slate-500">
+        <div className="mt-4 border-t border-slate-100 pt-4 text-xs text-slate-500 dark:text-slate-400">
           Showing {opportunities.length} of {pagination.total} opportunities
           {loading && (
             <span className="ml-3 inline-flex items-center gap-1 text-blue-600">
@@ -456,13 +456,13 @@ export default function AdminOpportunities() {
 
       {/* Create / edit form */}
       {showForm && (
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
           <div className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 {editingOpportunity ? "Edit Opportunity" : "Create Opportunity"}
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Provide accurate details so visitors know how to apply.
               </p>
             </div>
@@ -472,7 +472,7 @@ export default function AdminOpportunities() {
               onClick={closeForm}
               disabled={saving}
               aria-label="Close form"
-              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+              className="rounded-lg p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100"
             >
               <X size={20} />
             </button>
@@ -665,7 +665,7 @@ export default function AdminOpportunities() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-              <label className="flex items-center gap-3 rounded-xl border border-slate-200 p-4">
+              <label className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                 <input
                   type="checkbox"
                   name="published"
@@ -674,16 +674,16 @@ export default function AdminOpportunities() {
                   className="h-4 w-4 rounded"
                 />
                 <span>
-                  <span className="block text-sm font-semibold text-slate-800">
+                  <span className="block text-sm font-semibold text-slate-800 dark:text-slate-200">
                     Published
                   </span>
-                  <span className="mt-1 block text-xs text-slate-500">
+                  <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
                     Visible on the public listings.
                   </span>
                 </span>
               </label>
 
-              <label className="flex items-center gap-3 rounded-xl border border-slate-200 p-4">
+              <label className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                 <input
                   type="checkbox"
                   name="featured"
@@ -692,16 +692,16 @@ export default function AdminOpportunities() {
                   className="h-4 w-4 rounded"
                 />
                 <span>
-                  <span className="block text-sm font-semibold text-slate-800">
+                  <span className="block text-sm font-semibold text-slate-800 dark:text-slate-200">
                     Featured
                   </span>
-                  <span className="mt-1 block text-xs text-slate-500">
+                  <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
                     Prioritize this listing.
                   </span>
                 </span>
               </label>
 
-              <div className="rounded-xl border border-slate-200 p-4">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                 <label className={labelClass}>Listing status</label>
                 <select
                   name="status"
@@ -720,7 +720,7 @@ export default function AdminOpportunities() {
                 type="button"
                 onClick={closeForm}
                 disabled={saving}
-                className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 px-5 py-3 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -746,12 +746,12 @@ export default function AdminOpportunities() {
           <RefreshCw size={28} className="animate-spin text-blue-600" />
         </div>
       ) : opportunities.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white dark:bg-slate-900 px-6 py-14 text-center">
           <BriefcaseBusiness size={42} className="mx-auto text-slate-300" />
-          <h3 className="mt-4 text-lg font-semibold text-slate-900">
+          <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
             {hasFilters ? "No matching opportunities" : "No opportunities yet"}
           </h3>
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
             {hasFilters
               ? "Try changing the filters or search terms."
               : "Create your first listing to start building your opportunities library."}
@@ -760,7 +760,7 @@ export default function AdminOpportunities() {
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-5 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold"
+              className="mt-5 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold"
             >
               Clear filters
             </button>
@@ -783,7 +783,7 @@ export default function AdminOpportunities() {
             return (
               <article
                 key={id}
-                className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm transition hover:shadow-md"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold capitalize text-blue-700">
@@ -816,15 +816,15 @@ export default function AdminOpportunities() {
                   </span>
                 </div>
 
-                <h2 className="mt-4 text-lg font-bold leading-6 text-slate-900">
+                <h2 className="mt-4 text-lg font-bold leading-6 text-slate-900 dark:text-slate-100">
                   {item.title}
                 </h2>
 
-                <p className="mt-1 text-sm font-medium text-slate-600">
+                <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">
                   {item.organization}
                 </p>
 
-                <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-500">
+                <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
                   <span className="inline-flex items-center gap-1">
                     <MapPin size={13} />
                     {item.location || "Not specified"}
@@ -835,7 +835,7 @@ export default function AdminOpportunities() {
                   </span>
                 </div>
 
-                <p className="mt-4 line-clamp-4 flex-1 whitespace-pre-line text-sm leading-6 text-slate-600">
+                <p className="mt-4 line-clamp-4 flex-1 whitespace-pre-line text-sm leading-6 text-slate-600 dark:text-slate-400">
                   {item.description || "No description provided."}
                 </p>
 
@@ -849,7 +849,7 @@ export default function AdminOpportunities() {
                   <button
                     type="button"
                     onClick={() => openEditForm(item)}
-                    className="inline-flex flex-1 items-center justify-center rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    className="inline-flex flex-1 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50"
                   >
                     <Edit3 size={15} className="mr-2" />
                     Edit
@@ -861,7 +861,7 @@ export default function AdminOpportunities() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label="Open application link"
-                      className="inline-flex items-center justify-center rounded-lg border border-slate-200 px-3 text-slate-600 hover:bg-slate-50"
+                      className="inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50"
                     >
                       <ExternalLink size={16} />
                     </a>
@@ -888,8 +888,8 @@ export default function AdminOpportunities() {
       )}
 
       {pagination.pages > 1 && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">
+        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Page {pagination.page} of {pagination.pages}
           </p>
 
@@ -898,7 +898,7 @@ export default function AdminOpportunities() {
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => setPage((current) => Math.max(1, current - 1))}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold disabled:opacity-40"
             >
               Previous
             </button>
@@ -911,7 +911,7 @@ export default function AdminOpportunities() {
                   Math.min(pagination.pages, current + 1)
                 )
               }
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-40"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold disabled:opacity-40"
             >
               Next
             </button>

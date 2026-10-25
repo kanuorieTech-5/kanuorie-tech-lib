@@ -48,13 +48,13 @@ export default function ResetPassword() {
   };
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
+    <section className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-slate-900 px-6">
       <Card className="w-full max-w-md p-8">
         <h1 className="mb-3 text-center text-3xl font-bold">
           Reset Password
         </h1>
 
-        <p className="mb-8 text-center text-sm text-gray-600">
+        <p className="mb-8 text-center text-sm text-gray-600 dark:text-slate-400">
           Enter your new password below.
         </p>
 
@@ -77,7 +77,7 @@ export default function ResetPassword() {
               minLength={8}
               autoComplete="new-password"
               placeholder="Enter at least 8 characters"
-              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none focus:border-blue-500"
+              className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
             />
           </div>
 

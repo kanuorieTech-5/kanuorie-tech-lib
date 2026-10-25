@@ -231,7 +231,7 @@ export default function BlogPreview() {
                               </p>
 
                               {/* Meta */}
-                              <div className="mt-7 flex flex-wrap items-center gap-5 text-sm text-slate-500">
+                              <div className="mt-7 flex flex-wrap items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
                                 {blog.createdAt && (
                                   <span className="flex items-center gap-2">
                                     <CalendarDays className="h-4 w-4 text-cyan-400" />

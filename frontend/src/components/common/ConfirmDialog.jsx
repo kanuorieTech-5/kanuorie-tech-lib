@@ -34,7 +34,7 @@ export default function ConfirmDialog({
         </div>
       }
     >
-      <p className="leading-7 text-gray-600">{message}</p>
+      <p className="leading-7 text-gray-600 dark:text-slate-400">{message}</p>
     </Modal>
   );
 }

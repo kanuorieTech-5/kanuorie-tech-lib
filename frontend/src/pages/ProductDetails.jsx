@@ -147,8 +147,8 @@ export default function ProductDetails() {
               items-center
               justify-center
               rounded-2xl
-              bg-slate-100
-              text-slate-500
+              bg-slate-100 dark:bg-slate-900
+              text-slate-500 dark:text-slate-400
             "
           >
             <BookOpen size={28} />
@@ -159,13 +159,13 @@ export default function ProductDetails() {
               mb-4
               text-3xl
               font-bold
-              text-slate-900
+              text-slate-900 dark:text-slate-100
             "
           >
             Product not found
           </h1>
 
-          <p className="mb-8 text-slate-600">
+          <p className="mb-8 text-slate-600 dark:text-slate-400">
             {error ||
               "The product you're looking for may have been removed or is no longer available."}
           </p>
@@ -553,7 +553,7 @@ export default function ProductDetails() {
       ===================================================== */}
 
       <section
-        className=" bg-slate-50 px-6 py-16 lg:px-8 lg:py-20"
+        className=" bg-slate-50 dark:bg-slate-950 px-6 py-16 lg:px-8 lg:py-20"
       >
         <div
           className="mx-auto grid gap-8lg:grid-cols-[1fr_360px]
@@ -587,14 +587,14 @@ export default function ProductDetails() {
                 </p>
 
                 <h2
-                  className="text-3xlfont-bold text-slate-900"
+                  className="text-3xlfont-bold text-slate-900 dark:text-slate-100"
                 >
                   {product.name}
                 </h2>
               </div>
 
               <div
-                className=" whitespace-pre-line text-base leading-8 text-slate-600"
+                className=" whitespace-pre-line text-base leading-8 text-slate-600 dark:text-slate-400"
               >
                 {product.description ||
                   "No detailed description has been provided yet."}
@@ -605,7 +605,7 @@ export default function ProductDetails() {
               {technologies.length > 0 && (
                 <div className="mt-10">
                   <h3
-                    className="mb-4 text-lg font-bold text-slate-900"
+                    className="mb-4 text-lg font-bold text-slate-900 dark:text-slate-100"
                   >
                     Technologies & Tags
                   </h3>
@@ -614,7 +614,7 @@ export default function ProductDetails() {
                     {technologies.map((technology) => (
                       <span
                         key={technology}
-                        className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700"
+                        className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-300"
                       >
                         {technology}
                       </span>
@@ -653,7 +653,7 @@ export default function ProductDetails() {
                   mb-2
                   text-sm
                   font-medium
-                  text-slate-500
+                  text-slate-500 dark:text-slate-400
                 "
               >
                 Pricing
@@ -664,7 +664,7 @@ export default function ProductDetails() {
                   mb-4
                   text-3xl
                   font-black
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                 "
               >
                 {pricingLabel}
@@ -689,7 +689,7 @@ export default function ProductDetails() {
                   mt-4
                   text-sm
                   leading-6
-                  text-slate-500
+                  text-slate-500 dark:text-slate-400
                 "
               >
                 Pricing information is provided for reference. Visit the
@@ -705,7 +705,7 @@ export default function ProductDetails() {
                   mb-5
                   text-lg
                   font-bold
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                 "
               >
                 Useful Links
@@ -723,11 +723,11 @@ export default function ProductDetails() {
                       justify-between
                       rounded-xl
                       border
-                      border-slate-200
+                      border-slate-200 dark:border-slate-700
                       p-3
                       text-sm
                       font-medium
-                      text-slate-700
+                      text-slate-700 dark:text-slate-300
                       transition
                       hover:border-blue-300
                       hover:bg-blue-50
@@ -754,11 +754,11 @@ export default function ProductDetails() {
                       justify-between
                       rounded-xl
                       border
-                      border-slate-200
+                      border-slate-200 dark:border-slate-700
                       p-3
                       text-sm
                       font-medium
-                      text-slate-700
+                      text-slate-700 dark:text-slate-300
                       transition
                       hover:border-blue-300
                       hover:bg-blue-50
@@ -785,11 +785,11 @@ export default function ProductDetails() {
                       justify-between
                       rounded-xl
                       border
-                      border-slate-200
+                      border-slate-200 dark:border-slate-700
                       p-3
                       text-sm
                       font-medium
-                      text-slate-700
+                      text-slate-700 dark:text-slate-300
                       transition
                       hover:border-blue-300
                       hover:bg-blue-50
@@ -808,7 +808,7 @@ export default function ProductDetails() {
                 {!product.websiteUrl &&
                   !product.documentationUrl &&
                   !product.githubUrl && (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       No external links have been added yet.
                     </p>
                   )}
@@ -822,7 +822,7 @@ export default function ProductDetails() {
                 className="
                   mb-3
                   text-sm
-                  text-slate-500
+                  text-slate-500 dark:text-slate-400
                 "
               >
                 Category

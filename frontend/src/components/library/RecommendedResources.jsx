@@ -57,7 +57,7 @@ export default function RecommendedResources({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, delay: 0.1 }}
-            className="mt-4 text-3xl font-bold text-slate-900"
+            className="mt-4 text-3xl font-bold text-slate-900 dark:text-slate-100"
           >
             You Might Also Like
           </motion.h2>
@@ -67,7 +67,7 @@ export default function RecommendedResources({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, delay: 0.15 }}
-            className="mt-2 max-w-2xl text-gray-600"
+            className="mt-2 max-w-2xl text-gray-600 dark:text-slate-400"
           >
             Based on the resources you've already saved, you may also like
             these.

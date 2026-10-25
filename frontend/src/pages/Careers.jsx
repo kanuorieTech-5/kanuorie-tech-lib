@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 
 import TeamApplicationForm from "../components/forms/TeamApplicationForm";
 import { submitCareerApplication } from "../api/careerApplicationApi";
-import { getPublicOpportunities } from "../api/opportunityApi";
+import { getAllPublicOpportunities } from "../api/opportunityApi";
 /* ==========================================
    ANIMATION
 ========================================== */
@@ -180,9 +180,7 @@ export default function Careers() {
       setOpportunitiesLoading(true);
       setOpportunitiesError("");
 
-      const response = await getPublicOpportunities({ limit: 100 });
-      const result = response?.data ?? response;
-      const items = Array.isArray(result?.items) ? result.items : [];
+      const items = await getAllPublicOpportunities();
 
       if (isMounted) {
         setOpportunities(items);
@@ -283,14 +281,9 @@ export default function Careers() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      {/* =========================================
-          HERO
-      ========================================= */}
-
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <section className="relative overflow-hidden bg-slate-950">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(37,99,235,0.25),transparent_35%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.16),transparent_35%)]" />
-
         <div className="relative mx-auto px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
           <motion.div
             initial="hidden"
@@ -317,17 +310,13 @@ export default function Careers() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => openApplication()}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-500"
+              <Link to="careerDetails"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
               >
-                Explore Opportunities
-                <ArrowRight className="h-4 w-4" />
-              </button>
+                Explore Open Opportunities
+              </Link>
 
-              <Link
-                to="/about"
+              <Link to="about"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
               >
                 About KanuorieTech
@@ -340,7 +329,6 @@ export default function Careers() {
       {/* =========================================
           WHY JOIN
       ========================================= */}
-
       <section className="mx-auto px-6 py-16 lg:px-8">
         <motion.div
           initial="hidden"
@@ -357,7 +345,7 @@ export default function Careers() {
             Grow while building meaningful technology
           </h2>
 
-          <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+          <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
             We're creating an environment where technology professionals,
             educators, creators, and learners can contribute, collaborate, and
             keep developing their skills.
@@ -376,7 +364,7 @@ export default function Careers() {
                 viewport={{ once: true, amount: 0.15 }}
                 variants={fadeUp}
                 transition={{ delay: index * 0.05 }}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                   <Icon className="h-5 w-5" />
@@ -386,7 +374,7 @@ export default function Careers() {
                   {benefit.title}
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
                   {benefit.description}
                 </p>
               </motion.div>
@@ -401,7 +389,7 @@ export default function Careers() {
 
       <section
         id="open-opportunities"
-        className="border-y border-slate-200 bg-white"
+        className="border-y border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
       >
         <div className="mx-auto px-6 py-16 lg:px-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -414,13 +402,13 @@ export default function Careers() {
                 Find your next opportunity
               </h2>
 
-              <p className="mt-3 max-w-2xl text-slate-600">
+              <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
                 Explore current jobs, internships, scholarships, grants,
                 fellowships, and other opportunities published by KanuorieTech.
               </p>
             </div>
 
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-600">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
               <span
                 className={`h-2 w-2 rounded-full ${
                   opportunitiesLoading
@@ -453,7 +441,7 @@ export default function Careers() {
               {[1, 2, 3, 4].map((item) => (
                 <div
                   key={item}
-                  className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-7"
+                  className="animate-pulse rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-6 sm:p-7"
                 >
                   <div className="flex items-start gap-4">
                     <div className="h-12 w-12 rounded-xl bg-slate-200" />
@@ -492,13 +480,8 @@ export default function Careers() {
                   setOpportunitiesError("");
                   setOpportunitiesLoading(true);
 
-                  getPublicOpportunities({ limit: 100 })
-                    .then((response) => {
-                      const result = response?.data ?? response;
-                      const items = Array.isArray(result?.items)
-                        ? result.items
-                        : [];
-
+                  getAllPublicOpportunities()
+                    .then((items) => {
                       setOpportunities(items);
                     })
                     .catch((err) => {
@@ -527,16 +510,16 @@ export default function Careers() {
           {!opportunitiesLoading &&
             !opportunitiesError &&
             opportunities.length === 0 && (
-              <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center sm:px-10">
+              <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 px-6 py-12 text-center sm:px-10">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
                   <BriefcaseBusiness className="h-7 w-7" />
                 </div>
 
-                <h3 className="mt-5 text-xl font-black text-slate-900">
+                <h3 className="mt-5 text-xl font-black text-slate-900 dark:text-slate-100">
                   No open opportunities right now
                 </h3>
 
-                <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">
+                <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600 dark:text-slate-400">
                   We don't have any published opportunities at the moment.
                   You can still introduce yourself and join our talent network
                   for future opportunities.
@@ -607,7 +590,7 @@ export default function Careers() {
                       viewport={{ once: true, amount: 0.1 }}
                       variants={fadeUp}
                       transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                      className="group flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6 transition duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg sm:p-7"
+                      className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-6 transition duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg sm:p-7"
                     >
                       {/* Opportunity heading */}
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -618,7 +601,7 @@ export default function Careers() {
 
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <h3 className="text-xl font-bold text-slate-900">
+                              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                                 {opportunity.title}
                               </h3>
 
@@ -636,12 +619,12 @@ export default function Careers() {
                             )}
 
                             {opportunity.category && (
-                              <p className="mt-1 text-xs text-slate-500">
+                              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                 {opportunity.category}
                               </p>
                             )}
                             {/* Location and work arrangement */}
-                            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-medium text-slate-500">
+                            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-medium text-slate-500 dark:text-slate-400">
                               {opportunity.location && (
                                 <span className="inline-flex items-center gap-1.5">
                                   <MapPin className="h-4 w-4 shrink-0" />
@@ -671,13 +654,13 @@ export default function Careers() {
                             </div>
                           </div>
                         </div>
-                        <span className="w-fit shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
+                        <span className="w-fit shrink-0 rounded-full bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 shadow-sm">
                           {typeLabel}
                         </span>
                       </div>
 
                       {/* Short Description */}
-                      <p className="mt-5 text-sm leading-7 text-slate-600">
+                      <p className="mt-5 text-sm leading-7 text-slate-600 dark:text-slate-400">
                         {opportunity.description
                           ? opportunity.description.length > 180
                             ? `${opportunity.description.slice(0, 180).trimEnd()}...`
@@ -720,13 +703,13 @@ export default function Careers() {
                       {expandedOpportunities[
                         opportunity._id || opportunity.id || opportunity.slug
                       ] && (
-                        <div className="mt-5 space-y-6 border-t border-slate-200 pt-5">
+                        <div className="mt-5 space-y-6 border-t border-slate-200 dark:border-slate-700 pt-5">
                           {/* Full Description */}
                           <div>
-                            <h4 className="mb-2 text-sm font-bold text-slate-900">
+                            <h4 className="mb-2 text-sm font-bold text-slate-900 dark:text-slate-100">
                               Full Description
                             </h4>
-                            <p className="whitespace-pre-line text-sm leading-7 text-slate-600">
+                            <p className="whitespace-pre-line text-sm leading-7 text-slate-600 dark:text-slate-400">
                               {opportunity.description ||
                                 "No additional description provided."}
                             </p>
@@ -736,7 +719,7 @@ export default function Careers() {
                           {Array.isArray(opportunity.requirements) &&
                             opportunity.requirements.length > 0 && (
                               <div>
-                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100">
                                   <CheckCircle2 className="h-5 w-5 text-blue-600" />
                                   Requirements
                                 </h4>
@@ -745,7 +728,7 @@ export default function Careers() {
                                   {opportunity.requirements.map((requirement, i) => (
                                     <li
                                       key={`requirement-${i}`}
-                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600"
+                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
                                     >
                                       <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-blue-500" />
                                       <span>{requirement}</span>
@@ -759,7 +742,7 @@ export default function Careers() {
                           {Array.isArray(opportunity.benefits) &&
                             opportunity.benefits.length > 0 && (
                               <div>
-                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100">
                                   <GraduationCap className="h-5 w-5 text-emerald-600" />
                                   What You'll Gain
                                 </h4>
@@ -768,7 +751,7 @@ export default function Careers() {
                                   {opportunity.benefits.map((benefit, i) => (
                                     <li
                                       key={`benefit-${i}`}
-                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600"
+                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
                                     >
                                       <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-500" />
                                       <span>{benefit}</span>
@@ -787,7 +770,7 @@ export default function Careers() {
                             {opportunity.tags.slice(0, 6).map((tag, tagIndex) => (
                               <span
                                 key={`${tag}-${tagIndex}`}
-                                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600"
+                                className="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400"
                               >
                                 {tag}
                               </span>
@@ -796,7 +779,13 @@ export default function Careers() {
                         )}
 
                       {/* Application action */}
-                      <div className="mt-auto pt-6">
+                      <div className="mt-auto flex flex-wrap items-center gap-5 pt-6">
+                        <Link
+                          to={`/careers/${encodeURIComponent(opportunity.slug || opportunity._id || opportunity.id)}`}
+                          className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300 transition hover:text-blue-700"
+                        >
+                          View details <ArrowRight className="h-4 w-4" />
+                        </Link>
                         {isExternalApplication ? (
                           <a
                             href={applicationUrl}
@@ -867,7 +856,7 @@ export default function Careers() {
             <button
               type="button"
               onClick={() => openApplication("Internship / Early Career")}
-              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white dark:bg-slate-900 px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
             >
               Explore Early Career Opportunities
               <ArrowRight className="h-4 w-4" />
@@ -879,7 +868,7 @@ export default function Careers() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9"
+            className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-7 shadow-sm sm:p-9"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
               <Handshake className="h-6 w-6" />
@@ -889,7 +878,7 @@ export default function Careers() {
               Build with us
             </h2>
 
-            <p className="mt-4 leading-7 text-slate-600">
+            <p className="mt-4 leading-7 text-slate-600 dark:text-slate-400">
               Not looking for a traditional job? We also welcome freelancers,
               educators, creators, developers, designers, cybersecurity
               professionals, and other specialists interested in collaborating
@@ -899,7 +888,7 @@ export default function Careers() {
             <button
               type="button"
               onClick={() => openApplication("Freelance / Collaboration")}
-              className="mt-7 inline-flex items-center gap-2 rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-900 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-5 py-3 text-sm font-bold text-slate-900 dark:text-slate-100 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
             >
               Join Our Talent Network
               <UserPlus className="h-4 w-4" />
@@ -912,7 +901,7 @@ export default function Careers() {
           INSTRUCTOR
       ========================================= */}
 
-      <section className="border-y border-slate-200 bg-slate-100">
+      <section className="border-y border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
         <div className="mx-auto px-6 py-16 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
             <div>
@@ -924,7 +913,7 @@ export default function Careers() {
                 Turn your expertise into practical learning
               </h2>
 
-              <p className="mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mt-4 max-w-2xl leading-7 text-slate-600 dark:text-slate-400">
                 KanuorieTech is building a learning ecosystem for developers
                 and technology professionals. If you have valuable expertise,
                 you can contribute courses, workshops, tutorials, and other
@@ -969,7 +958,7 @@ export default function Careers() {
               viewport={{ once: true }}
               variants={fadeUp}
               transition={{ delay: index * 0.05 }}
-              className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm"
             >
               <span className="text-sm font-black text-blue-600">
                 {step.number}
@@ -977,7 +966,7 @@ export default function Careers() {
 
               <h3 className="mt-4 text-lg font-bold">{step.title}</h3>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 {step.description}
               </p>
             </motion.div>
@@ -1007,7 +996,7 @@ export default function Careers() {
             return (
               <div
                 key={faq.question}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
               >
                 <button
                   type="button"
@@ -1015,7 +1004,7 @@ export default function Careers() {
                   aria-expanded={isOpen}
                   className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left sm:px-6"
                 >
-                  <span className="font-semibold text-slate-900">
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">
                     {faq.question}
                   </span>
 
@@ -1026,7 +1015,7 @@ export default function Careers() {
 
                 {isOpen && (
                   <div className="border-t border-slate-100 px-5 pb-5 pt-4 sm:px-6">
-                    <p className="text-sm leading-7 text-slate-600">
+                    <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">
                       {faq.answer}
                     </p>
                   </div>
@@ -1036,41 +1025,9 @@ export default function Careers() {
           })}
         </div>
       </section>
-
-      {/* =========================================
-          FINAL CTA
-      ========================================= */}
-
-      <section className="bg-slate-950">
-        <div className="mx-auto px-6 py-16 text-center lg:px-8">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400">
-            <UserPlus className="h-7 w-7" />
-          </div>
-
-          <h2 className="mt-5 text-3xl font-black text-white sm:text-4xl">
-            Your next opportunity could start here.
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-400">
-            Explore opportunities, share your skills, and become part of the
-            KanuorieTech journey.
-          </p>
-
-          <button
-            type="button"
-            onClick={() => openApplication()}
-            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-500"
-          >
-            Join the Talent Network
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </section>
-
       {/* =========================================
           APPLICATION MODAL
       ========================================= */}
-
       <AnimatePresence>
         {isApplicationOpen && (
           <motion.div
@@ -1093,10 +1050,10 @@ export default function Careers() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+              className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl"
             >
               {/* Modal header */}
-              <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-8">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-5 py-5 sm:px-8">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
                     Careers at KanuorieTech
@@ -1104,14 +1061,14 @@ export default function Careers() {
 
                   <h2
                     id="application-modal-title"
-                    className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+                    className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl"
                   >
                     {submitted
                       ? "Application received"
                       : "Apply for an opportunity"}
                   </h2>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
                     {submitted
                       ? "Thank you for your interest in joining our team."
                       : "Tell us about yourself, your skills, and what you can contribute."}
@@ -1123,7 +1080,7 @@ export default function Careers() {
                   onClick={closeApplication}
                   disabled={loading}
                   aria-label="Close application form"
-                  className="shrink-0 rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="shrink-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -1137,11 +1094,11 @@ export default function Careers() {
                       <CheckCircle2 className="h-8 w-8" />
                     </div>
 
-                    <h3 className="mt-5 text-xl font-black text-slate-900">
+                    <h3 className="mt-5 text-xl font-black text-slate-900 dark:text-slate-100">
                       Your application was submitted!
                     </h3>
 
-                    <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">
+                    <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600 dark:text-slate-400">
                       Our team will review your application and contact you if
                       there is a suitable next step.
                     </p>

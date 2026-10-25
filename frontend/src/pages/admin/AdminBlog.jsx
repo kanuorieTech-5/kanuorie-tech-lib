@@ -640,10 +640,6 @@ export default function AdminBlog() {
 
   return (
     <section className="space-y-6 py-2">
-      {/* =========================
-          HEADER
-      ========================= */}
-
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="flex items-center gap-3">
@@ -652,11 +648,11 @@ export default function AdminBlog() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Blog Management
               </h1>
 
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Create, edit, publish, and manage your blog content.
               </p>
             </div>
@@ -688,7 +684,7 @@ export default function AdminBlog() {
               value={search}
               onChange={handleSearchChange}
               placeholder="Search title or excerpt..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             />
           </div>
 
@@ -697,7 +693,7 @@ export default function AdminBlog() {
           <select
             value={category}
             onChange={handleCategoryChange}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
           >
             <option value="">All categories</option>
 
@@ -713,7 +709,7 @@ export default function AdminBlog() {
           <select
             value={featuredFilter}
             onChange={handleFeaturedChange}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
           >
             <option value="">All posts</option>
 
@@ -734,7 +730,7 @@ export default function AdminBlog() {
 
         {/* RESULTS INFO */}
 
-        <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <span>
             Showing {blogs.length} of {pagination.total} blog{" "}
             {pagination.total === 1 ? "post" : "posts"}
@@ -757,11 +753,11 @@ export default function AdminBlog() {
         <Card className="overflow-hidden">
           <div className="flex items-start justify-between border-b border-slate-100 p-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 {editingBlog ? "Edit Blog Post" : "Create Blog Post"}
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {editingBlog
                   ? "Update the content and publishing settings for this article."
                   : "Create a new article for the KanuorieTech blog."}
@@ -783,7 +779,7 @@ export default function AdminBlog() {
             {/* TITLE */}
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Title *
               </label>
 
@@ -792,7 +788,7 @@ export default function AdminBlog() {
                 value={form.title}
                 onChange={handleChange}
                 placeholder="Enter blog title"
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 required
               />
             </div>
@@ -801,7 +797,7 @@ export default function AdminBlog() {
 
             <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Category
                 </label>
 
@@ -810,12 +806,12 @@ export default function AdminBlog() {
                   value={form.category}
                   onChange={handleChange}
                   placeholder="Technology"
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Reading Time
                 </label>
 
@@ -831,7 +827,7 @@ export default function AdminBlog() {
                     min="1"
                     value={form.readingTime}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-3 pl-10 pr-4 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
                   />
                 </div>
 
@@ -844,15 +840,15 @@ export default function AdminBlog() {
             {/* COVER IMAGE */}
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Cover Image
               </label>
 
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-5 transition hover:border-blue-300">
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-5 transition hover:border-blue-300">
                 <div className="flex flex-col gap-5 md:flex-row md:items-center">
                   {/* IMAGE PREVIEW */}
 
-                  <div className="relative h-48 w-full overflow-hidden rounded-xl bg-slate-100 md:w-72">
+                  <div className="relative h-48 w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900 md:w-72">
                     {coverPreview ? (
                       <>
                         <img
@@ -905,7 +901,7 @@ export default function AdminBlog() {
                         className="hidden"
                       />
 
-                      <p className="text-xs leading-5 text-slate-500">
+                      <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                         JPG, JPEG, PNG, WEBP, GIF or SVG.
                         <br />
                         Maximum file size: 10 MB.
@@ -940,7 +936,7 @@ export default function AdminBlog() {
 
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Excerpt *
                 </label>
 
@@ -962,7 +958,7 @@ export default function AdminBlog() {
                 rows={4}
                 maxLength={300}
                 placeholder="Write a short summary of the article..."
-                className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 required
               />
             </div>
@@ -970,7 +966,7 @@ export default function AdminBlog() {
             {/* CONTENT */}
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Content *
               </label>
 
@@ -980,7 +976,7 @@ export default function AdminBlog() {
                 onChange={handleChange}
                 rows={14}
                 placeholder="Write your article content..."
-                className="w-full resize-y rounded-xl border border-slate-200 px-4 py-3 leading-7 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 leading-7 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 required
               />
             </div>
@@ -988,7 +984,7 @@ export default function AdminBlog() {
             {/* TAGS */}
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Tags
               </label>
 
@@ -997,7 +993,7 @@ export default function AdminBlog() {
                 value={form.tags}
                 onChange={handleChange}
                 placeholder="react, javascript, web development"
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
               />
 
               <p className="mt-1 text-xs text-slate-400">
@@ -1008,7 +1004,7 @@ export default function AdminBlog() {
             {/* PUBLISHING OPTIONS */}
 
             <div className="grid gap-4 md:grid-cols-2">
-              <label className="flex cursor-pointer items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30">
+              <label className="flex cursor-pointer items-center gap-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 transition hover:border-blue-300 hover:bg-blue-50/30">
                 <input
                   type="checkbox"
                   name="published"
@@ -1018,7 +1014,7 @@ export default function AdminBlog() {
                 />
 
                 <div>
-                  <div className="flex items-center gap-2 font-semibold text-slate-800">
+                  <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
                     {form.published ? (
                       <Eye className="text-green-600" size={17} />
                     ) : (
@@ -1028,7 +1024,7 @@ export default function AdminBlog() {
                     {form.published ? "Published" : "Draft"}
                   </div>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     {form.published
                       ? "This article can appear on the public blog."
                       : "Keep this article hidden until it is ready."}
@@ -1036,7 +1032,7 @@ export default function AdminBlog() {
                 </div>
               </label>
 
-              <label className="flex cursor-pointer items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-yellow-300 hover:bg-yellow-50/30">
+              <label className="flex cursor-pointer items-center gap-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 transition hover:border-yellow-300 hover:bg-yellow-50/30">
                 <input
                   type="checkbox"
                   name="featured"
@@ -1046,7 +1042,7 @@ export default function AdminBlog() {
                 />
 
                 <div>
-                  <div className="flex items-center gap-2 font-semibold text-slate-800">
+                  <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
                     <Star
                       size={17}
                       className={
@@ -1058,7 +1054,7 @@ export default function AdminBlog() {
                     Featured Article
                   </div>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Highlight this article in featured blog sections.
                   </p>
                 </div>
@@ -1067,11 +1063,11 @@ export default function AdminBlog() {
 
             {/* SEO */}
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-5">
               <div className="mb-5">
-                <h3 className="font-semibold text-slate-900">SEO Settings</h3>
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">SEO Settings</h3>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Optional metadata to help search engines understand this
                   article.
                 </p>
@@ -1079,7 +1075,7 @@ export default function AdminBlog() {
 
               <div className="space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     SEO Title
                   </label>
 
@@ -1088,12 +1084,12 @@ export default function AdminBlog() {
                     value={form.seoTitle}
                     onChange={handleChange}
                     placeholder="SEO-friendly page title"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     SEO Description
                   </label>
 
@@ -1103,7 +1099,7 @@ export default function AdminBlog() {
                     onChange={handleChange}
                     rows={3}
                     placeholder="Short description for search engines..."
-                    className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
               </div>
@@ -1117,6 +1113,7 @@ export default function AdminBlog() {
                 variant="outline"
                 onClick={resetForm}
                 disabled={saving || uploadingImage}
+                className="text-slate-700 bg-slate-100 hover:bg-slate-200"
               >
                 Cancel
               </Button>
@@ -1141,13 +1138,13 @@ export default function AdminBlog() {
         <Card className="p-12 text-center">
           <FileText size={46} className="mx-auto text-slate-300" />
 
-          <h3 className="mt-4 text-lg font-semibold text-slate-900">
+          <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
             {search || category || featuredFilter !== ""
               ? "No blog posts found"
               : "No blog posts yet"}
           </h3>
 
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
             {search || category || featuredFilter !== ""
               ? "Try changing your search or filters."
               : "Create your first blog post to start publishing content."}
@@ -1181,7 +1178,7 @@ export default function AdminBlog() {
                 >
                   {/* COVER IMAGE */}
 
-                  <div className="relative h-52 overflow-hidden bg-slate-100">
+                  <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-900">
                     {blog.coverImage ? (
                       <img
                         src={blog.coverImage}
@@ -1228,7 +1225,7 @@ export default function AdminBlog() {
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
                       {blog.category && (
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-600">
+                        <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-2.5 py-1 font-medium text-slate-600 dark:text-slate-400">
                           {blog.category}
                         </span>
                       )}
@@ -1243,19 +1240,19 @@ export default function AdminBlog() {
 
                     {/* TITLE */}
 
-                    <h3 className="mt-4 line-clamp-2 text-lg font-bold leading-7 text-slate-900">
+                    <h3 className="mt-4 line-clamp-2 text-lg font-bold leading-7 text-slate-900 dark:text-slate-100">
                       {blog.title}
                     </h3>
 
                     {/* EXCERPT */}
 
-                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
+                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
                       {blog.excerpt || "No description available."}
                     </p>
 
                     {/* META */}
 
-                    <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+                    <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                       <span className="flex items-center gap-1.5">
                         <User size={14} />
                         {getAuthorName(blog.author)}
@@ -1286,7 +1283,7 @@ export default function AdminBlog() {
                         ))}
 
                         {blog.tags.length > 4 && (
-                          <span className="rounded-md bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-500">
+                          <span className="rounded-md bg-slate-100 dark:bg-slate-900 px-2 py-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
                             +{blog.tags.length - 4}
                           </span>
                         )}
@@ -1298,10 +1295,10 @@ export default function AdminBlog() {
                     <div className="mt-5 flex gap-2 border-t border-slate-100 pt-4">
                       <Button
                         variant="outline"
-                        className="flex-1"
+                        className="flex-1 text-blue-600 bg-blue-50"
                         onClick={() => openEditForm(blog)}
                       >
-                        <Edit3 size={16} className="mr-2" />
+                        <Edit3 size={16} className="mr-2 " />
                         Edit
                       </Button>
 
@@ -1332,7 +1329,7 @@ export default function AdminBlog() {
           {pagination.pages > 1 && (
             <Card className="p-4">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   Page {pagination.page} of {pagination.pages}
                 </p>
 

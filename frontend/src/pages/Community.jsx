@@ -1,5 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts";
 import {
   Search,
   Plus,
@@ -22,6 +24,11 @@ import {
 import {
   getCommunityPosts,
   createCommunityPost,
+  getCommunityComments,
+  createCommunityComment,
+  toggleCommunityLike,
+  toggleCommunitySave,
+  shareCommunityPost,
 } from "../services/community.service";
 
 /* ==========================================
@@ -147,6 +154,7 @@ const getAuthorName = (author) => {
 ========================================== */
 
 export default function Community() {
+  const { user } = useAuth();
   /* ========================================
      FEED STATE
   ======================================== */
@@ -154,6 +162,13 @@ export default function Community() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [commentsByPost, setCommentsByPost] = useState({});
+  const [openComments, setOpenComments] = useState({});
+  const [commentsLoading, setCommentsLoading] = useState({});
+  const [commentDrafts, setCommentDrafts] = useState({});
+  const [commentSubmitting, setCommentSubmitting] = useState({});
+  const [actionBusy, setActionBusy] = useState({});
+  const [actionNotices, setActionNotices] = useState({});
 
   /* ========================================
      FILTER STATE
@@ -223,6 +238,123 @@ export default function Community() {
   useEffect(() => {
     loadPosts();
   }, []);
+
+  const setPostNotice = (postId, message, isError = false) => {
+    setActionNotices((current) => ({ ...current, [postId]: { message, isError } }));
+  };
+
+  const requireSignIn = (postId) => {
+    if (user) return true;
+    setPostNotice(postId, "Sign in to like, save, or comment on a post.", true);
+    return false;
+  };
+
+  const handleToggleLike = async (post) => {
+    const postId = post._id || post.id;
+    if (!requireSignIn(postId) || actionBusy[postId]) return;
+    setActionBusy((current) => ({ ...current, [postId]: true }));
+    setPostNotice(postId, "");
+    try {
+      const response = await toggleCommunityLike(postId);
+      const result = response?.data || {};
+      setPosts((items) => items.map((item) =>
+        (item._id || item.id) === postId
+          ? { ...item, likedByMe: result.liked, likesCount: result.likesCount }
+          : item
+      ));
+    } catch (err) {
+      setPostNotice(postId, err?.response?.data?.message || "Could not update your like. Please try again.", true);
+    } finally {
+      setActionBusy((current) => ({ ...current, [postId]: false }));
+    }
+  };
+
+  const handleToggleSave = async (post) => {
+    const postId = post._id || post.id;
+    if (!requireSignIn(postId) || actionBusy[postId]) return;
+    setActionBusy((current) => ({ ...current, [postId]: true }));
+    setPostNotice(postId, "");
+    try {
+      const response = await toggleCommunitySave(postId);
+      const saved = response?.data?.saved;
+      setPosts((items) => items.map((item) =>
+        (item._id || item.id) === postId ? { ...item, savedByMe: saved } : item
+      ));
+      setPostNotice(postId, saved ? "Post saved." : "Post removed from saved posts.");
+    } catch (err) {
+      setPostNotice(postId, err?.response?.data?.message || "Could not update your saved posts. Please try again.", true);
+    } finally {
+      setActionBusy((current) => ({ ...current, [postId]: false }));
+    }
+  };
+
+  const handleToggleComments = async (post) => {
+    const postId = post._id || post.id;
+    if (openComments[postId]) {
+      setOpenComments((current) => ({ ...current, [postId]: false }));
+      return;
+    }
+    setOpenComments((current) => ({ ...current, [postId]: true }));
+    if (commentsByPost[postId]) return;
+    setCommentsLoading((current) => ({ ...current, [postId]: true }));
+    try {
+      const response = await getCommunityComments(postId, { page: 1, limit: 50 });
+      setCommentsByPost((current) => ({ ...current, [postId]: response?.data?.items || [] }));
+    } catch (err) {
+      setPostNotice(postId, err?.response?.data?.message || "Could not load comments. Please try again.", true);
+      setOpenComments((current) => ({ ...current, [postId]: false }));
+    } finally {
+      setCommentsLoading((current) => ({ ...current, [postId]: false }));
+    }
+  };
+
+  const handleCreateComment = async (event, post) => {
+    event.preventDefault();
+    const postId = post._id || post.id;
+    if (!requireSignIn(postId)) return;
+    const content = (commentDrafts[postId] || "").trim();
+    if (!content || commentSubmitting[postId]) return;
+    setCommentSubmitting((current) => ({ ...current, [postId]: true }));
+    setPostNotice(postId, "");
+    try {
+      const response = await createCommunityComment(postId, content);
+      const comment = response?.data?.comment;
+      if (comment) {
+        setCommentsByPost((current) => ({
+          ...current,
+          [postId]: [...(current[postId] || []), comment],
+        }));
+        setPosts((items) => items.map((item) =>
+          (item._id || item.id) === postId
+            ? { ...item, commentsCount: (item.commentsCount || 0) + 1 }
+            : item
+        ));
+        setCommentDrafts((current) => ({ ...current, [postId]: "" }));
+      }
+    } catch (err) {
+      setPostNotice(postId, err?.response?.data?.message || "Could not add your comment. Please try again.", true);
+    } finally {
+      setCommentSubmitting((current) => ({ ...current, [postId]: false }));
+    }
+  };
+
+  const handleSharePost = async (post) => {
+    const postId = post._id || post.id;
+    const url = `${window.location.origin}/community#post-${postId}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: post.title, text: post.content, url });
+        await shareCommunityPost(postId, "native");
+      } else {
+        await navigator.clipboard.writeText(url);
+        await shareCommunityPost(postId, "copy");
+        setPostNotice(postId, "Post link copied.");
+      }
+    } catch (err) {
+      if (err?.name === "AbortError") return;
+      setPostNotice(postId, err?.response?.data?.message || "Could not share this post. Please try again.", true);
+    }
+  };
 
   /* ========================================
      FILTER POSTS
@@ -403,7 +535,7 @@ export default function Community() {
   ======================================== */
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* =========================================
             PAGE HEADER
@@ -422,11 +554,11 @@ export default function Community() {
                 KanuorieTech Community
               </div>
 
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
                 Learn, connect & grow together.
               </h1>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">
                 Connect with other learners, ask
                 questions, share projects, exchange
                 ideas, and grow your technology
@@ -487,7 +619,7 @@ export default function Community() {
                 setSearch(event.target.value)
               }
               placeholder="Search discussions..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3.5 pl-12 pr-4 text-sm text-slate-900 dark:text-slate-100 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
         </motion.div>
@@ -549,7 +681,7 @@ export default function Community() {
             variants={fadeUp}
             transition={{ delay: 0.15 }}
           >
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
               {/* =====================================
                   LOADING
               ===================================== */}
@@ -559,7 +691,7 @@ export default function Community() {
                   <div className="flex flex-col items-center gap-3 text-center">
                     <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
 
-                    <p className="text-sm font-medium text-slate-600">
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
                       Loading community
                       discussions...
                     </p>
@@ -575,11 +707,11 @@ export default function Community() {
                     <AlertCircle className="h-8 w-8 text-red-500" />
                   </div>
 
-                  <h2 className="mt-5 text-lg font-semibold text-slate-900">
+                  <h2 className="mt-5 text-lg font-semibold text-slate-900 dark:text-slate-100">
                     Unable to load the community
                   </h2>
 
-                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
                     {error}
                   </p>
 
@@ -616,6 +748,7 @@ export default function Community() {
                           post._id ||
                           post.id
                         }
+                        id={`post-${post._id || post.id}`}
                         className="p-5 sm:p-6"
                       >
                         <div className="flex gap-3">
@@ -637,7 +770,7 @@ export default function Community() {
 
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-sm font-semibold text-slate-900">
+                              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                                 {authorName}
                               </span>
 
@@ -655,31 +788,36 @@ export default function Community() {
                             </div>
 
                             <div className="mt-2">
-                              <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
+                              <span className="inline-flex rounded-full bg-slate-100 dark:bg-slate-900 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:text-slate-400">
                                 {post.category}
                               </span>
                             </div>
 
-                            <h2 className="mt-3 text-base font-semibold text-slate-900">
+                            <h2 className="mt-3 text-base font-semibold text-slate-900 dark:text-slate-100">
                               {post.title}
                             </h2>
 
-                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">
+                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-slate-400">
                               {post.content}
                             </p>
 
-                            <div className="mt-5 flex items-center gap-5 text-sm text-slate-500">
+                            <div className="mt-5 flex items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
                               <button
                                 type="button"
-                                className="inline-flex items-center gap-1.5 transition hover:text-red-500"
+                                onClick={() => handleToggleLike(post)}
+                                aria-pressed={Boolean(post.likedByMe)}
+                                disabled={actionBusy[post._id || post.id]}
+                                className={`inline-flex items-center gap-1.5 transition hover:text-red-500 disabled:opacity-60 ${post.likedByMe ? "font-semibold text-red-500" : ""}`}
                               >
-                                <Heart className="h-4 w-4" />
+                                <Heart className="h-4 w-4" fill={post.likedByMe ? "currentColor" : "none"} />
                                 {post.likesCount ||
                                   0}
                               </button>
 
                               <button
                                 type="button"
+                                onClick={() => handleToggleComments(post)}
+                                aria-expanded={Boolean(openComments[post._id || post.id])}
                                 className="inline-flex items-center gap-1.5 transition hover:text-blue-600"
                               >
                                 <MessageCircle className="h-4 w-4" />
@@ -689,6 +827,7 @@ export default function Community() {
 
                               <button
                                 type="button"
+                                onClick={() => handleSharePost(post)}
                                 className="inline-flex items-center gap-1.5 transition hover:text-blue-600"
                               >
                                 <Share2 className="h-4 w-4" />
@@ -697,12 +836,64 @@ export default function Community() {
 
                               <button
                                 type="button"
-                                className="ml-auto transition hover:text-blue-600"
-                                aria-label="Save post"
+                                onClick={() => handleToggleSave(post)}
+                                disabled={actionBusy[post._id || post.id]}
+                                aria-label={post.savedByMe ? "Unsave post" : "Save post"}
+                                aria-pressed={Boolean(post.savedByMe)}
+                                className={`ml-auto transition hover:text-blue-600 disabled:opacity-60 ${post.savedByMe ? "text-blue-600" : ""}`}
                               >
-                                <Bookmark className="h-4 w-4" />
+                                <Bookmark className="h-4 w-4" fill={post.savedByMe ? "currentColor" : "none"} />
                               </button>
                             </div>
+
+                            {actionNotices[post._id || post.id]?.message && (
+                              <p className={`mt-2 text-xs ${actionNotices[post._id || post.id].isError ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                                {actionNotices[post._id || post.id].message}
+                                {actionNotices[post._id || post.id].isError && !user && (
+                                  <> <Link to="/login" className="font-semibold underline">Sign in</Link> to continue.</>
+                                )}
+                              </p>
+                            )}
+
+                            {openComments[post._id || post.id] && (
+                              <section className="mt-5 space-y-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-900/70" aria-label="Post comments">
+                                {commentsLoading[post._id || post.id] ? (
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">Loading comments…</p>
+                                ) : (commentsByPost[post._id || post.id] || []).length ? (
+                                  <div className="space-y-4">
+                                    {commentsByPost[post._id || post.id].map((comment) => (
+                                      <div key={comment._id || comment.id} className="border-b border-slate-200 pb-3 last:border-0 last:pb-0 dark:border-slate-700">
+                                        <div className="flex items-center justify-between gap-3">
+                                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{getAuthorName(comment.author)}</span>
+                                          <time className="text-xs text-slate-400">{formatPostDate(comment.createdAt)}</time>
+                                        </div>
+                                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-slate-300">{comment.content}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">No comments yet. Start the conversation.</p>
+                                )}
+
+                                {user ? (
+                                  <form onSubmit={(event) => handleCreateComment(event, post)} className="flex flex-col gap-2 sm:flex-row">
+                                    <input
+                                      value={commentDrafts[post._id || post.id] || ""}
+                                      onChange={(event) => setCommentDrafts((current) => ({ ...current, [post._id || post.id]: event.target.value }))}
+                                      maxLength={2000}
+                                      placeholder="Write a comment…"
+                                      aria-label="Write a comment"
+                                      className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                    />
+                                    <button type="submit" disabled={commentSubmitting[post._id || post.id] || !(commentDrafts[post._id || post.id] || "").trim()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+                                      {commentSubmitting[post._id || post.id] ? "Posting…" : "Comment"}
+                                    </button>
+                                  </form>
+                                ) : (
+                                  <p className="text-sm text-slate-500 dark:text-slate-400"><Link to="/login" className="font-semibold text-blue-600 hover:underline">Sign in</Link> to add a comment.</p>
+                                )}
+                              </section>
+                            )}
                           </div>
                         </div>
                       </article>
@@ -719,7 +910,7 @@ export default function Community() {
                     <Users className="h-8 w-8 text-blue-600" />
                   </div>
 
-                  <h2 className="mt-5 text-lg font-semibold text-slate-900">
+                  <h2 className="mt-5 text-lg font-semibold text-slate-900 dark:text-slate-100">
                     {search.trim() ||
                     activeCategory !==
                       "All Discussions"
@@ -727,7 +918,7 @@ export default function Community() {
                       : "The community is getting ready"}
                   </h2>
 
-                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
                     {search.trim() ||
                     activeCategory !==
                       "All Discussions"
@@ -765,24 +956,24 @@ export default function Community() {
           >
             {/* Community Guidelines */}
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
                   <Users className="h-5 w-5 text-blue-600" />
                 </div>
 
                 <div>
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                     Community
                   </h2>
 
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Learn together
                   </p>
                 </div>
               </div>
 
-              <div className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+              <div className="mt-5 space-y-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 <p>
                   Ask thoughtful questions,
                   share what you're building,
@@ -800,8 +991,8 @@ export default function Community() {
 
             {/* Popular Topics */}
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="font-semibold text-slate-900">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
+              <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                 Explore Topics
               </h2>
 
@@ -821,7 +1012,7 @@ export default function Community() {
                             category.name,
                           )
                         }
-                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-600 transition hover:bg-slate-50 hover:text-blue-600"
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-600 dark:text-slate-400 transition hover:bg-slate-50 hover:text-blue-600"
                       >
                         <Icon className="h-4 w-4 shrink-0" />
                         <span>
@@ -853,7 +1044,7 @@ export default function Community() {
               scale: 1,
               y: 0,
             }}
-            className="w-full max-w-xl rounded-2xl bg-white shadow-2xl"
+            className="w-full max-w-xl rounded-2xl bg-white dark:bg-slate-900 shadow-2xl"
           >
             {/* =====================================
                 MODAL HEADER
@@ -861,11 +1052,11 @@ export default function Community() {
 
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
               <div>
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                   Create a Post
                 </h2>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Start a conversation with the
                   community.
                 </p>
@@ -909,7 +1100,7 @@ export default function Community() {
                 <div>
                   <label
                     htmlFor="community-post-title"
-                    className="text-sm font-medium text-slate-700"
+                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
                   >
                     Post title
                   </label>
@@ -925,7 +1116,7 @@ export default function Community() {
                     }
                     maxLength={150}
                     placeholder="Give your discussion a clear title..."
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
 
@@ -936,7 +1127,7 @@ export default function Community() {
                 <div>
                   <label
                     htmlFor="community-post-category"
-                    className="text-sm font-medium text-slate-700"
+                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
                   >
                     Category
                   </label>
@@ -949,7 +1140,7 @@ export default function Community() {
                         event.target.value,
                       )
                     }
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
                     {categories
                       .slice(1)
@@ -971,7 +1162,7 @@ export default function Community() {
                 <div>
                   <label
                     htmlFor="community-post"
-                    className="text-sm font-medium text-slate-700"
+                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
                   >
                     What's on your mind?
                   </label>
@@ -987,7 +1178,7 @@ export default function Community() {
                     maxLength={5000}
                     rows={6}
                     placeholder="Share a question, project, idea, or something you've learned..."
-                    className="mt-2 w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="mt-2 w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                   <div className="mt-1 text-right text-xs text-slate-400">
@@ -1005,7 +1196,7 @@ export default function Community() {
                   type="button"
                   onClick={closeCreatePost}
                   disabled={creatingPost}
-                  className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Cancel
                 </button>

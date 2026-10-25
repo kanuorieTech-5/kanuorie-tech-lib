@@ -12,6 +12,21 @@ export const getCommunityCategories =
 export const createCommunityPost =
   communityApi.createCommunityPost;
 
+export const getCommunityComments =
+  communityApi.getCommunityComments;
+
+export const createCommunityComment =
+  communityApi.createCommunityComment;
+
+export const toggleCommunityLike =
+  communityApi.toggleCommunityLike;
+
+export const toggleCommunitySave =
+  communityApi.toggleCommunitySave;
+
+export const shareCommunityPost =
+  communityApi.shareCommunityPost;
+
 export const deleteCommunityPost =
   communityApi.deleteCommunityPost;
 

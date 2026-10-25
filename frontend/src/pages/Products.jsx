@@ -351,7 +351,7 @@ export default function Products() {
 
       <section
         className="
-          bg-slate-50
+          bg-slate-50 dark:bg-slate-950
           px-6
           py-16
           lg:px-8
@@ -399,7 +399,7 @@ export default function Products() {
                 text-3xl
                 font-bold
                 tracking-tight
-                text-slate-900
+                text-slate-900 dark:text-slate-100
                 md:text-5xl
               "
             >
@@ -410,7 +410,7 @@ export default function Products() {
               className="max-w-3xl
                 text-base
                 leading-7
-                text-slate-600
+                text-slate-600 dark:text-slate-400
                 lg:text-lg
                 lg:leading-8
               "
@@ -454,10 +454,10 @@ export default function Products() {
                   rounded-xl
                   border
                   border-slate-300
-                  bg-white
+                  bg-white dark:bg-slate-900
                   px-4
                   py-3
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                   shadow-sm
                   outline-none
                   transition
@@ -507,7 +507,7 @@ export default function Products() {
               justify-between
               gap-3
               text-sm
-              text-slate-500
+              text-slate-500 dark:text-slate-400
             "
           >
             <span>
@@ -557,13 +557,13 @@ export default function Products() {
                   mb-3
                   text-2xl
                   font-bold
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                 "
               >
                 No tools found
               </h2>
 
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-400">
                 Try another search term or choose a different category.
               </p>
             </Card>
@@ -610,8 +610,8 @@ export default function Products() {
                           h-full
                           flex-col
                           overflow-hidden
-                          border-slate-200
-                          bg-white
+                          border-slate-200 dark:border-slate-700
+                          bg-white dark:bg-slate-900
                           p-0
                           transition
                           duration-300
@@ -723,7 +723,7 @@ export default function Products() {
                                 line-clamp-2
                                 text-xl
                                 font-bold
-                                text-slate-900
+                                text-slate-900 dark:text-slate-100
                                 transition
                                 group-hover:text-blue-600
                               "
@@ -740,7 +740,7 @@ export default function Products() {
                               line-clamp-3
                               text-sm
                               leading-6
-                              text-slate-600
+                              text-slate-600 dark:text-slate-400
                             "
                         >
                           {product?.excerpt ||
@@ -767,11 +767,11 @@ export default function Products() {
                                     key={technology}
                                     className="
                                           rounded-full
-                                          bg-slate-100
+                                          bg-slate-100 dark:bg-slate-900
                                           px-2.5
                                           py-1
                                           text-xs
-                                          text-slate-600
+                                          text-slate-600 dark:text-slate-400
                                         "
                                   >
                                     {technology}
@@ -823,8 +823,8 @@ export default function Products() {
                                   justify-center
                                   rounded-lg
                                   border
-                                  border-slate-200
-                                  text-slate-500
+                                  border-slate-200 dark:border-slate-700
+                                  text-slate-500 dark:text-slate-400
                                   transition
                                   hover:border-blue-500
                                   hover:text-blue-600
@@ -850,8 +850,8 @@ export default function Products() {
                                   justify-center
                                   rounded-lg
                                   border
-                                  border-slate-200
-                                  text-slate-500
+                                  border-slate-200 dark:border-slate-700
+                                  text-slate-500 dark:text-slate-400
                                   transition
                                   hover:border-slate-500
                                   hover:text-slate-900
@@ -882,8 +882,6 @@ export default function Products() {
           )}
         </div>
       </section>
-      <CTA />
-      <Newsletter />
     </>
   );
 }

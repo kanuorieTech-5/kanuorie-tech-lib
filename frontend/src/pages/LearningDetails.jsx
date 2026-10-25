@@ -212,11 +212,11 @@ export default function BookDetails() {
         <Card className="w-full max-w-lg p-10 text-center">
           <BookOpen size={56} className="mx-auto text-blue-600" />
 
-          <h1 className="mt-6 text-3xl font-black text-slate-900">
+          <h1 className="mt-6 text-3xl font-black text-slate-900 dark:text-slate-100">
             {error ? "Unable to Load Book" : "Book Not Found"}
           </h1>
 
-          <p className="mt-4 leading-7 text-slate-600">
+          <p className="mt-4 leading-7 text-slate-600 dark:text-slate-400">
             {error ||
               "The book you're looking for may have been removed or is no longer available."}
           </p>
@@ -363,7 +363,7 @@ export default function BookDetails() {
                     </Button>
                   </div>
 
-                  <div className="border-t border-slate-200 pt-6">
+                  <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
                     <div className="space-y-4">
                       <InfoRow
                         icon={<User size={17} />}
@@ -468,7 +468,7 @@ export default function BookDetails() {
                   }}
                 />
               ) : (
-                <p className="leading-8 text-slate-700">
+                <p className="leading-8 text-slate-700 dark:text-slate-300">
                   {book.description ||
                     "This book provides practical knowledge and resources designed to help readers develop useful technology skills."}
                 </p>
@@ -500,7 +500,7 @@ export default function BookDetails() {
           WHAT YOU'LL LEARN
       ====================================================== */}
 
-      <section className="bg-slate-50 ">
+      <section className="bg-slate-50 dark:bg-slate-950 ">
         <div className="mx-auto px-6">
           <SectionTitle
             title="What You'll Learn"
@@ -514,7 +514,7 @@ export default function BookDetails() {
                   <CheckCircle2 size={19} className="text-green-600" />
                 </div>
 
-                <p className="leading-7 text-slate-700">{item}</p>
+                <p className="leading-7 text-slate-700 dark:text-slate-300">{item}</p>
               </Card>
             ))}
           </div>
@@ -543,7 +543,7 @@ export default function BookDetails() {
                     {index + 1}
                   </div>
 
-                  <h3 className="font-semibold text-slate-900">{chapter}</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">{chapter}</h3>
                 </div>
 
                 <Badge>Chapter {index + 1}</Badge>
@@ -557,7 +557,7 @@ export default function BookDetails() {
           SPECIFICATIONS
       ====================================================== */}
 
-      <section className="bg-slate-50 py-10 lg:py-20">
+      <section className="bg-slate-50 dark:bg-slate-950 py-10 lg:py-20">
         <div className="mx-auto px-6">
           <SectionTitle
             title="Specifications"
@@ -580,7 +580,7 @@ export default function BookDetails() {
           AUTHOR
       ====================================================== */}
 
-      <section className="py-10 lg:py-20 bg-slate-50">
+      <section className="py-10 lg:py-20 bg-slate-50 dark:bg-slate-950">
         <div className="mx-auto px-6">
           <SectionTitle
             title="About the Author"
@@ -600,7 +600,7 @@ export default function BookDetails() {
 
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="text-2xl font-black text-slate-900">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100">
                     {authorName || "KanuorieTech Team"}
                   </h3>
 
@@ -611,7 +611,7 @@ export default function BookDetails() {
                   {authorRole || "Technology Educator"}
                 </p>
 
-                <p className="mt-4 max-w-3xl leading-8 text-slate-600">
+                <p className="mt-4 max-w-3xl leading-8 text-slate-600 dark:text-slate-400">
                   {authorBio ||
                     "Passionate about creating practical technology resources that help developers, students and professionals learn, build and grow."}
                 </p>
@@ -626,7 +626,7 @@ export default function BookDetails() {
       ====================================================== */}
 
       {fallbackRelatedBooks.length > 0 && (
-        <section className="bg-slate-50 py-10 lg:py-20">
+        <section className="bg-slate-50 dark:bg-slate-950 py-10 lg:py-20">
           <div className="mx-auto px-6">
             <SectionTitle
               title="Related Books"
@@ -669,24 +669,24 @@ export default function BookDetails() {
                           <div className="flex items-center gap-1 text-yellow-500">
                             <Star size={16} fill="currentColor" />
 
-                            <span className="text-sm font-semibold text-slate-700">
+                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                               {item.rating || "4.9"}
                             </span>
                           </div>
                         </div>
 
-                        <h3 className="mt-5 line-clamp-2 text-xl font-bold text-slate-900">
+                        <h3 className="mt-5 line-clamp-2 text-xl font-bold text-slate-900 dark:text-slate-100">
                           {item.title}
                         </h3>
 
-                        <p className="mt-2 text-sm text-slate-500">
+                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                           By{" "}
                           {typeof item.author === "object"
                             ? item.author?.name
                             : item.author || "KanuorieTech"}
                         </p>
 
-                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600">
+                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600 dark:text-slate-400">
                           {item.description ||
                             "Explore this resource from the KanuorieTech Library."}
                         </p>
@@ -764,13 +764,13 @@ export default function BookDetails() {
 function InfoRow({ icon, label, value }) {
   return (
     <div className="flex items-center justify-between gap-5">
-      <span className="flex items-center gap-2 text-sm text-slate-500">
+      <span className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         {icon}
 
         {label}
       </span>
 
-      <strong className="max-w-[55%] text-right text-sm text-slate-900">
+      <strong className="max-w-[55%] text-right text-sm text-slate-900 dark:text-slate-100">
         {value}
       </strong>
     </div>
@@ -782,9 +782,9 @@ function StatCard({ icon, value, label }) {
     <Card className="text-center">
       <div className="flex justify-center text-blue-600">{icon}</div>
 
-      <h3 className="mt-4 text-3xl font-black text-slate-900">{value}</h3>
+      <h3 className="mt-4 text-3xl font-black text-slate-900 dark:text-slate-100">{value}</h3>
 
-      <p className="mt-1 text-sm text-slate-500">{label}</p>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{label}</p>
     </Card>
   );
 }
@@ -792,11 +792,11 @@ function StatCard({ icon, value, label }) {
 function SpecificationCard({ label, value }) {
   return (
     <Card>
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
         {label}
       </p>
 
-      <p className="mt-3 break-words text-lg font-bold text-slate-900">
+      <p className="mt-3 break-words text-lg font-bold text-slate-900 dark:text-slate-100">
         {value}
       </p>
     </Card>

@@ -345,7 +345,7 @@ export default function Projects() {
 
       <section
         className="
-          bg-slate-50
+          bg-slate-50 dark:bg-slate-950
           px-6
           py-16
           lg:px-8
@@ -377,7 +377,7 @@ export default function Projects() {
                 text-3xl
                 font-bold
                 tracking-tight
-                text-slate-900
+                text-slate-900 dark:text-slate-100
                 md:text-5xl
               "
             >
@@ -389,7 +389,7 @@ export default function Projects() {
                 max-w-2xl
                 text-base
                 leading-7
-                text-slate-600
+                text-slate-600 dark:text-slate-400
                 lg:text-lg
                 lg:leading-8
               "
@@ -424,10 +424,10 @@ export default function Projects() {
                   rounded-lg
                   border
                   border-slate-300
-                  bg-white
+                  bg-white dark:bg-slate-900
                   px-4
                   py-3
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                   outline-none
                   transition
                   focus:border-blue-500
@@ -471,7 +471,7 @@ export default function Projects() {
             className="
               mb-6
               text-sm
-              text-slate-500
+              text-slate-500 dark:text-slate-400
             "
           >
             {filteredProjects.length > 0
@@ -501,13 +501,13 @@ export default function Projects() {
                   mb-3
                   text-2xl
                   font-bold
-                  text-slate-900
+                  text-slate-900 dark:text-slate-100
                 "
               >
                 No projects found
               </h2>
 
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-400">
                 Try changing your search or category filter.
               </p>
 
@@ -569,8 +569,8 @@ export default function Projects() {
                           h-full
                           flex-col
                           overflow-hidden
-                          border-slate-200
-                          bg-white
+                          border-slate-200 dark:border-slate-700
+                          bg-white dark:bg-slate-900
                           p-0
                           transition
                           duration-300
@@ -643,7 +643,7 @@ export default function Projects() {
                               mb-3
                               text-2xl
                               font-bold
-                              text-slate-900
+                              text-slate-900 dark:text-slate-100
                             "
                         >
                           {project?.title || "KanuorieTech Project"}
@@ -657,7 +657,7 @@ export default function Projects() {
                               line-clamp-3
                               flex-1
                               leading-7
-                              text-slate-600
+                              text-slate-600 dark:text-slate-400
                             "
                         >
                           {getProjectDescription(project)}
@@ -698,8 +698,6 @@ export default function Projects() {
           )}
         </div>
       </section>
-      <CTA />
-      <Newsletter />
     </>
   );
 }

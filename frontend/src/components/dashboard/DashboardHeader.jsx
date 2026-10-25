@@ -13,12 +13,12 @@ export default function DashboardHeader({
           {location.pathname.startsWith("/admin") ? "Admin Panel" : "Dashboard"}
         </p>
 
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           {title}
         </h1>
 
         {subtitle && (
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
             {subtitle}
           </p>
         )}

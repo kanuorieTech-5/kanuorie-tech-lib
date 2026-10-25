@@ -42,7 +42,7 @@ export default function ForgotPasswordForm({
   };
 
   return (
-    <Card className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-8">
+    <Card className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-xl shadow-slate-200/50 sm:p-8">
       {/* Header */}
       <div className="mb-8">
         <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20">
@@ -57,11 +57,11 @@ export default function ForgotPasswordForm({
           Account Recovery
         </p>
 
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           {success ? "Check Your Email" : "Forgot Password?"}
         </h2>
 
-        <p className="mt-3 leading-6 text-slate-500">
+        <p className="mt-3 leading-6 text-slate-500 dark:text-slate-400">
           {success
             ? "If an account exists for the email address you entered, you should receive instructions to reset your password."
             : "Forgot your password? It happens. Enter the email address associated with your KanuorieTech account and we'll help you get back in."}
@@ -96,7 +96,7 @@ export default function ForgotPasswordForm({
 
           <Link
             to="/login"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 font-semibold text-slate-700 dark:text-slate-300 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
           >
             <ArrowLeft size={18} aria-hidden="true" />
             Back to Login
@@ -138,7 +138,7 @@ export default function ForgotPasswordForm({
 
           <Link
             to="/login"
-            className="flex items-center justify-center gap-2 pt-1 text-sm font-medium text-slate-600 transition hover:text-blue-600"
+            className="flex items-center justify-center gap-2 pt-1 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:text-blue-600"
           >
             <ArrowLeft size={16} aria-hidden="true" />
             Back to Login

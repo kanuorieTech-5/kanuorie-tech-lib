@@ -294,7 +294,7 @@ export default function AdminServices() {
       <div className="relative max-w-xl">
         <Search
           size={19}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400"
         />
 
         <input
@@ -302,7 +302,7 @@ export default function AdminServices() {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search services..."
-          className="w-full rounded-xl border border-white/10 bg-white py-3 pl-11 pr-4 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50"
+          className="w-full rounded-xl border border-white/10 bg-white dark:bg-slate-900 py-3 pl-11 pr-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-cyan-400/50"
         />
       </div>
 
@@ -312,7 +312,7 @@ export default function AdminServices() {
         <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-6 py-16 text-center">
           <h3 className="text-lg font-semibold">No services found</h3>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {search
               ? "Try a different search."
               : "Create your first service to get started."}
@@ -324,23 +324,23 @@ export default function AdminServices() {
             <table className="w-full min-w-[900px] text-left">
               <thead className="border-b border-white/10 bg-white/[0.03]">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Service
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Status
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Featured
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Order
                   </th>
 
-                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Actions
                   </th>
                 </tr>
@@ -375,7 +375,7 @@ export default function AdminServices() {
                             {service.title}
                           </p>
 
-                          <p className="mt-1 max-w-md truncate text-sm text-slate-500">
+                          <p className="mt-1 max-w-md truncate text-sm text-slate-500 dark:text-slate-400">
                             {service.shortDescription}
                           </p>
                         </div>
@@ -409,7 +409,7 @@ export default function AdminServices() {
                           </span>
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-600">No</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400">No</span>
                       )}
                     </td>
 
@@ -463,7 +463,7 @@ export default function AdminServices() {
                   {editingService ? "Edit Service" : "Create Service"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Add the information for this service.
                 </p>
               </div>
@@ -495,7 +495,7 @@ export default function AdminServices() {
                     onChange={handleChange}
                     placeholder="Web Development"
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -513,7 +513,7 @@ export default function AdminServices() {
                     maxLength={200}
                     placeholder="A short description of the service..."
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -531,7 +531,7 @@ export default function AdminServices() {
                     rows={6}
                     placeholder="Describe the service in detail..."
                     required
-                    className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full resize-y rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -547,10 +547,10 @@ export default function AdminServices() {
                     value={form.icon}
                     onChange={handleChange}
                     placeholder="Code2"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
 
-                  <p className="mt-1 text-xs text-slate-600">
+                  <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
                     Use an icon name or emoji.
                   </p>
                 </div>
@@ -567,7 +567,7 @@ export default function AdminServices() {
                     value={form.image}
                     onChange={handleChange}
                     placeholder="https://..."
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -583,7 +583,7 @@ export default function AdminServices() {
                     value={form.price}
                     onChange={handleChange}
                     placeholder="Starting from $500"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                   />
                 </div>
 
@@ -624,7 +624,7 @@ export default function AdminServices() {
                         }
                       }}
                       placeholder="React, Node.js..."
-                      className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                      className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                     />
 
                     <button
@@ -676,7 +676,7 @@ export default function AdminServices() {
                         }
                       }}
                       placeholder="Mobile responsive..."
-                      className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-600 focus:border-cyan-400/50"
+                      className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
                     />
 
                     <button
@@ -700,7 +700,7 @@ export default function AdminServices() {
                           <button
                             type="button"
                             onClick={() => removeBenefit(benefit)}
-                            className="text-slate-500 hover:text-red-400"
+                            className="text-slate-500 dark:text-slate-400 hover:text-red-400"
                           >
                             <X size={16} />
                           </button>

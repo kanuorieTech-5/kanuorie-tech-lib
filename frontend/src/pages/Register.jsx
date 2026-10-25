@@ -29,12 +29,6 @@ export default function Register() {
       toast.error("Please complete all required fields.");
       return;
     }
-    console.log("Register page password check:", {
-      passwordLength: form.password?.length,
-      confirmPasswordLength: form.confirmPassword?.length,
-      passwordsMatch: form.password === form.confirmPassword,
-    });
-
     if (!form.confirmPassword) {
       toast.error("Please confirm your password.");
       return;
@@ -62,6 +56,14 @@ export default function Register() {
 
     if (!form.discoverySource) {
       toast.error("Please tell us how you discovered KanuorieTech.");
+      return;
+    }
+
+    if (
+      form.userType === "business_owner" &&
+      (!form.businessType || !form.businessNeeds?.length)
+    ) {
+      toast.error("Add your business type and at least one service need.");
       return;
     }
 
@@ -93,7 +95,11 @@ export default function Register() {
 
       login(authData.user, authData.token);
 
-      toast.success("Account created successfully!");
+      toast.success(
+        form.userType === "business_owner"
+          ? "Account created and business service request sent to our team."
+          : "Account created successfully!"
+      );
 
       navigate("/");
     } catch (err) {
@@ -110,7 +116,7 @@ export default function Register() {
   };
 
   return (
-    <section className="min-h-[80vh] bg-slate-50 px-2 py-2 sm:px-2 sm:py-2 lg:px-2 lg:py-2">
+    <section className="min-h-[80vh] bg-slate-50 dark:bg-slate-950 px-2 py-2 sm:px-2 sm:py-2 lg:px-2 lg:py-2">
       <div className="">
         <RegisterForm
           onSubmit={handleSubmit}

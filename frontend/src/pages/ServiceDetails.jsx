@@ -127,7 +127,7 @@ export default function ServiceDetails() {
         <Card className="p-12 text-center">
           <h1 className="mb-4 text-3xl font-bold">Service not found</h1>
 
-          <p className="mb-8 text-gray-600">
+          <p className="mb-8 text-gray-600 dark:text-slate-400">
             The service you are looking for may have been removed or is no
             longer available.
           </p>
@@ -177,7 +177,7 @@ export default function ServiceDetails() {
           </h1>
 
           {service.description && (
-            <p className="mb-8 text-lg leading-8 text-gray-600">
+            <p className="mb-8 text-lg leading-8 text-gray-600 dark:text-slate-400">
               {service.description}
             </p>
           )}
@@ -187,7 +187,7 @@ export default function ServiceDetails() {
               <div className="space-y-4">
                 {service.category && (
                   <div className="flex items-start justify-between gap-6">
-                    <span className="font-medium text-gray-500">
+                    <span className="font-medium text-gray-500 dark:text-slate-400">
                       Category
                     </span>
 
@@ -199,7 +199,7 @@ export default function ServiceDetails() {
 
                 {service.duration && (
                   <div className="flex items-start justify-between gap-6">
-                    <span className="font-medium text-gray-500">
+                    <span className="font-medium text-gray-500 dark:text-slate-400">
                       Delivery Time
                     </span>
 
@@ -213,7 +213,7 @@ export default function ServiceDetails() {
                   service.price !== null &&
                   service.price !== "" && (
                     <div className="flex items-start justify-between gap-6">
-                      <span className="font-medium text-gray-500">
+                      <span className="font-medium text-gray-500 dark:text-slate-400">
                         Starting Price
                       </span>
 
@@ -272,7 +272,7 @@ export default function ServiceDetails() {
                     {index + 1}
                   </span>
 
-                  <p className="leading-7 text-gray-700">{feature}</p>
+                  <p className="leading-7 text-gray-700 dark:text-slate-300">{feature}</p>
                 </div>
               </Card>
             ))}

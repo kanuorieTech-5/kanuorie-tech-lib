@@ -12,8 +12,8 @@ const PER_PAGE = 9;
 
 // const FALLBACK_IMAGE = "/images/service-placeholder.jpg";
 
-// const FALLBACK_DESCRIPTION =
-("Learn more about this service and how it can help your business.");
+const FALLBACK_DESCRIPTION =
+  "Learn more about this service and how it can help your business.";
 
 const getServicesData = (response) => {
   if (Array.isArray(response)) {
@@ -212,7 +212,7 @@ export default function Services() {
                 No services found
               </h2>
 
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-400">
                 Try changing your search or category filter.
               </p>
 
@@ -313,14 +313,6 @@ export default function Services() {
           )}
         </div>
       </section>
-
-      {/* CTA */}
-
-      <CTA />
-
-      {/* NEWSLETTER */}
-
-      <Newsletter />
     </>
   );
 }

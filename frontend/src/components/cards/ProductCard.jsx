@@ -73,7 +73,7 @@ export default function ProductCard({ product }) {
 
         {/* DESCRIPTION */}
 
-        <p className="line-clamp-3 text-sm leading-6 text-gray-500">
+        <p className="line-clamp-3 text-sm leading-6 text-gray-500 dark:text-slate-400">
           {product.excerpt ||
             product.description ||
             "A useful tool for developers and businesses."}
@@ -115,7 +115,7 @@ export default function ProductCard({ product }) {
               rel="noopener noreferrer"
               aria-label={`Visit ${product.name} website`}
               title="Official Website"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-blue-500 hover:text-blue-600 dark:border-white/10 dark:hover:border-blue-400"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 dark:text-slate-400 transition hover:border-blue-500 hover:text-blue-600 dark:border-white/10 dark:hover:border-blue-400"
             >
               <Globe size={16} />
             </a>
@@ -128,7 +128,7 @@ export default function ProductCard({ product }) {
               rel="noopener noreferrer"
               aria-label={`${product.name} GitHub`}
               title="GitHub"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-500 hover:text-slate-900 dark:border-white/10 dark:hover:text-white"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 dark:text-slate-400 transition hover:border-slate-500 hover:text-slate-900 dark:border-white/10 dark:hover:text-white"
             >
               <Github size={16} />
             </a>

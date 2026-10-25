@@ -29,6 +29,8 @@ const ServiceDetails = lazy(() => import("../pages/ServiceDetails"));
 const Blog = lazy(() => import("../pages/Blog"));
 const BlogDetails = lazy(() => import("../pages/BlogDetails"));
 const Careers = lazy(() => import("../pages/Careers"));
+const CareerDetail = lazy(() => import("../pages/CareerDetails"));
+const SavedResources = lazy(() => import("../pages/SavedResources"));
 const Team = lazy(() => import("../pages/Team"));
 const FAQ = lazy(() => import("../pages/FAQ"));
 const Testimonials = lazy(() => import("../pages/Testimonials"));
@@ -78,7 +80,7 @@ export default function AppRoutes() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center">
-          <p className="text-sm text-slate-500">Loading...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Loading...</p>
         </div>
       }
     >
@@ -90,14 +92,10 @@ export default function AppRoutes() {
         ========================= */}
 
         <Route element={<MainLayout />}>
-          <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="help" element={<Help />} />
           <Route path="verify-certificate" element={<VerifyCertificate />} />
           <Route path="verify-certificate/:certificateId" element={<VerifyCertificate />} />
-          <Route path="Learning" element={<Learning />} />
-          <Route path="Learning/:id" element={<LearningDetails />} />
           <Route path="library" element={<Library />} />
           <Route path="courses" element={<Courses />} />
           <Route path="courses/:id" element={<CourseDetails />} />
@@ -110,13 +108,10 @@ export default function AppRoutes() {
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:id" element={<BlogDetails />} />
           <Route path="careers" element={<Careers />} />
+          <Route path="careers/:id" element={<CareerDetail />} />
           <Route path="team" element={<Team />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="testimonials" element={<Testimonials />} />
-          <Route path="community" element={<Community />} />
-          <Route path="affiliate" element={<Affiliate />} />
-          <Route path="payments" element={<Payments />} />
-          <Route path="payments/paystack/callback" element={<PaystackCallback />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="cookie-policy" element={<CookiePolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
@@ -151,11 +146,20 @@ export default function AppRoutes() {
         ========================= */}
 
         <Route element={<DashboardLayout />}>
+          <Route index element={<Home />} />
+          <Route path="help" element={<Help />} />
+          <Route path="learning" element={<Learning />} />
+          <Route path="learning/:id" element={<LearningDetails />} />
+          <Route path="community" element={<Community />} />
+          <Route path="affiliate" element={<Affiliate />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="payments/paystack/callback" element={<PaystackCallback />} />
           <Route element={<ProtectedRoute />}>
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="certificates" element={<Certificates />} />
+            <Route path="saved-resources" element={<SavedResources />} />
           </Route>
         </Route>
 

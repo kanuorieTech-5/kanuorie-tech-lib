@@ -49,7 +49,7 @@ export default function UserDropdown() {
           alt={user.name}
           className="h-9 w-9 rounded-full object-cover"
         />
-        <p className="hidden text-sm font-medium text-gray-800 md:block">
+        <p className="hidden text-sm font-medium text-gray-800 dark:text-slate-200 md:block">
           {user.name}
         </p>
 
@@ -59,7 +59,7 @@ export default function UserDropdown() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border bg-white shadow-xl">
+        <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border bg-white dark:bg-slate-900 shadow-xl">
           {user.role === "admin" && (
             <Link
               to="/admin"

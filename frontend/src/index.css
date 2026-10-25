@@ -13,10 +13,21 @@ html {
 }
 
 body {
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: background-color 180ms ease, color 180ms ease;
   width: 100%;
   max-width: 100%;
   margin: 0;
   overflow-x: clip;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
 }
 
 #root {
@@ -46,4 +57,9 @@ img {
 
 .animate-ticker {
   animation: ticker 30s linear infinite;
+}
+
+.dark body {
+  background-color: #020617;
+  color: #f1f5f9;
 }

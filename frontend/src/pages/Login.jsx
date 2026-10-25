@@ -54,7 +54,7 @@ export default function Login() {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 sm:py-16">
+    <section className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 sm:px-6 sm:py-16">
       <div className="w-full max-w-md">
         <LoginForm
           onSubmit={handleSubmit}

@@ -125,18 +125,18 @@ export default function PaystackCallback() {
         transition={{ duration: 0.45 }}
         className="w-full max-w-lg"
       >
-        <Card className="overflow-hidden border-slate-200 bg-white p-8 text-center shadow-xl sm:p-10">
+        <Card className="overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 text-center shadow-xl sm:p-10">
           {status === "verifying" && (
             <>
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
               </div>
 
-              <h1 className="mt-6 text-2xl font-bold text-slate-900">
+              <h1 className="mt-6 text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Verifying Payment
               </h1>
 
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 {message}
               </p>
 
@@ -153,11 +153,11 @@ export default function PaystackCallback() {
                 <CheckCircle2 className="h-9 w-9 text-emerald-600" />
               </div>
 
-              <h1 className="mt-6 text-2xl font-bold text-slate-900">
+              <h1 className="mt-6 text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Payment Successful
               </h1>
 
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 {message}
               </p>
 
@@ -174,11 +174,11 @@ export default function PaystackCallback() {
                 <AlertCircle className="h-9 w-9 text-red-600" />
               </div>
 
-              <h1 className="mt-6 text-2xl font-bold text-slate-900">
+              <h1 className="mt-6 text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Payment Verification Issue
               </h1>
 
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 {message}
               </p>
 

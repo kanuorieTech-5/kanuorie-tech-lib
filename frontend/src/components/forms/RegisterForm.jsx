@@ -254,7 +254,7 @@ function CheckboxGroup({
       <legend className={labelClass}>{title}</legend>
 
       {description && (
-        <p className="-mt-1 text-sm leading-6 text-slate-500">
+        <p className="-mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
           {description}
         </p>
       )}
@@ -377,6 +377,16 @@ export default function RegisterForm({
         setError("Please select at least one interest.");
         return false;
       }
+
+    }
+
+    if (
+      step === 3 &&
+      form.userType === "business_owner" &&
+      (!form.businessType || form.businessNeeds.length === 0)
+    ) {
+      setError("Choose your business type and at least one service need.");
+      return false;
     }
 
     if (step === 4) {
@@ -475,10 +485,10 @@ export default function RegisterForm({
         return (
           <section className="space-y-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-4 sm:p-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Learning Journey
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Help us recommend courses and resources that fit your goals.
               </p>
             </div>
@@ -504,10 +514,10 @@ export default function RegisterForm({
         return (
           <section className="space-y-6 rounded-2xl border border-purple-100 bg-purple-50/50 p-4 sm:p-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Career Goals
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Tell us about your preferred career path and opportunities.
               </p>
             </div>
@@ -540,11 +550,11 @@ export default function RegisterForm({
         return (
           <section className="space-y-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 sm:p-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Developer Profile
               </h3>
 
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Select your experience level and the technologies you currently
                 use or want to learn.
               </p>
@@ -572,10 +582,10 @@ export default function RegisterForm({
         return (
           <section className="space-y-6 rounded-2xl border border-pink-100 bg-pink-50/50 p-4 sm:p-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Let's Collaborate
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Choose the ways you would like to work with KanuorieTech.
               </p>
             </div>
@@ -592,12 +602,12 @@ export default function RegisterForm({
         return (
           <section className="space-y-6 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 sm:p-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Tell Us About Your Business
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
-                This helps us understand your business and recommend suitable
-                digital solutions.
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Choose the services your business needs. We will send these
+                details to our team as a service request when you register.
               </p>
             </div>
 
@@ -607,6 +617,7 @@ export default function RegisterForm({
               value={form.businessType}
               options={BUSINESS_TYPES}
               onChange={handleChange}
+              required
             />
 
             {renderCheckboxGroup(
@@ -627,12 +638,12 @@ export default function RegisterForm({
 
       default:
         return (
-          <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-4">
-            <h3 className="text-xl font-bold text-slate-900">
+          <section className="space-y-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-4 sm:p-4">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               Explore KanuorieTech
             </h3>
 
-            <p className="text-sm leading-6 text-slate-600">
+            <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
               You can explore our learning library, books, technology services,
               community and other resources. You can update your preferences
               later in your Profile.
@@ -678,11 +689,11 @@ export default function RegisterForm({
   return (
     <Card className="p-1 sm:p-5">
       <div className="mb-6 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
           Create Your Account
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-base">
+        <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400 sm:text-base">
           A few quick steps to personalize your KanuorieTech experience.
         </p>
       </div>
@@ -694,13 +705,13 @@ export default function RegisterForm({
             Step {step} of 4
           </span>
 
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-500 dark:text-slate-400">
             {Math.round(progress)}% complete
           </span>
         </div>
 
         <div
-          className="h-2 overflow-hidden rounded-full bg-slate-100"
+          className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900"
           role="progressbar"
           aria-valuemin={1}
           aria-valuemax={4}
@@ -756,10 +767,10 @@ export default function RegisterForm({
         {step === 1 && (
           <section className="space-y-5">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Account Details
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Start with the details you'll use to access your account.
               </p>
             </div>
@@ -816,7 +827,7 @@ export default function RegisterForm({
               />
             </div>
 
-            <p className="text-xs leading-5 text-slate-500">
+            <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
               Use a strong password you haven't used on another website.
             </p>
           </section>
@@ -826,10 +837,10 @@ export default function RegisterForm({
         {step === 2 && (
           <section className="space-y-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Tell Us About Yourself
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 Choose the category that best describes you. We'll tailor the
                 next questions to your selection.
               </p>
@@ -937,8 +948,8 @@ export default function RegisterForm({
               </div>
             )}
 
-            <div className="rounded-xl border border-slate-200 p-4">
-              <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-600">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+              <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 <input
                   type="checkbox"
                   name="marketingConsent"
@@ -1010,7 +1021,7 @@ export default function RegisterForm({
           )}
         </div>
 
-        <p className="text-center text-sm text-slate-600">
+        <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
           <Link
             to="/login"
@@ -1020,7 +1031,7 @@ export default function RegisterForm({
           </Link>
         </p>
 
-        <p className="text-center text-xs leading-5 text-slate-500">
+        <p className="text-center text-xs leading-5 text-slate-500 dark:text-slate-400">
           By creating an account, you agree to our applicable terms and privacy
           policy.
         </p>

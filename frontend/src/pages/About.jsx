@@ -137,18 +137,18 @@ export default function About() {
       {/* =====================================================
           COMPANY OVERVIEW
       ===================================================== */}
-      <section className="bg-slate-50 py-10 text-white dark:bg-slate-900 dark:text-white">
+      <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mb-16 text-center">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
               Company Documentation
             </p>
 
-            <h2 className="text-4xl text-black font-bold tracking-tight md:text-5xl">
+            <h2 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white md:text-5xl">
               Who We Are
             </h2>
 
-            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-400">
+            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 dark:text-slate-400">
               A growing technology ecosystem built around innovation, education,
               digital solutions, creativity, and meaningful impact.
             </p>
@@ -158,7 +158,7 @@ export default function About() {
           <div className="mb-10">{/* <Stats /> */}</div>
 
           {/* DOCUMENTATION */}
-          <article className="space-y-10 text-lg leading-9 text-slate-900">
+          <article className="space-y-10 text-lg leading-9 text-slate-700 dark:text-slate-300">
             <p>
               KanuorieTech was created with a simple but powerful vision: to
               make technology more accessible, practical, useful, and impactful
@@ -367,18 +367,18 @@ export default function About() {
       {/* =====================================================
           WHAT WE DO
       ===================================================== */}
-      <section className="bg-slate-50 py-4">
+      <section className="bg-slate-50 py-4 dark:bg-slate-900">
         <div className="mx-auto px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
               Our Ecosystem
             </p>
 
-            <h2 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+            <h2 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white md:text-5xl">
               What We Do
             </h2>
 
-            <p className="mt-6 text-lg leading-8 text-slate-600">
+            <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-400">
               KanuorieTech brings technology, education, digital products,
               services, and innovation together within one growing ecosystem.
             </p>
@@ -401,17 +401,17 @@ export default function About() {
                     once: true,
                     amount: 0.2,
                   }}
-                  className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-slate-800"
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                     <Icon size={28} />
                   </div>
 
-                  <h3 className="text-xl font-bold text-slate-900">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                     {area.title}
                   </h3>
 
-                  <p className="mt-4 leading-7 text-slate-600">
+                  <p className="mt-4 leading-7 text-slate-600 dark:text-slate-400">
                     {area.description}
                   </p>
                 </motion.div>
@@ -424,7 +424,7 @@ export default function About() {
       {/* =====================================================
           MISSION & VISION
       ===================================================== */}
-      <section className="bg-slate-50 py-10 text-white dark:bg-slate-900 dark:text-white">
+      <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
         <div className="mx-auto px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
@@ -458,9 +458,9 @@ export default function About() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="rounded-3xl border border-blue-100 bg-blue-50 p-10"
+              className="rounded-3xl border border-blue-100 bg-blue-50 p-10 dark:border-blue-400/20 dark:bg-blue-950/40"
             >
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm">
+              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-slate-900 text-blue-600 shadow-sm">
                 <Rocket size={28} />
               </div>
 
@@ -468,11 +468,11 @@ export default function About() {
                 Our Vision
               </p>
 
-              <h2 className="mt-4 text-3xl font-bold text-slate-900">
+              <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white">
                 Building a Digital Ecosystem for Growth
               </h2>
 
-              <p className="mt-6 leading-8 text-slate-600">
+              <p className="mt-6 leading-8 text-slate-600 dark:text-slate-300">
                 Our vision is to build a broader digital ecosystem where
                 technology, education, creativity, entrepreneurship, and
                 innovation work together to create opportunities for people to
@@ -539,26 +539,26 @@ export default function About() {
       {/* =====================================================
           FUTURE
       ===================================================== */}
-      <section className="bg-white py-10 text-white dark:bg-slate-900 dark:text-white">
+      <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                 Looking Ahead
               </p>
 
-              <h2 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+              <h2 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white md:text-5xl">
                 Building What Comes Next
               </h2>
 
-              <p className="mt-6 text-lg leading-8 text-slate-600">
+              <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-400">
                 KanuorieTech is being developed as a long-term technology
                 ecosystem. As technology and user needs evolve, we intend to
                 continue improving our products, services, educational
                 resources, and digital experiences.
               </p>
 
-              <p className="mt-5 text-lg leading-8 text-slate-600">
+              <p className="mt-5 text-lg leading-8 text-slate-600 dark:text-slate-400">
                 Our future is centered around creating useful technology,
                 expanding access to knowledge, supporting innovation, and
                 creating an environment where people can continuously learn and
@@ -585,20 +585,7 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* =====================================================
-          TECHNOLOGY STACK
-      ===================================================== */}
       <TeamPreview />
-
-      {/* =====================================================
-          NEWSLETTER
-      ===================================================== */}
-      <Newsletter />
-
-      {/* =====================================================
-          CTA
-      ===================================================== */}
       <CTA />
     </>
   );

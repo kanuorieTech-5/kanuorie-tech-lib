@@ -267,7 +267,7 @@
           </section>
 
           {/* 11. REFUNDS */}
-          <section>
+          <section id="refunds">
             <h2 className="mb-4 text-2xl font-semibold text-slate-900 dark:text-white">
               11. Refunds and Cancellations
             </h2>
@@ -379,7 +379,7 @@
           </section>
 
           {/* 16. DISCLAIMERS */}
-          <section>
+          <section id="disclaimers">
             <h2 className="mb-4 text-2xl font-semibold text-slate-900 dark:text-white">
               16. Disclaimers
             </h2>

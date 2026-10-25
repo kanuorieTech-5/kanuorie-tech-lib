@@ -228,8 +228,8 @@ export default function Contact() {
         <div className="pointer-events-none absolute -left-32 top-10 h-80 w-80 rounded-full bg-blue-500/20 blur-[100px]" />
         <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-indigo-500/20 blur-[100px]" />
 
-        <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-8 sm:px-8 sm:pb-28 lg:px-12">
-          <div className="mx-auto mt-12 max-w-4xl text-center sm:mt-16">
+        <div className="relative px-5 pb-10 pt-8 sm:px-8 sm:pb-10 lg:px-8">
+          <div className="mx-auto mt-12 text-center sm:mt-16">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-400/10 px-4 py-2 text-sm font-medium text-blue-200">
               <MessageCircle className="h-4 w-4" />
               Let&apos;s start a conversation
@@ -242,7 +242,7 @@ export default function Contact() {
               </span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+            <p className="mx-auto mt-6 text-base leading-8 text-slate-300 sm:text-lg">
               Have a project in mind, need a digital solution, or want to
               explore learning opportunities? Tell us what you&apos;re
               working on. We&apos;d love to hear from you.
@@ -269,7 +269,7 @@ export default function Contact() {
 
       {/* CONTACT FORM AND INFORMATION */}
       <section className="relative py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 lg:px-12">
+        <div className="mx-auto  gap-10 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 lg:px-12">
           {/* FORM */}
           <div>
             <div className="mb-8">
@@ -413,12 +413,8 @@ export default function Contact() {
           </div>
 
           {/* CONTACT INFORMATION */}
-          <aside className="space-y-7 lg:pt-2">
-            <div
-              className={`relative overflow-hidden rounded-3xl border p-7 sm:p-9 ${card}`}
-            >
-              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
-
+          <div className="space-y-7 lg:pt-2">
+            <div className="rounded-3xl p-5 shadow-xl shadow-slate-950/[0.03] sm:p-8 lg:pt-10 lg:pb-12 lg:px-10">
               <div className="relative">
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-500">
                   <MessageCircle className="h-6 w-6" />
@@ -483,14 +479,8 @@ export default function Contact() {
               </div>
             </div>
             <section className="px-5 py-12 sm:px-8 lg:px-12">
-              <div className="mx-auto max-w-5xl">
-                <div
-                  className={`rounded-3xl border p-8 text-center shadow-sm sm:p-12 ${
-                    darkMode
-                      ? "border-slate-700 bg-slate-900"
-                      : "border-slate-200 bg-white"
-                  }`}
-                >
+              <div className="mx-auto">
+                <div className="mx-auto max-w-2xl text-center">
                   <span className="inline-flex items-center rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-500">
                     Stay Connected
                   </span>
@@ -534,72 +524,34 @@ export default function Contact() {
                 </div>
               </div>
             </section>
-
-            {/* WHY CONTACT US */}
-            <div
-              className={`rounded-3xl border p-7 sm:p-9 ${card}`}
-            >
-              <h2 className="text-xl font-bold">
-                Why work with KanuorieTech?
-              </h2>
-
-              <p className={`mt-3 text-sm leading-7 ${muted}`}>
-                We bring technology, creativity, and practical learning
-                together to help people and businesses move forward.
-              </p>
-
-              <div className="mt-7 space-y-6">
-                {benefits.map((benefit) => {
-                  const Icon = benefit.icon;
-
-                  return (
-                    <div
-                      key={benefit.title}
-                      className="flex items-start gap-4"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
-                        <Icon className="h-5 w-5" />
-                      </span>
-
-                      <div>
-                        <h3 className="font-semibold">{benefit.title}</h3>
-                        <p className={`mt-1 text-sm leading-6 ${muted}`}>
-                          {benefit.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </aside>
+          </div>
         </div>
       </section>
 
       {/* COMPLAINTS, COMPLIANCE & FEEDBACK CENTRE */}
       <section className="px-5 pb-16 sm:px-8 lg:px-12">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-14 text-center shadow-2xl sm:px-12 sm:py-16">
-          <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl" />
+        <div className="relative mx-auto overflow-hidden rounded-3xl px-6 py-14 text-center shadow-2xl sm:px-12 sm:py-16">
+          {/* <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" /> */}
+          {/* <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl" /> */}
 
-          <div className="relative mx-auto max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-blue-200">
+          <div className="relative">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/150 bg-white/10 px-4 py-2 text-sm font-medium text-blue-400">
               <ShieldCheck className="h-4 w-4" />
               Accountability & Continuous Improvement
             </span>
 
-            <h2 className="mt-6 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <h2 className="mt-6 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
               Your voice matters to us.
             </h2>
 
-            <p className="mx-auto mt-5 max-w-2xl leading-8 text-slate-300">
+            <p className="mx-auto mt-5 leading-8 text-slate-500 dark:text-slate-400">
               Have a complaint, a compliance concern, or feedback to share?
               Help us improve KanuorieTech by letting us know. We welcome
               constructive feedback and encourage concerns to be raised
               responsibly.
             </p>
 
-            <div className="mt-8 grid gap-4 text-left sm:grid-cols-3">
+            <div className="mt-8 grid gap-4 text-left sm:grid-cols-3 bg-slate-950/5 rounded-2xl p-6 sm:p-8 border border-slate-950/10">
               {[
                 {
                   icon: MessageCircle,
@@ -622,15 +574,15 @@ export default function Contact() {
                 return (
                   <div
                     key={item.title}
-                    className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-sm"
+                    className="rounded-2xl border border-slate-950/10 bg-white/[0.06] p-5 backdrop-blur-sm"
                   >
                     <Icon className="h-6 w-6 text-blue-300" />
 
-                    <h3 className="mt-4 font-bold text-white">
+                    <h3 className="mt-4 font-bold">
                       {item.title}
                     </h3>
 
-                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                    <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                       {item.text}
                     </p>
                   </div>
@@ -641,7 +593,7 @@ export default function Contact() {
             <button
               type="button"
               onClick={() => setReportOpen(true)}
-              className="mt-9 inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-4 font-bold text-blue-800 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-400/30"
+              className="mt-9 inline-flex items-center justify-center gap-3 rounded-xl bg-white dark:bg-slate-900 px-7 py-4 font-bold text-blue-800 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-blue-400/30"
             >
               Submit a Complaint or Feedback
               <ArrowRight className="h-5 w-5" />
@@ -654,6 +606,41 @@ export default function Contact() {
           </div>
         </div>
       </section>
+      {/* WHY CONTACT US */}
+      <div className="mx-auto px-5 pb-16 sm:px-8 lg:px-12">
+        <h2 className="text-xl font-bold">
+          Why work with KanuorieTech?
+        </h2>
+
+        <p className={`mt-3 text-sm leading-7 ${muted}`}>
+          We bring technology, creativity, and practical learning
+          together to help people and businesses move forward.
+        </p>
+
+        <div className="mt-7 space-y-6">
+          {benefits.map((benefit) => {
+            const Icon = benefit.icon;
+
+            return (
+              <div
+                key={benefit.title}
+                className="flex items-start gap-4"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
+                  <Icon className="h-5 w-5" />
+                </span>
+
+                <div>
+                  <h3 className="font-semibold">{benefit.title}</h3>
+                  <p className={`mt-1 text-sm leading-6 ${muted}`}>
+                    {benefit.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {/* COMPLAINT / COMPLIANCE / FEEDBACK MODAL */}
       {reportOpen && (

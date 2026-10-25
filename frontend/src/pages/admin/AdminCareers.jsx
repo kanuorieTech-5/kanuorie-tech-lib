@@ -553,7 +553,7 @@ export default function AdminCareers() {
         <div className="text-center">
           <Loader />
 
-          <p className="mt-4 text-sm text-slate-500">
+          <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
             Loading career applications...
           </p>
         </div>
@@ -570,11 +570,11 @@ export default function AdminCareers() {
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
             Careers
           </h1>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Manage applications submitted through
             KanuorieTech Careers.
           </p>
@@ -614,11 +614,11 @@ export default function AdminCareers() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Careers
               </h1>
 
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Review and manage job applications.
               </p>
             </div>
@@ -716,11 +716,11 @@ export default function AdminCareers() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                     {item.label}
                   </p>
 
-                  <p className="mt-3 text-3xl font-bold text-slate-900">
+                  <p className="mt-3 text-3xl font-bold text-slate-900 dark:text-slate-100">
                     {item.value}
                   </p>
                 </div>
@@ -736,7 +736,7 @@ export default function AdminCareers() {
         })}
 
         <Card className="p-5">
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Acceptance Rate
           </p>
 
@@ -758,7 +758,7 @@ export default function AdminCareers() {
         </Card>
 
         <Card className="p-5">
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Rejection Rate
           </p>
 
@@ -796,7 +796,7 @@ export default function AdminCareers() {
                 setSearch(event.target.value)
               }
               placeholder="Search applicants, email or position..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             />
           </div>
 
@@ -805,7 +805,7 @@ export default function AdminCareers() {
             onChange={(event) =>
               setStatusFilter(event.target.value)
             }
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="All">
               All statuses
@@ -824,12 +824,12 @@ export default function AdminCareers() {
       {/* APPLICATIONS */}
 
       <Card className="overflow-hidden">
-        <div className="border-b border-slate-200 px-6 py-5">
-          <h2 className="font-semibold text-slate-900">
+        <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-5">
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">
             Applications
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {visibleApplications.length} application
             {visibleApplications.length !== 1
               ? "s"
@@ -844,11 +844,11 @@ export default function AdminCareers() {
               className="mx-auto text-slate-300"
             />
 
-            <h3 className="mt-4 font-semibold text-slate-900">
+            <h3 className="mt-4 font-semibold text-slate-900 dark:text-slate-100">
               No applications found
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Try changing your search or status
               filter.
             </p>
@@ -856,25 +856,25 @@ export default function AdminCareers() {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-[1050px] w-full">
-              <thead className="bg-slate-50">
+              <thead className="bg-slate-50 dark:bg-slate-950">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Applicant
                   </th>
 
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Position
                   </th>
 
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Status
                   </th>
 
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Submitted
                   </th>
 
-                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Actions
                   </th>
                 </tr>
@@ -930,7 +930,7 @@ export default function AdminCareers() {
                                   "Unnamed Applicant"}
                               </p>
 
-                              <p className="text-sm text-slate-500">
+                              <p className="text-sm text-slate-500 dark:text-slate-400">
                                 {application?.email ||
                                   "No email"}
                               </p>
@@ -938,7 +938,7 @@ export default function AdminCareers() {
                           </button>
                         </td>
 
-                        <td className="px-6 py-5 text-sm text-slate-700">
+                        <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
                           {application?.position ||
                             "General Application"}
                         </td>
@@ -975,7 +975,7 @@ export default function AdminCareers() {
                           </select>
                         </td>
 
-                        <td className="px-6 py-5 text-sm text-slate-500">
+                        <td className="px-6 py-5 text-sm text-slate-500 dark:text-slate-400">
                           {application?.createdAt
                             ? new Date(
                                 application.createdAt,
@@ -1005,7 +1005,7 @@ export default function AdminCareers() {
                                   application,
                                 )
                               }
-                              className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
+                              className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100"
                               title={
                                 application?.isRead
                                   ? "Mark unread"
@@ -1058,17 +1058,17 @@ export default function AdminCareers() {
             }
           }}
         >
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
+          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 shadow-2xl">
             {/* MODAL HEADER */}
 
-            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-200 bg-white px-6 py-5">
+            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-5">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
                   <UserRound size={24} />
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                     {selectedApplication.fullName}
                   </h2>
 
@@ -1097,23 +1097,23 @@ export default function AdminCareers() {
 
             <div className="space-y-6 p-6">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-4">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                     Position
                   </p>
 
-                  <p className="mt-2 font-semibold text-slate-900">
+                  <p className="mt-2 font-semibold text-slate-900 dark:text-slate-100">
                     {selectedApplication.position ||
                       "General Application"}
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-4">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                     Submitted
                   </p>
 
-                  <p className="mt-2 font-semibold text-slate-900">
+                  <p className="mt-2 font-semibold text-slate-900 dark:text-slate-100">
                     {selectedApplication.createdAt
                       ? new Date(
                           selectedApplication.createdAt,
@@ -1128,7 +1128,7 @@ export default function AdminCareers() {
 
               {selectedApplication.portfolio && (
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                     Portfolio / GitHub
                   </p>
 
@@ -1152,16 +1152,16 @@ export default function AdminCareers() {
                 <div className="flex items-center gap-2">
                   <FileText
                     size={18}
-                    className="text-slate-500"
+                    className="text-slate-500 dark:text-slate-400"
                   />
 
-                  <h3 className="font-semibold text-slate-900">
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                     Cover Letter
                   </h3>
                 </div>
 
-                <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                  <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                <div className="mt-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-5">
+                  <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
                     {selectedApplication.coverLetter ||
                       "No cover letter provided."}
                   </p>
@@ -1172,7 +1172,7 @@ export default function AdminCareers() {
               {/* STATUS */}
 
               <div>
-                <label className="text-sm font-semibold text-slate-900">
+                <label className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                   Application Status
                 </label>
 
@@ -1192,7 +1192,7 @@ export default function AdminCareers() {
                       event.target.value,
                     )
                   }
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
                 >
                   {STATUSES.map((status) => (
                     <option
@@ -1212,10 +1212,10 @@ export default function AdminCareers() {
                 <div className="flex items-center gap-2">
                   <MessageSquare
                     size={18}
-                    className="text-slate-500"
+                    className="text-slate-500 dark:text-slate-400"
                   />
 
-                  <h3 className="font-semibold text-slate-900">
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                     Internal Notes
                   </h3>
                 </div>
@@ -1228,7 +1228,7 @@ export default function AdminCareers() {
                   rows={5}
                   maxLength={5000}
                   placeholder="Add private notes about this applicant..."
-                  className="mt-3 w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="mt-3 w-full resize-y rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm leading-6 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
 
                 <div className="mt-3 flex items-center justify-between">
@@ -1251,7 +1251,7 @@ export default function AdminCareers() {
 
               {/* FOOTER ACTIONS */}
 
-              <div className="flex flex-col gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-between">
+              <div className="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-700 pt-5 sm:flex-row sm:justify-between">
                 <button
                   type="button"
                   onClick={() =>
@@ -1259,7 +1259,7 @@ export default function AdminCareers() {
                       selectedApplication,
                     )
                   }
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 transition hover:bg-slate-50"
                 >
                   {selectedApplication.isRead ? (
                     <>

@@ -57,7 +57,7 @@ export default function CoursePurchaseCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
     >
-      <Card className="overflow-hidden border-slate-200 p-0 shadow-xl shadow-slate-200/40">
+      <Card className="overflow-hidden border-slate-200 dark:border-slate-700 p-0 shadow-xl shadow-slate-200/40">
         <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 px-6 py-7 text-white sm:px-8">
           <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
           <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-yellow-300/10 blur-2xl" />
@@ -91,24 +91,24 @@ export default function CoursePurchaseCard({
         <div className="p-6 sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-500">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Course access
               </p>
 
               <div className="mt-2 flex flex-wrap items-center gap-4">
-                <span className="text-3xl font-black text-slate-900">
+                <span className="text-3xl font-black text-slate-900 dark:text-slate-100">
                   {isPremium
                     ? formatPrice(course.price, course.currency)
                     : "Free"}
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 text-sm text-slate-500">
+                <span className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                   <Clock3 size={16} />
                   {formatDuration(course.duration)}
                 </span>
 
                 {course.level && (
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                  <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
                     {course.level}
                   </span>
                 )}
@@ -145,7 +145,7 @@ export default function CoursePurchaseCard({
                 className="mt-0.5 shrink-0 text-green-500"
                 size={18}
               />
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-slate-600 dark:text-slate-400">
                 Full curriculum access after enrollment
               </span>
             </div>
@@ -155,7 +155,7 @@ export default function CoursePurchaseCard({
                 className="mt-0.5 shrink-0 text-green-500"
                 size={18}
               />
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-slate-600 dark:text-slate-400">
                 Track your learning progress
               </span>
             </div>
@@ -167,7 +167,7 @@ export default function CoursePurchaseCard({
                     className="mt-0.5 shrink-0 text-blue-500"
                     size={18}
                   />
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
                     Secure course checkout
                   </span>
                 </div>
@@ -177,7 +177,7 @@ export default function CoursePurchaseCard({
                     className="mt-0.5 shrink-0 text-blue-500"
                     size={18}
                   />
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
                     Premium lessons remain protected
                   </span>
                 </div>
