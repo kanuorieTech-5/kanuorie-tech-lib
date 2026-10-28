@@ -3,7 +3,7 @@
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border px-4 py-3 outline-none"
+      className="rounded-lg border px-4 py-3 outline-none bg-gray-400 text-blue-300"
     >
       {categories.map((category) => (
         <option key={category} value={category}>

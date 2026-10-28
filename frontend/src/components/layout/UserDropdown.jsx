@@ -63,7 +63,7 @@ export default function UserDropdown() {
           {user.role === "admin" && (
             <Link
               to="/admin"
-              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-gray-800 dark:hover:bg-slate-800 dark:text-slate-200"
             >
               <LayoutDashboard size={18} />
               Dashboard

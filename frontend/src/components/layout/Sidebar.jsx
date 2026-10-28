@@ -21,7 +21,7 @@ import {
 import { useAuth } from "../../contexts";
 
 const links = [
-  { name: "Home", path: "/", icon: Home },
+  { name: "Home", path: "/home", icon: Home },
   { name: "Profile", path: "/profile", icon: User },
   { name: "My Learning", path: "/learning", icon: PlayCircle },
   { name: "Certificates", path: "/certificates", icon: Award },

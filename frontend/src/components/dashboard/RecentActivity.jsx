@@ -3,7 +3,7 @@
 export default function RecentActivity({ activities = [] }) {
   return (
     <Card>
-      <h3 className="mb-5 text-lg font-semibold">Recent Activity</h3>
+      <h3 className="mb-5 text-lg font-semibold text-gray-900 dark:text-slate-300">Recent Activity</h3>
 
       <div className="space-y-4">
         {activities.map((activity) => (

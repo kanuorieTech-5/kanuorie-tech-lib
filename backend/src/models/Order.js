@@ -9,13 +9,16 @@ const orderItemSchema = new mongoose.Schema(
         "product",
         "book",
         "service",
+        "custom",
       ],
       required: true,
     },
 
     itemId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: function itemIdRequired() {
+        return this.itemType !== "custom";
+      },
     },
 
     title: {

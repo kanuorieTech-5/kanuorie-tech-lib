@@ -83,6 +83,24 @@ export const initializePaystackCoursePayment = async (
   return data;
 };
 
+export const initializePaystackOrderPayment = async (orderId) => {
+  const { data } = await API.post(
+    "/payments/paystack/initialize-order",
+    { orderId },
+  );
+
+  return data;
+};
+
+export const initializePaystackCustomPayment = async (paymentData) => {
+  const { data } = await API.post(
+    "/payments/paystack/initialize-custom",
+    paymentData,
+  );
+
+  return data;
+};
+
 export const verifyPaystackPayment = async (reference) => {
   const { data } = await API.get(
     `/payments/paystack/verify/${encodeURIComponent(reference)}`
@@ -168,6 +186,8 @@ export default {
   createPremiumCourseOrder,
   createPayment,
   initializePaystackCoursePayment,
+  initializePaystackOrderPayment,
+  initializePaystackCustomPayment,
   verifyPaystackPayment,
   getPaymentMethods,
   addPaymentMethod,

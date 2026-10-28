@@ -1,4 +1,4 @@
-﻿import { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import clsx from "clsx";
 import { Eye, EyeOff, Search, Loader2 } from "lucide-react";
 
@@ -50,7 +50,7 @@ const Input = forwardRef(
           {/* Left Icon */}
 
           {(leftIcon || variant === "search") && (
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
               {variant === "search" ? <Search size={18} /> : leftIcon}
             </span>
           )}
@@ -60,11 +60,11 @@ const Input = forwardRef(
             type={inputType}
             disabled={disabled || loading}
             className={clsx(
-              "w-full rounded-xl border bg-white px-4 py-3 transition",
+              "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 transition",
 
               "focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20",
 
-              "dark:border-slate-700 dark:bg-slate-900 dark:text-white",
+              "dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500",
 
               {
                 "pl-11": leftIcon || variant === "search",
@@ -95,7 +95,7 @@ const Input = forwardRef(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -104,7 +104,7 @@ const Input = forwardRef(
           {/* Right Icon */}
 
           {!loading && !isPassword && rightIcon && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
               {rightIcon}
             </span>
           )}
@@ -114,7 +114,7 @@ const Input = forwardRef(
           <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">{helperText}</p>
         )}
 
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+        {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </div>
     );
   },
@@ -123,5 +123,3 @@ const Input = forwardRef(
 Input.displayName = "Input";
 
 export default Input;
-
-

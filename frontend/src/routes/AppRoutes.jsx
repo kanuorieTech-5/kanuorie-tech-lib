@@ -11,6 +11,8 @@ import ScrollToTop from "../components/common/ScrollToTop";
 /* =========================
    PUBLIC PAGES
 ========================= */
+
+const LandingPage = lazy(() => import("../pages/LandingPage") )
 const Home = lazy(() => import("../pages/Home"));
 const About = lazy(() => import("../pages/About"));
 const Contact = lazy(() => import("../pages/Contact"));
@@ -87,11 +89,8 @@ export default function AppRoutes() {
       <ScrollToTop />
 
       <Routes>
-        {/* =========================
-            PUBLIC ROUTES
-        ========================= */}
-
         <Route element={<MainLayout />}>
+        <Route path="home" element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="verify-certificate" element={<VerifyCertificate />} />
@@ -124,6 +123,7 @@ export default function AppRoutes() {
         <Route element={<AuthLayout />}>
           {/* Routes handled by PublicRoute */}
           <Route element={<PublicRoute />}>
+            <Route index element={<LandingPage />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="ForgotPassword" element={<ForgotPassword />} />
@@ -134,7 +134,6 @@ export default function AppRoutes() {
             path="reset-password"
             element={<ResetPassword />}
           />
-
           <Route
             path="reset-password/:token"
             element={<ResetPassword />}
@@ -201,13 +200,3 @@ export default function AppRoutes() {
     </Suspense>
   );
 }
-
-
-
-
-
-
-
-
-
-

@@ -51,29 +51,49 @@ const getServiceDescription = (service) => {
 
 export default function Services() {
   const [services, setServices] = useState([]);
+  const [serviceCategories, setServiceCategories] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 300);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [search]);
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchServices = async () => {
       try {
-        const response = await getServices();
+        const params = { page, limit: PER_PAGE };
+        if (debouncedSearch) params.search = debouncedSearch;
+        if (category !== "All") params.category = category;
 
+        const response = await getServices(params);
         const data = getServicesData(response);
+        const result = response?.data || {};
+        const pagination = result.pagination || response?.meta || {};
 
         if (isMounted) {
           setServices(data);
+          setServiceCategories(Array.isArray(result.categories) ? result.categories : []);
+          setTotalPages(Math.max(1, Number(pagination.pages || pagination.totalPages) || 1));
         }
       } catch (error) {
         console.error("Failed to load services:", error);
 
         if (isMounted) {
           setServices([]);
+          setServiceCategories([]);
+          setTotalPages(1);
         }
       } finally {
         if (isMounted) {
@@ -87,54 +107,16 @@ export default function Services() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [page, debouncedSearch, category]);
 
   const categories = useMemo(() => {
-    const uniqueCategories = [
-      ...new Set(
-        services.map((service) => service?.category?.trim()).filter(Boolean),
-      ),
-    ];
+    return ["All", ...serviceCategories];
+  }, [serviceCategories]);
 
-    return ["All", ...uniqueCategories];
-  }, [services]);
-
-  const filteredServices = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return services.filter((service) => {
-      const title = service?.title?.toLowerCase() || "";
-
-      const description = service?.description?.toLowerCase() || "";
-
-      const serviceCategory = service?.category || "";
-
-      const matchesSearch =
-        !query || title.includes(query) || description.includes(query);
-
-      const matchesCategory =
-        category === "All" || serviceCategory === category;
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [services, search, category]);
-
-  const totalPages = Math.ceil(filteredServices.length / PER_PAGE);
-
-  const currentServices = useMemo(() => {
-    const startIndex = (page - 1) * PER_PAGE;
-
-    return filteredServices.slice(startIndex, startIndex + PER_PAGE);
-  }, [filteredServices, page]);
+  const currentServices = services;
 
   useEffect(() => {
-    setPage(1);
-  }, [search, category]);
-
-  useEffect(() => {
-    if (totalPages > 0 && page > totalPages) {
-      setPage(totalPages);
-    }
+    if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
   if (loading) {
@@ -175,7 +157,10 @@ export default function Services() {
             <div className="flex-1">
               <SearchBar
                 value={search}
-                onChange={setSearch}
+                onChange={(value) => {
+                  setSearch(value);
+                  setPage(1);
+                }}
                 placeholder="Search services..."
               />
             </div>
@@ -187,7 +172,10 @@ export default function Services() {
             <select
               id="service-category"
               value={category}
-              onChange={(event) => setCategory(event.target.value)}
+              onChange={(event) => {
+                setCategory(event.target.value);
+                setPage(1);
+              }}
               className="rounded-lg border border-white/10 bg-white/5
                 px-4 py-3 text-white outline-none transition
                 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
@@ -223,6 +211,7 @@ export default function Services() {
                   onClick={() => {
                     setSearch("");
                     setCategory("All");
+                    setPage(1);
                   }}
                 >
                   Clear Filters
@@ -305,7 +294,7 @@ export default function Services() {
           {totalPages > 1 && (
             <div className="mt-12">
               <Pagination
-                page={page}
+                currentPage={page}
                 totalPages={totalPages}
                 onPageChange={setPage}
               />

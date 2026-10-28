@@ -4,8 +4,8 @@
    SERVICES
 ========================== */
 
-export const getServices = async () => {
-  const { data } = await API.get("/services");
+export const getServices = async (params = {}) => {
+  const { data } = await API.get("/services", { params });
   return data;
 };
 

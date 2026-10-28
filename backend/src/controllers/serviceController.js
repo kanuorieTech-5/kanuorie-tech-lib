@@ -38,6 +38,10 @@ const getServices = asyncHandler(async (req, res) => {
     filter.featured = req.query.featured === "true";
   }
 
+  if (req.query.category && req.query.category !== "All") {
+    filter.category = req.query.category;
+  }
+
   if (req.query.search) {
     filter.$or = [
       {
@@ -71,7 +75,7 @@ const getServices = asyncHandler(async (req, res) => {
     ];
   }
 
-  const [services, total] = await Promise.all([
+  const [services, total, categories] = await Promise.all([
     Service.find(filter)
       .sort({
         order: 1,
@@ -81,12 +85,14 @@ const getServices = asyncHandler(async (req, res) => {
       .limit(limit),
 
     Service.countDocuments(filter),
+    Service.distinct("category"),
   ]);
 
   return ApiResponse.success(
     res,
     {
       services,
+      categories: categories.filter(Boolean).sort(),
       pagination: {
         page,
         limit,

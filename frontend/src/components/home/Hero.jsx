@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -44,7 +44,7 @@ const technologies = [
 export default function Hero() {
   return (
     <section
-      className="relative overflow-hidden bg-cover bg-center bg-no-repeat text-white"
+      className="relative bg-cover bg-center bg-no-repeat text-white"
       style={{
         backgroundImage: `linear-gradient(
           to bottom right,
@@ -53,7 +53,7 @@ export default function Hero() {
           rgba(30, 58, 138, 0.30)
         ), url("${heroImage}")`,
       }}
-    >
+     >
       {/* Background */}
 
       <div className="absolute inset-0">
@@ -64,7 +64,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
 
-      <div className="relative mx-auto grid h-screen items-center gap-20 px-4 py-4 lg:grid-cols-2">
+      <div className="relative mx-auto grid h-screen items-center gap-20 px-3 lg:grid-cols-2">
         {/* LEFT */}
 
         <div>
@@ -98,9 +98,14 @@ export default function Hero() {
             transition={{ delay: 0.3 }}
             className="mt-4 max-w-2xl text-lg leading-8 text-slate-300"
           >
-            KanuorieTech is a technology company helping businesses build modern
-            digital solutions while empowering developers through practical
-            training, real-world projects, and industry-focused learning.
+            KanuorieTech is a technology company building useful solution and empowering people all over the world.
+            <p>For business owners, we build custom digital solution - websites, apps and business tools that solve real problems and drive growth,
+            our goal is to become the technology brand that powers business growth in emerging markets.</p>
+            <p>For students and future developers, we provide industry-focused training through practical courses, books, real-world projects,
+              and career resources to help you learn faster and become job-ready.</p>
+            <p>For investors and collaborators, we're building a scalable ecosystem where products, education, and innovation create lasting value.</p>
+            <p>Join us today!</p>
+
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -247,23 +252,6 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-
-      <motion.div
-        animate={{
-          y: [0, 10, 0],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 1.8,
-        }}
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 lg:flex flex-col items-center text-slate-200"
-      >
-        <span className="mb-2 text-sm tracking-wide">Scroll Down</span>
-
-        <ChevronDown size={22} />
-      </motion.div>
     </section>
   );
 }

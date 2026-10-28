@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Input } from "../ui";
 
@@ -170,10 +170,10 @@ const OTHER_INTERESTS = [
 ];
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-400 dark:focus:ring-blue-400/20";
 
 const labelClass =
-  "mb-2 block text-sm font-semibold text-slate-700";
+  "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200";
 
 const initialForm = {
   firstName: "",
@@ -268,8 +268,8 @@ function CheckboxGroup({
               key={option.value}
               className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm transition ${
                 checked
-                  ? "border-blue-500 bg-blue-50 text-blue-800"
-                  : "border-slate-200 hover:border-blue-300"
+                  ? "border-blue-500 bg-blue-50 text-blue-800 dark:bg-blue-950/50 dark:text-blue-200"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-blue-500"
               }`}
             >
               <input
@@ -483,7 +483,7 @@ export default function RegisterForm({
     switch (form.userType) {
       case "student":
         return (
-          <section className="space-y-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-4 sm:p-6">
+          <section className="space-y-6 rounded-2xl border border-blue-100 bg-blue-50/50 dark:border-blue-900/70 dark:bg-blue-950/20 p-4 sm:p-6">
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Learning Journey
@@ -512,7 +512,7 @@ export default function RegisterForm({
 
       case "career_seeker":
         return (
-          <section className="space-y-6 rounded-2xl border border-purple-100 bg-purple-50/50 p-4 sm:p-6">
+          <section className="space-y-6 rounded-2xl border border-purple-100 bg-purple-50/50 dark:border-purple-900/70 dark:bg-purple-950/20 p-4 sm:p-6">
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Career Goals
@@ -548,7 +548,7 @@ export default function RegisterForm({
 
       case "developer":
         return (
-          <section className="space-y-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 sm:p-6">
+          <section className="space-y-6 rounded-2xl border border-amber-100 bg-amber-50/50 dark:border-amber-900/70 dark:bg-amber-950/20 p-4 sm:p-6">
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Your Developer Profile
@@ -580,7 +580,7 @@ export default function RegisterForm({
 
       case "partner":
         return (
-          <section className="space-y-6 rounded-2xl border border-pink-100 bg-pink-50/50 p-4 sm:p-6">
+          <section className="space-y-6 rounded-2xl border border-pink-100 bg-pink-50/50 dark:border-pink-900/70 dark:bg-pink-950/20 p-4 sm:p-6">
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Let's Collaborate
@@ -600,7 +600,7 @@ export default function RegisterForm({
 
       case "business_owner":
         return (
-          <section className="space-y-6 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 sm:p-6">
+          <section className="space-y-6 rounded-2xl border border-emerald-100 bg-emerald-50/50 dark:border-emerald-900/70 dark:bg-emerald-950/20 p-4 sm:p-6">
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Tell Us About Your Business
@@ -701,7 +701,7 @@ export default function RegisterForm({
       {/* Progress */}
       <div className="mb-8">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <span className="text-sm font-semibold text-blue-700">
+          <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
             Step {step} of 4
           </span>
 
@@ -750,8 +750,8 @@ export default function RegisterForm({
                   active
                     ? "bg-blue-600 text-white"
                     : completed
-                      ? "bg-blue-50 text-blue-700"
-                      : "bg-slate-50 text-slate-400"
+                      ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-200"
+                      : "bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                 }`}
               >
                 {completed ? "✓ " : ""}
@@ -966,7 +966,7 @@ export default function RegisterForm({
               </label>
             </div>
 
-            <div className="rounded-xl bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+            <div className="rounded-xl bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:bg-blue-950/50 dark:text-blue-100">
               <strong>Great!</strong>
               <p className="mt-1">
                 Your preferences will help us personalize your experience.
@@ -979,14 +979,14 @@ export default function RegisterForm({
         {error && (
           <div
             role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+            className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/70 dark:bg-red-950/40 dark:text-red-200"
           >
             {error}
           </div>
         )}
 
         {/* NAVIGATION */}
-        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-between">
+        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 dark:border-slate-700 sm:flex-row sm:justify-between">
           {step > 1 ? (
             <Button
               type="button"
@@ -1025,7 +1025,7 @@ export default function RegisterForm({
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-semibold text-blue-600 hover:text-blue-700"
+            className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Login
           </Link>

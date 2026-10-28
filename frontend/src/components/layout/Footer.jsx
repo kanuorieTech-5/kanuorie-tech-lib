@@ -69,7 +69,7 @@ export default function Footer() {
 
           <ul className="space-y-3">
             <li>
-              <Link to="/" className="transition hover:text-white">
+              <Link to="/home" className="transition hover:text-white">
                 Home
               </Link>
             </li>

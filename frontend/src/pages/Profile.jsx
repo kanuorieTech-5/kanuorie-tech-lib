@@ -1,10 +1,12 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts";
 import { getCourses } from "../api/courseApi";
 import { getLearningResources } from "../api/LearningApi";
 import { getProgress } from "../api/progressApi";
 import { getSavedResources } from "../api/libraryApi";
+import { submitServiceEnquiry } from "../api/contactApi";
+import ServiceInquiryForm from "../components/forms/ServiceInquiryForm";
 import {
   User,
   Mail,
@@ -67,6 +69,49 @@ export default function Profile() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isServiceEnquiryOpen, setIsServiceEnquiryOpen] = useState(false);
+  const [serviceEnquiryLoading, setServiceEnquiryLoading] = useState(false);
+  const [serviceEnquiryError, setServiceEnquiryError] = useState("");
+  const [serviceEnquirySuccess, setServiceEnquirySuccess] = useState("");
+
+  useEffect(() => {
+    if (!isServiceEnquiryOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape" && !serviceEnquiryLoading) {
+        setIsServiceEnquiryOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isServiceEnquiryOpen, serviceEnquiryLoading]);
+
+  const handleServiceEnquiry = async (form) => {
+    setServiceEnquiryLoading(true);
+    setServiceEnquiryError("");
+    setServiceEnquirySuccess("");
+
+    try {
+      const response = await submitServiceEnquiry(form);
+      setServiceEnquirySuccess(
+        response?.message || "Your service enquiry has been submitted successfully.",
+      );
+      setIsServiceEnquiryOpen(false);
+    } catch (error) {
+      setServiceEnquiryError(
+        error?.response?.data?.message ||
+          "We couldn't submit your enquiry. Please try again.",
+      );
+    } finally {
+      setServiceEnquiryLoading(false);
+    }
+  };
   const buildFormData = (profile = {}) => ({
     firstName: profile.firstName || "",
     lastName: profile.lastName || "",
@@ -1073,7 +1118,7 @@ const PreferenceCheckboxGroup = ({
           </div>
         </div>
         {/* PROFILE STATISTICS */}
-        <section className="mt-6">
+        {user.userType === "student" && <section className="mt-6">
           <div className="mb-4">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               Learning Overview
@@ -1140,170 +1185,178 @@ const PreferenceCheckboxGroup = ({
               );
             })}
           </div>
+        </section>}
+      </div>
+
+      {serviceEnquirySuccess && (
+        <p role="status" className="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/40 dark:text-green-200">
+          {serviceEnquirySuccess}
+        </p>
+      )}
+
+      {user.userType === "student" && (
+        <section className="mt-8">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              Student Quick Access
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Pick up where you left off or find your next learning resource.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            {[
+              { title: "Courses", description: "Explore available courses", href: "/courses", icon: BookOpen, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+              { title: "Learning Resources", description: "Browse learning materials", href: "/learning", icon: BookOpen, color: "bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400" },
+              { title: "Saved Resources", description: "Return to saved materials", href: "/saved-resources", icon: Bookmark, color: "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400" },
+              { title: "Certificates", description: "View your achievements", href: "/certificates", icon: Award, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
+              { title: "Community", description: "Connect and discuss", href: "/community", icon: Users, color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400" },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.title} to={item.href} className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
+                  </div>
+                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">{item.title}</p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">{item.description}</p>
+                </Link>
+              );
+            })}
+          </div>
         </section>
-      </div>
+      )}
 
-      {/* ======================================
-          QUICK ACCESS
-      ====================================== */}
+      {/* ACCOUNT TYPE QUICK ACCESS */}
+      {user.userType !== "student" && user.userType !== "general" && (
+        <section className="mt-8">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              {user.userType === "business_owner" ? "Business Quick Access" : user.userType === "partner" ? "Partner & Investor Quick Access" : user.userType === "career_seeker" ? "Career Quick Access" : "Professional Quick Access"}
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {user.userType === "business_owner" ? "Manage your business needs and connect with our services." : user.userType === "partner" ? "Explore ways to collaborate, refer, and grow with KanuorieTech." : "Explore opportunities and resources matched to your goals."}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            {(user.userType === "business_owner"
+              ? [
+                  { title: "Explore Services", description: "Find support for your business", href: "/services", icon: CreditCard, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+                  { title: "Request a Service", description: "Tell our team what you need", action: "service-enquiry", icon: Mail, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
+                  { title: "Payments", description: "Manage orders and invoices", href: "/payments", icon: CreditCard, color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400" },
+                ]
+              : user.userType === "partner"
+                ? [
+                    { title: "Affiliate Program", description: "Manage referrals and commissions", href: "/affiliate", icon: Handshake, color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400" },
+                    { title: "Community", description: "Connect with our network", href: "/community", icon: Users, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
+                    { title: "Contact the Team", description: "Discuss a collaboration", href: "/contact", icon: Mail, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+                  ]
+                : [
+                    { title: "Career Opportunities", description: "Explore open roles", href: "/careers", icon: Award, color: "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400" },
+                    { title: "Community", description: "Connect with our network", href: "/community", icon: Users, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
+                    { title: "Contact the Team", description: "Get career guidance", href: "/contact", icon: Mail, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+                  ]
+            ).map((item) => {
+              const Icon = item.icon;
+              const CardElement = item.action ? "button" : Link;
+              return (
+                <CardElement
+                  key={item.title}
+                  {...(item.action
+                    ? {
+                        type: "button",
+                        onClick: () => {
+                          setServiceEnquiryError("");
+                          setServiceEnquirySuccess("");
+                          setIsServiceEnquiryOpen(true);
+                        },
+                      }
+                    : { to: item.href })}
+                  className="group w-full rounded-2xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
+                  </div>
+                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">{item.title}</p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">{item.description}</p>
+                </CardElement>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-      <div className="mt-8 md:hidden">
-        <div className="mb-4">
-          {/* <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-            Quick Access
-          </p> */}
-
-          <h3 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
-            Your KanuorieTech
-            <span className="text-blue-600"> Hub</span>
-          </h3>
-
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Quickly access your learning, certificates, community and account
-            services.
+      {user.userType === "general" && (
+        <section className="mt-8 rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-800 p-6 text-white shadow-lg sm:p-8">
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-100">Still exploring?</p>
+          <h3 className="mt-2 text-2xl font-bold">Find the path that fits you.</h3>
+          <p className="mt-2 max-w-2xl leading-6 text-blue-100">
+            Browse courses, business services, career opportunities, and collaboration options. You can update your interests in your profile whenever you are ready.
           </p>
+          <Link to="/services" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-blue-800 transition hover:bg-blue-50">
+            Explore KanuorieTech <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </section>
+      )}
+
+      {isServiceEnquiryOpen && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm sm:p-6"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !serviceEnquiryLoading) {
+              setIsServiceEnquiryOpen(false);
+            }
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="profile-service-enquiry-title"
+            className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/20 bg-white p-5 shadow-2xl dark:border-slate-700 dark:bg-slate-950 sm:p-8"
+          >
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                  Business Services
+                </p>
+                <h2 id="profile-service-enquiry-title" className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
+                  Tell us what your business needs
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                  Share a few details and our team will follow up about the right service.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsServiceEnquiryOpen(false)}
+                disabled={serviceEnquiryLoading}
+                aria-label="Close service enquiry form"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl text-slate-600 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+              >
+                &times;
+              </button>
+            </div>
+
+            {serviceEnquiryError && (
+              <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+                {serviceEnquiryError}
+              </p>
+            )}
+
+            <ServiceInquiryForm
+              onSubmit={handleServiceEnquiry}
+              loading={serviceEnquiryLoading}
+            />
+          </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-          {/* MY LEARNING */}
-
-          <Link
-            to="/Learning"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
-                <BookOpen className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              My Learning
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              Continue your courses
-            </p>
-          </Link>
-
-          {/* CERTIFICATES */}
-
-          <Link
-            to="/certificates"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-amber-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
-                <Award className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-amber-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              Certificates
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              View your achievements
-            </p>
-          </Link>
-
-          {/* SAVED RESOURCES */}
-
-          <Link
-            to="/Learning"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-purple-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400">
-                <Bookmark className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-purple-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              Saved Resources
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              Access saved materials
-            </p>
-          </Link>
-
-          {/* COMMUNITY */}
-
-          <Link
-            to="/community"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-green-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-green-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400">
-                <Users className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-green-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              Community
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              Connect and discuss
-            </p>
-          </Link>
-
-          {/* AFFILIATE */}
-
-          <Link
-            to="/affiliate"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-                <Handshake className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-indigo-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              Affiliate
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              Manage your referrals
-            </p>
-          </Link>
-
-          {/* ACCOUNTS & PAYMENTS */}
-
-          <Link
-            to="/payments"
-            className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-cyan-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-cyan-700"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400">
-                <CreditCard className="h-5 w-5" />
-              </div>
-
-              <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-cyan-600" />
-            </div>
-
-            <p className="mt-4 font-semibold text-gray-900 dark:text-white">
-              Accounts & Payments
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-              Manage payments and orders
-            </p>
-          </Link>
-        </div>
-      </div>
+      )}
 
       {/* ========================================
           EDIT PROFILE MODAL
@@ -1773,5 +1826,3 @@ const PreferenceCheckboxGroup = ({
     </div>
   );
 }
-
-

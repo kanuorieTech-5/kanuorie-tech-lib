@@ -17,8 +17,6 @@ import {
 
 import { SearchBar } from "../components/layout";
 
-import { Newsletter, CTA } from "../components/home";
-
 import defaultResources from "../data/resources";
 
 const BOOKS_PER_PAGE = 12;
@@ -572,14 +570,14 @@ export default function Library() {
       )}
       <section className="bg-slate-200 py-10">
         <div className="px-6">
-          <h1 className="text-4xl font-bold">Digital Library</h1>
+          <h1 className="text-4xl font-bold text-white">Digital Library</h1>
 
           <p className="mt-4 max-w-2xl text-gray-600 dark:text-slate-400">
             Explore curated books, tutorials, courses, and resources designed
             for modern developers.
           </p>
 
-          <div className="mt-8 flex flex-col gap-4 md:flex-row">
+          <div className="mt-8 flex flex-col gap-4 md:flex-row text-white">
             <SearchBar
               value={search}
               onChange={(value) => {

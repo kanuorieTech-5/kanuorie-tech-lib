@@ -6,13 +6,17 @@ export default function PublicRoute() {
 
   if (loadingAuth) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-cente justify-cente">
         <p className="text-sm text-slate-500 dark:text-slate-400">Checking authentication...</p>
       </div>
     );
   }
 
-  return <Outlet />;
+  return (
+  <div className="w-full min-h-screen">
+   <Outlet />;
+  </div>
+  )
 }
 
 

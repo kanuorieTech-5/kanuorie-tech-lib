@@ -9,7 +9,6 @@ import {
   Lightbulb,
   CheckCircle2,
 } from "lucide-react";
-
 import { Card, Button, SectionTitle } from "../common";
 
 const highlights = [
@@ -49,7 +48,7 @@ const audiences = [
 
 export default function AboutPreview() {
   return (
-    <section className="relative overflow-hidden bg-gray-900 py-10 text-white sm:py-20 lg:py-20">
+    <section className="relative overflow-hidden bg-gray-900 py-10 text-white sm:py-10 lg:py-20">
       {/* Background accents */}
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
@@ -117,7 +116,7 @@ export default function AboutPreview() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
-          >
+           >
             <span className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300">
               Innovation • Technology • Education • Growth
             </span>
@@ -183,29 +182,10 @@ export default function AboutPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.7 }}
-          className="mt-20 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-20 grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
           {audiences.map((audience) => {
             const Icon = audience.icon;
-
-            return (
-              <div
-                key={audience.title}
-                className="group rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/30 hover:bg-white/[0.07]"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-400/10 transition-colors duration-300 group-hover:bg-cyan-400/20">
-                  <Icon className="h-5 w-5 text-cyan-400" />
-                </div>
-
-                <h4 className="mt-5 text-lg font-bold text-white">
-                  {audience.title}
-                </h4>
-
-                <p className="mt-3 text-sm leading-6 text-slate-400">
-                  {audience.description}
-                </p>
-              </div>
-            );
           })}
         </motion.div>
 
@@ -215,7 +195,7 @@ export default function AboutPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mt-16 rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-400/10 via-blue-500/10 to-transparent p-8 sm:p-10"
+          className="rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-400/10 via-blue-500/10 to-transparent p-8 sm:p-10"
         >
           <div className="max-w-4xl">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-400">

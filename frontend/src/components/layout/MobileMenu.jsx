@@ -128,7 +128,7 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
               <UserDropdown />
             </div>
           )}
-          <Link to="/" onClick={onClose} className={linkClasses}>
+          <Link to="/home" onClick={onClose} className={linkClasses}>
             <Home size={18} />
             Home
           </Link>

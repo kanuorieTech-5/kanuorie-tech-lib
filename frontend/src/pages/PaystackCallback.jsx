@@ -67,24 +67,22 @@ export default function PaystackCallback() {
 
         const courseId = courseItem?.itemId;
 
-        if (!courseId) {
-          throw new Error(
-            "Payment was verified, but the purchased course could not be identified.",
-          );
-        }
-
         setStatus("success");
         setMessage(
-          "Payment verified successfully. Your course access is being activated.",
+          courseId
+            ? "Payment verified successfully. Your course access is being activated."
+            : "Payment verified successfully. Your order is now marked as paid.",
         );
 
         toast.success(
-          "Payment successful! Your course is now available.",
+          courseId
+            ? "Payment successful! Your course is now available."
+            : "Payment successful! Your order is confirmed.",
         );
 
         setTimeout(() => {
           if (mounted) {
-            navigate(`/courses/${courseId}`, {
+            navigate(courseId ? `/courses/${courseId}` : "/payments", {
               replace: true,
               state: {
                 paymentSuccess: true,

@@ -17,6 +17,8 @@ import {
   Facebook,
   Twitter,
   RefreshCw,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 
 import {
@@ -26,6 +28,7 @@ import {
   updateTeamMember,
   deleteTeamMember,
 } from "../../services/team.service";
+import { uploadImage } from "../../api/uploadApi";
 
 const EMPTY_FORM = {
   firstName: "",
@@ -149,6 +152,17 @@ export default function AdminTeam() {
   const [showModal, setShowModal] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const clearImageSelection = () => {
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImageFile(null);
+    setImagePreview("");
+  };
 
   const loadMembers = useCallback(async () => {
     try {
@@ -223,6 +237,7 @@ export default function AdminTeam() {
   }, [loadStats]);
 
   const openCreate = () => {
+    clearImageSelection();
     setEditingMember(null);
     setForm({
       ...EMPTY_FORM,
@@ -236,6 +251,7 @@ export default function AdminTeam() {
   };
 
   const openEdit = (member) => {
+    clearImageSelection();
     setEditingMember(member);
 
     setForm({
@@ -257,6 +273,7 @@ export default function AdminTeam() {
       active: member.active !== false,
       order: Number(member.order ?? 0),
     });
+    setImagePreview(member.image ?? "");
 
     setError("");
     setSuccess("");
@@ -266,6 +283,7 @@ export default function AdminTeam() {
   const closeModal = () => {
     if (saving) return;
 
+    clearImageSelection();
     setShowModal(false);
     setEditingMember(null);
   };
@@ -287,6 +305,30 @@ export default function AdminTeam() {
     }));
   };
 
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Choose an image file to upload.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be smaller than 5MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setError("");
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -295,8 +337,19 @@ export default function AdminTeam() {
       setError("");
       setSuccess("");
 
+      let imageUrl = form.image.trim();
+      if (imageFile) {
+        setUploadingImage(true);
+        const response = await uploadImage(imageFile, "kanuorietech/team");
+        imageUrl = response?.data?.url || response?.url || "";
+        if (!imageUrl) {
+          throw new Error("Image upload completed without returning an image URL.");
+        }
+      }
+
       const payload = {
         ...form,
+        image: imageUrl,
         order: Number(form.order) || 0,
       };
 
@@ -310,6 +363,7 @@ export default function AdminTeam() {
 
       setShowModal(false);
       setEditingMember(null);
+      clearImageSelection();
 
       await loadMembers();
       await loadStats();
@@ -321,6 +375,7 @@ export default function AdminTeam() {
           "Unable to save team member."
       );
     } finally {
+      setUploadingImage(false);
       setSaving(false);
     }
   };
@@ -758,6 +813,12 @@ export default function AdminTeam() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 p-6">
+              {error && (
+                <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+                  {error}
+                </p>
+              )}
+
               {/* BASIC INFO */}
               <section>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -825,14 +886,46 @@ export default function AdminTeam() {
                     className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
 
-                  <input
-                    value={form.image}
-                    onChange={(event) =>
-                      updateField("image", event.target.value)
-                    }
-                    placeholder="Profile image URL"
-                    className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm outline-none focus:border-cyan-500 md:col-span-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                  />
+                  <div className="md:col-span-2">
+                    <span className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                      Profile image
+                    </span>
+                    <div className="flex flex-col gap-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950 sm:flex-row sm:items-center">
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview}
+                          alt="Team member preview"
+                          className="h-24 w-24 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-white text-slate-400 dark:bg-slate-900">
+                          <ImageIcon className="h-8 w-8" />
+                        </div>
+                      )}
+
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                          Choose an image from your device
+                        </p>
+                        <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
+                          {imageFile?.name || "JPG, PNG, or WEBP, up to 5MB"}
+                        </p>
+                        <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
+                          <Upload className="h-4 w-4" />
+                          {imagePreview ? "Choose another image" : "Choose image"}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            onClick={(event) => {
+                              event.currentTarget.value = "";
+                            }}
+                            className="sr-only"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
                   <textarea
                     value={form.bio}
@@ -984,7 +1077,9 @@ export default function AdminTeam() {
                   className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving
-                    ? "Saving..."
+                    ? uploadingImage
+                      ? "Uploading image..."
+                      : "Saving..."
                     : editingMember
                       ? "Update Member"
                       : "Create Member"}

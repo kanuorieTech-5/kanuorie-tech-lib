@@ -1564,16 +1564,8 @@ export default function Learning() {
     });
   };
 
-  /* ==========================================
-     PAGE
-  ========================================== */
-
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* ======================================
-          HERO
-      ====================================== */}
-
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -1581,7 +1573,7 @@ export default function Learning() {
 
         <div className="absolute -bottom-40 left-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
 
-        <div className="relative mx-auto px-6 py-20 lg:px-8 lg:py-28">
+        <div className="relative mx-auto px-3 py-2 lg:px-8 lg:py-20">
           <motion.div
             initial={{
               opacity: 0,
@@ -1836,7 +1828,7 @@ export default function Learning() {
           COURSES CTA
       ====================================== */}
 
-      <section className="relative isolate overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 py-16 text-white sm:py-20">
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 py-5 text-white sm:py-20">
         <div className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-cyan-400/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
         <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-8">

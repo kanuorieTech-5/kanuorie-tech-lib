@@ -1,9 +1,7 @@
 ﻿import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Mail, UserPlus, } from "lucide-react";
-﻿import Hero from "../components/home/Hero";
 import AboutPreview from "../components/home/AboutPreview";
-import ImageSlider from "../components/home/ImageSlider";
 import Features from "../components/home/Features";
 import PlatformFeatures from "../components/home/FeaturesSlider";
 import ServicesPreview from "../components/home/ServicesPreview";
@@ -14,8 +12,10 @@ import ProductsPreview from "../components/home/ProductsPreview";
 import Testimonials from "../components/home/Testimonials";
 import BlogPreview from "../components/home/BlogPreview";
 import TechStack from "../components/home/TechStack";
+import TeamPreview from "../components/home/TeamPreview";
 import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
+
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -29,32 +29,19 @@ const reveal = {
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
-      <Hero />
-
+      <CTA />
       <AboutPreview />
-
-      <ImageSlider />
-
       <Features />
-
       <PlatformFeatures />
-
       <ServicesPreview />
-
       <ProjectsPreview />
-
       <CoursesPreview />
-
       <BooksPreview />
-
       <ProductsPreview />
-
       <BlogPreview />
-
       <Testimonials />
-
       <TechStack />
-
+      <TeamPreview />
       <section className="">
         <motion.div
           initial="hidden"
@@ -113,7 +100,6 @@ export default function Home() {
           </Link>    
         </div>
       </section>
-      <CTA />
       <Newsletter />
     </main>
   );

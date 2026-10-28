@@ -13,9 +13,9 @@ const featuresData = [
     img: "/images/courses.png",
   },
   {
-    title: "User Profiles",
-    desc: "Create your learning identity, manage your profile and personalize your experience.",
-    img: "/images/profile.png",
+    title: "Resource Management",
+    desc: "Upload and organize learning materials with a structured content system.",
+    img: "/images/resources.png",
   },
   {
     title: "Secure Authentication",
@@ -23,14 +23,14 @@ const featuresData = [
     img: "/images/security.png",
   },
   {
+    title: "User Profiles",
+    desc: "Create your learning identity, manage your profile and personalize your experience.",
+    img: "/images/profile.png",
+  },
+  {
     title: "Admin Control Panel",
     desc: "Manage users, courses, books and platform content from one dashboard.",
     img: "/images/admin.png",
-  },
-  {
-    title: "Resource Management",
-    desc: "Upload and organize learning materials with a structured content system.",
-    img: "/images/resources.png",
   },
 ];
 

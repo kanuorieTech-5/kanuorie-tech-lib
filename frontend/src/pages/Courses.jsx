@@ -149,12 +149,6 @@ export default function Courses() {
   const handleEnroll = async (course) => {
     if (!course?._id || enrollingId || purchasingId) return;
 
-    /*
-     * Premium courses MUST NEVER use the free enrollment endpoint.
-     *
-     * The backend also blocks this with HTTP 402, but we prevent
-     * the incorrect action from the UI as well.
-     */
     if (isPremiumCourse(course)) {
       return handleBuyCourse(course);
     }
@@ -231,13 +225,6 @@ export default function Courses() {
           "Payment checkout could not be initialized. Please try again.",
         );
       }
-
-      /*
-       * Redirect directly to the Paystack-hosted checkout.
-       *
-       * Enrollment is NOT created here.
-       * The backend creates enrollment only after verified payment.
-       */
       window.location.assign(authorizationUrl);
     } catch (error) {
       console.error("Course payment initialization failed:", error);

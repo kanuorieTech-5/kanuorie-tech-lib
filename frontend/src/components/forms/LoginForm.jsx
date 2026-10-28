@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, LockKeyhole, LogIn, Mail } from "lucide-react";
 import { Button, Card, Input } from "../ui";
@@ -93,7 +93,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
               onClick={() => setShowPassword((previous) => !previous)}
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
-              className="absolute right-3 top-9 rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="absolute right-3 top-9 rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {showPassword ? (
                 <EyeOff size={18} aria-hidden="true" />
@@ -106,7 +106,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
           <div className="mt-3 flex justify-end">
             <Link
               to="/ForgotPassword"
-              className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
+              className="text-sm font-medium text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               Forgot Password?
             </Link>
@@ -117,7 +117,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
         {error && (
           <div
             role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+            className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/70 dark:bg-red-950/40 dark:text-red-200"
           >
             {error}
           </div>
@@ -133,7 +133,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="font-semibold text-blue-600 transition hover:text-blue-700"
+            className="font-semibold text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Create an Account
           </Link>
@@ -141,7 +141,7 @@ export default function LoginForm({ onSubmit, loading = false }) {
       </form>
 
       {/* FOOTER */}
-      <div className="mt-8 flex items-center justify-center gap-2 border-t border-slate-100 pt-5 text-xs text-slate-400">
+      <div className="mt-8 flex items-center justify-center gap-2 border-t border-slate-100 pt-5 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
         <LockKeyhole size={14} aria-hidden="true" />
         Your account is protected by secure authentication.
       </div>

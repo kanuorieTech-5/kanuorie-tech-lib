@@ -35,7 +35,7 @@ export default function Login() {
 
       const redirectPath = from?.pathname
         ? `${from.pathname}${from.search || ""}${from.hash || ""}`
-        : "/";
+        : "/home";
 
       navigate(redirectPath, {
         replace: true,

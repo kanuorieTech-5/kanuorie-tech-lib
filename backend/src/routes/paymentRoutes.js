@@ -11,6 +11,8 @@ const {
   createNewPayment,
 
   initializePaystackCoursePayment,
+  initializePaystackOrderPayment,
+  initializePaystackCustomPayment,
   verifyPaystackPayment,
   paystackWebhook,
 
@@ -43,6 +45,18 @@ router.post(
   "/paystack/initialize",
   protect,
   initializePaystackCoursePayment
+);
+
+router.post(
+  "/paystack/initialize-order",
+  protect,
+  initializePaystackOrderPayment
+);
+
+router.post(
+  "/paystack/initialize-custom",
+  protect,
+  initializePaystackCustomPayment
 );
 
 router.get(

@@ -232,11 +232,11 @@ export default function TeamPreview() {
                           </p>
                         )}
 
-                        {member.bio && (
+                        {/* {member.bio && (
                           <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-400">
                             {member.bio}
                           </p>
-                        )}
+                        )} */}
                       </div>
                     </Card>
                   </motion.div>

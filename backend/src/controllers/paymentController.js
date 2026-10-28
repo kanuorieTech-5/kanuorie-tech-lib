@@ -13,6 +13,7 @@ const {
   createPaymentRecord,
   markPaymentSuccessful,
   generatePaymentReference,
+  generateOrderNumber,
   initializePaystackTransaction,
   verifyPaystackTransaction,
   finalizePaystackPayment,
@@ -496,6 +497,260 @@ const initializePaystackCoursePayment = asyncHandler(
 );
 
 /* ==========================================
+   PAYSTACK — PAY EXISTING ORDER
+========================================== */
+
+const initializePaystackOrderPayment = asyncHandler(async (req, res) => {
+  const userId = getUserId(req);
+  const { orderId } = req.body;
+
+  if (!orderId) {
+    return res.status(400).json({
+      success: false,
+      message: "Order ID is required.",
+    });
+  }
+
+  const order = await Order.findOne({ _id: orderId, user: userId });
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      message: "Order not found.",
+    });
+  }
+
+  if (order.status !== "pending" || Number(order.total) <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "This order is not available for payment.",
+    });
+  }
+
+  if (String(order.currency || "").toUpperCase() !== "NGN") {
+    return res.status(400).json({
+      success: false,
+      message: "Paystack checkout currently supports NGN orders only.",
+    });
+  }
+
+  const user = await User.findById(userId).select("email firstName lastName");
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Authenticated user not found.",
+    });
+  }
+
+  const reference = generatePaymentReference();
+  const payment = await createPaymentRecord({
+    userId,
+    orderId: order._id,
+    amount: order.total,
+    currency: order.currency,
+    provider: "paystack",
+    providerReference: reference,
+    paymentMethod: "paystack",
+    metadata: {
+      orderId: String(order._id),
+      userId: String(userId),
+      customerEmail: user.email,
+      customerName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+    },
+  });
+
+  try {
+    const paystack = await initializePaystackTransaction({
+      email: user.email,
+      amount: order.total,
+      currency: order.currency,
+      reference,
+      callbackUrl: getPaystackCallbackUrl(),
+      metadata: {
+        orderId: String(order._id),
+        paymentId: String(payment._id),
+        userId: String(userId),
+        customerEmail: user.email,
+        customerName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+      },
+    });
+
+    payment.metadata = {
+      ...(payment.metadata || {}),
+      paystack: {
+        authorizationUrl: paystack.authorization_url,
+        accessCode: paystack.access_code,
+        initializedAt: new Date(),
+      },
+    };
+    await payment.save();
+
+    order.paymentProvider = "paystack";
+    order.paymentReference = reference;
+    await order.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Secure Paystack checkout initialized successfully.",
+      data: {
+        order: formatOrder(order),
+        payment: {
+          _id: payment._id,
+          reference: payment.providerReference,
+          status: payment.status,
+          amount: payment.amount,
+          currency: payment.currency,
+        },
+        paystack: {
+          authorization_url: paystack.authorization_url,
+          access_code: paystack.access_code,
+          reference: paystack.reference,
+        },
+      },
+    });
+  } catch (error) {
+    payment.status = "failed";
+    payment.failedAt = new Date();
+    payment.failureReason = error?.message || "Paystack initialization failed.";
+    await payment.save().catch(() => {});
+    throw error;
+  }
+});
+
+const initializePaystackCustomPayment = asyncHandler(async (req, res) => {
+  const userId = getUserId(req);
+  const category = String(req.body.category || "").trim().toLowerCase();
+  const description = String(req.body.description || "").trim();
+  const amountInput = Number(req.body.amount);
+
+  if (!["service", "other"].includes(category)) {
+    return res.status(400).json({
+      success: false,
+      message: "Choose a service or other payment category.",
+    });
+  }
+
+  if (!description || description.length > 160) {
+    return res.status(400).json({
+      success: false,
+      message: "Add a payment description up to 160 characters.",
+    });
+  }
+
+  if (!Number.isFinite(amountInput) || amountInput <= 0 || amountInput > 100000000) {
+    return res.status(400).json({
+      success: false,
+      message: "Enter a valid payment amount in NGN.",
+    });
+  }
+
+  const amount = Math.round(amountInput * 100) / 100;
+  const user = await User.findById(userId).select("email firstName lastName");
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Authenticated user not found.",
+    });
+  }
+
+  const title = `${category === "service" ? "Service payment" : "Other payment"}: ${description}`;
+  const order = await Order.create({
+    orderNumber: generateOrderNumber(),
+    user: userId,
+    items: [{
+      itemType: "custom",
+      title,
+      quantity: 1,
+      unitPrice: amount,
+      totalPrice: amount,
+      currency: "NGN",
+    }],
+    subtotal: amount,
+    discount: 0,
+    total: amount,
+    currency: "NGN",
+    notes: description,
+  });
+
+  const reference = generatePaymentReference();
+  const payment = await createPaymentRecord({
+    userId,
+    orderId: order._id,
+    amount,
+    currency: "NGN",
+    provider: "paystack",
+    providerReference: reference,
+    paymentMethod: "paystack",
+    metadata: {
+      category,
+      description,
+      customerEmail: user.email,
+      customerName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+    },
+  });
+
+  try {
+    const paystack = await initializePaystackTransaction({
+      email: user.email,
+      amount,
+      currency: "NGN",
+      reference,
+      callbackUrl: getPaystackCallbackUrl(),
+      metadata: {
+        orderId: String(order._id),
+        paymentId: String(payment._id),
+        userId: String(userId),
+        category,
+        description,
+        customerEmail: user.email,
+        customerName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+      },
+    });
+
+    payment.metadata = {
+      ...(payment.metadata || {}),
+      paystack: {
+        authorizationUrl: paystack.authorization_url,
+        accessCode: paystack.access_code,
+        initializedAt: new Date(),
+      },
+    };
+    await payment.save();
+
+    order.paymentProvider = "paystack";
+    order.paymentReference = reference;
+    await order.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Secure Paystack checkout initialized successfully.",
+      data: {
+        order: formatOrder(order),
+        payment: {
+          _id: payment._id,
+          reference: payment.providerReference,
+          status: payment.status,
+          amount: payment.amount,
+          currency: payment.currency,
+        },
+        paystack: {
+          authorization_url: paystack.authorization_url,
+          access_code: paystack.access_code,
+          reference: paystack.reference,
+        },
+      },
+    });
+  } catch (error) {
+    payment.status = "failed";
+    payment.failedAt = new Date();
+    payment.failureReason = error?.message || "Paystack initialization failed.";
+    await payment.save().catch(() => {});
+    order.status = "failed";
+    await order.save().catch(() => {});
+    throw error;
+  }
+});
+
+/* ==========================================
    PAYSTACK — VERIFY PAYMENT
 ========================================== */
 
@@ -846,6 +1101,8 @@ module.exports = {
   createNewPayment,
 
   initializePaystackCoursePayment,
+  initializePaystackOrderPayment,
+  initializePaystackCustomPayment,
   verifyPaystackPayment,
   paystackWebhook,
 

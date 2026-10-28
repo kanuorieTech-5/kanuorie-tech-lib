@@ -18,6 +18,7 @@ import {
   Bell,
   Menu,
   Lightbulb,
+  Home,
   X,
 } from "lucide-react";
 
@@ -26,6 +27,11 @@ const adminLinks = [
     name: "Dashboard",
     path: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Home",
+    path: "/home",
+    icon: Home,
   },
   {
     name: "Users",

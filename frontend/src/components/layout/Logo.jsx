@@ -19,7 +19,7 @@ export default function Logo({ size = "md", showText = true }) {
   const current = sizes[size] || sizes.md;
 
   return (
-    <Link to="/" className="flex items-center gap-3">
+    <Link to="/home" className="flex items-center gap-3">
       <img
         src={logo}
         alt="KanuorieTech"
