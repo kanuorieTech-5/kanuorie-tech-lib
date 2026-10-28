@@ -35,7 +35,7 @@ import {
 const tabs = [
   {
     id: "transactions",
-    label: "Transactions",
+    label: "All Transactions",
     icon: Receipt,
   },
   {
@@ -418,7 +418,7 @@ export default function Payments() {
                     className={`relative inline-flex items-center gap-2 px-4 py-4 text-sm font-medium transition ${
                       active
                         ? "text-blue-600"
-                        : "text-slate-500 hover:text-slate-900"
+                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300"
                     }`}
                   >
                     <Icon className="h-4 w-4" />

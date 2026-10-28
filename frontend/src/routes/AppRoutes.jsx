@@ -90,7 +90,6 @@ export default function AppRoutes() {
 
       <Routes>
         <Route element={<MainLayout />}>
-        <Route path="home" element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="verify-certificate" element={<VerifyCertificate />} />
@@ -146,6 +145,7 @@ export default function AppRoutes() {
 
         <Route element={<DashboardLayout />}>
           <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
           <Route path="help" element={<Help />} />
           <Route path="learning" element={<Learning />} />
           <Route path="learning/:id" element={<LearningDetails />} />

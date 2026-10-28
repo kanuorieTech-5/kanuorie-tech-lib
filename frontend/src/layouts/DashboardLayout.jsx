@@ -10,7 +10,9 @@ import { useAuth } from "../contexts";
 export default function DashboardLayout() {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const isHome = pathname === "/";
+  const isHome = pathname === "/" || pathname === "/home";
+  const showHomeSidebar = pathname === "/home";
+  const isLearning = pathname === "/learning";
 
   return (
     <>
@@ -20,10 +22,10 @@ export default function DashboardLayout() {
       <div className="flex min-h-screen min-w-0 bg-gray-50 dark:bg-gray-950">
         {user && !isHome && <Sidebar />}
 
-        <main className={`min-w-0 flex-1 ${isHome ? "" : "p-3 sm:p-6"}`}>
+        <main className={`min-w-0 flex-1 ${isHome || isLearning ? "" : "p-3 sm:p-6"}`}>
           <Outlet />
         </main>
-        {isHome && <HomeSidebar />}
+        {showHomeSidebar && <HomeSidebar />}
       </div>
 
       <Footer />

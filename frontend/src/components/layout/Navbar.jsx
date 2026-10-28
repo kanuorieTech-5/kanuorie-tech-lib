@@ -9,7 +9,7 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const isHome = pathname === "/";
+  const isHome = pathname === "/" || pathname === "/home";
 
   return (
     <>

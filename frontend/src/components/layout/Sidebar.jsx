@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../contexts";
+import { isPrimaryNavLinkVisible } from "../../constants/primaryNavLinks";
 
 const links = [
   { name: "Home", path: "/home", icon: Home },
@@ -27,7 +28,7 @@ const links = [
   { name: "Certificates", path: "/certificates", icon: Award },
   { name: "Saved Resources", path: "/saved-resources", icon: Bookmark },
   { name: "Community", path: "/community", icon: Users },
-  { name: "Affiliate", path: "/affiliate", icon: Handshake },
+  { name: "Referral Program", path: "/affiliate", icon: Handshake },
   { name: "Accounts & Payments", path: "/payments", icon: WalletCards },
   { name: "Help & Support", path: "/help", icon: LifeBuoy },
   { name: "Notifications", path: "/notifications", icon: Bell },
@@ -36,8 +37,11 @@ const links = [
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
+  const visibleLinks = links.filter((item) =>
+    isPrimaryNavLinkVisible(item.path, user)
+  );
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -57,7 +61,7 @@ export default function Sidebar() {
     <aside className="hidden w-64 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950 lg:block">
       <div className="sticky top-16 flex h-[calc(100vh-4rem)] flex-col">
         <nav className="flex-1 overflow-y-auto p-4">
-          {links.map((item) => {
+          {visibleLinks.map((item) => {
             const Icon = item.icon;
 
             return (

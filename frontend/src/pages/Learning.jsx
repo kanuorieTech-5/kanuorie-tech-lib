@@ -105,6 +105,9 @@ const getYesterdayKey = () => {
 const getCourseId = (course) =>
   course?._id || course?.id || course?.course?._id || null;
 
+const getProgressCourseId = (progress) =>
+  progress?.course?._id || progress?.course?.id || null;
+
 const getCourseImage = (course) =>
   course?.image || course?.cover || "/images/course-placeholder.png";
 
@@ -154,6 +157,7 @@ function AutoCarousel({
   const viewportRef = useRef(null);
   const animationRef = useRef(null);
   const pausedRef = useRef(false);
+  const directionRef = useRef(1);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -169,15 +173,19 @@ function AutoCarousel({
       lastTime = time;
 
       if (!pausedRef.current) {
-        viewport.scrollLeft += (speed * delta) / 1000;
+        const maxScroll = viewport.scrollWidth - viewport.clientWidth;
 
-        const loopPoint = viewport.scrollWidth / 2;
+        if (maxScroll > 0) {
+          viewport.scrollLeft +=
+            (speed * delta * directionRef.current) / 1000;
 
-        if (
-          loopPoint > 0 &&
-          viewport.scrollLeft >= loopPoint
-        ) {
-          viewport.scrollLeft -= loopPoint;
+          if (viewport.scrollLeft >= maxScroll) {
+            viewport.scrollLeft = maxScroll;
+            directionRef.current = -1;
+          } else if (viewport.scrollLeft <= 0) {
+            viewport.scrollLeft = 0;
+            directionRef.current = 1;
+          }
         }
       }
 
@@ -219,16 +227,7 @@ function AutoCarousel({
       onBlur={resume}
     >
       <div className="flex w-max gap-6">
-        <div className="flex shrink-0 gap-6">
-          {children}
-        </div>
-
-        <div
-          className="flex shrink-0 gap-6"
-          aria-hidden="true"
-        >
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   );
@@ -269,7 +268,9 @@ function LearningCard({ item }) {
             }}
           />
           <span className="absolute left-4 top-4">
-            <Badge>{percentage >= 100 ? "Completed" : "In progress"}</Badge>
+            <Badge className="border-blue-200 bg-blue-100 text-blue-800 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300">
+              {percentage >= 100 ? "Completed" : "In progress"}
+            </Badge>
           </span>
         </div>
 
@@ -315,6 +316,41 @@ function LearningCard({ item }) {
         </div>
       </Card>
     </motion.div>
+  );
+}
+
+function RecommendedCourseCard({ course }) {
+  const courseId = getCourseId(course);
+  const title = course?.title || course?.name || "Recommended course";
+
+  return (
+    <Card className="flex w-[280px] shrink-0 flex-col overflow-hidden bg-white p-0 dark:bg-slate-900 sm:w-[320px]">
+      <img
+        src={getCourseImage(course)}
+        alt={title}
+        className="h-40 w-full object-cover"
+        onError={(event) => {
+          event.currentTarget.src = "/images/course-placeholder.png";
+        }}
+      />
+      <div className="flex flex-1 flex-col p-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+          {course?.category || "Recommended for you"}
+        </p>
+        <h3 className="mt-2 line-clamp-2 text-lg font-bold text-slate-900 dark:text-white">
+          {title}
+        </h3>
+        <p className="mt-2 line-clamp-2 flex-1 text-sm text-slate-600 dark:text-slate-300">
+          {course?.description || "Build on the skills you are already learning."}
+        </p>
+        <Link
+          to={courseId ? `/courses/${courseId}` : "/courses"}
+          className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200"
+        >
+          View course <ArrowRight size={16} />
+        </Link>
+      </div>
+    </Card>
   );
 }
 
@@ -494,6 +530,7 @@ function SavedResourcesSection({
       const items =
         response?.data?.items ||
         response?.data?.resources ||
+        (Array.isArray(response?.data) ? response.data : null) ||
         response?.items ||
         [];
 
@@ -1454,7 +1491,12 @@ export default function Learning() {
         if (!mounted) return;
 
         setLearning(
-          getListFromResponse(response)
+          getListFromResponse(response).filter(
+            (progress) =>
+              Boolean(progress?._id || progress?.id) &&
+              Boolean(getProgressCourseId(progress)) &&
+              typeof progress?.course === "object"
+          )
         );
       } catch (err) {
         console.error(
@@ -1528,6 +1570,52 @@ export default function Learning() {
     });
   }, [learning]);
 
+  const latestEnrollment = useMemo(() => {
+    return [...learning].sort((first, second) => {
+      const firstDate = new Date(first?.createdAt || first?.lastAccessed || 0).getTime();
+      const secondDate = new Date(second?.createdAt || second?.lastAccessed || 0).getTime();
+      return secondDate - firstDate;
+    })[0] || null;
+  }, [learning]);
+
+  const recommendedCourses = useMemo(() => {
+    const sourceCourse = latestEnrollment?.course;
+
+    if (!sourceCourse) return [];
+
+    const enrolledIds = new Set(
+      learning.map((item) => String(getProgressCourseId(item)))
+    );
+    const availableCourses = courses.filter((course) => {
+      const id = getCourseId(course);
+      return id && !enrolledIds.has(String(id));
+    });
+    const category = String(sourceCourse?.category || "").trim().toLowerCase();
+    const sameCategory = category
+      ? availableCourses.filter(
+          (course) => String(course?.category || "").trim().toLowerCase() === category
+        )
+      : [];
+    const sourceLevel = String(sourceCourse?.level || "").trim().toLowerCase();
+    const sameLevel = sourceLevel
+      ? availableCourses.filter(
+          (course) => String(course?.level || "").trim().toLowerCase() === sourceLevel
+        )
+      : [];
+
+    const suggested = sameCategory.length
+      ? sameCategory
+      : sameLevel.length
+        ? sameLevel
+        : [...availableCourses].sort(
+            (first, second) =>
+              Number(second?.enrollments || second?.students || 0) -
+              Number(first?.enrollments || first?.students || 0)
+          );
+
+    return suggested.slice(0, 6);
+  }, [learning, courses, latestEnrollment]);
+
   /* ==========================================
      WISHLIST
   ========================================== */
@@ -1565,7 +1653,7 @@ export default function Learning() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -1686,7 +1774,7 @@ export default function Learning() {
             <Card className="py-14 text-center">
               <GraduationCap
                 size={42}
-                className="mx-auto text-slate-400"
+                className="mx-auto text-slate-400 dark:text-slate-500"
               />
 
               <h3 className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
@@ -1812,6 +1900,46 @@ export default function Learning() {
         </div>
       </section>
 
+      {isAuthenticated && learning.length > 0 && (
+        <section className="py-14 lg:py-16" aria-labelledby="recommended-courses-heading">
+          <div className="mx-auto px-6 lg:px-8">
+            <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                  <Sparkles size={19} />
+                  <span className="text-sm font-semibold uppercase tracking-wider">Picked for your learning path</span>
+                </div>
+                <h2 id="recommended-courses-heading" className="mt-2 text-3xl font-black text-slate-900 dark:text-white">
+                  Recommended Courses
+                </h2>
+                <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">
+                  Based on your latest enrollment{latestEnrollment?.course?.title ? ` in ${latestEnrollment.course.title}` : ""}.
+                </p>
+              </div>
+              <Link to="/courses" className="inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">
+                Browse all courses <ArrowRight size={16} />
+              </Link>
+            </div>
+            {recommendedCourses.length > 0 ? (
+              <div className="flex gap-5 overflow-x-auto pb-4">
+                {recommendedCourses.map((course) => (
+                  <RecommendedCourseCard key={getCourseId(course)} course={course} />
+                ))}
+              </div>
+            ) : (
+              <Card className="bg-white py-8 text-center dark:bg-slate-900">
+                <p className="text-slate-600 dark:text-slate-300">
+                  We’ll suggest your next course as more learning options become available.
+                </p>
+                <Link to="/courses" className="mt-4 inline-flex items-center gap-2 font-bold text-blue-700 dark:text-blue-300">
+                  Explore courses <ArrowRight size={16} />
+                </Link>
+              </Card>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* ======================================
           SAVED RESOURCES
       ====================================== */}
@@ -1847,6 +1975,6 @@ export default function Learning() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

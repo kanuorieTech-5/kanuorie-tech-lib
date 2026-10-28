@@ -23,9 +23,31 @@ import {
 
 import { useAuth } from "../../contexts";
 import UserDropdown from "./UserDropdown";
+import { isPrimaryNavLinkVisible } from "../../constants/primaryNavLinks";
+
+const navigationLinks = [
+  { path: "/home", label: "Home", icon: Home },
+  { path: "/library", label: "Resource Library", icon: LibraryBig },
+  { path: "/courses", label: "Courses", icon: BookOpen },
+  { path: "/learning", label: "My Learning", icon: PlayCircle },
+  { path: "/certificates", label: "Certificates", icon: Award },
+  { path: "/saved-resources", label: "Saved Resources", icon: Bookmark },
+  { path: "/products", label: "Tools & Products", icon: ShoppingBag },
+  { path: "/projects", label: "Our Portfolio", icon: FolderKanban },
+  { path: "/services", label: "Our Services", icon: BriefcaseBusiness },
+  { path: "/about", label: "About Us", icon: Info },
+  { path: "/contact", label: "Contact Us", icon: Mail },
+  { path: "/help", label: "Help & Support", icon: LifeBuoy },
+  { path: "/community", label: "Community", icon: Users },
+  { path: "/affiliate", label: "Referral Program", icon: Handshake },
+  { path: "/payments", label: "Accounts & Payments", icon: WalletCards },
+];
 export default function MobileMenu({ open, onClose, side = "left" }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const visibleNavigationLinks = navigationLinks.filter((item) =>
+    isPrimaryNavLinkVisible(item.path, user)
+  );
   const firstName =
     user?.firstName ||
     user?.name?.trim().split(/\s+/)[0] ||
@@ -128,80 +150,12 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
               <UserDropdown />
             </div>
           )}
-          <Link to="/home" onClick={onClose} className={linkClasses}>
-            <Home size={18} />
-            Home
-          </Link>
-
-          <Link to="/library" onClick={onClose} className={linkClasses}>
-            <LibraryBig size={18} />
-            Library
-          </Link>
-
-          <Link to="/courses" onClick={onClose} className={linkClasses}>
-            <BookOpen size={18} />
-            Courses
-          </Link>
-
-          <Link to="/learning" onClick={onClose} className={linkClasses}>
-            <PlayCircle size={18} />
-            My Learning
-          </Link>
-
-          <Link to="/certificates" onClick={onClose} className={linkClasses}>
-            <Award size={18} />
-            Certificates
-          </Link>
-
-          <Link to="/saved-resources" onClick={onClose} className={linkClasses}>
-            <Bookmark size={18} />
-            Saved Resources
-          </Link>
-          
-          <Link to="/products" onClick={onClose} className={linkClasses}>
-            <ShoppingBag size={18} />
-            Tools & Products
-          </Link>
-
-          <Link to="/projects" onClick={onClose} className={linkClasses}>
-            <FolderKanban size={18} />
-            Projects
-          </Link>
-
-          <Link to="/services" onClick={onClose} className={linkClasses}>
-            <BriefcaseBusiness size={18} />
-            Services
-          </Link>
-
-          <Link to="/about" onClick={onClose} className={linkClasses}>
-            <Info size={18} />
-            About
-          </Link>
-
-          <Link to="/contact" onClick={onClose} className={linkClasses}>
-            <Mail size={18} />
-            Contact
-          </Link>
-
-          <Link to="/help" onClick={onClose} className={linkClasses}>
-            <LifeBuoy size={18} />
-            Help & Support
-          </Link>
-
-          <Link to="/community" onClick={onClose} className={linkClasses}>
-            <Users size={18} />
-            Community
-          </Link>
-
-          <Link to="/affiliate" onClick={onClose} className={linkClasses}>
-            <Handshake size={18} />
-            Affiliate
-          </Link>
-
-          <Link to="/payments" onClick={onClose} className={linkClasses}>
-            <WalletCards size={18} />
-            Accounts & Payments
-          </Link>
+          {visibleNavigationLinks.map(({ path, label, icon: Icon }) => (
+            <Link key={path} to={path} onClick={onClose} className={linkClasses}>
+              <Icon size={18} />
+              {label}
+            </Link>
+          ))}
 
           {/* Account navigation */}
           {user && (
