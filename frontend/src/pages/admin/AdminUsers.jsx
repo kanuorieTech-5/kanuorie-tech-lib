@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
   Search,
@@ -12,6 +12,7 @@ import {
 import { Card, Button, Loader } from "../../components/common";
 
 import { DashboardHeader } from "../../components/dashboard";
+import { AdminUserForm } from "../../components/forms";
 
 import { getAdminUsers, updateUserRole, deleteAdminUser } from "../../services";
 
@@ -252,61 +253,7 @@ export default function AdminUsers() {
       <Card className="overflow-hidden">
         {/* Toolbar */}
 
-        <div className="border-b border-slate-200 dark:border-slate-700 p-5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            {/* Search */}
-
-            <div className="relative w-full lg:max-w-md">
-              <Search
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-              />
-
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search by name or email..."
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
-              />
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              {/* Role */}
-
-              <select
-                value={role}
-                onChange={(event) => setRole(event.target.value)}
-                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
-              >
-                {ROLES.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-
-              {/* Refresh */}
-
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  fetchUsers({
-                    refresh: true,
-                  })
-                }
-                disabled={refreshing}
-              >
-                <RefreshCw
-                  size={17}
-                  className={refreshing ? "animate-spin" : ""}
-                />
-
-                <span className="ml-2">Refresh</span>
-              </Button>
-            </div>
-          </div>
-        </div>
+        <AdminUserForm {...{ Button, ROLES, RefreshCw, Search, fetchUsers, refreshing, role, search, setRole, setSearch }} onSubmit={(event) => event.preventDefault()} className="border-b border-slate-200 dark:border-slate-700 p-5" />
 
         {/* Error */}
 

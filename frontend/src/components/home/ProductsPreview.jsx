@@ -369,21 +369,7 @@ export default function ProductsPreview() {
                                 rel="noopener noreferrer"
                                 aria-label={`${product.name} GitHub`}
                                 title="GitHub"
-                                className="
-                                  flex
-                                  h-9
-                                  w-9
-                                  shrink-0
-                                  items-center
-                                  justify-center
-                                  rounded-lg
-                                  border
-                                  border-white/10
-                                  text-slate-400
-                                  transition
-                                  hover:border-white/30
-                                  hover:text-white
-                                "
+                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-slate-400 transition hover:border-white/30 hover:text-white"
                               >
                                 <Github size={16} />
                               </a>

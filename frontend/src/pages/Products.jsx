@@ -499,17 +499,8 @@ export default function Products() {
 
           <div
             aria-live="polite"
-            className="
-              mb-6
-              flex
-              flex-wrap
-              items-center
-              justify-between
-              gap-3
-              text-sm
-              text-slate-500 dark:text-slate-400
-            "
-          >
+            className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400"
+           >
             <span>
               {filteredProducts.length > 0
                 ? `${filteredProducts.length} ${
@@ -525,12 +516,7 @@ export default function Products() {
                   setSearch("");
                   setCategory("All");
                 }}
-                className="
-                  font-semibold
-                  text-blue-600
-                  transition
-                  hover:text-blue-700
-                "
+                className="font-semibold text-blue-600 transition hover:text-blue-700"
               >
                 Clear filters
               </button>
@@ -541,24 +527,11 @@ export default function Products() {
 
           {paginatedProducts.length === 0 ? (
             <Card className="p-12 text-center">
-              <Search
-                className="
-                  mx-auto
-                  mb-5
-                  h-10
-                  w-10
-                  text-slate-400
-                "
+              <Search className="mx-auto mb-5 h-10 w-10 text-slate-400"
                 aria-hidden="true"
               />
 
-              <h2
-                className="
-                  mb-3
-                  text-2xl
-                  font-bold
-                  text-slate-900 dark:text-slate-100
-                "
+              <h2 className=" mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100"
               >
                 No tools found
               </h2>
@@ -569,13 +542,7 @@ export default function Products() {
             </Card>
           ) : (
             <div
-              className="
-                grid
-                gap-8
-                sm:grid-cols-2
-                lg:grid-cols-3
-                xl:grid-cols-4
-              "
+              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {paginatedProducts.map((product, index) => {
                 const productId = getProductId(product);
