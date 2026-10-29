@@ -69,7 +69,8 @@ const Input = forwardRef(
               {
                 "pl-11": leftIcon || variant === "search",
 
-                "pr-11": rightIcon || (isPassword && showPasswordToggle) || loading,
+                "pr-11":
+                  rightIcon || (isPassword && showPasswordToggle) || loading,
 
                 "border-red-500": error,
 
@@ -111,10 +112,14 @@ const Input = forwardRef(
         </div>
 
         {helperText && !error && (
-          <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">{helperText}</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+            {helperText}
+          </p>
         )}
 
-        {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {error && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
       </div>
     );
   },

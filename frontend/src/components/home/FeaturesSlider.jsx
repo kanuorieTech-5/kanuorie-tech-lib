@@ -67,10 +67,7 @@ export default function FeaturesSlider() {
   ========================================== */
 
   useEffect(() => {
-    const maxIndex = Math.max(
-      featuresData.length - visibleCards,
-      0,
-    );
+    const maxIndex = Math.max(featuresData.length - visibleCards, 0);
 
     if (currentIndex > maxIndex) {
       setCurrentIndex(maxIndex);
@@ -82,14 +79,9 @@ export default function FeaturesSlider() {
   ========================================== */
 
   const nextSlide = () => {
-    const maxIndex = Math.max(
-      featuresData.length - visibleCards,
-      0,
-    );
+    const maxIndex = Math.max(featuresData.length - visibleCards, 0);
 
-    setCurrentIndex((prev) =>
-      prev >= maxIndex ? 0 : prev + 1,
-    );
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
   /* ==========================================
@@ -97,14 +89,9 @@ export default function FeaturesSlider() {
   ========================================== */
 
   const prevSlide = () => {
-    const maxIndex = Math.max(
-      featuresData.length - visibleCards,
-      0,
-    );
+    const maxIndex = Math.max(featuresData.length - visibleCards, 0);
 
-    setCurrentIndex((prev) =>
-      prev <= 0 ? maxIndex : prev - 1,
-    );
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   };
 
   /* ==========================================
@@ -136,8 +123,7 @@ export default function FeaturesSlider() {
           </h2>
 
           <p className="mt-4 text-slate-400">
-            Powerful tools designed for learners, creators and
-            administrators.
+            Powerful tools designed for learners, creators and administrators.
           </p>
         </div>
 
@@ -173,9 +159,7 @@ export default function FeaturesSlider() {
                       {item.title}
                     </h3>
 
-                    <p className="mt-3 leading-7 text-slate-400">
-                      {item.desc}
-                    </p>
+                    <p className="mt-3 leading-7 text-slate-400">{item.desc}</p>
                   </div>
                 </div>
               </div>
@@ -213,10 +197,7 @@ export default function FeaturesSlider() {
 
         <div className="mt-5 flex justify-center gap-2">
           {Array.from({
-            length: Math.max(
-              featuresData.length - visibleCards + 1,
-              1,
-            ),
+            length: Math.max(featuresData.length - visibleCards + 1, 1),
           }).map((_, index) => (
             <button
               key={index}
@@ -224,9 +205,7 @@ export default function FeaturesSlider() {
               onClick={() => setCurrentIndex(index)}
               aria-label={`Go to slide ${index + 1}`}
               className={`h-2 rounded-full transition-all ${
-                currentIndex === index
-                  ? "w-6 bg-cyan-400"
-                  : "w-2 bg-white/20"
+                currentIndex === index ? "w-6 bg-cyan-400" : "w-2 bg-white/20"
               }`}
             />
           ))}
@@ -235,4 +214,3 @@ export default function FeaturesSlider() {
     </section>
   );
 }
-

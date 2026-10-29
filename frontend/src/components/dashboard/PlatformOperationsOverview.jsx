@@ -45,7 +45,7 @@ function formatCurrency(value) {
 
   if (typeof value === "object" && !Array.isArray(value)) {
     const entries = Object.entries(value).filter(
-      ([, amount]) => amount !== null && amount !== undefined
+      ([, amount]) => amount !== null && amount !== undefined,
     );
 
     if (!entries.length) {
@@ -55,7 +55,7 @@ function formatCurrency(value) {
     return entries
       .map(
         ([currency, amount]) =>
-          `${currency} ${Number(amount).toLocaleString()}`
+          `${currency} ${Number(amount).toLocaleString()}`,
       )
       .join(" • ");
   }
@@ -123,11 +123,7 @@ function Metric({
         )}
       </div>
 
-      {status && (
-        <div className="mt-3">
-          {status}
-        </div>
-      )}
+      {status && <div className="mt-3">{status}</div>}
     </div>
   );
 }
@@ -136,12 +132,7 @@ function Metric({
    SECTION
 ======================================== */
 
-function Section({
-  title,
-  description,
-  icon: Icon,
-  children,
-}) {
+function Section({ title, description, icon: Icon, children }) {
   return (
     <section
       data-operations-section
@@ -166,9 +157,7 @@ function Section({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {children}
-      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
     </section>
   );
 }
@@ -179,14 +168,10 @@ function Section({
 
 function StatusBadge({ type = "neutral", children }) {
   const styles = {
-    success:
-      "bg-emerald-50 text-emerald-700 border-emerald-200",
-    warning:
-      "bg-amber-50 text-amber-700 border-amber-200",
-    danger:
-      "bg-red-50 text-red-700 border-red-200",
-    neutral:
-      "bg-slate-50 text-slate-600 border-slate-200",
+    success: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    warning: "bg-amber-50 text-amber-700 border-amber-200",
+    danger: "bg-red-50 text-red-700 border-red-200",
+    neutral: "bg-slate-50 text-slate-600 border-slate-200",
   };
 
   return (
@@ -202,10 +187,8 @@ function StatusBadge({ type = "neutral", children }) {
    PLATFORM OPERATIONS
 ======================================== */
 
-export default function PlatformOperationsOverview({
-  operations = {},
-  }) {
-    const {
+export default function PlatformOperationsOverview({ operations = {} }) {
+  const {
     team = {},
     affiliates = {},
     investorsPartners = {},
@@ -227,8 +210,12 @@ export default function PlatformOperationsOverview({
 
   const getRecordsCategory = (section, label) => {
     if (section === "Affiliates & Payouts") {
-      return ["Pending Payouts", "Paid Payouts", "Total Commission",
-        "Pending Commission"].includes(label)
+      return [
+        "Pending Payouts",
+        "Paid Payouts",
+        "Total Commission",
+        "Pending Commission",
+      ].includes(label)
         ? "payouts"
         : "affiliates";
     }
@@ -240,8 +227,8 @@ export default function PlatformOperationsOverview({
     if (section === "Issues & Support") return "issues";
     if (section === "Feedback & Reviews") return "feedback";
     if (section === "Compliance Overview" && label === "Complaints & Reports") {
-        return "reports";
-      }
+      return "reports";
+    }
     if (section === "Compliance Overview") return "compliance";
   };
 
@@ -273,7 +260,7 @@ export default function PlatformOperationsOverview({
       setOperationRecords([]);
       setRecordsError(
         error.response?.data?.message ||
-          "Unable to load records. Check your admin access and API connection."
+          "Unable to load records. Check your admin access and API connection.",
       );
     } finally {
       setRecordsLoading(false);
@@ -292,118 +279,110 @@ export default function PlatformOperationsOverview({
   useEffect(() => {
     if (!selectedMetric) return;
 
-  const handleEscape = (event) => {
-    if (event.key === "Escape") {
-      setSelectedMetric(null);
-    }
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelectedMetric(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
+    };
+  }, [selectedMetric]);
+
+  const handleMetricClick = (event) => {
+    const card = event.target.closest("[data-metric-card]");
+    if (!card) return;
+
+    const section = card.closest("[data-operations-section]");
+    if (!section) return;
+
+    const relatedMetrics = Array.from(
+      section.querySelectorAll("[data-metric-card]"),
+    ).map((metric) => ({
+      label: metric.dataset.metricLabel,
+      value: metric.dataset.metricValue,
+    }));
+
+    const label = card.dataset.metricLabel;
+    const sectionTitle = section.dataset.sectionTitle;
+
+    const category = getRecordsCategory(sectionTitle, label);
+
+    setOperationRecords([]);
+    setRecordsError("");
+
+    setSelectedMetric({
+      label,
+      value: card.dataset.metricValue,
+      section: sectionTitle,
+      category,
+      relatedMetrics,
+    });
   };
 
-  document.addEventListener("keydown", handleEscape);
-  document.body.style.overflow = "hidden";
+  const handleRecordAction = async (record, status) => {
+    const category = selectedMetric?.category;
+    const id = record._id;
 
-  return () => {
-    document.removeEventListener("keydown", handleEscape);
-    document.body.style.overflow = "";
+    if (!id || !category) return;
+
+    let action;
+
+    if (category === "affiliates") {
+      action = () => operationsApi.updateOperationsAffiliateStatus(id, status);
+    } else if (category === "inquiries") {
+      action = () => operationsApi.updateOperationsInquiryStatus(id, status);
+    } else if (category === "issues") {
+      action = () => operationsApi.updateOperationsIssueStatus(id, status);
+    } else if (category === "reports") {
+      action = () => operationsApi.updateOperationsReportStatus(id, status);
+    } else if (category === "payouts") {
+      let reference;
+      let rejectionReason;
+
+      if (status === "paid") {
+        reference = window.prompt("Enter the actual payout payment reference:");
+
+        if (!reference?.trim()) return;
+      }
+
+      if (status === "rejected") {
+        rejectionReason = window.prompt(
+          "Enter the reason for rejecting this payout:",
+        );
+
+        if (!rejectionReason?.trim()) return;
+      }
+
+      action = () =>
+        operationsApi.updateOperationsPayoutStatus(id, {
+          status,
+          reference,
+          rejectionReason,
+        });
+    } else {
+      return;
+    }
+
+    setActionLoading(id);
+    setRecordsError("");
+
+    try {
+      await action();
+      await loadOperationRecords(category);
+    } catch (error) {
+      setRecordsError(
+        error.response?.data?.message || "The action failed. Please try again.",
+      );
+    } finally {
+      setActionLoading("");
+    }
   };
-}, [selectedMetric]);
-
-const handleMetricClick = (event) => {
-  const card = event.target.closest("[data-metric-card]");
-  if (!card) return;
-
-  const section = card.closest("[data-operations-section]");
-  if (!section) return;
-
-  const relatedMetrics = Array.from(
-    section.querySelectorAll("[data-metric-card]")
-  ).map((metric) => ({
-    label: metric.dataset.metricLabel,
-    value: metric.dataset.metricValue,
-  }));
-
-  const label = card.dataset.metricLabel;
-  const sectionTitle = section.dataset.sectionTitle;
-
-  const category = getRecordsCategory(sectionTitle, label);
-
-  setOperationRecords([]);
-  setRecordsError("");
-
-  setSelectedMetric({
-    label,
-    value: card.dataset.metricValue,
-    section: sectionTitle,
-    category,
-    relatedMetrics,
-  });
-};
-
-
-const handleRecordAction = async (record, status) => {
-  const category = selectedMetric?.category;
-  const id = record._id;
-
-  if (!id || !category) return;
-
-  let action;
-
-  if (category === "affiliates") {
-    action = () =>
-      operationsApi.updateOperationsAffiliateStatus(id, status);
-  } else if (category === "inquiries") {
-    action = () =>
-      operationsApi.updateOperationsInquiryStatus(id, status);
-  } else if (category === "issues") {
-    action = () =>
-      operationsApi.updateOperationsIssueStatus(id, status);
-  } else if (category === "reports") {
-    action = () =>
-      operationsApi.updateOperationsReportStatus(id, status);
-  } else if (category === "payouts") {
-    let reference;
-    let rejectionReason;
-
-    if (status === "paid") {
-      reference = window.prompt(
-        "Enter the actual payout payment reference:"
-      );
-
-      if (!reference?.trim()) return;
-    }
-
-    if (status === "rejected") {
-      rejectionReason = window.prompt(
-        "Enter the reason for rejecting this payout:"
-      );
-
-      if (!rejectionReason?.trim()) return;
-    }
-
-    action = () =>
-      operationsApi.updateOperationsPayoutStatus(id, {
-        status,
-        reference,
-        rejectionReason,
-      });
-  } else {
-    return;
-  }
-
-  setActionLoading(id);
-  setRecordsError("");
-
-  try {
-    await action();
-    await loadOperationRecords(category);
-  } catch (error) {
-    setRecordsError(
-      error.response?.data?.message ||
-        "The action failed. Please try again."
-    );
-  } finally {
-    setActionLoading("");
-  }
-};
 
   const complianceConfigured = compliance.configured !== false;
 
@@ -414,11 +393,7 @@ const handleRecordAction = async (record, status) => {
         description="Monitor team members, roles and account status."
         icon={Users}
       >
-        <Metric
-          label="Team Members"
-          value={team.total}
-          icon={Users}
-        />
+        <Metric label="Team Members" value={team.total} icon={Users} />
 
         <Metric
           label="Active Members"
@@ -426,18 +401,12 @@ const handleRecordAction = async (record, status) => {
           icon={UserCheck}
           status={
             team.active !== undefined && (
-              <StatusBadge type="success">
-                Active
-              </StatusBadge>
+              <StatusBadge type="success">Active</StatusBadge>
             )
           }
         />
 
-        <Metric
-          label="Inactive Members"
-          value={team.inactive}
-          icon={XCircle}
-        />
+        <Metric label="Inactive Members" value={team.inactive} icon={XCircle} />
       </Section>
 
       <Section
@@ -445,11 +414,7 @@ const handleRecordAction = async (record, status) => {
         description="Track affiliate activity, commissions and payout status."
         icon={Wallet}
       >
-        <Metric
-          label="Affiliates"
-          value={affiliates.total}
-          icon={Users}
-        />
+        <Metric label="Affiliates" value={affiliates.total} icon={Users} />
 
         <Metric
           label="Active Affiliates"
@@ -463,9 +428,7 @@ const handleRecordAction = async (record, status) => {
           icon={Clock3}
           status={
             affiliates.pendingPayouts !== undefined && (
-              <StatusBadge type="warning">
-                Awaiting payout
-              </StatusBadge>
+              <StatusBadge type="warning">Awaiting payout</StatusBadge>
             )
           }
         />
@@ -518,9 +481,7 @@ const handleRecordAction = async (record, status) => {
           icon={CheckCircle2}
           status={
             investorsPartners.active !== undefined && (
-              <StatusBadge type="success">
-                Replied
-              </StatusBadge>
+              <StatusBadge type="success">Replied</StatusBadge>
             )
           }
         />
@@ -531,9 +492,7 @@ const handleRecordAction = async (record, status) => {
           icon={Clock3}
           status={
             investorsPartners.pending !== undefined && (
-              <StatusBadge type="warning">
-                Awaiting response
-              </StatusBadge>
+              <StatusBadge type="warning">Awaiting response</StatusBadge>
             )
           }
         />
@@ -566,9 +525,7 @@ const handleRecordAction = async (record, status) => {
           icon={CheckCircle2}
           status={
             enrollments.completed !== undefined && (
-              <StatusBadge type="success">
-                Completed
-              </StatusBadge>
+              <StatusBadge type="success">Completed</StatusBadge>
             )
           }
         />
@@ -629,9 +586,7 @@ const handleRecordAction = async (record, status) => {
           icon={CheckCircle2}
           status={
             payments.successful !== undefined && (
-              <StatusBadge type="success">
-                Successful
-              </StatusBadge>
+              <StatusBadge type="success">Successful</StatusBadge>
             )
           }
         />
@@ -642,9 +597,7 @@ const handleRecordAction = async (record, status) => {
           icon={Clock3}
           status={
             payments.pending !== undefined && (
-              <StatusBadge type="warning">
-                Pending
-              </StatusBadge>
+              <StatusBadge type="warning">Pending</StatusBadge>
             )
           }
         />
@@ -655,18 +608,12 @@ const handleRecordAction = async (record, status) => {
           icon={XCircle}
           status={
             payments.failed !== undefined && (
-              <StatusBadge type="danger">
-                Failed
-              </StatusBadge>
+              <StatusBadge type="danger">Failed</StatusBadge>
             )
           }
         />
 
-        <Metric
-          label="Refunded"
-          value={payments.refunded}
-          icon={Wallet}
-        />
+        <Metric label="Refunded" value={payments.refunded} icon={Wallet} />
 
         <Metric
           label="Payment Volume"
@@ -689,19 +636,17 @@ const handleRecordAction = async (record, status) => {
         }
         icon={ShieldCheck}
       >
-      <Metric
-        label="Complaints & Reports"
-        value={reports.total}
-        icon={MessageSquare}
-        description="Complaints, compliance reports and contact feedback"
-        status={
-          reports.total !== undefined && (
-            <StatusBadge type="neutral">
-              Contact submissions
-            </StatusBadge>
-          )
-        }
-      />
+        <Metric
+          label="Complaints & Reports"
+          value={reports.total}
+          icon={MessageSquare}
+          description="Complaints, compliance reports and contact feedback"
+          status={
+            reports.total !== undefined && (
+              <StatusBadge type="neutral">Contact submissions</StatusBadge>
+            )
+          }
+        />
         <Metric
           label="Compliant"
           value={compliance.compliant}
@@ -712,9 +657,7 @@ const handleRecordAction = async (record, status) => {
           status={
             complianceConfigured &&
             compliance.compliant !== undefined && (
-              <StatusBadge type="success">
-                Compliant
-              </StatusBadge>
+              <StatusBadge type="success">Compliant</StatusBadge>
             )
           }
         />
@@ -729,9 +672,7 @@ const handleRecordAction = async (record, status) => {
           status={
             complianceConfigured &&
             compliance.pending !== undefined && (
-              <StatusBadge type="warning">
-                Review required
-              </StatusBadge>
+              <StatusBadge type="warning">Review required</StatusBadge>
             )
           }
         />
@@ -746,9 +687,7 @@ const handleRecordAction = async (record, status) => {
           status={
             complianceConfigured &&
             compliance.issues !== undefined && (
-              <StatusBadge type="danger">
-                Attention required
-              </StatusBadge>
+              <StatusBadge type="danger">Attention required</StatusBadge>
             )
           }
         />
@@ -775,9 +714,7 @@ const handleRecordAction = async (record, status) => {
           icon={AlertTriangle}
           status={
             issues.open !== undefined && (
-              <StatusBadge type="warning">
-                Open
-              </StatusBadge>
+              <StatusBadge type="warning">Open</StatusBadge>
             )
           }
         />
@@ -788,9 +725,7 @@ const handleRecordAction = async (record, status) => {
           icon={CheckCircle2}
           status={
             issues.resolved !== undefined && (
-              <StatusBadge type="success">
-                Resolved
-              </StatusBadge>
+              <StatusBadge type="success">Resolved</StatusBadge>
             )
           }
         />
@@ -823,9 +758,7 @@ const handleRecordAction = async (record, status) => {
           icon={CheckCircle2}
           status={
             feedback.positive !== undefined && (
-              <StatusBadge type="success">
-                Positive
-              </StatusBadge>
+              <StatusBadge type="success">Positive</StatusBadge>
             )
           }
         />
@@ -836,9 +769,7 @@ const handleRecordAction = async (record, status) => {
           icon={Clock3}
           status={
             feedback.needsResponse !== undefined && (
-              <StatusBadge type="warning">
-                Response needed
-              </StatusBadge>
+              <StatusBadge type="warning">Response needed</StatusBadge>
             )
           }
         />
@@ -855,7 +786,6 @@ const handleRecordAction = async (record, status) => {
             className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-
             <section className="space-y-4 border-b border-slate-200 dark:border-slate-700 p-5">
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-slate-100">
@@ -896,7 +826,9 @@ const handleRecordAction = async (record, status) => {
                   {recordsError}
                   <button
                     type="button"
-                    onClick={() => loadOperationRecords(selectedMetric.category)}
+                    onClick={() =>
+                      loadOperationRecords(selectedMetric.category)
+                    }
                     className="ml-2 font-semibold underline"
                   >
                     Retry
@@ -908,7 +840,8 @@ const handleRecordAction = async (record, status) => {
                 !recordsError &&
                 selectedMetric.category === "compliance" && (
                   <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
-                    Not configured. No dedicated compliance data source is connected.
+                    Not configured. No dedicated compliance data source is
+                    connected.
                   </p>
                 )}
 
@@ -916,7 +849,8 @@ const handleRecordAction = async (record, status) => {
                 !recordsError &&
                 selectedMetric.category === "none" && (
                   <p className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-400">
-                    A dedicated record view is not configured for this metric yet.
+                    A dedicated record view is not configured for this metric
+                    yet.
                   </p>
                 )}
 
@@ -936,13 +870,14 @@ const handleRecordAction = async (record, status) => {
                     if (!value) return "Unknown";
                     if (typeof value === "string") return value;
 
-                    return [
-                      value.firstName,
-                      value.lastName,
-                    ].filter(Boolean).join(" ") ||
+                    return (
+                      [value.firstName, value.lastName]
+                        .filter(Boolean)
+                        .join(" ") ||
                       value.name ||
                       value.email ||
-                      "Unknown";
+                      "Unknown"
+                    );
                   };
 
                   const date = (value) =>
@@ -973,7 +908,9 @@ const handleRecordAction = async (record, status) => {
                     ],
                   };
 
-                  const canUpdate = Boolean(statusOptions[selectedMetric.category]);
+                  const canUpdate = Boolean(
+                    statusOptions[selectedMetric.category],
+                  );
 
                   return (
                     <article
@@ -982,7 +919,7 @@ const handleRecordAction = async (record, status) => {
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <h4 className="break-words font-semibold text-slate-900 dark:text-slate-100">                           
+                          <h4 className="break-words font-semibold text-slate-900 dark:text-slate-100">
                             {selectedMetric.category === "affiliates"
                               ? person(record.user)
                               : selectedMetric.category === "payouts"
@@ -996,13 +933,16 @@ const handleRecordAction = async (record, status) => {
                                       : selectedMetric.category === "payments"
                                         ? person(record.user)
                                         : selectedMetric.category === "issues"
-                                          ? record.post?.title || "Community report"
-                                          : selectedMetric.category === "reports"
-                                            ? record.subject || record.reportCategory || "Contact report"
+                                          ? record.post?.title ||
+                                            "Community report"
+                                          : selectedMetric.category ===
+                                              "reports"
+                                            ? record.subject ||
+                                              record.reportCategory ||
+                                              "Contact report"
                                             : record.name || "Feedback"}
-
                           </h4>
-                          <p className="mt-1 break-all text-sm text-slate-500 dark:text-slate-400">                           
+                          <p className="mt-1 break-all text-sm text-slate-500 dark:text-slate-400">
                             {selectedMetric.category === "affiliates"
                               ? record.user?.email
                               : selectedMetric.category === "payouts"
@@ -1017,9 +957,12 @@ const handleRecordAction = async (record, status) => {
                                         ? record.providerReference
                                         : selectedMetric.category === "issues"
                                           ? `${record.reason || "Report"} · ${person(record.reporter)}`
-                                          : selectedMetric.category === "reports"
+                                          : selectedMetric.category ===
+                                              "reports"
                                             ? record.email
-                                            : record.company || record.position || ""}
+                                            : record.company ||
+                                              record.position ||
+                                              ""}
                           </p>
                         </div>
 
@@ -1034,48 +977,52 @@ const handleRecordAction = async (record, status) => {
                         {selectedMetric.category === "affiliates" && (
                           <>
                             <p>Referral code: {record.referralCode || "—"}</p>
-                            <p>Commission rate: {record.commissionRate ?? 0}%</p>
+                            <p>
+                              Commission rate: {record.commissionRate ?? 0}%
+                            </p>
                             <p>Joined: {date(record.createdAt)}</p>
                           </>
                         )}
                         {selectedMetric.category === "reports" && (
-  <>
-    <p>
-      Category: {record.reportCategory || "Uncategorized"}
-    </p>
+                          <>
+                            <p>
+                              Category:{" "}
+                              {record.reportCategory || "Uncategorized"}
+                            </p>
 
-    <p>
-      Subject: {record.subject || "—"}
-    </p>
+                            <p>Subject: {record.subject || "—"}</p>
 
-    <p>
-      Sender: {record.name || "Unknown"}
-    </p>
+                            <p>Sender: {record.name || "Unknown"}</p>
 
-    <p>
-      Email: {record.email || "—"}
-    </p>
+                            <p>Email: {record.email || "—"}</p>
 
-    <p className="whitespace-pre-wrap break-words">
-      Message: {record.message || "No message provided."}
-    </p>
+                            <p className="whitespace-pre-wrap break-words">
+                              Message:{" "}
+                              {record.message || "No message provided."}
+                            </p>
 
-    <p>
-      Submitted: {date(record.createdAt)}
-    </p>
+                            <p>Submitted: {date(record.createdAt)}</p>
 
-    <p>
-      Last updated: {date(record.updatedAt)}
-    </p>
-  </>
-)}
+                            <p>Last updated: {date(record.updatedAt)}</p>
+                          </>
+                        )}
 
                         {selectedMetric.category === "payouts" && (
                           <>
-                            <p>Amount: {record.currency || "USD"} {Number(record.amount || 0).toLocaleString()}</p>
-                            <p>Requested: {date(record.requestedAt || record.createdAt)}</p>
-                            {record.reference && <p>Payment reference: {record.reference}</p>}
-                            {record.rejectionReason && <p>Reason: {record.rejectionReason}</p>}
+                            <p>
+                              Amount: {record.currency || "USD"}{" "}
+                              {Number(record.amount || 0).toLocaleString()}
+                            </p>
+                            <p>
+                              Requested:{" "}
+                              {date(record.requestedAt || record.createdAt)}
+                            </p>
+                            {record.reference && (
+                              <p>Payment reference: {record.reference}</p>
+                            )}
+                            {record.rejectionReason && (
+                              <p>Reason: {record.rejectionReason}</p>
+                            )}
                           </>
                         )}
 
@@ -1085,23 +1032,36 @@ const handleRecordAction = async (record, status) => {
                             <p>Company: {record.company || "—"}</p>
                             <p>Phone: {record.phone || "—"}</p>
                             <p>Subject: {record.subject}</p>
-                            <p className="whitespace-pre-wrap break-words">{record.message}</p>
+                            <p className="whitespace-pre-wrap break-words">
+                              {record.message}
+                            </p>
                             <p>Received: {date(record.createdAt)}</p>
                           </>
                         )}
 
                         {selectedMetric.category === "enrollments" && (
                           <>
-                            <p>Course: {record.course?.title || "Course unavailable"}</p>
+                            <p>
+                              Course:{" "}
+                              {record.course?.title || "Course unavailable"}
+                            </p>
                             <p>Progress: {Number(record.percentage || 0)}%</p>
-                            <p>Certificate issued: {record.certificateIssued ? "Yes" : "No"}</p>
+                            <p>
+                              Certificate issued:{" "}
+                              {record.certificateIssued ? "Yes" : "No"}
+                            </p>
                             <p>Last updated: {date(record.updatedAt)}</p>
                           </>
                         )}
 
                         {selectedMetric.category === "certificates" && (
                           <>
-                            <p>Course: {record.courseTitle || record.course?.title || "—"}</p>
+                            <p>
+                              Course:{" "}
+                              {record.courseTitle ||
+                                record.course?.title ||
+                                "—"}
+                            </p>
                             <p>Completed: {date(record.completionDate)}</p>
                             <p>Issued: {date(record.issuedAt)}</p>
                           </>
@@ -1109,21 +1069,33 @@ const handleRecordAction = async (record, status) => {
 
                         {selectedMetric.category === "payments" && (
                           <>
-                            <p>Amount: {record.currency || "USD"} {Number(record.amount || 0).toLocaleString()}</p>
+                            <p>
+                              Amount: {record.currency || "USD"}{" "}
+                              {Number(record.amount || 0).toLocaleString()}
+                            </p>
                             <p>Provider: {record.provider || "—"}</p>
                             <p>Method: {record.paymentMethod || "—"}</p>
                             <p>Created: {date(record.createdAt)}</p>
                             <p>Paid: {date(record.paidAt)}</p>
-                            {record.failureReason && <p>Failure reason: {record.failureReason}</p>}
-                            <p className="font-medium text-slate-700 dark:text-slate-300">Read-only transaction record</p>
+                            {record.failureReason && (
+                              <p>Failure reason: {record.failureReason}</p>
+                            )}
+                            <p className="font-medium text-slate-700 dark:text-slate-300">
+                              Read-only transaction record
+                            </p>
                           </>
                         )}
 
                         {selectedMetric.category === "issues" && (
                           <>
-                            <p>Reported by: {person(record.reporter)} ({record.reporter?.email || "—"})</p>
+                            <p>
+                              Reported by: {person(record.reporter)} (
+                              {record.reporter?.email || "—"})
+                            </p>
                             <p>Reason: {record.reason}</p>
-                            <p className="whitespace-pre-wrap break-words">{record.details || "No additional details."}</p>
+                            <p className="whitespace-pre-wrap break-words">
+                              {record.details || "No additional details."}
+                            </p>
                             <p>Reported: {date(record.createdAt)}</p>
                           </>
                         )}
@@ -1131,9 +1103,14 @@ const handleRecordAction = async (record, status) => {
                         {selectedMetric.category === "feedback" && (
                           <>
                             <p>Rating: {record.rating ?? "—"} / 5</p>
-                            <p className="whitespace-pre-wrap break-words">{record.message}</p>
+                            <p className="whitespace-pre-wrap break-words">
+                              {record.message}
+                            </p>
                             <p>Received: {date(record.createdAt)}</p>
-                            <p>Visibility: {record.active ? "Active" : "Inactive"}</p>
+                            <p>
+                              Visibility:{" "}
+                              {record.active ? "Active" : "Inactive"}
+                            </p>
                           </>
                         )}
                       </div>
@@ -1156,26 +1133,36 @@ const handleRecordAction = async (record, status) => {
                             }
                             className="min-w-0 rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 disabled:opacity-50"
                           >
-                            {!statusOptions[selectedMetric.category].includes(status) && (
-                              <option value={status}>{status || "Unknown"}</option>
+                            {!statusOptions[selectedMetric.category].includes(
+                              status,
+                            ) && (
+                              <option value={status}>
+                                {status || "Unknown"}
+                              </option>
                             )}
 
-                            {statusOptions[selectedMetric.category].map((option) => (
-                              <option
-                                key={option}
-                                value={option}
-                                disabled={
-                                  selectedMetric.category === "payouts" &&
-                                  ["paid", "rejected"].includes(status)
-                                }
-                              >
-                                {option.replaceAll("-", " ").replaceAll("_", " ")}
-                              </option>
-                            ))}
+                            {statusOptions[selectedMetric.category].map(
+                              (option) => (
+                                <option
+                                  key={option}
+                                  value={option}
+                                  disabled={
+                                    selectedMetric.category === "payouts" &&
+                                    ["paid", "rejected"].includes(status)
+                                  }
+                                >
+                                  {option
+                                    .replaceAll("-", " ")
+                                    .replaceAll("_", " ")}
+                                </option>
+                              ),
+                            )}
                           </select>
 
                           {actionLoading === record._id && (
-                            <span className="text-xs text-slate-500 dark:text-slate-400">Saving…</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                              Saving…
+                            </span>
                           )}
                         </div>
                       )}

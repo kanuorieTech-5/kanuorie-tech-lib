@@ -113,7 +113,9 @@ export default function ProductsTable({
           </p>
 
           {product?.pricingType && (
-            <p className="text-xs text-slate-500 dark:text-slate-400">{product.pricingType}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {product.pricingType}
+            </p>
           )}
         </div>
       ),
@@ -240,5 +242,3 @@ export default function ProductsTable({
     />
   );
 }
-
-

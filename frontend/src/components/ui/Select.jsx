@@ -45,12 +45,12 @@ export default function Select({
       </select>
 
       {helperText && !error && (
-        <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">{helperText}</p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+          {helperText}
+        </p>
       )}
 
       {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
     </div>
   );
 }
-
-

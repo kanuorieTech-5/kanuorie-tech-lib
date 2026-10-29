@@ -410,7 +410,9 @@ export default function AdminServices() {
                           </span>
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-600 dark:text-slate-400">No</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400">
+                          No
+                        </span>
                       )}
                     </td>
 
@@ -481,13 +483,31 @@ export default function AdminServices() {
 
             {/* FORM */}
 
-            <AdminServiceForm {...{ Loader2, X, addBenefit, addTechnology, benefitInput, closeForm, editingService, form, handleChange, handleSubmit, removeBenefit, removeTechnology, saving, setBenefitInput, setTechnologyInput, technologyInput }} onSubmit={handleSubmit} className="space-y-6 p-6" />
+            <AdminServiceForm
+              {...{
+                Loader2,
+                X,
+                addBenefit,
+                addTechnology,
+                benefitInput,
+                closeForm,
+                editingService,
+                form,
+                handleChange,
+                handleSubmit,
+                removeBenefit,
+                removeTechnology,
+                saving,
+                setBenefitInput,
+                setTechnologyInput,
+                technologyInput,
+              }}
+              onSubmit={handleSubmit}
+              className="space-y-6 p-6"
+            />
           </div>
         </div>
       )}
     </section>
   );
 }
-
-
-

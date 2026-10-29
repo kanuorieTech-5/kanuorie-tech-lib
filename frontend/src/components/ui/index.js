@@ -3,7 +3,14 @@ export { default as Avatar } from "./Avatar";
 export { default as Badge } from "./Badge";
 export { default as Breadcrumb } from "./Breadcrumb";
 export { default as Button } from "./Button";
-export { default as Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, } from "./Card";
+export {
+  default as Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "./Card";
 export { default as Checkbox } from "./Checkbox";
 export { default as Divider } from "./Divider";
 export { default as Drawer } from "./Drawer";

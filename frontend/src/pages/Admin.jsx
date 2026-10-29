@@ -29,11 +29,7 @@ export default function Admin() {
 
         if (!mounted) return;
 
-        const data =
-          response?.data?.data ??
-          response?.data ??
-          response ??
-          {};
+        const data = response?.data?.data ?? response?.data ?? response ?? {};
 
         setDashboard(data);
       } catch (err) {
@@ -41,8 +37,7 @@ export default function Admin() {
 
         if (mounted) {
           setError(
-            err?.response?.data?.message ||
-              "Unable to load dashboard data.",
+            err?.response?.data?.message || "Unable to load dashboard data.",
           );
         }
       } finally {
@@ -87,9 +82,7 @@ export default function Admin() {
             Dashboard unavailable
           </h2>
 
-          <p className="mt-2 text-sm text-red-600">
-            {error}
-          </p>
+          <p className="mt-2 text-sm text-red-600">{error}</p>
 
           <button
             type="button"
@@ -115,10 +108,7 @@ export default function Admin() {
   }
 
   const stats = dashboard?.stats ?? {};
-  const activities =
-    dashboard?.activities ??
-    dashboard?.recentActivity ??
-    [];
+  const activities = dashboard?.activities ?? dashboard?.recentActivity ?? [];
   const revenue = dashboard?.revenue ?? {};
   const sales = dashboard?.sales ?? {};
   const operations = dashboard?.operations ?? {
@@ -129,18 +119,10 @@ export default function Admin() {
       dashboard?.investors ??
       dashboard?.partners ??
       {},
-    enrollments:
-      dashboard?.enrollments ??
-      dashboard?.courseEnrollments ??
-      {},
+    enrollments: dashboard?.enrollments ?? dashboard?.courseEnrollments ?? {},
     certificates:
-      dashboard?.certificates ??
-      dashboard?.certificatesIssued ??
-      {},
-    payments:
-      dashboard?.payments ??
-      dashboard?.paymentActivities ??
-      {},
+      dashboard?.certificates ?? dashboard?.certificatesIssued ?? {},
+    payments: dashboard?.payments ?? dashboard?.paymentActivities ?? {},
     compliance: dashboard?.compliance ?? {},
     issues: dashboard?.issues ?? {},
     feedback: dashboard?.feedback ?? {},
@@ -162,14 +144,9 @@ export default function Admin() {
         <RevenueSummary data={revenue} />
         <SalesOverview data={sales} />
       </div>
-      <PlatformOperationsOverview
-        operations={operations}
-      />
+      <PlatformOperationsOverview operations={operations} />
       <QuickActions />
       <ServiceEnquiriesPanel />
     </div>
   );
 }
-
-
-

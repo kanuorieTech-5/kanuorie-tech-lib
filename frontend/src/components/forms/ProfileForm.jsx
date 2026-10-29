@@ -84,5 +84,3 @@ export default function ProfileForm({ user = {}, loading = false, onSubmit }) {
     </Card>
   );
 }
-
-

@@ -3,12 +3,7 @@ import { Bookmark, Check, BookOpen } from "lucide-react";
 
 import { Card, Button, Badge } from "../common";
 
-export default function ResourceCard({
-  resource,
-  isSaved,
-  saving,
-  onSave,
-}) {
+export default function ResourceCard({ resource, isSaved, saving, onSave }) {
   return (
     <Card
       className="
@@ -68,8 +63,7 @@ export default function ResourceCard({
             dark:text-gray-400
           "
         >
-          {resource.description ||
-            "Explore this learning resource."}
+          {resource.description || "Explore this learning resource."}
         </p>
 
         {/* Resource status */}
@@ -147,11 +141,7 @@ export default function ResourceCard({
               dark:focus-visible:ring-offset-gray-900
             "
           >
-            {isSaved ? (
-              <Check size={18} />
-            ) : (
-              <Bookmark size={18} />
-            )}
+            {isSaved ? <Check size={18} /> : <Bookmark size={18} />}
           </button>
         </div>
       </div>

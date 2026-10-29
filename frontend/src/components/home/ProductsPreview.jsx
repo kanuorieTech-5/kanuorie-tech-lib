@@ -51,10 +51,7 @@ export default function ProductsPreview() {
 
     const interval = setInterval(() => {
       setCurrentSlide((previous) => {
-        const next =
-          previous + 1 >= visibleProducts.length
-            ? 0
-            : previous + 1;
+        const next = previous + 1 >= visibleProducts.length ? 0 : previous + 1;
 
         const slides = sliderRef.current?.children;
 
@@ -132,12 +129,13 @@ export default function ProductsPreview() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-16 text-white lg:py-24"
-    >
-      <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
+    <section className="relative overflow-hidden bg-slate-950 py-16 text-white lg:py-24">
+      <div
+        className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
         aria-hidden="true"
       />
-      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-yellow-400/5 blur-3xl"
+      <div
+        className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-yellow-400/5 blur-3xl"
         aria-hidden="true"
       />
       <div className="relative mx-auto px-6 lg:px-8">
@@ -150,15 +148,10 @@ export default function ProductsPreview() {
         </div>
 
         {products.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-white/5 px-6 py-16 text-center backdrop-blur-xl"
-          >
-            <Sparkles
-              className="mx-auto mb-5 h-10 w-10 text-blue-400"
-            />
+          <div className="rounded-3xl border border-white/10 bg-white/5 px-6 py-16 text-center backdrop-blur-xl">
+            <Sparkles className="mx-auto mb-5 h-10 w-10 text-blue-400" />
 
-            <h3 className="mb-3 text-2xl font-bold">
-              Product Hub coming soon
-            </h3>
+            <h3 className="mb-3 text-2xl font-bold">Product Hub coming soon</h3>
 
             <p className="mx-auto max-w-xl text-slate-400">
               We're building a curated directory of useful tools and
@@ -167,24 +160,18 @@ export default function ProductsPreview() {
           </div>
         ) : (
           <>
-            
             <div className="sm:hidden">
-
               <div
                 // ref={sliderRef}
                 className="flex snap-x snap-mandatory gap-5
                   overflow-x-auto pb-4 scrollbar-hide"
               >
                 {visibleProducts.map((product, index) => {
-                  const productId =
-                    product?._id || product?.id;
+                  const productId = product?._id || product?.id;
 
                   return (
                     <motion.div
-                      key={
-                        productId ||
-                        `mobile-product-${index}`
-                      }
+                      key={productId || `mobile-product-${index}`}
                       initial={{
                         opacity: 0,
                         x: 25,
@@ -195,10 +182,7 @@ export default function ProductsPreview() {
                       }}
                       transition={{
                         duration: 0.45,
-                        delay: Math.min(
-                          index * 0.08,
-                          0.3
-                        ),
+                        delay: Math.min(index * 0.08, 0.3),
                       }}
                       viewport={{
                         once: true,
@@ -206,46 +190,33 @@ export default function ProductsPreview() {
                       }}
                       className="w-[88%] shrink-0 snap-center"
                     >
-                      <Card
-                        className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300"
-                      >
+                      <Card className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300">
                         <Link
                           to={
-                            productId
-                              ? `/products/${productId}`
-                              : "/products"
+                            productId ? `/products/${productId}` : "/products"
                           }
                           className="relative block overflow-hidden"
                         >
                           <img
-                            src={
-                              product?.image ||
-                              PRODUCT_PLACEHOLDER
-                            }
-                            alt={
-                              product?.name ||
-                              "Developer tool"
-                            }
+                            src={product?.image || PRODUCT_PLACEHOLDER}
+                            alt={product?.name || "Developer tool"}
                             loading="lazy"
                             className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
                             onError={(event) => {
                               if (
                                 event.currentTarget.src.includes(
-                                  PRODUCT_PLACEHOLDER
+                                  PRODUCT_PLACEHOLDER,
                                 )
                               ) {
                                 return;
                               }
 
-                              event.currentTarget.src =
-                                PRODUCT_PLACEHOLDER;
+                              event.currentTarget.src = PRODUCT_PLACEHOLDER;
                             }}
                           />
 
                           {product?.featured && (
-                            <span
-                              className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950"
-                            >
+                            <span className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950">
                               Featured
                             </span>
                           )}
@@ -253,11 +224,8 @@ export default function ProductsPreview() {
 
                         <div className="flex flex-1 flex-col p-5">
                           <div className="mb-3 flex items-center justify-between gap-3">
-                            <span
-                              className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300"
-                            >
-                              {product?.category ||
-                                "Other"}
+                            <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                              {product?.category || "Other"}
                             </span>
 
                             <span
@@ -275,22 +243,17 @@ export default function ProductsPreview() {
 
                           <Link
                             to={
-                              productId
-                                ? `/products/${productId}`
-                                : "/products"
+                              productId ? `/products/${productId}` : "/products"
                             }
                           >
-                            <h3 className="line-clamp-2 text-xl font-bold transition group-hover:text-blue-400"
-                            >
-                              {product?.name ||
-                                "Developer Tool"}
+                            <h3 className="line-clamp-2 text-xl font-bold transition group-hover:text-blue-400">
+                              {product?.name || "Developer Tool"}
                             </h3>
                           </Link>
 
                           {/* Description */}
 
-                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400"
-                          >
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">
                             {product?.excerpt ||
                               product?.description ||
                               "A useful technology for modern digital work."}
@@ -298,33 +261,25 @@ export default function ProductsPreview() {
 
                           {/* Technologies */}
 
-                          {Array.isArray(
-                            product?.technologies
-                          ) &&
-                            product.technologies.length >
-                              0 && (
-                              <div
-                                className="mt-4 flex flex-wrap gap-2"
-                              >
+                          {Array.isArray(product?.technologies) &&
+                            product.technologies.length > 0 && (
+                              <div className="mt-4 flex flex-wrap gap-2">
                                 {product.technologies
                                   .slice(0, 2)
-                                  .map(
-                                    (technology) => (
-                                      <span
-                                        key={technology}
-                                        className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-slate-400"
-                                      >
-                                        {technology}
-                                      </span>
-                                    )
-                                  )}
+                                  .map((technology) => (
+                                    <span
+                                      key={technology}
+                                      className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-slate-400"
+                                    >
+                                      {technology}
+                                    </span>
+                                  ))}
                               </div>
                             )}
 
                           {/* Actions */}
 
-                          <div className="mt-auto flex items-center gap-2 pt-5"
-                          >
+                          <div className="mt-auto flex items-center gap-2 pt-5">
                             <Link
                               to={
                                 productId
@@ -333,23 +288,15 @@ export default function ProductsPreview() {
                               }
                               className="flex-1"
                             >
-                              <Button
-                                fullWidth
-                                size="sm"
-                              >
+                              <Button fullWidth size="sm">
                                 Explore
-                                <ArrowUpRight
-                                  size={15}
-                                  className="ml-1"
-                                />
+                                <ArrowUpRight size={15} className="ml-1" />
                               </Button>
                             </Link>
 
                             {product?.websiteUrl && (
                               <a
-                                href={
-                                  product.websiteUrl
-                                }
+                                href={product.websiteUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`Visit ${product.name} website`}
@@ -362,9 +309,7 @@ export default function ProductsPreview() {
 
                             {product?.githubUrl && (
                               <a
-                                href={
-                                  product.githubUrl
-                                }
+                                href={product.githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`${product.name} GitHub`}
@@ -390,15 +335,9 @@ export default function ProductsPreview() {
                     <button
                       key={index}
                       type="button"
-                      onClick={() =>
-                        goToSlide(index)
-                      }
-                      aria-label={`Go to product ${
-                        index + 1
-                      }`}
-                      aria-current={
-                        currentSlide === index
-                      }
+                      onClick={() => goToSlide(index)}
+                      aria-label={`Go to product ${index + 1}`}
+                      aria-current={currentSlide === index}
                       className={`
                         h-2
                         rounded-full
@@ -416,18 +355,13 @@ export default function ProductsPreview() {
               )}
             </div>
 
-            <div className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4"
-            >
+            <div className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
               {visibleProducts.map((product, index) => {
-                const productId =
-                  product?._id || product?.id;
+                const productId = product?._id || product?.id;
 
                 return (
                   <motion.div
-                    key={
-                      productId ||
-                      `desktop-product-${index}`
-                    }
+                    key={productId || `desktop-product-${index}`}
                     initial={{
                       opacity: 0,
                       y: 25,
@@ -438,10 +372,7 @@ export default function ProductsPreview() {
                     }}
                     transition={{
                       duration: 0.45,
-                      delay: Math.min(
-                        index * 0.08,
-                        0.3
-                      ),
+                      delay: Math.min(index * 0.08, 0.3),
                     }}
                     viewport={{
                       once: true,
@@ -449,75 +380,52 @@ export default function ProductsPreview() {
                     }}
                     className="h-full"
                   >
-                    <Card
-                      className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:shadow-2xl"
-                    >
-
+                    <Card className="group flex h-full flex-col overflow-hidden border-white/10 bg-white/5 p-0 text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:shadow-2xl">
                       {/* Image */}
 
                       <Link
-                        to={
-                          productId
-                            ? `/products/${productId}`
-                            : "/products"
-                        }
+                        to={productId ? `/products/${productId}` : "/products"}
                         className="relative block overflow-hidden"
                       >
                         <img
-                          src={
-                            product?.image ||
-                            PRODUCT_PLACEHOLDER
-                          }
-                          alt={
-                            product?.name ||
-                            "Developer tool"
-                          }
+                          src={product?.image || PRODUCT_PLACEHOLDER}
+                          alt={product?.name || "Developer tool"}
                           loading="lazy"
                           className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
                           onError={(event) => {
                             if (
                               event.currentTarget.src.includes(
-                                PRODUCT_PLACEHOLDER
+                                PRODUCT_PLACEHOLDER,
                               )
                             ) {
                               return;
                             }
 
-                            event.currentTarget.src =
-                              PRODUCT_PLACEHOLDER;
+                            event.currentTarget.src = PRODUCT_PLACEHOLDER;
                           }}
                         />
 
                         {product?.featured && (
-                          <span
-                            className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950"
-                          >
+                          <span className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950">
                             Featured
                           </span>
                         )}
                       </Link>
 
-                      <div className="flex flex-1 flex-col p-5"
-                      >
-                        <div className="mb-3 flex items-center justify-between gap-3"
-                        >
-                          <span className=" rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300"
-                          >
-                            {product?.category ||
-                              "Other"}
+                      <div className="flex flex-1 flex-col p-5">
+                        <div className="mb-3 flex items-center justify-between gap-3">
+                          <span className=" rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                            {product?.category || "Other"}
                           </span>
 
-                          <span className="text-xs font-bold text-emerald-400"
-                          >
+                          <span className="text-xs font-bold text-emerald-400">
                             {getPricingLabel(product)}
                           </span>
                         </div>
 
                         <Link
                           to={
-                            productId
-                              ? `/products/${productId}`
-                              : "/products"
+                            productId ? `/products/${productId}` : "/products"
                           }
                         >
                           <h3
@@ -529,24 +437,18 @@ export default function ProductsPreview() {
                               group-hover:text-blue-400
                             "
                           >
-                            {product?.name ||
-                              "Developer Tool"}
+                            {product?.name || "Developer Tool"}
                           </h3>
                         </Link>
 
-                        <p
-                          className=" mt-3 line-clamp-3 text-sm leading-6 text-slate-400"
-                        >
+                        <p className=" mt-3 line-clamp-3 text-sm leading-6 text-slate-400">
                           {product?.excerpt ||
                             product?.description ||
                             "A useful technology for modern digital work."}
                         </p>
 
-                        {Array.isArray(
-                          product?.technologies
-                        ) &&
-                          product.technologies.length >
-                            0 && (
+                        {Array.isArray(product?.technologies) &&
+                          product.technologies.length > 0 && (
                             <div
                               className="
                                 mt-4
@@ -557,11 +459,10 @@ export default function ProductsPreview() {
                             >
                               {product.technologies
                                 .slice(0, 2)
-                                .map(
-                                  (technology) => (
-                                    <span
-                                      key={technology}
-                                      className="
+                                .map((technology) => (
+                                  <span
+                                    key={technology}
+                                    className="
                                         rounded-full
                                         bg-white/5
                                         px-2.5
@@ -569,11 +470,10 @@ export default function ProductsPreview() {
                                         text-xs
                                         text-slate-400
                                       "
-                                    >
-                                      {technology}
-                                    </span>
-                                  )
-                                )}
+                                  >
+                                    {technology}
+                                  </span>
+                                ))}
                             </div>
                           )}
 
@@ -588,29 +488,19 @@ export default function ProductsPreview() {
                         >
                           <Link
                             to={
-                              productId
-                                ? `/products/${productId}`
-                                : "/products"
+                              productId ? `/products/${productId}` : "/products"
                             }
                             className="flex-1"
                           >
-                            <Button
-                              fullWidth
-                              size="sm"
-                            >
+                            <Button fullWidth size="sm">
                               Explore
-                              <ArrowUpRight
-                                size={15}
-                                className="ml-1"
-                              />
+                              <ArrowUpRight size={15} className="ml-1" />
                             </Button>
                           </Link>
 
                           {product?.websiteUrl && (
                             <a
-                              href={
-                                product.websiteUrl
-                              }
+                              href={product.websiteUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={`Visit ${product.name} website`}
@@ -637,9 +527,7 @@ export default function ProductsPreview() {
 
                           {product?.githubUrl && (
                             <a
-                              href={
-                                product.githubUrl
-                              }
+                              href={product.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={`${product.name} GitHub`}
@@ -687,10 +575,7 @@ export default function ProductsPreview() {
                   "
                 >
                   Explore Product Hub
-                  <ArrowUpRight
-                    size={16}
-                    className="ml-2"
-                  />
+                  <ArrowUpRight size={16} className="ml-2" />
                 </Button>
               </Link>
             </div>
@@ -700,4 +585,3 @@ export default function ProductsPreview() {
     </section>
   );
 }
-

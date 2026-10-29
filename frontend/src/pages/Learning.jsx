@@ -88,7 +88,7 @@ const getTodayKey = () => {
 
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
     2,
-    "0"
+    "0",
   )}-${String(date.getDate()).padStart(2, "0")}`;
 };
 
@@ -98,7 +98,7 @@ const getYesterdayKey = () => {
 
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
     2,
-    "0"
+    "0",
   )}-${String(date.getDate()).padStart(2, "0")}`;
 };
 
@@ -149,11 +149,7 @@ const getTotalLessons = (item) => {
    AUTO HORIZONTAL CAROUSEL
 ========================================== */
 
-function AutoCarousel({
-  children,
-  speed = 30,
-  className = "",
-}) {
+function AutoCarousel({ children, speed = 30, className = "" }) {
   const viewportRef = useRef(null);
   const animationRef = useRef(null);
   const pausedRef = useRef(false);
@@ -176,8 +172,7 @@ function AutoCarousel({
         const maxScroll = viewport.scrollWidth - viewport.clientWidth;
 
         if (maxScroll > 0) {
-          viewport.scrollLeft +=
-            (speed * delta * directionRef.current) / 1000;
+          viewport.scrollLeft += (speed * delta * directionRef.current) / 1000;
 
           if (viewport.scrollLeft >= maxScroll) {
             viewport.scrollLeft = maxScroll;
@@ -226,9 +221,7 @@ function AutoCarousel({
       onFocus={pause}
       onBlur={resume}
     >
-      <div className="flex w-max gap-6">
-        {children}
-      </div>
+      <div className="flex w-max gap-6">{children}</div>
     </div>
   );
 }
@@ -341,7 +334,8 @@ function RecommendedCourseCard({ course }) {
           {title}
         </h3>
         <p className="mt-2 line-clamp-2 flex-1 text-sm text-slate-600 dark:text-slate-300">
-          {course?.description || "Build on the skills you are already learning."}
+          {course?.description ||
+            "Build on the skills you are already learning."}
         </p>
         <Link
           to={courseId ? `/courses/${courseId}` : "/courses"}
@@ -358,33 +352,20 @@ function RecommendedCourseCard({ course }) {
    SAVED RESOURCE CARD
 ========================================== */
 
-function SavedResourceCard({
-  resource,
-  removingId,
-  onRemove,
-}) {
-  const resourceId = String(
-    resource?.resourceId || ""
-  );
+function SavedResourceCard({ resource, removingId, onRemove }) {
+  const resourceId = String(resource?.resourceId || "");
 
-  const resourceType =
-    resource?.resourceType || "external";
+  const resourceType = resource?.resourceType || "external";
 
   const key = `${resourceType}:${resourceId}`;
 
-  const title =
-    resource?.title || "Untitled Resource";
+  const title = resource?.title || "Untitled Resource";
 
-  const description =
-    resource?.description ||
-    "Saved learning resource.";
+  const description = resource?.description || "Saved learning resource.";
 
-  const category =
-    resource?.category || "General";
+  const category = resource?.category || "General";
 
-  const image =
-    resource?.image ||
-    "/images/course-placeholder.png";
+  const image = resource?.image || "/images/course-placeholder.png";
 
   const link = resource?.link || "";
 
@@ -406,8 +387,7 @@ function SavedResourceCard({
             alt={title}
             className="h-full w-full object-cover transition duration-500 hover:scale-105"
             onError={(event) => {
-              event.currentTarget.src =
-                "/images/course-placeholder.png";
+              event.currentTarget.src = "/images/course-placeholder.png";
             }}
           />
 
@@ -416,13 +396,7 @@ function SavedResourceCard({
           </div>
 
           <div className="absolute right-4 top-4">
-            <Badge>
-              {isCourse
-                ? "Course"
-                : isBook
-                ? "Book"
-                : "Resource"}
-            </Badge>
+            <Badge>{isCourse ? "Course" : isBook ? "Book" : "Resource"}</Badge>
           </div>
         </div>
 
@@ -445,36 +419,21 @@ function SavedResourceCard({
               >
                 <Button className="w-full">
                   Open Resource
-                  <ArrowRight
-                    className="ml-2"
-                    size={17}
-                  />
+                  <ArrowRight className="ml-2" size={17} />
                 </Button>
               </a>
             ) : isCourse ? (
-              <Link
-                to={`/courses/${resourceId}`}
-                className="flex-1"
-              >
+              <Link to={`/courses/${resourceId}`} className="flex-1">
                 <Button className="w-full">
                   View Course
-                  <ArrowRight
-                    className="ml-2"
-                    size={17}
-                  />
+                  <ArrowRight className="ml-2" size={17} />
                 </Button>
               </Link>
             ) : isBook ? (
-              <Link
-                to={`/books/${resourceId}`}
-                className="flex-1"
-              >
+              <Link to={`/books/${resourceId}`} className="flex-1">
                 <Button className="w-full">
                   View Book
-                  <ArrowRight
-                    className="ml-2"
-                    size={17}
-                  />
+                  <ArrowRight className="ml-2" size={17} />
                 </Button>
               </Link>
             ) : null}
@@ -484,9 +443,7 @@ function SavedResourceCard({
               disabled={isRemoving}
               onClick={() => onRemove(resource)}
             >
-              {isRemoving
-                ? "Removing..."
-                : "Remove"}
+              {isRemoving ? "Removing..." : "Remove"}
             </Button>
           </div>
         </div>
@@ -499,17 +456,12 @@ function SavedResourceCard({
    SAVED RESOURCES SECTION
 ========================================== */
 
-function SavedResourcesSection({
-  isAuthenticated,
-}) {
-  const [savedResources, setSavedResources] =
-    useState([]);
+function SavedResourcesSection({ isAuthenticated }) {
+  const [savedResources, setSavedResources] = useState([]);
 
-  const [loading, setLoading] =
-    useState(isAuthenticated);
+  const [loading, setLoading] = useState(isAuthenticated);
 
-  const [removingId, setRemovingId] =
-    useState(null);
+  const [removingId, setRemovingId] = useState(null);
 
   const [error, setError] = useState("");
 
@@ -524,8 +476,7 @@ function SavedResourcesSection({
       setLoading(true);
       setError("");
 
-      const response =
-        await getSavedResources();
+      const response = await getSavedResources();
 
       const items =
         response?.data?.items ||
@@ -534,20 +485,15 @@ function SavedResourcesSection({
         response?.items ||
         [];
 
-      setSavedResources(
-        Array.isArray(items) ? items : []
-      );
+      setSavedResources(Array.isArray(items) ? items : []);
     } catch (err) {
-      console.error(
-        "Failed to load saved resources:",
-        err
-      );
+      console.error("Failed to load saved resources:", err);
 
       setSavedResources([]);
 
       setError(
         err?.response?.data?.message ||
-          "We couldn't load your saved resources."
+          "We couldn't load your saved resources.",
       );
     } finally {
       setLoading(false);
@@ -561,16 +507,10 @@ function SavedResourcesSection({
       loadSavedResources();
     };
 
-    window.addEventListener(
-      "library-update",
-      handleLibraryUpdate
-    );
+    window.addEventListener("library-update", handleLibraryUpdate);
 
     return () => {
-      window.removeEventListener(
-        "library-update",
-        handleLibraryUpdate
-      );
+      window.removeEventListener("library-update", handleLibraryUpdate);
     };
   }, [isAuthenticated]);
 
@@ -585,35 +525,25 @@ function SavedResourcesSection({
       setRemovingId(key);
       setError("");
 
-      await removeSavedResource(
-        resource.resourceId,
-        resource.resourceType
-      );
+      await removeSavedResource(resource.resourceId, resource.resourceType);
 
       setSavedResources((current) =>
         current.filter(
           (item) =>
             !(
-              String(item?.resourceId) ===
-                String(resource.resourceId) &&
-              item?.resourceType ===
-                resource.resourceType
-            )
-        )
+              String(item?.resourceId) === String(resource.resourceId) &&
+              item?.resourceType === resource.resourceType
+            ),
+        ),
       );
 
-      window.dispatchEvent(
-        new Event("library-update")
-      );
+      window.dispatchEvent(new Event("library-update"));
     } catch (err) {
-      console.error(
-        "Failed to remove saved resource:",
-        err
-      );
+      console.error("Failed to remove saved resource:", err);
 
       setError(
         err?.response?.data?.message ||
-          "We couldn't remove this saved resource."
+          "We couldn't remove this saved resource.",
       );
     } finally {
       setRemovingId(null);
@@ -638,20 +568,16 @@ function SavedResourcesSection({
             </h2>
 
             <p className="mt-2 max-w-2xl text-slate-500 dark:text-slate-400">
-              Keep useful learning resources close by
-              for later.
+              Keep useful learning resources close by for later.
             </p>
           </div>
 
-          {isAuthenticated &&
-            savedResources.length > 0 && (
-              <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                {savedResources.length}{" "}
-                {savedResources.length === 1
-                  ? "resource"
-                  : "resources"}
-              </span>
-            )}
+          {isAuthenticated && savedResources.length > 0 && (
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              {savedResources.length}{" "}
+              {savedResources.length === 1 ? "resource" : "resources"}
+            </span>
+          )}
         </div>
 
         {!isAuthenticated ? (
@@ -666,17 +592,13 @@ function SavedResourcesSection({
             </h3>
 
             <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Your saved resources are private to
-              your account.
+              Your saved resources are private to your account.
             </p>
 
             <Link to="/login">
               <Button className="mt-6">
                 Log In
-                <ArrowRight
-                  className="ml-2"
-                  size={17}
-                />
+                <ArrowRight className="ml-2" size={17} />
               </Button>
             </Link>
           </Card>
@@ -686,10 +608,7 @@ function SavedResourcesSection({
           </div>
         ) : error ? (
           <Card className="border-red-200 bg-red-50 py-12 text-center dark:border-red-900/50 dark:bg-red-950/20">
-            <Library
-              size={42}
-              className="mx-auto text-red-400"
-            />
+            <Library size={42} className="mx-auto text-red-400" />
 
             <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
               Unable to load saved resources
@@ -699,10 +618,7 @@ function SavedResourcesSection({
               {error}
             </p>
 
-            <Button
-              className="mt-6"
-              onClick={loadSavedResources}
-            >
+            <Button className="mt-6" onClick={loadSavedResources}>
               Try Again
             </Button>
           </Card>
@@ -718,18 +634,14 @@ function SavedResourcesSection({
             </h3>
 
             <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Save useful courses, books, and learning
-              resources from the Library page and they
-              will appear here.
+              Save useful courses, books, and learning resources from the
+              Library page and they will appear here.
             </p>
 
             <Link to="/library">
               <Button className="mt-6">
                 Browse Library
-                <ArrowRight
-                  className="ml-2"
-                  size={17}
-                />
+                <ArrowRight className="ml-2" size={17} />
               </Button>
             </Link>
           </Card>
@@ -762,51 +674,34 @@ function LearningDashboard({
   onToggleWishlist,
 }) {
   const [streak, setStreak] = useState(() => {
-    const saved = getStoredObject(
-      STREAK_STORAGE_KEY,
-      {
-        count: 0,
-        lastDate: null,
-      }
-    );
+    const saved = getStoredObject(STREAK_STORAGE_KEY, {
+      count: 0,
+      lastDate: null,
+    });
 
     return Number(saved.count || 0);
   });
 
-  const [schedule, setSchedule] = useState(
-    () =>
-      getStoredObject(
-        SCHEDULE_STORAGE_KEY,
-        {
-          day: "Monday",
-          time: "18:00",
-          duration: "60",
-        }
-      )
+  const [schedule, setSchedule] = useState(() =>
+    getStoredObject(SCHEDULE_STORAGE_KEY, {
+      day: "Monday",
+      time: "18:00",
+      duration: "60",
+    }),
   );
 
-  const [remindersEnabled, setRemindersEnabled] =
-    useState(
-      () =>
-        localStorage.getItem(
-          REMINDER_STORAGE_KEY
-        ) === "true"
-    );
+  const [remindersEnabled, setRemindersEnabled] = useState(
+    () => localStorage.getItem(REMINDER_STORAGE_KEY) === "true",
+  );
 
-  const [showSchedule, setShowSchedule] =
-    useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
 
-  const [showWishlist, setShowWishlist] =
-    useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
 
   const wishlistCourses = useMemo(() => {
     return wishlist
       .map((id) =>
-        courses.find(
-          (course) =>
-            String(getCourseId(course)) ===
-            String(id)
-        )
+        courses.find((course) => String(getCourseId(course)) === String(id)),
       )
       .filter(Boolean);
   }, [wishlist, courses]);
@@ -815,17 +710,12 @@ function LearningDashboard({
     const today = getTodayKey();
     const yesterday = getYesterdayKey();
 
-    const saved = getStoredObject(
-      STREAK_STORAGE_KEY,
-      {
-        count: 0,
-        lastDate: null,
-      }
-    );
+    const saved = getStoredObject(STREAK_STORAGE_KEY, {
+      count: 0,
+      lastDate: null,
+    });
 
-    let nextCount = Number(
-      saved.count || 0
-    );
+    let nextCount = Number(saved.count || 0);
 
     if (saved.lastDate === today) {
       setStreak(nextCount);
@@ -843,56 +733,37 @@ function LearningDashboard({
       lastDate: today,
     };
 
-    localStorage.setItem(
-      STREAK_STORAGE_KEY,
-      JSON.stringify(updated)
-    );
+    localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(updated));
 
     setStreak(nextCount);
   };
 
   const saveSchedule = () => {
-    localStorage.setItem(
-      SCHEDULE_STORAGE_KEY,
-      JSON.stringify(schedule)
-    );
+    localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(schedule));
 
     setShowSchedule(false);
   };
 
   const toggleReminders = async () => {
-    if (
-      !remindersEnabled &&
-      "Notification" in window
-    ) {
-      if (
-        Notification.permission === "default"
-      ) {
+    if (!remindersEnabled && "Notification" in window) {
+      if (Notification.permission === "default") {
         try {
           await Notification.requestPermission();
         } catch (error) {
-          console.error(
-            "Notification permission request failed:",
-            error
-          );
+          console.error("Notification permission request failed:", error);
 
           return;
         }
       }
 
-      if (
-        Notification.permission !== "granted"
-      ) {
+      if (Notification.permission !== "granted") {
         return;
       }
     }
 
     const nextValue = !remindersEnabled;
 
-    localStorage.setItem(
-      REMINDER_STORAGE_KEY,
-      String(nextValue)
-    );
+    localStorage.setItem(REMINDER_STORAGE_KEY, String(nextValue));
 
     setRemindersEnabled(nextValue);
   };
@@ -918,8 +789,8 @@ function LearningDashboard({
           </h2>
 
           <p className="mt-2 max-w-2xl text-slate-500 dark:text-slate-400">
-            Organize your learning, stay consistent,
-            and keep your next skill within reach.
+            Organize your learning, stay consistent, and keep your next skill
+            within reach.
           </p>
         </div>
 
@@ -937,8 +808,7 @@ function LearningDashboard({
                 </h3>
 
                 <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                  Build a daily learning habit and
-                  keep your momentum going.
+                  Build a daily learning habit and keep your momentum going.
                 </p>
               </div>
 
@@ -953,18 +823,10 @@ function LearningDashboard({
               </div>
             </div>
 
-            <Button
-              className="mt-5 w-full"
-              onClick={startStreak}
-            >
-              <Flame
-                className="mr-2"
-                size={17}
-              />
+            <Button className="mt-5 w-full" onClick={startStreak}>
+              <Flame className="mr-2" size={17} />
 
-              {streak > 0
-                ? "Keep My Streak"
-                : "Start Learning Streak"}
+              {streak > 0 ? "Keep My Streak" : "Start Learning Streak"}
             </Button>
           </Card>
 
@@ -979,8 +841,7 @@ function LearningDashboard({
             </h3>
 
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Track courses you've completed and
-              celebrate your progress.
+              Track courses you've completed and celebrate your progress.
             </p>
 
             <div className="mt-5 flex items-center justify-between">
@@ -993,18 +854,9 @@ function LearningDashboard({
               </span>
             </div>
 
-            <Link
-              to="/certificates"
-              className="mt-5 block"
-            >
-              <Button
-                variant="outline"
-                className="w-full"
-              >
-                <Award
-                  className="mr-2"
-                  size={17}
-                />
+            <Link to="/certificates" className="mt-5 block">
+              <Button variant="outline" className="w-full">
+                <Award className="mr-2" size={17} />
                 View Certificates
               </Button>
             </Link>
@@ -1021,8 +873,7 @@ function LearningDashboard({
             </h3>
 
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Keep courses you want to learn next
-              in one place.
+              Keep courses you want to learn next in one place.
             </p>
 
             <div className="mt-5 flex items-center justify-between">
@@ -1038,20 +889,11 @@ function LearningDashboard({
             <Button
               variant="outline"
               className="mt-5 w-full"
-              onClick={() =>
-                setShowWishlist(
-                  (value) => !value
-                )
-              }
+              onClick={() => setShowWishlist((value) => !value)}
             >
-              <Heart
-                className="mr-2"
-                size={17}
-              />
+              <Heart className="mr-2" size={17} />
 
-              {showWishlist
-                ? "Hide Wishlist"
-                : "View Wishlist"}
+              {showWishlist ? "Hide Wishlist" : "View Wishlist"}
             </Button>
           </Card>
 
@@ -1067,53 +909,29 @@ function LearningDashboard({
 
             <div className="mt-5 grid grid-cols-2 gap-2">
               <Link to="/Learning">
-                <Button
-                  variant="outline"
-                  className="w-full text-xs"
-                >
-                  <GraduationCap
-                    className="mr-1.5"
-                    size={15}
-                  />
+                <Button variant="outline" className="w-full text-xs">
+                  <GraduationCap className="mr-1.5" size={15} />
                   Learning
                 </Button>
               </Link>
 
               <Link to="/library">
-                <Button
-                  variant="outline"
-                  className="w-full text-xs"
-                >
-                  <Library
-                    className="mr-1.5"
-                    size={15}
-                  />
+                <Button variant="outline" className="w-full text-xs">
+                  <Library className="mr-1.5" size={15} />
                   Library
                 </Button>
               </Link>
 
               <a href="#saved-resources">
-                <Button
-                  variant="outline"
-                  className="w-full text-xs"
-                >
-                  <Bookmark
-                    className="mr-1.5"
-                    size={15}
-                  />
+                <Button variant="outline" className="w-full text-xs">
+                  <Bookmark className="mr-1.5" size={15} />
                   Saved
                 </Button>
               </a>
 
               <Link to="/community">
-                <Button
-                  variant="outline"
-                  className="w-full text-xs"
-                >
-                  <Users
-                    className="mr-1.5"
-                    size={15}
-                  />
+                <Button variant="outline" className="w-full text-xs">
+                  <Users className="mr-1.5" size={15} />
                   Community
                 </Button>
               </Link>
@@ -1131,27 +949,17 @@ function LearningDashboard({
             </h3>
 
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Set aside dedicated time for your
-              next learning session.
+              Set aside dedicated time for your next learning session.
             </p>
 
             <Button
               variant="outline"
               className="mt-5 w-full"
-              onClick={() =>
-                setShowSchedule(
-                  (value) => !value
-                )
-              }
+              onClick={() => setShowSchedule((value) => !value)}
             >
-              <CalendarDays
-                className="mr-2"
-                size={17}
-              />
+              <CalendarDays className="mr-2" size={17} />
 
-              {showSchedule
-                ? "Close Schedule"
-                : "Set Learning Time"}
+              {showSchedule ? "Close Schedule" : "Set Learning Time"}
             </Button>
 
             {showSchedule && (
@@ -1159,12 +967,10 @@ function LearningDashboard({
                 <select
                   value={schedule.day}
                   onChange={(event) =>
-                    setSchedule(
-                      (current) => ({
-                        ...current,
-                        day: event.target.value,
-                      })
-                    )
+                    setSchedule((current) => ({
+                      ...current,
+                      day: event.target.value,
+                    }))
                   }
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 >
@@ -1177,10 +983,7 @@ function LearningDashboard({
                     "Saturday",
                     "Sunday",
                   ].map((day) => (
-                    <option
-                      key={day}
-                      value={day}
-                    >
+                    <option key={day} value={day}>
                       {day}
                     </option>
                   ))}
@@ -1190,12 +993,10 @@ function LearningDashboard({
                   type="time"
                   value={schedule.time}
                   onChange={(event) =>
-                    setSchedule(
-                      (current) => ({
-                        ...current,
-                        time: event.target.value,
-                      })
-                    )
+                    setSchedule((current) => ({
+                      ...current,
+                      time: event.target.value,
+                    }))
                   }
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
@@ -1203,56 +1004,37 @@ function LearningDashboard({
                 <select
                   value={schedule.duration}
                   onChange={(event) =>
-                    setSchedule(
-                      (current) => ({
-                        ...current,
-                        duration:
-                          event.target.value,
-                      })
-                    )
+                    setSchedule((current) => ({
+                      ...current,
+                      duration: event.target.value,
+                    }))
                   }
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 >
-                  <option value="30">
-                    30 minutes
-                  </option>
-                  <option value="60">
-                    1 hour
-                  </option>
-                  <option value="90">
-                    1.5 hours
-                  </option>
-                  <option value="120">
-                    2 hours
-                  </option>
+                  <option value="30">30 minutes</option>
+                  <option value="60">1 hour</option>
+                  <option value="90">1.5 hours</option>
+                  <option value="120">2 hours</option>
                 </select>
 
-                <Button
-                  className="w-full"
-                  onClick={saveSchedule}
-                >
-                  <Check
-                    className="mr-2"
-                    size={17}
-                  />
+                <Button className="w-full" onClick={saveSchedule}>
+                  <Check className="mr-2" size={17} />
                   Save Schedule
                 </Button>
               </div>
             )}
 
-            {!showSchedule &&
-              schedule.day && (
-                <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm dark:bg-slate-800/70">
-                  <p className="font-semibold text-slate-900 dark:text-white">
-                    {schedule.day} at{" "}
-                    {schedule.time}
-                  </p>
+            {!showSchedule && schedule.day && (
+              <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm dark:bg-slate-800/70">
+                <p className="font-semibold text-slate-900 dark:text-white">
+                  {schedule.day} at {schedule.time}
+                </p>
 
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {schedule.duration} minutes
-                  </p>
-                </div>
-              )}
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {schedule.duration} minutes
+                </p>
+              </div>
+            )}
           </Card>
 
           {/* REMINDERS */}
@@ -1266,33 +1048,22 @@ function LearningDashboard({
             </h3>
 
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Get browser reminders when it's time
-              to focus on your learning.
+              Get browser reminders when it's time to focus on your learning.
             </p>
 
             <Button
-              variant={
-                remindersEnabled
-                  ? "primary"
-                  : "outline"
-              }
+              variant={remindersEnabled ? "primary" : "outline"}
               className="mt-5 w-full"
               onClick={toggleReminders}
             >
-              <Bell
-                className="mr-2"
-                size={17}
-              />
+              <Bell className="mr-2" size={17} />
 
-              {remindersEnabled
-                ? "Reminders On"
-                : "Turn On Reminders"}
+              {remindersEnabled ? "Reminders On" : "Turn On Reminders"}
             </Button>
 
             {remindersEnabled && (
               <p className="mt-3 text-center text-xs text-emerald-600 dark:text-emerald-400">
-                Reminders are enabled for this
-                browser.
+                Reminders are enabled for this browser.
               </p>
             )}
           </Card>
@@ -1308,16 +1079,13 @@ function LearningDashboard({
                 </h3>
 
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  Courses you're planning to
-                  learn next.
+                  Courses you're planning to learn next.
                 </p>
               </div>
 
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 {wishlistCourses.length}{" "}
-                {wishlistCourses.length === 1
-                  ? "course"
-                  : "courses"}
+                {wishlistCourses.length === 1 ? "course" : "courses"}
               </span>
             </div>
 
@@ -1333,103 +1101,77 @@ function LearningDashboard({
                 </h4>
 
                 <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                  Add courses from the course
-                  catalog and they will appear here.
+                  Add courses from the course catalog and they will appear here.
                 </p>
 
                 <Link to="/courses">
                   <Button className="mt-5">
                     Explore Courses
-                    <ArrowRight
-                      className="ml-2"
-                      size={17}
-                    />
+                    <ArrowRight className="ml-2" size={17} />
                   </Button>
                 </Link>
               </Card>
             ) : (
               <AutoCarousel speed={26}>
-                {wishlistCourses.map(
-                  (course) => {
-                    const courseId =
-                      getCourseId(course);
+                {wishlistCourses.map((course) => {
+                  const courseId = getCourseId(course);
 
-                    return (
-                      <Card
-                        key={courseId}
-                        className="w-[300px] shrink-0 sm:w-[340px]"
-                      >
-                        <div className="flex items-start gap-4">
-                          <img
-                            src={getCourseImage(
-                              course
-                            )}
-                            alt={
-                              course?.title ||
-                              "Course"
-                            }
-                            className="h-20 w-20 rounded-xl object-cover"
-                            onError={(event) => {
-                              event.currentTarget.src =
-                                "/images/course-placeholder.png";
-                            }}
-                          />
+                  return (
+                    <Card
+                      key={courseId}
+                      className="w-[300px] shrink-0 sm:w-[340px]"
+                    >
+                      <div className="flex items-start gap-4">
+                        <img
+                          src={getCourseImage(course)}
+                          alt={course?.title || "Course"}
+                          className="h-20 w-20 rounded-xl object-cover"
+                          onError={(event) => {
+                            event.currentTarget.src =
+                              "/images/course-placeholder.png";
+                          }}
+                        />
 
-                          <div className="min-w-0 flex-1">
-                            <h4 className="line-clamp-2 font-bold text-slate-900 dark:text-white">
-                              {course?.title ||
-                                "Course"}
-                            </h4>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="line-clamp-2 font-bold text-slate-900 dark:text-white">
+                            {course?.title || "Course"}
+                          </h4>
 
-                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                              {course?.category ||
-                                "General"}{" "}
-                              •{" "}
-                              {course?.level ||
-                                "Beginner"}
-                            </p>
-                          </div>
+                          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            {course?.category || "General"} •{" "}
+                            {course?.level || "Beginner"}
+                          </p>
                         </div>
+                      </div>
 
-                        <div className="mt-4 flex gap-2">
-                          <Link
-                            to={`/courses/${courseId}`}
-                            className="flex-1"
-                          >
-                            <Button className="w-full">
-                              View Course
-                              <ArrowRight
-                                className="ml-2"
-                                size={16}
-                              />
-                            </Button>
-                          </Link>
-
-                          <Button
-                            variant="outline"
-                            onClick={() =>
-                              onToggleWishlist(
-                                courseId
-                              )
-                            }
-                            aria-label="Remove course from wishlist"
-                            title="Remove from wishlist"
-                          >
-                            <X size={16} />
+                      <div className="mt-4 flex gap-2">
+                        <Link to={`/courses/${courseId}`} className="flex-1">
+                          <Button className="w-full">
+                            View Course
+                            <ArrowRight className="ml-2" size={16} />
                           </Button>
-                        </div>
-                      </Card>
-                    );
-                  }
-                )}
+                        </Link>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => onToggleWishlist(courseId)}
+                          aria-label="Remove course from wishlist"
+                          title="Remove from wishlist"
+                        >
+                          <X size={16} />
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })}
               </AutoCarousel>
             )}
           </div>
         )}
 
         <p className="mt-6 text-xs text-slate-400 dark:text-slate-600">
-          Your streak, wishlist, schedule, and browser
-          reminders are currently stored on this device.
+          Your streak, wishlist, schedule, and browser reminders are currently
+          stored on this device.
         </p>
       </div>
     </section>
@@ -1449,8 +1191,7 @@ export default function Learning() {
   const [learning, setLearning] = useState([]);
   const [wishlist, setWishlist] = useState([]);
 
-  const [loadingLearning, setLoadingLearning] =
-    useState(isAuthenticated);
+  const [loadingLearning, setLoadingLearning] = useState(isAuthenticated);
 
   /* ==========================================
      LOAD COURSES FOR WISHLIST
@@ -1465,7 +1206,9 @@ export default function Learning() {
         setCourses(items.filter((course) => course?.published !== false));
       })
       .catch((err) => console.error("Failed to load courses:", err));
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   /* ==========================================
@@ -1485,8 +1228,7 @@ export default function Learning() {
       try {
         setLoadingLearning(true);
 
-        const response =
-          await getProgress();
+        const response = await getProgress();
 
         if (!mounted) return;
 
@@ -1495,14 +1237,11 @@ export default function Learning() {
             (progress) =>
               Boolean(progress?._id || progress?.id) &&
               Boolean(getProgressCourseId(progress)) &&
-              typeof progress?.course === "object"
-          )
+              typeof progress?.course === "object",
+          ),
         );
       } catch (err) {
-        console.error(
-          "Failed to load learning progress:",
-          err
-        );
+        console.error("Failed to load learning progress:", err);
 
         if (mounted) {
           setLearning([]);
@@ -1531,11 +1270,7 @@ export default function Learning() {
       return;
     }
 
-    setWishlist(
-      getStoredArray(
-        WISHLIST_STORAGE_KEY
-      )
-    );
+    setWishlist(getStoredArray(WISHLIST_STORAGE_KEY));
   }, [isAuthenticated]);
 
   /* ==========================================
@@ -1544,13 +1279,9 @@ export default function Learning() {
 
   const continueLearning = useMemo(() => {
     return learning.filter((item) => {
-      const percentage =
-        getProgressPercentage(item);
+      const percentage = getProgressPercentage(item);
 
-      return (
-        percentage < 100 &&
-        item?.status !== "completed"
-      );
+      return percentage < 100 && item?.status !== "completed";
     });
   }, [learning]);
 
@@ -1560,22 +1291,24 @@ export default function Learning() {
 
   const completedLearning = useMemo(() => {
     return learning.filter((item) => {
-      const percentage =
-        getProgressPercentage(item);
+      const percentage = getProgressPercentage(item);
 
-      return (
-        percentage >= 100 ||
-        item?.status === "completed"
-      );
+      return percentage >= 100 || item?.status === "completed";
     });
   }, [learning]);
 
   const latestEnrollment = useMemo(() => {
-    return [...learning].sort((first, second) => {
-      const firstDate = new Date(first?.createdAt || first?.lastAccessed || 0).getTime();
-      const secondDate = new Date(second?.createdAt || second?.lastAccessed || 0).getTime();
-      return secondDate - firstDate;
-    })[0] || null;
+    return (
+      [...learning].sort((first, second) => {
+        const firstDate = new Date(
+          first?.createdAt || first?.lastAccessed || 0,
+        ).getTime();
+        const secondDate = new Date(
+          second?.createdAt || second?.lastAccessed || 0,
+        ).getTime();
+        return secondDate - firstDate;
+      })[0] || null
+    );
   }, [learning]);
 
   const recommendedCourses = useMemo(() => {
@@ -1584,22 +1317,32 @@ export default function Learning() {
     if (!sourceCourse) return [];
 
     const enrolledIds = new Set(
-      learning.map((item) => String(getProgressCourseId(item)))
+      learning.map((item) => String(getProgressCourseId(item))),
     );
     const availableCourses = courses.filter((course) => {
       const id = getCourseId(course);
       return id && !enrolledIds.has(String(id));
     });
-    const category = String(sourceCourse?.category || "").trim().toLowerCase();
+    const category = String(sourceCourse?.category || "")
+      .trim()
+      .toLowerCase();
     const sameCategory = category
       ? availableCourses.filter(
-          (course) => String(course?.category || "").trim().toLowerCase() === category
+          (course) =>
+            String(course?.category || "")
+              .trim()
+              .toLowerCase() === category,
         )
       : [];
-    const sourceLevel = String(sourceCourse?.level || "").trim().toLowerCase();
+    const sourceLevel = String(sourceCourse?.level || "")
+      .trim()
+      .toLowerCase();
     const sameLevel = sourceLevel
       ? availableCourses.filter(
-          (course) => String(course?.level || "").trim().toLowerCase() === sourceLevel
+          (course) =>
+            String(course?.level || "")
+              .trim()
+              .toLowerCase() === sourceLevel,
         )
       : [];
 
@@ -1610,7 +1353,7 @@ export default function Learning() {
         : [...availableCourses].sort(
             (first, second) =>
               Number(second?.enrollments || second?.students || 0) -
-              Number(first?.enrollments || first?.students || 0)
+              Number(first?.enrollments || first?.students || 0),
           );
 
     return suggested.slice(0, 6);
@@ -1629,31 +1372,20 @@ export default function Learning() {
     if (!courseId) return;
 
     setWishlist((current) => {
-      const exists = current.some(
-        (id) =>
-          String(id) ===
-          String(courseId)
-      );
+      const exists = current.some((id) => String(id) === String(courseId));
 
       const updated = exists
-        ? current.filter(
-            (id) =>
-              String(id) !==
-              String(courseId)
-          )
+        ? current.filter((id) => String(id) !== String(courseId))
         : [...current, courseId];
 
-      localStorage.setItem(
-        WISHLIST_STORAGE_KEY,
-        JSON.stringify(updated)
-      );
+      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(updated));
 
       return updated;
     });
   };
 
   return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
@@ -1682,26 +1414,19 @@ export default function Learning() {
 
             <h1 className="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-5xl lg:text-7xl">
               Your learning.
-              <span className="block text-blue-400">
-                Your progress.
-              </span>
+              <span className="block text-blue-400">Your progress.</span>
               Your next skill.
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              Continue your enrolled courses, track
-              your real learning progress, and discover
-              new courses built to help you grow with
-              technology.
+              Continue your enrolled courses, track your real learning progress,
+              and discover new courses built to help you grow with technology.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <a href="#my-learning">
                 <Button>
-                  <GraduationCap
-                    className="mr-2"
-                    size={18}
-                  />
+                  <GraduationCap className="mr-2" size={18} />
                   My Learning
                 </Button>
               </a>
@@ -1709,20 +1434,14 @@ export default function Learning() {
               <Link to="/courses">
                 <Button variant="outline">
                   Explore Courses
-                  <ArrowRight
-                    className="ml-2"
-                    size={18}
-                  />
+                  <ArrowRight className="ml-2" size={18} />
                 </Button>
               </Link>
 
               <a href="#saved-resources">
                 <Button variant="outline">
                   Saved Resources
-                  <ArrowRight
-                    className="ml-2"
-                    size={18}
-                  />
+                  <ArrowRight className="ml-2" size={18} />
                 </Button>
               </a>
             </div>
@@ -1746,10 +1465,7 @@ export default function Learning() {
           MY LEARNING
       ====================================== */}
 
-      <section
-        id="my-learning"
-        className="scroll-mt-24 py-16 lg:py-20"
-      >
+      <section id="my-learning" className="scroll-mt-24 py-16 lg:py-20">
         <div className="mx-auto px-6 lg:px-8">
           <div className="mb-10">
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
@@ -1765,8 +1481,7 @@ export default function Learning() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
-              Pick up where you left off and keep
-              building your skills.
+              Pick up where you left off and keep building your skills.
             </p>
           </div>
 
@@ -1782,17 +1497,13 @@ export default function Learning() {
               </h3>
 
               <p className="mx-auto mt-3 max-w-lg text-slate-500 dark:text-slate-400">
-                Your enrolled courses and progress
-                are private to your account.
+                Your enrolled courses and progress are private to your account.
               </p>
 
               <Link to="/login">
                 <Button className="mt-6">
                   Log In
-                  <ArrowRight
-                    className="ml-2"
-                    size={17}
-                  />
+                  <ArrowRight className="ml-2" size={17} />
                 </Button>
               </Link>
             </Card>
@@ -1815,33 +1526,23 @@ export default function Learning() {
                       </h3>
 
                       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                        Keep moving forward with
-                        your active courses.
+                        Keep moving forward with your active courses.
                       </p>
                     </div>
 
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       {continueLearning.length}{" "}
-                      {continueLearning.length === 1
-                        ? "course"
-                        : "courses"}
+                      {continueLearning.length === 1 ? "course" : "courses"}
                     </span>
                   </div>
 
                   <AutoCarousel speed={30}>
-                    {continueLearning.map(
-                      (item) => (
-                        <LearningCard
-                          key={
-                            item?._id ||
-                            getCourseId(
-                              item?.course
-                            )
-                          }
-                          item={item}
-                        />
-                      )
-                    )}
+                    {continueLearning.map((item) => (
+                      <LearningCard
+                        key={item?._id || getCourseId(item?.course)}
+                        item={item}
+                      />
+                    ))}
                   </AutoCarousel>
                 </div>
               )}
@@ -1849,14 +1550,7 @@ export default function Learning() {
               {/* COMPLETED */}
 
               {completedLearning.length > 0 && (
-                <div
-                  className={
-                    continueLearning.length >
-                    0
-                      ? "mt-14"
-                      : ""
-                  }
-                >
+                <div className={continueLearning.length > 0 ? "mt-14" : ""}>
                   <div className="mb-5 flex items-center justify-between">
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -1864,34 +1558,23 @@ export default function Learning() {
                       </h3>
 
                       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                        Courses you've completed
-                        through your learning journey.
+                        Courses you've completed through your learning journey.
                       </p>
                     </div>
 
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       {completedLearning.length}{" "}
-                      {completedLearning.length ===
-                      1
-                        ? "course"
-                        : "courses"}
+                      {completedLearning.length === 1 ? "course" : "courses"}
                     </span>
                   </div>
 
                   <AutoCarousel speed={24}>
-                    {completedLearning.map(
-                      (item) => (
-                        <LearningCard
-                          key={
-                            item?._id ||
-                            getCourseId(
-                              item?.course
-                            )
-                          }
-                          item={item}
-                        />
-                      )
-                    )}
+                    {completedLearning.map((item) => (
+                      <LearningCard
+                        key={item?._id || getCourseId(item?.course)}
+                        item={item}
+                      />
+                    ))}
                   </AutoCarousel>
                 </div>
               )}
@@ -1901,37 +1584,59 @@ export default function Learning() {
       </section>
 
       {isAuthenticated && learning.length > 0 && (
-        <section className="py-14 lg:py-16" aria-labelledby="recommended-courses-heading">
+        <section
+          className="py-14 lg:py-16"
+          aria-labelledby="recommended-courses-heading"
+        >
           <div className="mx-auto px-6 lg:px-8">
             <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
                   <Sparkles size={19} />
-                  <span className="text-sm font-semibold uppercase tracking-wider">Picked for your learning path</span>
+                  <span className="text-sm font-semibold uppercase tracking-wider">
+                    Picked for your learning path
+                  </span>
                 </div>
-                <h2 id="recommended-courses-heading" className="mt-2 text-3xl font-black text-slate-900 dark:text-white">
+                <h2
+                  id="recommended-courses-heading"
+                  className="mt-2 text-3xl font-black text-slate-900 dark:text-white"
+                >
                   Recommended Courses
                 </h2>
                 <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">
-                  Based on your latest enrollment{latestEnrollment?.course?.title ? ` in ${latestEnrollment.course.title}` : ""}.
+                  Based on your latest enrollment
+                  {latestEnrollment?.course?.title
+                    ? ` in ${latestEnrollment.course.title}`
+                    : ""}
+                  .
                 </p>
               </div>
-              <Link to="/courses" className="inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">
+              <Link
+                to="/courses"
+                className="inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200"
+              >
                 Browse all courses <ArrowRight size={16} />
               </Link>
             </div>
             {recommendedCourses.length > 0 ? (
               <div className="flex gap-5 overflow-x-auto pb-4">
                 {recommendedCourses.map((course) => (
-                  <RecommendedCourseCard key={getCourseId(course)} course={course} />
+                  <RecommendedCourseCard
+                    key={getCourseId(course)}
+                    course={course}
+                  />
                 ))}
               </div>
             ) : (
               <Card className="bg-white py-8 text-center dark:bg-slate-900">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We’ll suggest your next course as more learning options become available.
+                  We’ll suggest your next course as more learning options become
+                  available.
                 </p>
-                <Link to="/courses" className="mt-4 inline-flex items-center gap-2 font-bold text-blue-700 dark:text-blue-300">
+                <Link
+                  to="/courses"
+                  className="mt-4 inline-flex items-center gap-2 font-bold text-blue-700 dark:text-blue-300"
+                >
                   Explore courses <ArrowRight size={16} />
                 </Link>
               </Card>
@@ -1945,11 +1650,7 @@ export default function Learning() {
       ====================================== */}
 
       <section id="saved-resources">
-        <SavedResourcesSection
-          isAuthenticated={
-            isAuthenticated
-          }
-        />
+        <SavedResourcesSection isAuthenticated={isAuthenticated} />
       </section>
 
       {/* ======================================
@@ -1963,14 +1664,20 @@ export default function Learning() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/15 bg-white/10 text-blue-100">
             <GraduationCap size={28} />
           </div>
-          <p className="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-blue-100">Your next step starts here</p>
+          <p className="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-blue-100">
+            Your next step starts here
+          </p>
           <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
             Ready to build skills that move you forward?
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg">
-            Explore the full KanuorieTech course catalog, find a course that fits your goals, and start learning at your own pace.
+            Explore the full KanuorieTech course catalog, find a course that
+            fits your goals, and start learning at your own pace.
           </p>
-          <Link to="/courses" className="mt-8 inline-flex items-center justify-center gap-3 rounded-xl bg-white dark:bg-slate-900 px-7 py-4 text-base font-bold text-blue-800 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30">
+          <Link
+            to="/courses"
+            className="mt-8 inline-flex items-center justify-center gap-3 rounded-xl bg-white dark:bg-slate-900 px-7 py-4 text-base font-bold text-blue-800 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30"
+          >
             Explore all courses <ArrowRight className="h-5 w-5" />
           </Link>
         </div>

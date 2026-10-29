@@ -192,7 +192,7 @@ export default function Products() {
       behavior: "auto",
     });
   }, [page]);
-  
+
   if (loading) {
     return (
       <section
@@ -206,9 +206,7 @@ export default function Products() {
 
   return (
     <>
-      <section
-        className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-20 text-white lg:py-28"
-      >
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-20 text-white lg:py-28">
         <div
           className="
             absolute
@@ -500,7 +498,7 @@ export default function Products() {
           <div
             aria-live="polite"
             className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400"
-           >
+          >
             <span>
               {filteredProducts.length > 0
                 ? `${filteredProducts.length} ${
@@ -527,12 +525,12 @@ export default function Products() {
 
           {paginatedProducts.length === 0 ? (
             <Card className="p-12 text-center">
-              <Search className="mx-auto mb-5 h-10 w-10 text-slate-400"
+              <Search
+                className="mx-auto mb-5 h-10 w-10 text-slate-400"
                 aria-hidden="true"
               />
 
-              <h2 className=" mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100"
-              >
+              <h2 className=" mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100">
                 No tools found
               </h2>
 
@@ -541,9 +539,7 @@ export default function Products() {
               </p>
             </Card>
           ) : (
-            <div
-              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            >
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {paginatedProducts.map((product, index) => {
                 const productId = getProductId(product);
 
@@ -852,5 +848,3 @@ export default function Products() {
     </>
   );
 }
-
-

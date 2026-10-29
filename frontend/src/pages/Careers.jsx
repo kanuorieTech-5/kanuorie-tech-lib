@@ -173,39 +173,39 @@ export default function Careers() {
   };
 
   useEffect(() => {
-  let isMounted = true;
+    let isMounted = true;
 
-  const fetchOpportunities = async () => {
-    try {
-      setOpportunitiesLoading(true);
-      setOpportunitiesError("");
+    const fetchOpportunities = async () => {
+      try {
+        setOpportunitiesLoading(true);
+        setOpportunitiesError("");
 
-      const items = await getAllPublicOpportunities();
+        const items = await getAllPublicOpportunities();
 
-      if (isMounted) {
-        setOpportunities(items);
+        if (isMounted) {
+          setOpportunities(items);
+        }
+      } catch (err) {
+        console.error("Failed to load career opportunities:", err);
+
+        if (isMounted) {
+          setOpportunitiesError(
+            "We couldn't load opportunities right now. Please try again shortly.",
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setOpportunitiesLoading(false);
+        }
       }
-    } catch (err) {
-      console.error("Failed to load career opportunities:", err);
+    };
 
-      if (isMounted) {
-        setOpportunitiesError(
-          "We couldn't load opportunities right now. Please try again shortly."
-        );
-      }
-    } finally {
-      if (isMounted) {
-        setOpportunitiesLoading(false);
-      }
-    }
-  };
+    fetchOpportunities();
 
-  fetchOpportunities();
-
-  return () => {
-    isMounted = false;
-  };
-}, []);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   /* ==========================================
      MODAL SCROLL LOCK + ESCAPE KEY
@@ -246,9 +246,7 @@ export default function Careers() {
       const application = {
         ...form,
         position:
-          form.position?.trim() ||
-          selectedOpportunity ||
-          "General Application",
+          form.position?.trim() || selectedOpportunity || "General Application",
       };
 
       await submitCareerApplication(application);
@@ -298,9 +296,7 @@ export default function Careers() {
 
             <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
               Build the future of{" "}
-              <span className="text-blue-400">
-                technology and learning.
-              </span>
+              <span className="text-blue-400">technology and learning.</span>
             </h1>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300 sm:text-xl">
@@ -310,13 +306,15 @@ export default function Careers() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="careerDetails"
+              <Link
+                to="careerDetails"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
               >
                 Explore Open Opportunities
               </Link>
 
-              <Link to="about"
+              <Link
+                to="about"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
               >
                 About KanuorieTech
@@ -370,9 +368,7 @@ export default function Careers() {
                   <Icon className="h-5 w-5" />
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold">
-                  {benefit.title}
-                </h3>
+                <h3 className="mt-5 text-lg font-bold">{benefit.title}</h3>
 
                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
                   {benefit.description}
@@ -520,9 +516,9 @@ export default function Careers() {
                 </h3>
 
                 <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600 dark:text-slate-400">
-                  We don't have any published opportunities at the moment.
-                  You can still introduce yourself and join our talent network
-                  for future opportunities.
+                  We don't have any published opportunities at the moment. You
+                  can still introduce yourself and join our talent network for
+                  future opportunities.
                 </p>
 
                 <button
@@ -542,29 +538,20 @@ export default function Careers() {
             opportunities.length > 0 && (
               <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
                 {opportunities.map((opportunity, index) => {
-                  const typeLabel = String(
-                    opportunity.type || "other",
-                  )
+                  const typeLabel = String(opportunity.type || "other")
                     .replace(/[-_]/g, " ")
-                    .replace(/\b\w/g, (character) =>
-                      character.toUpperCase(),
-                    );
+                    .replace(/\b\w/g, (character) => character.toUpperCase());
 
-                  const workModeLabel = String(
-                    opportunity.workMode || "",
-                  )
+                  const workModeLabel = String(opportunity.workMode || "")
                     .replace(/[-_]/g, " ")
-                    .replace(/\b\w/g, (character) =>
-                      character.toUpperCase(),
-                    );
+                    .replace(/\b\w/g, (character) => character.toUpperCase());
 
                   const deadline = opportunity.deadline
                     ? new Date(opportunity.deadline)
                     : null;
 
                   const hasValidDeadline =
-                    deadline &&
-                    !Number.isNaN(deadline.getTime());
+                    deadline && !Number.isNaN(deadline.getTime());
 
                   const applicationUrl =
                     typeof opportunity.applicationUrl === "string"
@@ -576,15 +563,16 @@ export default function Careers() {
                       ? opportunity.applicationEmail.trim()
                       : "";
 
-                  const isExternalApplication =
-                    Boolean(applicationUrl);
+                  const isExternalApplication = Boolean(applicationUrl);
 
                   const isEmailApplication =
                     !applicationUrl && Boolean(applicationEmail);
 
                   return (
                     <motion.article
-                      key={opportunity._id || opportunity.slug || opportunity.title}
+                      key={
+                        opportunity._id || opportunity.slug || opportunity.title
+                      }
                       initial="hidden"
                       whileInView="visible"
                       viewport={{ once: true, amount: 0.1 }}
@@ -674,9 +662,13 @@ export default function Careers() {
                         onClick={() =>
                           setExpandedOpportunities((prev) => ({
                             ...prev,
-                            [opportunity._id || opportunity.id || opportunity.slug]:
+                            [opportunity._id ||
+                            opportunity.id ||
+                            opportunity.slug]:
                               !prev[
-                                opportunity._id || opportunity.id || opportunity.slug
+                                opportunity._id ||
+                                  opportunity.id ||
+                                  opportunity.slug
                               ],
                           }))
                         }
@@ -691,7 +683,9 @@ export default function Careers() {
                         <ArrowRight
                           className={`h-4 w-4 transition-transform ${
                             expandedOpportunities[
-                              opportunity._id || opportunity.id || opportunity.slug
+                              opportunity._id ||
+                                opportunity.id ||
+                                opportunity.slug
                             ]
                               ? "rotate-90"
                               : ""
@@ -725,15 +719,17 @@ export default function Careers() {
                                 </h4>
 
                                 <ul className="space-y-2.5">
-                                  {opportunity.requirements.map((requirement, i) => (
-                                    <li
-                                      key={`requirement-${i}`}
-                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
-                                    >
-                                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-blue-500" />
-                                      <span>{requirement}</span>
-                                    </li>
-                                  ))}
+                                  {opportunity.requirements.map(
+                                    (requirement, i) => (
+                                      <li
+                                        key={`requirement-${i}`}
+                                        className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
+                                      >
+                                        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-blue-500" />
+                                        <span>{requirement}</span>
+                                      </li>
+                                    ),
+                                  )}
                                 </ul>
                               </div>
                             )}
@@ -767,14 +763,16 @@ export default function Careers() {
                       {Array.isArray(opportunity.tags) &&
                         opportunity.tags.length > 0 && (
                           <div className="mt-5 flex flex-wrap gap-2">
-                            {opportunity.tags.slice(0, 6).map((tag, tagIndex) => (
-                              <span
-                                key={`${tag}-${tagIndex}`}
-                                className="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                            {opportunity.tags
+                              .slice(0, 6)
+                              .map((tag, tagIndex) => (
+                                <span
+                                  key={`${tag}-${tagIndex}`}
+                                  className="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
                           </div>
                         )}
 
@@ -809,9 +807,7 @@ export default function Careers() {
                         ) : (
                           <button
                             type="button"
-                            onClick={() =>
-                              openApplication(opportunity.title)
-                            }
+                            onClick={() => openApplication(opportunity.title)}
                             className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-700"
                           >
                             Apply for this opportunity
@@ -848,9 +844,9 @@ export default function Careers() {
             </h2>
 
             <p className="mt-4 leading-7 text-blue-100">
-              We're interested in creating practical opportunities for
-              students, interns, graduates, and junior professionals who want
-              to gain experience and build their portfolios.
+              We're interested in creating practical opportunities for students,
+              interns, graduates, and junior professionals who want to gain
+              experience and build their portfolios.
             </p>
 
             <button
@@ -914,10 +910,10 @@ export default function Careers() {
               </h2>
 
               <p className="mt-4 max-w-2xl leading-7 text-slate-600 dark:text-slate-400">
-                KanuorieTech is building a learning ecosystem for developers
-                and technology professionals. If you have valuable expertise,
-                you can contribute courses, workshops, tutorials, and other
-                learning resources.
+                KanuorieTech is building a learning ecosystem for developers and
+                technology professionals. If you have valuable expertise, you
+                can contribute courses, workshops, tutorials, and other learning
+                resources.
               </p>
             </div>
 
@@ -932,7 +928,6 @@ export default function Careers() {
           </div>
         </div>
       </section>
-
 
       {/* =========================================
           HIRING PROCESS

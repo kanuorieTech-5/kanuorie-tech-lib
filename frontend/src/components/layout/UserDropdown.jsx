@@ -13,10 +13,10 @@ import { useAuth } from "../../contexts";
 export default function UserDropdown() {
   const { user, logout } = useAuth();
   const firstName =
-  user?.firstName ||
-  user?.name?.trim().split(/\s+/)[0] ||
-  user?.username ||
-  "there";
+    user?.firstName ||
+    user?.name?.trim().split(/\s+/)[0] ||
+    user?.username ||
+    "there";
   const [open, setOpen] = useState(false);
 
   const menuRef = useRef(null);
@@ -74,5 +74,3 @@ export default function UserDropdown() {
     </div>
   );
 }
-
-

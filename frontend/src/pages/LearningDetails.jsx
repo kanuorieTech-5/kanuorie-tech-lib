@@ -514,7 +514,9 @@ export default function BookDetails() {
                   <CheckCircle2 size={19} className="text-green-600" />
                 </div>
 
-                <p className="leading-7 text-slate-700 dark:text-slate-300">{item}</p>
+                <p className="leading-7 text-slate-700 dark:text-slate-300">
+                  {item}
+                </p>
               </Card>
             ))}
           </div>
@@ -543,7 +545,9 @@ export default function BookDetails() {
                     {index + 1}
                   </div>
 
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">{chapter}</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                    {chapter}
+                  </h3>
                 </div>
 
                 <Badge>Chapter {index + 1}</Badge>
@@ -782,7 +786,9 @@ function StatCard({ icon, value, label }) {
     <Card className="text-center">
       <div className="flex justify-center text-blue-600">{icon}</div>
 
-      <h3 className="mt-4 text-3xl font-black text-slate-900 dark:text-slate-100">{value}</h3>
+      <h3 className="mt-4 text-3xl font-black text-slate-900 dark:text-slate-100">
+        {value}
+      </h3>
 
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{label}</p>
     </Card>
@@ -802,9 +808,3 @@ function SpecificationCard({ label, value }) {
     </Card>
   );
 }
-
-
-
-
-
-

@@ -15,5 +15,3 @@ export { default as Newsletter } from "./Newsletter";
 export { default as CTA } from "./CTA";
 export { default as ImageSlider } from "./ImageSlider";
 export { default as FeaturesSlider } from "./FeaturesSlider";
-
-

@@ -167,7 +167,9 @@ export default function AdminNewsletter() {
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Newsletter</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Newsletter
+          </h1>
 
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Manage your newsletter subscribers.
@@ -213,7 +215,9 @@ export default function AdminNewsletter() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Newsletter</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                Newsletter
+              </h1>
 
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Manage your newsletter subscribers.
@@ -326,7 +330,9 @@ export default function AdminNewsletter() {
         <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="font-semibold text-slate-900 dark:text-slate-100">Subscribers</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+                Subscribers
+              </h2>
 
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {filteredSubscribers.length} subscriber
@@ -430,6 +436,3 @@ export default function AdminNewsletter() {
     </section>
   );
 }
-
-
-

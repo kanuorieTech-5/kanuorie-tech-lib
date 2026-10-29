@@ -52,11 +52,7 @@ const EMPTY_FORM = {
 };
 
 function normalizeResponse(response) {
-  const data =
-    response?.data?.data ??
-    response?.data ??
-    response ??
-    {};
+  const data = response?.data?.data ?? response?.data ?? response ?? {};
 
   if (Array.isArray(data)) {
     return {
@@ -84,11 +80,15 @@ function StatCard({ icon: Icon, label, value, description }) {
     <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            {label}
+          </p>
           <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
             {value}
           </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            {description}
+          </p>
         </div>
 
         <div className="rounded-xl bg-slate-100 dark:bg-slate-900 p-3">
@@ -192,23 +192,14 @@ export default function AdminTeam() {
 
       setMembers(result.items);
       setPagination(result.pagination);
-      
-      } catch (err) {
+    } catch (err) {
       console.error("Failed to load team members:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to load team members."
-      );
+      setError(err?.response?.data?.message || "Unable to load team members.");
     } finally {
       setLoading(false);
     }
-  }, [
-    pagination.page,
-    search,
-    statusFilter,
-    featuredFilter,
-  ]);
+  }, [pagination.page, search, statusFilter, featuredFilter]);
 
   const loadStats = useCallback(async () => {
     try {
@@ -344,7 +335,9 @@ export default function AdminTeam() {
         const response = await uploadImage(imageFile, "kanuorietech/team");
         imageUrl = response?.data?.url || response?.url || "";
         if (!imageUrl) {
-          throw new Error("Image upload completed without returning an image URL.");
+          throw new Error(
+            "Image upload completed without returning an image URL.",
+          );
         }
       }
 
@@ -371,10 +364,7 @@ export default function AdminTeam() {
     } catch (err) {
       console.error("Failed to save team member:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to save team member."
-      );
+      setError(err?.response?.data?.message || "Unable to save team member.");
     } finally {
       setUploadingImage(false);
       setSaving(false);
@@ -382,11 +372,10 @@ export default function AdminTeam() {
   };
 
   const handleDelete = async (member) => {
-    const name =
-      `${member.firstName ?? ""} ${member.lastName ?? ""}`.trim();
+    const name = `${member.firstName ?? ""} ${member.lastName ?? ""}`.trim();
 
     const confirmed = window.confirm(
-      `Delete ${name || "this team member"}? This action cannot be undone.`
+      `Delete ${name || "this team member"}? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -404,10 +393,7 @@ export default function AdminTeam() {
     } catch (err) {
       console.error("Failed to delete team member:", err);
 
-      setError(
-        err?.response?.data?.message ||
-          "Unable to delete team member."
-      );
+      setError(err?.response?.data?.message || "Unable to delete team member.");
     }
   };
 
@@ -418,17 +404,15 @@ export default function AdminTeam() {
       {/* HEADER */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-sm font-semibold text-cyan-600">
-            ADMINISTRATION
-          </p>
+          <p className="text-sm font-semibold text-cyan-600">ADMINISTRATION</p>
 
           <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Team Management
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
-            Manage KanuorieTech team members, profiles, visibility,
-            featured members and display order.
+            Manage KanuorieTech team members, profiles, visibility, featured
+            members and display order.
           </p>
         </div>
 
@@ -602,10 +586,7 @@ export default function AdminTeam() {
                 </tr>
               ) : visibleMembers.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan="7"
-                    className="px-5 py-16 text-center"
-                  >
+                  <td colSpan="7" className="px-5 py-16 text-center">
                     <Users className="mx-auto h-10 w-10 text-slate-300" />
 
                     <p className="mt-3 font-semibold text-slate-700 dark:text-slate-300">
@@ -698,9 +679,7 @@ export default function AdminTeam() {
                               : "bg-slate-100 text-slate-600"
                           }`}
                         >
-                          {member.active !== false
-                            ? "Active"
-                            : "Inactive"}
+                          {member.active !== false ? "Active" : "Inactive"}
                         </span>
                       </td>
 
@@ -770,9 +749,7 @@ export default function AdminTeam() {
 
             <button
               type="button"
-              disabled={
-                pagination.page >= (pagination.pages || 1)
-              }
+              disabled={pagination.page >= (pagination.pages || 1)}
               onClick={() =>
                 setPagination((previous) => ({
                   ...previous,
@@ -794,9 +771,7 @@ export default function AdminTeam() {
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-5">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                  {editingMember
-                    ? "Edit Team Member"
-                    : "Add Team Member"}
+                  {editingMember ? "Edit Team Member" : "Add Team Member"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -813,12 +788,35 @@ export default function AdminTeam() {
               </button>
             </div>
 
-            <AdminTeamForm {...{ Facebook, Github, ImageIcon, Instagram, Linkedin, Toggle, Twitter, Upload, closeModal, editingMember, error, form, handleImageChange, handleSubmit, imageFile, imagePreview, saving, updateField, updateSocial, uploadingImage }} onSubmit={handleSubmit} className="space-y-6 p-6" />
+            <AdminTeamForm
+              {...{
+                Facebook,
+                Github,
+                ImageIcon,
+                Instagram,
+                Linkedin,
+                Toggle,
+                Twitter,
+                Upload,
+                closeModal,
+                editingMember,
+                error,
+                form,
+                handleImageChange,
+                handleSubmit,
+                imageFile,
+                imagePreview,
+                saving,
+                updateField,
+                updateSocial,
+                uploadingImage,
+              }}
+              onSubmit={handleSubmit}
+              className="space-y-6 p-6"
+            />
           </div>
         </div>
       )}
     </div>
   );
 }
-
-

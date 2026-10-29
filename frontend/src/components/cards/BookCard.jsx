@@ -15,7 +15,9 @@ export default function BookCard({ book }) {
 
         <h3 className="line-clamp-2 text-xl font-semibold">{book.title}</h3>
 
-        <p className="text-sm text-gray-500 dark:text-slate-400">{book.author}</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400">
+          {book.author}
+        </p>
 
         <div className="flex items-center justify-between">
           <span className="text-lg font-bold">${book.price}</span>
@@ -28,5 +30,3 @@ export default function BookCard({ book }) {
     </Card>
   );
 }
-
-

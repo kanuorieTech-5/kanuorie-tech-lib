@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { Newsletter, } from "../components/home";
+import { Newsletter } from "../components/home";
 import { sendContactMessage, submitContactReport } from "../services";
 
 export default function Contact() {
@@ -70,7 +70,7 @@ export default function Contact() {
 
       toast.error(
         error?.response?.data?.message ||
-          "Unable to send your message. Please try again."
+          "Unable to send your message. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -103,14 +103,12 @@ export default function Contact() {
     {
       icon: Clock,
       title: "Timely Communication",
-      description:
-        "We aim to respond to enquiries within one business day.",
+      description: "We aim to respond to enquiries within one business day.",
     },
     {
       icon: ShieldCheck,
       title: "Professional Support",
-      description:
-        "Get thoughtful guidance tailored to your needs and goals.",
+      description: "Get thoughtful guidance tailored to your needs and goals.",
     },
     {
       icon: Sparkles,
@@ -121,43 +119,43 @@ export default function Contact() {
   ];
 
   const socialLinks = [
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/",
-    icon: Linkedin,
-    color: "hover:bg-blue-600",
-  },
-  {
-    name: "Facebook",
-    href: "https://www.facebook.com/",
-    icon: Facebook,
-    color: "hover:bg-blue-700",
-  },
-  {
-    name: "Instagram",
-    href: "https://www.instagram.com/",
-    icon: Instagram,
-    color: "hover:bg-pink-600",
-  },
-  {
-    name: "YouTube",
-    href: "https://www.youtube.com/",
-    icon: Youtube,
-    color: "hover:bg-red-600",
-  },
-  {
-    name: "X",
-    href: "https://x.com/",
-    icon: Twitter,
-    color: "hover:bg-slate-900",
-  },
-  {
-    name: "Website",
-    href: "https://kanuorietech.netlify.app/",
-    icon: Globe,
-    color: "hover:bg-indigo-600",
-  },
-];
+    {
+      name: "LinkedIn",
+      href: "https://www.linkedin.com/",
+      icon: Linkedin,
+      color: "hover:bg-blue-600",
+    },
+    {
+      name: "Facebook",
+      href: "https://www.facebook.com/",
+      icon: Facebook,
+      color: "hover:bg-blue-700",
+    },
+    {
+      name: "Instagram",
+      href: "https://www.instagram.com/",
+      icon: Instagram,
+      color: "hover:bg-pink-600",
+    },
+    {
+      name: "YouTube",
+      href: "https://www.youtube.com/",
+      icon: Youtube,
+      color: "hover:bg-red-600",
+    },
+    {
+      name: "X",
+      href: "https://x.com/",
+      icon: Twitter,
+      color: "hover:bg-slate-900",
+    },
+    {
+      name: "Website",
+      href: "https://kanuorietech.netlify.app/",
+      icon: Globe,
+      color: "hover:bg-indigo-600",
+    },
+  ];
 
   const page = darkMode
     ? "bg-[#080d1b] text-slate-100"
@@ -181,7 +179,6 @@ export default function Contact() {
     }));
   };
 
-  
   const submitReport = async (e) => {
     e.preventDefault();
 
@@ -214,7 +211,7 @@ export default function Contact() {
 
       toast.error(
         error?.response?.data?.message ||
-          "Unable to submit your report. Please try again."
+          "Unable to submit your report. Please try again.",
       );
     } finally {
       setReportLoading(false);
@@ -222,7 +219,9 @@ export default function Contact() {
   };
 
   return (
-    <main className={`min-h-screen overflow-hidden transition-colors duration-300 ${page}`}>
+    <main
+      className={`min-h-screen overflow-hidden transition-colors duration-300 ${page}`}
+    >
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950">
         <div className="pointer-events-none absolute -left-32 top-10 h-80 w-80 rounded-full bg-blue-500/20 blur-[100px]" />
@@ -244,8 +243,8 @@ export default function Contact() {
 
             <p className="mx-auto mt-6 text-base leading-8 text-slate-300 sm:text-lg">
               Have a project in mind, need a digital solution, or want to
-              explore learning opportunities? Tell us what you&apos;re
-              working on. We&apos;d love to hear from you.
+              explore learning opportunities? Tell us what you&apos;re working
+              on. We&apos;d love to hear from you.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-300">
@@ -319,8 +318,7 @@ export default function Contact() {
                       htmlFor="contact-email"
                       className="mb-2 block text-sm font-semibold"
                     >
-                      Email address{" "}
-                      <span className="text-blue-500">*</span>
+                      Email address <span className="text-blue-500">*</span>
                     </label>
 
                     <input
@@ -494,8 +492,8 @@ export default function Contact() {
                   </h2>
 
                   <p className={`mx-auto mt-4 max-w-2xl ${muted}`}>
-                    Follow us for technology insights, learning resources, company updates,
-                    development tips, and new opportunities.
+                    Follow us for technology insights, learning resources,
+                    company updates, development tips, and new opportunities.
                   </p>
 
                   <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -545,8 +543,8 @@ export default function Contact() {
             </h2>
 
             <p className="mx-auto mt-5 leading-8 text-slate-500 dark:text-slate-400">
-              Have a complaint, a compliance concern, or feedback to share?
-              Help us improve KanuorieTech by letting us know. We welcome
+              Have a complaint, a compliance concern, or feedback to share? Help
+              us improve KanuorieTech by letting us know. We welcome
               constructive feedback and encourage concerns to be raised
               responsibly.
             </p>
@@ -578,9 +576,7 @@ export default function Contact() {
                   >
                     <Icon className="h-6 w-6 text-blue-300" />
 
-                    <h3 className="mt-4 font-bold">
-                      {item.title}
-                    </h3>
+                    <h3 className="mt-4 font-bold">{item.title}</h3>
 
                     <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                       {item.text}
@@ -600,21 +596,19 @@ export default function Contact() {
             </button>
 
             <p className="mt-4 text-xs leading-5 text-slate-400">
-              Please provide accurate information. Avoid including passwords
-              or unnecessary sensitive personal information.
+              Please provide accurate information. Avoid including passwords or
+              unnecessary sensitive personal information.
             </p>
           </div>
         </div>
       </section>
       {/* WHY CONTACT US */}
       <div className="mx-auto px-5 pb-16 sm:px-8 lg:px-12">
-        <h2 className="text-xl font-bold">
-          Why work with KanuorieTech?
-        </h2>
+        <h2 className="text-xl font-bold">Why work with KanuorieTech?</h2>
 
         <p className={`mt-3 text-sm leading-7 ${muted}`}>
-          We bring technology, creativity, and practical learning
-          together to help people and businesses move forward.
+          We bring technology, creativity, and practical learning together to
+          help people and businesses move forward.
         </p>
 
         <div className="mt-7 space-y-6">
@@ -622,10 +616,7 @@ export default function Contact() {
             const Icon = benefit.icon;
 
             return (
-              <div
-                key={benefit.title}
-                className="flex items-start gap-4"
-              >
+              <div key={benefit.title} className="flex items-start gap-4">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                   <Icon className="h-5 w-5" />
                 </span>
@@ -817,10 +808,10 @@ export default function Contact() {
                     : "bg-slate-50 text-slate-600"
                 }`}
               >
-                Please submit truthful information and avoid including
-                passwords or unnecessary sensitive data. Do not assume a
-                submission is anonymous or confidential; this form collects
-                your name and email address.
+                Please submit truthful information and avoid including passwords
+                or unnecessary sensitive data. Do not assume a submission is
+                anonymous or confidential; this form collects your name and
+                email address.
               </div>
 
               <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">

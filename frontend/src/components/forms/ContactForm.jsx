@@ -67,5 +67,3 @@ export default function ContactForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
-
-

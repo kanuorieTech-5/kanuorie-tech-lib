@@ -776,7 +776,32 @@ export default function AdminBlog() {
             </button>
           </div>
 
-          <AdminBlogForm {...{ Button, Clock, Eye, EyeOff, ImageIcon, RefreshCw, Star, Upload, X, coverImageFile, coverPreview, editingBlog, form, handleChange, handleCoverImageChange, handleRemoveCoverImage, handleSubmit, resetForm, saving, uploadingImage }} onSubmit={handleSubmit} className="space-y-6 p-6" />
+          <AdminBlogForm
+            {...{
+              Button,
+              Clock,
+              Eye,
+              EyeOff,
+              ImageIcon,
+              RefreshCw,
+              Star,
+              Upload,
+              X,
+              coverImageFile,
+              coverPreview,
+              editingBlog,
+              form,
+              handleChange,
+              handleCoverImageChange,
+              handleRemoveCoverImage,
+              handleSubmit,
+              resetForm,
+              saving,
+              uploadingImage,
+            }}
+            onSubmit={handleSubmit}
+            className="space-y-6 p-6"
+          />
         </Card>
       )}
 
@@ -1020,5 +1045,3 @@ export default function AdminBlog() {
     </section>
   );
 }
-
-

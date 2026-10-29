@@ -6,5 +6,3 @@ export default function SearchInput(props) {
     <Input leftIcon={<Search size={18} />} placeholder="Search..." {...props} />
   );
 }
-
-

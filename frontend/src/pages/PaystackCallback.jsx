@@ -1,11 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  CheckCircle2,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Button, Card } from "../components/common";
@@ -34,8 +30,7 @@ export default function PaystackCallback() {
 
     const verifyPayment = async () => {
       const reference =
-        searchParams.get("reference") ||
-        searchParams.get("trxref");
+        searchParams.get("reference") || searchParams.get("trxref");
 
       if (!reference) {
         if (!mounted) return;
@@ -49,9 +44,7 @@ export default function PaystackCallback() {
 
       try {
         setStatus("verifying");
-        setMessage(
-          "We're securely verifying your payment with Paystack.",
-        );
+        setMessage("We're securely verifying your payment with Paystack.");
 
         const response = await verifyPaystackPayment(reference);
 
@@ -60,9 +53,7 @@ export default function PaystackCallback() {
         const order = response?.data?.order;
 
         const courseItem = Array.isArray(order?.items)
-          ? order.items.find(
-              (item) => item?.itemType === "course",
-            )
+          ? order.items.find((item) => item?.itemType === "course")
           : null;
 
         const courseId = courseItem?.itemId;
@@ -93,10 +84,7 @@ export default function PaystackCallback() {
       } catch (error) {
         if (!mounted) return;
 
-        console.error(
-          "Paystack callback verification error:",
-          error,
-        );
+        console.error("Paystack callback verification error:", error);
 
         setStatus("error");
         setMessage(
@@ -139,8 +127,7 @@ export default function PaystackCallback() {
               </p>
 
               <p className="mt-5 text-xs leading-5 text-slate-400">
-                Please don't close this page while we complete
-                the verification.
+                Please don't close this page while we complete the verification.
               </p>
             </>
           )}
@@ -205,5 +192,3 @@ export default function PaystackCallback() {
     </div>
   );
 }
-
-

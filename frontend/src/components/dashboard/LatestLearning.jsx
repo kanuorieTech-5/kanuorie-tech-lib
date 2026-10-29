@@ -51,9 +51,7 @@ export default function LatestLearning({ learningResources = [] }) {
             const id = resource._id || resource.id || index;
 
             const title =
-              resource.title ||
-              resource.name ||
-              "Untitled learning resource";
+              resource.title || resource.name || "Untitled learning resource";
 
             const author =
               resource.author?.name ||
@@ -103,5 +101,3 @@ export default function LatestLearning({ learningResources = [] }) {
     </section>
   );
 }
-
-

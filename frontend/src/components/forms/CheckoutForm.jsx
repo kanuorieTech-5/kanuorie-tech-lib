@@ -82,5 +82,3 @@ export default function CheckoutForm({ loading = false, onSubmit }) {
     </Card>
   );
 }
-
-

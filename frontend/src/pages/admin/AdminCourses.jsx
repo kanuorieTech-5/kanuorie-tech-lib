@@ -1137,7 +1137,44 @@ export default function AdminCourses() {
               </button>
             </div>
 
-            <AdminCourseForm {...{ BookOpen, ChevronDown, ChevronUp, Field, FormSection, GripVertical, Plus, Save, SelectField, TextAreaField, Toggle, Trash2, activeModule, addModule, addModuleLesson, categories, closeForm, editingId, enableModuleAssessment, form, handleSubmit, levels, removeModule, removeModuleAssessment, removeModuleLesson, saving, setActiveModule, updateArrayField, updateField, updateModule, updateModuleAssessment, updateModuleLesson }} onSubmit={handleSubmit} className="space-y-8 p-6" />
+            <AdminCourseForm
+              {...{
+                BookOpen,
+                ChevronDown,
+                ChevronUp,
+                Field,
+                FormSection,
+                GripVertical,
+                Plus,
+                Save,
+                SelectField,
+                TextAreaField,
+                Toggle,
+                Trash2,
+                activeModule,
+                addModule,
+                addModuleLesson,
+                categories,
+                closeForm,
+                editingId,
+                enableModuleAssessment,
+                form,
+                handleSubmit,
+                levels,
+                removeModule,
+                removeModuleAssessment,
+                removeModuleLesson,
+                saving,
+                setActiveModule,
+                updateArrayField,
+                updateField,
+                updateModule,
+                updateModuleAssessment,
+                updateModuleLesson,
+              }}
+              onSubmit={handleSubmit}
+              className="space-y-8 p-6"
+            />
           </div>
         </div>
       )}
@@ -1152,7 +1189,9 @@ export default function AdminCourses() {
 function Stat({ label, value }) {
   return (
     <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        {label}
+      </p>
 
       <p className="mt-2 text-3xl font-black text-slate-900 dark:text-slate-100">
         {Number(value || 0).toLocaleString()}
@@ -1169,9 +1208,13 @@ function FormSection({ title, description, children }) {
   return (
     <section className="space-y-5">
       <div>
-        <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">{title}</h3>
+        <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
+          {title}
+        </h3>
 
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          {description}
+        </p>
       </div>
 
       <div className="space-y-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 p-5">
@@ -1286,7 +1329,9 @@ function Toggle({ label, checked, onChange }) {
       }`}
     >
       <span>
-        <span className="block text-sm font-bold text-slate-800 dark:text-slate-200">{label}</span>
+        <span className="block text-sm font-bold text-slate-800 dark:text-slate-200">
+          {label}
+        </span>
 
         <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
           {checked ? "Enabled" : "Disabled"}

@@ -20,10 +20,10 @@ export default function DashboardCard({
       </div>
 
       {footer && (
-        <div className="mt-6 border-t pt-4 text-sm text-gray-500 dark:text-slate-400">{footer}</div>
+        <div className="mt-6 border-t pt-4 text-sm text-gray-500 dark:text-slate-400">
+          {footer}
+        </div>
       )}
     </Card>
   );
 }
-
-

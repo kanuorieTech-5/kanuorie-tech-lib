@@ -100,7 +100,8 @@ export default function Profile() {
     try {
       const response = await submitServiceEnquiry(form);
       setServiceEnquirySuccess(
-        response?.message || "Your service enquiry has been submitted successfully.",
+        response?.message ||
+          "Your service enquiry has been submitted successfully.",
       );
       setIsServiceEnquiryOpen(false);
     } catch (error) {
@@ -142,7 +143,10 @@ export default function Profile() {
     techStack: Array.isArray(profile.techStack)
       ? profile.techStack
       : typeof profile.techStack === "string" && profile.techStack.trim()
-        ? profile.techStack.split(",").map((item) => item.trim()).filter(Boolean)
+        ? profile.techStack
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
         : [],
     collaborationInterests: Array.isArray(profile.collaborationInterests)
       ? profile.collaborationInterests
@@ -152,79 +156,79 @@ export default function Profile() {
   });
 
   useEffect(() => {
-  let cancelled = false;
+    let cancelled = false;
 
-  const loadProfileStats = async () => {
-    setStatsLoading(true);
+    const loadProfileStats = async () => {
+      setStatsLoading(true);
 
-    try {
-      const [coursesResult, learningResult, savedResult, progressResult] =
-        await Promise.allSettled([
-          getCourses({ limit: 100 }),
-          getLearningResources({ limit: 100 }),
-          getSavedResources(),
-          getProgress(),
-        ]);
+      try {
+        const [coursesResult, learningResult, savedResult, progressResult] =
+          await Promise.allSettled([
+            getCourses({ limit: 100 }),
+            getLearningResources({ limit: 100 }),
+            getSavedResources(),
+            getProgress(),
+          ]);
 
-      if (cancelled) return;
+        if (cancelled) return;
 
-      const extractArray = (result) => {
-        if (result.status !== "fulfilled") return [];
+        const extractArray = (result) => {
+          if (result.status !== "fulfilled") return [];
 
-        const response = result.value;
+          const response = result.value;
 
-        if (Array.isArray(response)) return response;
+          if (Array.isArray(response)) return response;
 
-        const data = response?.data;
+          const data = response?.data;
 
-        if (Array.isArray(data)) return data;
+          if (Array.isArray(data)) return data;
 
-        if (Array.isArray(data?.courses)) return data.courses;
-        if (Array.isArray(data?.learning)) return data.learning;
-        if (Array.isArray(data?.resources)) return data.resources;
-        if (Array.isArray(data?.savedResources)) return data.savedResources;
-        if (Array.isArray(data?.progress)) return data.progress;
+          if (Array.isArray(data?.courses)) return data.courses;
+          if (Array.isArray(data?.learning)) return data.learning;
+          if (Array.isArray(data?.resources)) return data.resources;
+          if (Array.isArray(data?.savedResources)) return data.savedResources;
+          if (Array.isArray(data?.progress)) return data.progress;
 
-        return [];
-      };
+          return [];
+        };
 
-      const courses = extractArray(coursesResult);
-      const learning = extractArray(learningResult);
-      const saved = extractArray(savedResult);
-      const progress = extractArray(progressResult);
+        const courses = extractArray(coursesResult);
+        const learning = extractArray(learningResult);
+        const saved = extractArray(savedResult);
+        const progress = extractArray(progressResult);
 
-      const inProgress = progress.filter((item) => {
-        const status = String(item?.status || "").toLowerCase();
-        const percentage = Number(item?.percentage || 0);
+        const inProgress = progress.filter((item) => {
+          const status = String(item?.status || "").toLowerCase();
+          const percentage = Number(item?.percentage || 0);
 
-        return (
-          status === "in_progress" ||
-          status === "in-progress" ||
-          (percentage > 0 && percentage < 100)
-        );
-      });
+          return (
+            status === "in_progress" ||
+            status === "in-progress" ||
+            (percentage > 0 && percentage < 100)
+          );
+        });
 
-      setStats({
-        courses: courses.length,
-        learning: learning.length,
-        saved: saved.length,
-        inProgress: inProgress.length,
-      });
-    } catch (error) {
-      console.error("Failed to load profile statistics:", error);
-    } finally {
-      if (!cancelled) {
-        setStatsLoading(false);
+        setStats({
+          courses: courses.length,
+          learning: learning.length,
+          saved: saved.length,
+          inProgress: inProgress.length,
+        });
+      } catch (error) {
+        console.error("Failed to load profile statistics:", error);
+      } finally {
+        if (!cancelled) {
+          setStatsLoading(false);
+        }
       }
-    }
-  };
+    };
 
-  loadProfileStats();
+    loadProfileStats();
 
-  return () => {
-    cancelled = true;
-  };
-}, []);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /* ==========================================
      LOAD USER INTO FORM
@@ -493,7 +497,7 @@ export default function Profile() {
         (!payload.businessType || payload.businessNeeds.length === 0)
       ) {
         throw new Error(
-          "Business owners must choose a business type and at least one service need."
+          "Business owners must choose a business type and at least one service need.",
         );
       }
 
@@ -506,7 +510,7 @@ export default function Profile() {
       setSuccessMessage(
         isBecomingBusinessOwner
           ? "Profile updated and your business service request was sent to Admin."
-          : "Profile updated successfully."
+          : "Profile updated successfully.",
       );
 
       /*
@@ -641,280 +645,276 @@ export default function Profile() {
         <div className="text-center">
           <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
 
-          <p className="text-gray-500 dark:text-slate-400">Loading profile...</p>
+          <p className="text-gray-500 dark:text-slate-400">
+            Loading profile...
+          </p>
         </div>
       </div>
     );
   }
 
   const PREFERENCE_OPTIONS = {
-  userType: [
-    { label: "Student / Learner", value: "student" },
-    { label: "Career / Job Seeker", value: "career_seeker" },
-    { label: "Developer / Tech Professional", value: "developer" },
-    { label: "Partner / Affiliate / Collaborator", value: "partner" },
-    { label: "Business Owner / Entrepreneur", value: "business_owner" },
-    { label: "General User / Exploring", value: "general" },
-  ],
+    userType: [
+      { label: "Student / Learner", value: "student" },
+      { label: "Career / Job Seeker", value: "career_seeker" },
+      { label: "Developer / Tech Professional", value: "developer" },
+      { label: "Partner / Affiliate / Collaborator", value: "partner" },
+      { label: "Business Owner / Entrepreneur", value: "business_owner" },
+      { label: "General User / Exploring", value: "general" },
+    ],
 
-  interests: [
-    { label: "Web Development", value: "web_development" },
-    { label: "Programming", value: "programming" },
-    { label: "Online Courses & Certifications", value: "online_courses" },
-    { label: "Books & Learning Resources", value: "books" },
-    { label: "Website & Software Services", value: "software_services" },
-    { label: "E-commerce Solutions", value: "ecommerce" },
-    { label: "Mobile Apps & Custom Applications", value: "mobile_apps" },
-    { label: "Job Opportunities", value: "jobs" },
-    { label: "Internships", value: "internships" },
-    { label: "Freelancing & Career Growth", value: "freelancing" },
-    { label: "Community & Networking", value: "community" },
-    { label: "Affiliate Marketing & Partnerships", value: "affiliate" },
-    { label: "Artificial Intelligence", value: "ai" },
-    { label: "UI/UX Design", value: "ui_ux" },
-  ],
+    interests: [
+      { label: "Web Development", value: "web_development" },
+      { label: "Programming", value: "programming" },
+      { label: "Online Courses & Certifications", value: "online_courses" },
+      { label: "Books & Learning Resources", value: "books" },
+      { label: "Website & Software Services", value: "software_services" },
+      { label: "E-commerce Solutions", value: "ecommerce" },
+      { label: "Mobile Apps & Custom Applications", value: "mobile_apps" },
+      { label: "Job Opportunities", value: "jobs" },
+      { label: "Internships", value: "internships" },
+      { label: "Freelancing & Career Growth", value: "freelancing" },
+      { label: "Community & Networking", value: "community" },
+      { label: "Affiliate Marketing & Partnerships", value: "affiliate" },
+      { label: "Artificial Intelligence", value: "ai" },
+      { label: "UI/UX Design", value: "ui_ux" },
+    ],
 
-  otherInterest: [
-    { label: "Technology", value: "technology" },
-    { label: "Entrepreneurship", value: "entrepreneurship" },
-    { label: "Digital Creativity", value: "digital_creativity" },
-    { label: "Research & Innovation", value: "research" },
-    { label: "Education", value: "education" },
-    { label: "I'm still exploring", value: "not_sure" },
-  ],
+    otherInterest: [
+      { label: "Technology", value: "technology" },
+      { label: "Entrepreneurship", value: "entrepreneurship" },
+      { label: "Digital Creativity", value: "digital_creativity" },
+      { label: "Research & Innovation", value: "research" },
+      { label: "Education", value: "education" },
+      { label: "I'm still exploring", value: "not_sure" },
+    ],
 
-  discoverySource: [
-    { label: "Google / Search Engine", value: "google" },
-    { label: "YouTube", value: "youtube" },
-    { label: "TikTok", value: "tiktok" },
-    { label: "Instagram", value: "instagram" },
-    { label: "Facebook", value: "facebook" },
-    { label: "LinkedIn", value: "linkedin" },
-    { label: "WhatsApp / Telegram", value: "whatsapp" },
-    { label: "Friend / Family / Colleague", value: "friend" },
-    { label: "Referral Link", value: "referral" },
-    { label: "Online Community / Forum", value: "community" },
-    { label: "Advertisement", value: "advertisement" },
-    { label: "Event / Workshop / Training", value: "event" },
-    { label: "Other", value: "other" },
-    { label: "I don't remember", value: "unknown" },
-  ],
+    discoverySource: [
+      { label: "Google / Search Engine", value: "google" },
+      { label: "YouTube", value: "youtube" },
+      { label: "TikTok", value: "tiktok" },
+      { label: "Instagram", value: "instagram" },
+      { label: "Facebook", value: "facebook" },
+      { label: "LinkedIn", value: "linkedin" },
+      { label: "WhatsApp / Telegram", value: "whatsapp" },
+      { label: "Friend / Family / Colleague", value: "friend" },
+      { label: "Referral Link", value: "referral" },
+      { label: "Online Community / Forum", value: "community" },
+      { label: "Advertisement", value: "advertisement" },
+      { label: "Event / Workshop / Training", value: "event" },
+      { label: "Other", value: "other" },
+      { label: "I don't remember", value: "unknown" },
+    ],
 
-  learningLevel: [
-    { label: "Beginner", value: "beginner" },
-    { label: "Intermediate", value: "intermediate" },
-    { label: "Advanced", value: "advanced" },
-    { label: "Still exploring", value: "exploring" },
-  ],
+    learningLevel: [
+      { label: "Beginner", value: "beginner" },
+      { label: "Intermediate", value: "intermediate" },
+      { label: "Advanced", value: "advanced" },
+      { label: "Still exploring", value: "exploring" },
+    ],
 
-  learningGoals: [
-    { label: "HTML & CSS", value: "html_css" },
-    { label: "JavaScript", value: "javascript" },
-    { label: "React & Frontend Development", value: "react" },
-    { label: "Backend Development", value: "backend" },
-    { label: "Full-Stack Development", value: "fullstack" },
-    { label: "UI/UX Design", value: "ui_ux" },
-    { label: "Databases & APIs", value: "databases" },
-    { label: "Python Programming", value: "python" },
-    { label: "AI & Machine Learning", value: "ai" },
-    { label: "Professional Certifications", value: "certification" },
-    { label: "Building a Portfolio", value: "portfolio" },
-  ],
+    learningGoals: [
+      { label: "HTML & CSS", value: "html_css" },
+      { label: "JavaScript", value: "javascript" },
+      { label: "React & Frontend Development", value: "react" },
+      { label: "Backend Development", value: "backend" },
+      { label: "Full-Stack Development", value: "fullstack" },
+      { label: "UI/UX Design", value: "ui_ux" },
+      { label: "Databases & APIs", value: "databases" },
+      { label: "Python Programming", value: "python" },
+      { label: "AI & Machine Learning", value: "ai" },
+      { label: "Professional Certifications", value: "certification" },
+      { label: "Building a Portfolio", value: "portfolio" },
+    ],
 
-  generalInterests: [
-    { label: "Technology", value: "technology" },
-    { label: "Entrepreneurship", value: "entrepreneurship" },
-    { label: "Digital Creativity", value: "digital_creativity" },
-    { label: "Research & Innovation", value: "research" },
-    { label: "Education", value: "education" },
-    { label: "I'm still exploring", value: "not_sure" },
-  ],
+    generalInterests: [
+      { label: "Technology", value: "technology" },
+      { label: "Entrepreneurship", value: "entrepreneurship" },
+      { label: "Digital Creativity", value: "digital_creativity" },
+      { label: "Research & Innovation", value: "research" },
+      { label: "Education", value: "education" },
+      { label: "I'm still exploring", value: "not_sure" },
+    ],
 
-  businessType: [
-    { label: "Startup", value: "startup" },
-    { label: "Small Business", value: "small_business" },
-    { label: "Medium-Sized Business", value: "medium_business" },
-    { label: "Large Enterprise", value: "enterprise" },
-    { label: "E-commerce Business", value: "ecommerce" },
-    { label: "Education / Training", value: "education" },
-    { label: "Personal Brand", value: "personal_brand" },
-    { label: "Nonprofit Organization", value: "nonprofit" },
-    { label: "Other Business Type", value: "other" },
-  ],
+    businessType: [
+      { label: "Startup", value: "startup" },
+      { label: "Small Business", value: "small_business" },
+      { label: "Medium-Sized Business", value: "medium_business" },
+      { label: "Large Enterprise", value: "enterprise" },
+      { label: "E-commerce Business", value: "ecommerce" },
+      { label: "Education / Training", value: "education" },
+      { label: "Personal Brand", value: "personal_brand" },
+      { label: "Nonprofit Organization", value: "nonprofit" },
+      { label: "Other Business Type", value: "other" },
+    ],
 
-  businessNeeds: [
-    { label: "Business Website", value: "business_website" },
-    { label: "E-commerce Store", value: "ecommerce" },
-    { label: "Web Application", value: "web_app" },
-    { label: "Mobile Application", value: "mobile_app" },
-    { label: "Business Automation", value: "automation" },
-    { label: "Custom Software", value: "custom_software" },
-    { label: "Website Maintenance", value: "maintenance" },
-    { label: "Branding & Digital Design", value: "branding" },
-    { label: "Digital Marketing", value: "marketing" },
-    { label: "Technical Consultation", value: "consultation" },
-  ],
+    businessNeeds: [
+      { label: "Business Website", value: "business_website" },
+      { label: "E-commerce Store", value: "ecommerce" },
+      { label: "Web Application", value: "web_app" },
+      { label: "Mobile Application", value: "mobile_app" },
+      { label: "Business Automation", value: "automation" },
+      { label: "Custom Software", value: "custom_software" },
+      { label: "Website Maintenance", value: "maintenance" },
+      { label: "Branding & Digital Design", value: "branding" },
+      { label: "Digital Marketing", value: "marketing" },
+      { label: "Technical Consultation", value: "consultation" },
+    ],
 
-  projectTimeline: [
-    { label: "As soon as possible", value: "immediately" },
-    { label: "Within one month", value: "within_month" },
-    { label: "Within three months", value: "within_three_months" },
-    { label: "Within six months", value: "within_six_months" },
-    { label: "Just researching for now", value: "researching" },
-  ],
+    projectTimeline: [
+      { label: "As soon as possible", value: "immediately" },
+      { label: "Within one month", value: "within_month" },
+      { label: "Within three months", value: "within_three_months" },
+      { label: "Within six months", value: "within_six_months" },
+      { label: "Just researching for now", value: "researching" },
+    ],
 
-  careerGoal: [
-    { label: "Frontend Developer", value: "frontend_developer" },
-    { label: "Backend Developer", value: "backend_developer" },
-    { label: "Full-Stack Developer", value: "fullstack_developer" },
-    { label: "Mobile App Developer", value: "mobile_developer" },
-    { label: "UI/UX Designer", value: "ui_ux_designer" },
-    { label: "Data Analyst", value: "data_analyst" },
-    { label: "AI / Machine Learning Engineer", value: "ai_engineer" },
-    { label: "Cybersecurity Professional", value: "cybersecurity" },
-    { label: "Tech Entrepreneur", value: "tech_entrepreneur" },
-    { label: "Other Technology Career", value: "other_tech" },
-  ],
+    careerGoal: [
+      { label: "Frontend Developer", value: "frontend_developer" },
+      { label: "Backend Developer", value: "backend_developer" },
+      { label: "Full-Stack Developer", value: "fullstack_developer" },
+      { label: "Mobile App Developer", value: "mobile_developer" },
+      { label: "UI/UX Designer", value: "ui_ux_designer" },
+      { label: "Data Analyst", value: "data_analyst" },
+      { label: "AI / Machine Learning Engineer", value: "ai_engineer" },
+      { label: "Cybersecurity Professional", value: "cybersecurity" },
+      { label: "Tech Entrepreneur", value: "tech_entrepreneur" },
+      { label: "Other Technology Career", value: "other_tech" },
+    ],
 
-  experienceLevel: [
-    { label: "No experience yet", value: "no_experience" },
-    { label: "Entry-level", value: "entry_level" },
-    { label: "Intermediate", value: "intermediate" },
-    { label: "Experienced", value: "experienced" },
-    { label: "Professional", value: "professional" },
-  ],
+    experienceLevel: [
+      { label: "No experience yet", value: "no_experience" },
+      { label: "Entry-level", value: "entry_level" },
+      { label: "Intermediate", value: "intermediate" },
+      { label: "Experienced", value: "experienced" },
+      { label: "Professional", value: "professional" },
+    ],
 
-  preferredOpportunities: [
-    { label: "Full-Time Jobs", value: "full_time" },
-    { label: "Part-Time Jobs", value: "part_time" },
-    { label: "Remote Opportunities", value: "remote" },
-    { label: "Onsite Opportunities", value: "onsite" },
-    { label: "Hybrid Opportunities", value: "hybrid" },
-    { label: "Internships", value: "internship" },
-    { label: "Freelance Projects", value: "freelance" },
-    { label: "Scholarships", value: "scholarships" },
-    { label: "Mentorship", value: "mentorship" },
-  ],
+    preferredOpportunities: [
+      { label: "Full-Time Jobs", value: "full_time" },
+      { label: "Part-Time Jobs", value: "part_time" },
+      { label: "Remote Opportunities", value: "remote" },
+      { label: "Onsite Opportunities", value: "onsite" },
+      { label: "Hybrid Opportunities", value: "hybrid" },
+      { label: "Internships", value: "internship" },
+      { label: "Freelance Projects", value: "freelance" },
+      { label: "Scholarships", value: "scholarships" },
+      { label: "Mentorship", value: "mentorship" },
+    ],
 
-  techStack: [
-    { label: "HTML", value: "html" },
-    { label: "CSS", value: "css" },
-    { label: "JavaScript", value: "javascript" },
-    { label: "TypeScript", value: "typescript" },
-    { label: "React", value: "react" },
-    { label: "Angular", value: "angular" },
-    { label: "Vue", value: "vue" },
-    { label: "Tailwind CSS", value: "tailwind_css" },
-    { label: "Node.js", value: "node_js" },
-    { label: "Express.js", value: "express_js" },
-    { label: "MongoDB", value: "mongodb" },
-    { label: "SQL", value: "sql" },
-    { label: "Python", value: "python" },
-    { label: "Git & GitHub", value: "git_github" },
-  ],
+    techStack: [
+      { label: "HTML", value: "html" },
+      { label: "CSS", value: "css" },
+      { label: "JavaScript", value: "javascript" },
+      { label: "TypeScript", value: "typescript" },
+      { label: "React", value: "react" },
+      { label: "Angular", value: "angular" },
+      { label: "Vue", value: "vue" },
+      { label: "Tailwind CSS", value: "tailwind_css" },
+      { label: "Node.js", value: "node_js" },
+      { label: "Express.js", value: "express_js" },
+      { label: "MongoDB", value: "mongodb" },
+      { label: "SQL", value: "sql" },
+      { label: "Python", value: "python" },
+      { label: "Git & GitHub", value: "git_github" },
+    ],
 
-  collaborationInterests: [
-    { label: "Affiliate Programme", value: "affiliate" },
-    { label: "Business Partnership", value: "business" },
-    { label: "Teaching / Training", value: "teaching" },
-    { label: "Content Collaboration", value: "content" },
-    { label: "Community Building", value: "community" },
-    { label: "Technology Projects", value: "technology" },
-    { label: "Open-Source Projects", value: "open_source" },
-    { label: "Mentorship", value: "mentorship" },
-  ],
-};
+    collaborationInterests: [
+      { label: "Affiliate Programme", value: "affiliate" },
+      { label: "Business Partnership", value: "business" },
+      { label: "Teaching / Training", value: "teaching" },
+      { label: "Content Collaboration", value: "content" },
+      { label: "Community Building", value: "community" },
+      { label: "Technology Projects", value: "technology" },
+      { label: "Open-Source Projects", value: "open_source" },
+      { label: "Mentorship", value: "mentorship" },
+    ],
+  };
 
-const PreferenceSelect = ({
-  label,
-  name,
-  value,
-  options,
-  onChange,
-}) => (
-  <label className="block space-y-2">
-    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-      {label}
-    </span>
+  const PreferenceSelect = ({ label, name, value, options, onChange }) => (
+    <label className="block space-y-2">
+      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+        {label}
+      </span>
 
-    <select
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-    >
-      <option value="">Select an option</option>
+      <select
+        name={name}
+        value={value || ""}
+        onChange={onChange}
+        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+      >
+        <option value="">Select an option</option>
 
-      {options.map((option) => {
-        const item =
-          typeof option === "string"
-            ? { label: option, value: option }
-            : option;
+        {options.map((option) => {
+          const item =
+            typeof option === "string"
+              ? { label: option, value: option }
+              : option;
 
-        return (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        );
-      })}
-    </select>
-  </label>
-);
-
-const PreferenceCheckboxGroup = ({
-  label,
-  name,
-  options,
-  values = [],
-  onChange,
-}) => (
-  <fieldset className="space-y-3">
-    <legend className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
-      {label}
-    </legend>
-
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-      {options.map((option) => {
-        const item =
-          typeof option === "string"
-            ? { label: option, value: option }
-            : option;
-
-        const checked = values.includes(item.value);
-
-        return (
-          <label
-            key={item.value}
-            className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm transition ${
-              checked
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
-                : "border-slate-200 hover:border-blue-400 dark:border-slate-700"
-            }`}
-          >
-            <input
-              type="checkbox"
-              name={name}
-              value={item.value}
-              checked={checked}
-              onChange={(event) => {
-                const nextValues = event.target.checked
-                  ? [...new Set([...values, item.value])]
-                  : values.filter((value) => value !== item.value);
-
-                onChange(name, nextValues);
-              }}
-              className="h-4 w-4 shrink-0 accent-blue-600"
-            />
-
-            <span className="text-slate-700 dark:text-slate-200">
+          return (
+            <option key={item.value} value={item.value}>
               {item.label}
-            </span>
-          </label>
-        );
-      })}
-    </div>
-  </fieldset>
-);
+            </option>
+          );
+        })}
+      </select>
+    </label>
+  );
+
+  const PreferenceCheckboxGroup = ({
+    label,
+    name,
+    options,
+    values = [],
+    onChange,
+  }) => (
+    <fieldset className="space-y-3">
+      <legend className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+        {label}
+      </legend>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {options.map((option) => {
+          const item =
+            typeof option === "string"
+              ? { label: option, value: option }
+              : option;
+
+          const checked = values.includes(item.value);
+
+          return (
+            <label
+              key={item.value}
+              className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm transition ${
+                checked
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
+                  : "border-slate-200 hover:border-blue-400 dark:border-slate-700"
+              }`}
+            >
+              <input
+                type="checkbox"
+                name={name}
+                value={item.value}
+                checked={checked}
+                onChange={(event) => {
+                  const nextValues = event.target.checked
+                    ? [...new Set([...values, item.value])]
+                    : values.filter((value) => value !== item.value);
+
+                  onChange(name, nextValues);
+                }}
+                className="h-4 w-4 shrink-0 accent-blue-600"
+              />
+
+              <span className="text-slate-700 dark:text-slate-200">
+                {item.label}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -937,259 +937,264 @@ const PreferenceCheckboxGroup = ({
         </div>
         <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 sm:h-40" />
-            <div className="px-1 pb-7 sm:px-5 lg:px-7">
-              <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
-                {/* AVATAR */}
-                <div className="flex items-end gap-4">
-                  <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
-                    {displayAvatar ? (
-                      <img
-                        src={displayAvatar}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      initials
+          <div className="px-1 pb-7 sm:px-5 lg:px-7">
+            <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
+              {/* AVATAR */}
+              <div className="flex items-end gap-4">
+                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
+                  {displayAvatar ? (
+                    <img
+                      src={displayAvatar}
+                      alt={`${user.firstName} ${user.lastName}`}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    initials
+                  )}
+                </div>
+                <div className="pb-2">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {user.firstName} {user.lastName}
+                    </h2>
+
+                    {user.role === "admin" && (
+                      <ShieldCheck className="h-5 w-5 text-blue-600" />
                     )}
                   </div>
-                  <div className="pb-2">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {user.firstName} {user.lastName}
-                      </h2>
 
-                      {user.role === "admin" && (
-                        <ShieldCheck className="h-5 w-5 text-blue-600" />
+                  <p className="mt-1 text-gray-500 dark:text-gray-400">
+                    {user.role === "admin"
+                      ? "Administrator"
+                      : "KanuorieTech User"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* INFORMATION */}
+            <div className="mt-10 grid gap-5 md:grid-cols-2">
+              {/* EMAIL */}
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Email Address
+                    </p>
+                    <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* PHONE */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
+                    <Phone className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Phone Number
+                    </p>
+
+                    <p className="mt-1 font-semibold text-gray-900 dark:text-white">
+                      {user.phone || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ROLE */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
+                    <User className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Account Role
+                    </p>
+
+                    <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
+                      {user.role || "user"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* STATUS */}
+
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Account Status
+                    </p>
+
+                    <p className="mt-1 font-semibold text-emerald-600">
+                      Active
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* BIO */}
+            <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                About Me
+              </p>
+
+              <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
+                {user.bio || "You haven't added a bio yet."}
+              </p>
+            </div>
+
+            {/* REGISTRATION PREFERENCES */}
+            {registrationDetails.length > 0 && (
+              <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
+                <div className="mb-5">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Interests & Preferences
+                  </h3>
+
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    A summary of your registration preferences and interests.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {registrationDetails.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
+                    >
+                      <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {item.label}
+                      </p>
+
+                      {Array.isArray(item.value) ? (
+                        <div className="flex flex-wrap gap-2">
+                          {item.value.map((value) => (
+                            <span
+                              key={value}
+                              className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                            >
+                              {formatLabel(value)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
+                          {formatLabel(String(item.value))}
+                        </p>
                       )}
                     </div>
-
-                    <p className="mt-1 text-gray-500 dark:text-gray-400">
-                      {user.role === "admin"
-                        ? "Administrator"
-                        : "KanuorieTech User"}
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              </div>
-
-              {/* INFORMATION */}
-              <div className="mt-10 grid gap-5 md:grid-cols-2">
-                {/* EMAIL */}
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
-                      <Mail className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Email Address
-                      </p>
-                      <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* PHONE */}
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
-                      <Phone className="h-5 w-5" />
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Phone Number
-                      </p>
-
-                      <p className="mt-1 font-semibold text-gray-900 dark:text-white">
-                        {user.phone || "Not provided"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ROLE */}
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
-                      <User className="h-5 w-5" />
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Account Role
-                      </p>
-
-                      <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
-                        {user.role || "user"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* STATUS */}
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
-                      <CheckCircle2 className="h-5 w-5" />
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Account Status
-                      </p>
-
-                      <p className="mt-1 font-semibold text-emerald-600">
-                        Active
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* BIO */}
-              <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  About Me
-                </p>
-
-                <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
-                  {user.bio || "You haven't added a bio yet."}
-                </p>
-              </div>
-
-              {/* REGISTRATION PREFERENCES */}
-              {registrationDetails.length > 0 && (
-                <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
-                  <div className="mb-5">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      Interests & Preferences
-                    </h3>
-
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      A summary of your registration preferences and interests.
-                    </p>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {registrationDetails.map((item) => (
-                      <div
-                        key={item.label}
-                        className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-                      >
-                        <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {item.label}
-                        </p>
-
-                        {Array.isArray(item.value) ? (
-                          <div className="flex flex-wrap gap-2">
-                            {item.value.map((value) => (
-                              <span
-                                key={value}
-                                className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                              >
-                                {formatLabel(value)}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
-                            {formatLabel(String(item.value))}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+              </section>
+            )}
             <button
               type="button"
               onClick={openEditModal}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
-              >
+            >
               <Edit3 className="h-4 w-4" />
               Edit Profile
             </button>
           </div>
         </div>
         {/* PROFILE STATISTICS */}
-        {user.userType === "student" && <section className="mt-6">
-          <div className="mb-4">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              Learning Overview
-            </h3>
+        {user.userType === "student" && (
+          <section className="mt-6">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Learning Overview
+              </h3>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              A quick look at your learning activity on KanuorieTech.
-            </p>
-          </div>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                A quick look at your learning activity on KanuorieTech.
+              </p>
+            </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                label: "Available Courses",
-                value: stats.courses,
-                href: "/courses",
-                icon: BookOpen,
-                color: "text-blue-600 bg-blue-100 dark:bg-blue-950",
-              },
-              {
-                label: "Learning Resources",
-                value: stats.learning,
-                href: "/Learning",
-                icon: BookOpen,
-                color: "text-purple-600 bg-purple-100 dark:bg-purple-950",
-              },
-              {
-                label: "Saved Resources",
-                value: stats.saved,
-                href: "/Learning",
-                icon: Bookmark,
-                color: "text-amber-600 bg-amber-100 dark:bg-amber-950",
-              },
-              {
-                label: "Courses in Progress",
-                value: stats.inProgress,
-                href: "/courses",
-                icon: Award,
-                color: "text-green-600 bg-green-100 dark:bg-green-950",
-              },
-            ].map((stat) => {
-              const Icon = stat.icon;
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {[
+                {
+                  label: "Available Courses",
+                  value: stats.courses,
+                  href: "/courses",
+                  icon: BookOpen,
+                  color: "text-blue-600 bg-blue-100 dark:bg-blue-950",
+                },
+                {
+                  label: "Learning Resources",
+                  value: stats.learning,
+                  href: "/Learning",
+                  icon: BookOpen,
+                  color: "text-purple-600 bg-purple-100 dark:bg-purple-950",
+                },
+                {
+                  label: "Saved Resources",
+                  value: stats.saved,
+                  href: "/Learning",
+                  icon: Bookmark,
+                  color: "text-amber-600 bg-amber-100 dark:bg-amber-950",
+                },
+                {
+                  label: "Courses in Progress",
+                  value: stats.inProgress,
+                  href: "/courses",
+                  icon: Award,
+                  color: "text-green-600 bg-green-100 dark:bg-green-950",
+                },
+              ].map((stat) => {
+                const Icon = stat.icon;
 
-              return (
-                <Link
-                  key={stat.label}
-                  to={stat.href}
-                  className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {stat.label}
-                    </span>
+                return (
+                  <Link
+                    key={stat.label}
+                    to={stat.href}
+                    className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {stat.label}
+                      </span>
 
-                    <span className={`rounded-xl p-2 ${stat.color}`}>
-                      <Icon className="h-5 w-5" />
-                    </span>
-                  </div>
+                      <span className={`rounded-xl p-2 ${stat.color}`}>
+                        <Icon className="h-5 w-5" />
+                      </span>
+                    </div>
 
-                  <p className="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
-                    {statsLoading ? "—" : stat.value}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        </section>}
+                    <p className="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
+                      {statsLoading ? "—" : stat.value}
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
 
       {serviceEnquirySuccess && (
-        <p role="status" className="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/40 dark:text-green-200">
+        <p
+          role="status"
+          className="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/40 dark:text-green-200"
+        >
           {serviceEnquirySuccess}
         </p>
       )}
@@ -1206,23 +1211,68 @@ const PreferenceCheckboxGroup = ({
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             {[
-              { title: "Courses", description: "Explore available courses", href: "/courses", icon: BookOpen, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
-              { title: "Learning Resources", description: "Browse learning materials", href: "/learning", icon: BookOpen, color: "bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400" },
-              { title: "Saved Resources", description: "Return to saved materials", href: "/saved-resources", icon: Bookmark, color: "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400" },
-              { title: "Certificates", description: "View your achievements", href: "/certificates", icon: Award, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
-              { title: "Community", description: "Connect and discuss", href: "/community", icon: Users, color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400" },
+              {
+                title: "Courses",
+                description: "Explore available courses",
+                href: "/courses",
+                icon: BookOpen,
+                color:
+                  "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+              },
+              {
+                title: "Learning Resources",
+                description: "Browse learning materials",
+                href: "/learning",
+                icon: BookOpen,
+                color:
+                  "bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400",
+              },
+              {
+                title: "Saved Resources",
+                description: "Return to saved materials",
+                href: "/saved-resources",
+                icon: Bookmark,
+                color:
+                  "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400",
+              },
+              {
+                title: "Certificates",
+                description: "View your achievements",
+                href: "/certificates",
+                icon: Award,
+                color:
+                  "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400",
+              },
+              {
+                title: "Community",
+                description: "Connect and discuss",
+                href: "/community",
+                icon: Users,
+                color:
+                  "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400",
+              },
             ].map((item) => {
               const Icon = item.icon;
               return (
-                <Link key={item.title} to={item.href} className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+                <Link
+                  key={item.title}
+                  to={item.href}
+                  className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                >
                   <div className="flex items-start justify-between gap-2">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}>
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}
+                    >
                       <Icon className="h-5 w-5" />
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
                   </div>
-                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">{item.title}</p>
-                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">{item.description}</p>
+                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+                    {item.title}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                    {item.description}
+                  </p>
                 </Link>
               );
             })}
@@ -1235,29 +1285,102 @@ const PreferenceCheckboxGroup = ({
         <section className="mt-8">
           <div className="mb-4">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              {user.userType === "business_owner" ? "Business Quick Access" : user.userType === "partner" ? "Partner & Investor Quick Access" : user.userType === "career_seeker" ? "Career Quick Access" : "Professional Quick Access"}
+              {user.userType === "business_owner"
+                ? "Business Quick Access"
+                : user.userType === "partner"
+                  ? "Partner & Investor Quick Access"
+                  : user.userType === "career_seeker"
+                    ? "Career Quick Access"
+                    : "Professional Quick Access"}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {user.userType === "business_owner" ? "Manage your business needs and connect with our services." : user.userType === "partner" ? "Explore ways to collaborate, refer, and grow with KanuorieTech." : "Explore opportunities and resources matched to your goals."}
+              {user.userType === "business_owner"
+                ? "Manage your business needs and connect with our services."
+                : user.userType === "partner"
+                  ? "Explore ways to collaborate, refer, and grow with KanuorieTech."
+                  : "Explore opportunities and resources matched to your goals."}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             {(user.userType === "business_owner"
               ? [
-                  { title: "Explore Services", description: "Find support for your business", href: "/services", icon: CreditCard, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
-                  { title: "Request a Service", description: "Tell our team what you need", action: "service-enquiry", icon: Mail, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
-                  { title: "Payments", description: "Manage orders and invoices", href: "/payments", icon: CreditCard, color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400" },
+                  {
+                    title: "Explore Services",
+                    description: "Find support for your business",
+                    href: "/services",
+                    icon: CreditCard,
+                    color:
+                      "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+                  },
+                  {
+                    title: "Request a Service",
+                    description: "Tell our team what you need",
+                    action: "service-enquiry",
+                    icon: Mail,
+                    color:
+                      "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400",
+                  },
+                  {
+                    title: "Payments",
+                    description: "Manage orders and invoices",
+                    href: "/payments",
+                    icon: CreditCard,
+                    color:
+                      "bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400",
+                  },
                 ]
               : user.userType === "partner"
                 ? [
-                    { title: "Affiliate Program", description: "Manage referrals and commissions", href: "/affiliate", icon: Handshake, color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400" },
-                    { title: "Community", description: "Connect with our network", href: "/community", icon: Users, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
-                    { title: "Contact the Team", description: "Discuss a collaboration", href: "/contact", icon: Mail, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+                    {
+                      title: "Affiliate Program",
+                      description: "Manage referrals and commissions",
+                      href: "/affiliate",
+                      icon: Handshake,
+                      color:
+                        "bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400",
+                    },
+                    {
+                      title: "Community",
+                      description: "Connect with our network",
+                      href: "/community",
+                      icon: Users,
+                      color:
+                        "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400",
+                    },
+                    {
+                      title: "Contact the Team",
+                      description: "Discuss a collaboration",
+                      href: "/contact",
+                      icon: Mail,
+                      color:
+                        "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+                    },
                   ]
                 : [
-                    { title: "Career Opportunities", description: "Explore open roles", href: "/careers", icon: Award, color: "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400" },
-                    { title: "Community", description: "Connect with our network", href: "/community", icon: Users, color: "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400" },
-                    { title: "Contact the Team", description: "Get career guidance", href: "/contact", icon: Mail, color: "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" },
+                    {
+                      title: "Career Opportunities",
+                      description: "Explore open roles",
+                      href: "/careers",
+                      icon: Award,
+                      color:
+                        "bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400",
+                    },
+                    {
+                      title: "Community",
+                      description: "Connect with our network",
+                      href: "/community",
+                      icon: Users,
+                      color:
+                        "bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400",
+                    },
+                    {
+                      title: "Contact the Team",
+                      description: "Get career guidance",
+                      href: "/contact",
+                      icon: Mail,
+                      color:
+                        "bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+                    },
                   ]
             ).map((item) => {
               const Icon = item.icon;
@@ -1278,13 +1401,19 @@ const PreferenceCheckboxGroup = ({
                   className="group w-full rounded-2xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}>
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}
+                    >
                       <Icon className="h-5 w-5" />
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-gray-400 transition group-hover:text-blue-600" />
                   </div>
-                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">{item.title}</p>
-                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">{item.description}</p>
+                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+                    {item.title}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                    {item.description}
+                  </p>
                 </CardElement>
               );
             })}
@@ -1294,12 +1423,21 @@ const PreferenceCheckboxGroup = ({
 
       {user.userType === "general" && (
         <section className="mt-8 rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-800 p-6 text-white shadow-lg sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-blue-100">Still exploring?</p>
-          <h3 className="mt-2 text-2xl font-bold">Find the path that fits you.</h3>
-          <p className="mt-2 max-w-2xl leading-6 text-blue-100">
-            Browse courses, business services, career opportunities, and collaboration options. You can update your interests in your profile whenever you are ready.
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-100">
+            Still exploring?
           </p>
-          <Link to="/services" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-blue-800 transition hover:bg-blue-50">
+          <h3 className="mt-2 text-2xl font-bold">
+            Find the path that fits you.
+          </h3>
+          <p className="mt-2 max-w-2xl leading-6 text-blue-100">
+            Browse courses, business services, career opportunities, and
+            collaboration options. You can update your interests in your profile
+            whenever you are ready.
+          </p>
+          <Link
+            to="/services"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-blue-800 transition hover:bg-blue-50"
+          >
             Explore KanuorieTech <ArrowUpRight className="h-4 w-4" />
           </Link>
         </section>
@@ -1310,7 +1448,10 @@ const PreferenceCheckboxGroup = ({
           className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm sm:p-6"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget && !serviceEnquiryLoading) {
+            if (
+              event.target === event.currentTarget &&
+              !serviceEnquiryLoading
+            ) {
               setIsServiceEnquiryOpen(false);
             }
           }}
@@ -1326,11 +1467,15 @@ const PreferenceCheckboxGroup = ({
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
                   Business Services
                 </p>
-                <h2 id="profile-service-enquiry-title" className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
+                <h2
+                  id="profile-service-enquiry-title"
+                  className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl"
+                >
                   Tell us what your business needs
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                  Share a few details and our team will follow up about the right service.
+                  Share a few details and our team will follow up about the
+                  right service.
                 </p>
               </div>
               <button
@@ -1345,7 +1490,10 @@ const PreferenceCheckboxGroup = ({
             </div>
 
             {serviceEnquiryError && (
-              <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+              <p
+                role="alert"
+                className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
+              >
                 {serviceEnquiryError}
               </p>
             )}
@@ -1661,102 +1809,110 @@ const PreferenceCheckboxGroup = ({
                       </label>
                     )}
 
-                    {formData.userType === "student" && <>
-                    <PreferenceSelect
-                      label="What is your learning level?"
-                      name="learningLevel"
-                      value={formData.learningLevel}
-                      options={PREFERENCE_OPTIONS.learningLevel}
-                      onChange={handleChange}
-                    />
+                    {formData.userType === "student" && (
+                      <>
+                        <PreferenceSelect
+                          label="What is your learning level?"
+                          name="learningLevel"
+                          value={formData.learningLevel}
+                          options={PREFERENCE_OPTIONS.learningLevel}
+                          onChange={handleChange}
+                        />
 
-                    <PreferenceCheckboxGroup
-                      label="What do you want to achieve?"
-                      name="learningGoals"
-                      options={PREFERENCE_OPTIONS.learningGoals}
-                      values={formData.learningGoals}
-                      onChange={handlePreferenceArrayChange}
-                    />
-                    </>}
+                        <PreferenceCheckboxGroup
+                          label="What do you want to achieve?"
+                          name="learningGoals"
+                          options={PREFERENCE_OPTIONS.learningGoals}
+                          values={formData.learningGoals}
+                          onChange={handlePreferenceArrayChange}
+                        />
+                      </>
+                    )}
 
-                    {formData.userType === "business_owner" && <>
-                    <PreferenceSelect
-                      label="What type of business do you have?"
-                      name="businessType"
-                      value={formData.businessType}
-                      options={PREFERENCE_OPTIONS.businessType}
-                      onChange={handleChange}
-                    />
+                    {formData.userType === "business_owner" && (
+                      <>
+                        <PreferenceSelect
+                          label="What type of business do you have?"
+                          name="businessType"
+                          value={formData.businessType}
+                          options={PREFERENCE_OPTIONS.businessType}
+                          onChange={handleChange}
+                        />
 
-                    <PreferenceCheckboxGroup
-                      label="What services does your business need?"
-                      name="businessNeeds"
-                      options={PREFERENCE_OPTIONS.businessNeeds}
-                      values={formData.businessNeeds}
-                      onChange={handlePreferenceArrayChange}
-                    />
+                        <PreferenceCheckboxGroup
+                          label="What services does your business need?"
+                          name="businessNeeds"
+                          options={PREFERENCE_OPTIONS.businessNeeds}
+                          values={formData.businessNeeds}
+                          onChange={handlePreferenceArrayChange}
+                        />
 
-                    <PreferenceSelect
-                      label="When do you plan to start your project?"
-                      name="projectTimeline"
-                      value={formData.projectTimeline}
-                      options={PREFERENCE_OPTIONS.projectTimeline}
-                      onChange={handleChange}
-                    />
-                    </>}
+                        <PreferenceSelect
+                          label="When do you plan to start your project?"
+                          name="projectTimeline"
+                          value={formData.projectTimeline}
+                          options={PREFERENCE_OPTIONS.projectTimeline}
+                          onChange={handleChange}
+                        />
+                      </>
+                    )}
 
-                    {formData.userType === "career_seeker" && <>
-                    <PreferenceSelect
-                      label="What is your career goal?"
-                      name="careerGoal"
-                      value={formData.careerGoal}
-                      options={PREFERENCE_OPTIONS.careerGoal}
-                      onChange={handleChange}
-                    />
+                    {formData.userType === "career_seeker" && (
+                      <>
+                        <PreferenceSelect
+                          label="What is your career goal?"
+                          name="careerGoal"
+                          value={formData.careerGoal}
+                          options={PREFERENCE_OPTIONS.careerGoal}
+                          onChange={handleChange}
+                        />
 
-                    <PreferenceSelect
-                      label="How much experience do you have?"
-                      name="experienceLevel"
-                      value={formData.experienceLevel}
-                      options={PREFERENCE_OPTIONS.experienceLevel}
-                      onChange={handleChange}
-                    />
+                        <PreferenceSelect
+                          label="How much experience do you have?"
+                          name="experienceLevel"
+                          value={formData.experienceLevel}
+                          options={PREFERENCE_OPTIONS.experienceLevel}
+                          onChange={handleChange}
+                        />
 
-                    <PreferenceCheckboxGroup
-                      label="What opportunities interest you?"
-                      name="preferredOpportunities"
-                      options={PREFERENCE_OPTIONS.preferredOpportunities}
-                      values={formData.preferredOpportunities}
-                      onChange={handlePreferenceArrayChange}
-                    />
-                    </>}
+                        <PreferenceCheckboxGroup
+                          label="What opportunities interest you?"
+                          name="preferredOpportunities"
+                          options={PREFERENCE_OPTIONS.preferredOpportunities}
+                          values={formData.preferredOpportunities}
+                          onChange={handlePreferenceArrayChange}
+                        />
+                      </>
+                    )}
 
-                    {formData.userType === "developer" && <>
-                    <PreferenceSelect
-                      label="What is your experience level?"
-                      name="experienceLevel"
-                      value={formData.experienceLevel}
-                      options={PREFERENCE_OPTIONS.experienceLevel}
-                      onChange={handleChange}
-                    />
+                    {formData.userType === "developer" && (
+                      <>
+                        <PreferenceSelect
+                          label="What is your experience level?"
+                          name="experienceLevel"
+                          value={formData.experienceLevel}
+                          options={PREFERENCE_OPTIONS.experienceLevel}
+                          onChange={handleChange}
+                        />
 
-                    <PreferenceCheckboxGroup
-                      label="Which technologies do you use or want to learn?"
-                      name="techStack"
-                      options={PREFERENCE_OPTIONS.techStack}
-                      values={formData.techStack}
-                      onChange={handlePreferenceArrayChange}
-                    />
-                    </>}
+                        <PreferenceCheckboxGroup
+                          label="Which technologies do you use or want to learn?"
+                          name="techStack"
+                          options={PREFERENCE_OPTIONS.techStack}
+                          values={formData.techStack}
+                          onChange={handlePreferenceArrayChange}
+                        />
+                      </>
+                    )}
 
                     {formData.userType === "partner" && (
-                    <PreferenceCheckboxGroup
-                      label="How would you like to collaborate?"
-                      name="collaborationInterests"
-                      options={PREFERENCE_OPTIONS.collaborationInterests}
-                      values={formData.collaborationInterests}
-                      onChange={handlePreferenceArrayChange}
-                    />
+                      <PreferenceCheckboxGroup
+                        label="How would you like to collaborate?"
+                        name="collaborationInterests"
+                        options={PREFERENCE_OPTIONS.collaborationInterests}
+                        values={formData.collaborationInterests}
+                        onChange={handlePreferenceArrayChange}
+                      />
                     )}
 
                     <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -1773,8 +1929,8 @@ const PreferenceCheckboxGroup = ({
                       />
 
                       <span className="text-sm text-slate-700 dark:text-slate-200">
-                        I agree to receive KanuorieTech updates, learning resources, and
-                        relevant opportunities.
+                        I agree to receive KanuorieTech updates, learning
+                        resources, and relevant opportunities.
                       </span>
                     </label>
 

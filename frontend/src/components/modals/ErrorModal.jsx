@@ -17,5 +17,3 @@ export default function ErrorModal({ isOpen, onClose, message }) {
     </Modal>
   );
 }
-
-

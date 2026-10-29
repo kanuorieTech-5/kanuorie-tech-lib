@@ -14,13 +14,15 @@ export default function EmptyState({
         <Icon size={42} />
       </div>
 
-      <h2 className="mb-2 text-2xl font-bold text-slate-800 dark:text-slate-200">{title}</h2>
+      <h2 className="mb-2 text-2xl font-bold text-slate-800 dark:text-slate-200">
+        {title}
+      </h2>
 
-      <p className="mb-6 max-w-md text-gray-500 dark:text-slate-400">{description}</p>
+      <p className="mb-6 max-w-md text-gray-500 dark:text-slate-400">
+        {description}
+      </p>
 
       {buttonText && <Button onClick={onButtonClick}>{buttonText}</Button>}
     </div>
   );
 }
-
-

@@ -45,17 +45,12 @@ export default function libraryPreview() {
         }));
 
         const unique = Array.from(
-          new Map(
-            formatted.map((item) => [item.resourceId, item]),
-          ).values(),
+          new Map(formatted.map((item) => [item.resourceId, item])).values(),
         );
 
         setResources(unique);
       } catch (error) {
-        console.error(
-          "Failed to load learning resources:",
-          error,
-        );
+        console.error("Failed to load learning resources:", error);
 
         if (mounted) {
           setResources(
@@ -99,9 +94,7 @@ export default function libraryPreview() {
 
         {!loading && resources.length > 0 && (
           <div className="mt-1">
-            <TrendingResources
-              resources={resources.slice(0, 6)}
-            />
+            <TrendingResources resources={resources.slice(0, 6)} />
           </div>
         )}
 
@@ -116,5 +109,3 @@ export default function libraryPreview() {
     </section>
   );
 }
-
-

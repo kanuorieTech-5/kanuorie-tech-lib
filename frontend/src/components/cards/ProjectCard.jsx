@@ -15,7 +15,9 @@ export default function ProjectCard({ project }) {
 
         <h3 className="text-xl font-semibold">{project.name}</h3>
 
-        <p className="line-clamp-3 text-gray-500 dark:text-slate-400">{project.description}</p>
+        <p className="line-clamp-3 text-gray-500 dark:text-slate-400">
+          {project.description}
+        </p>
 
         <div className="flex justify-between">
           <Button as={Link} to={`/projects/${project._id}`} size="sm">
@@ -39,5 +41,3 @@ export default function ProjectCard({ project }) {
     </Card>
   );
 }
-
-

@@ -10,6 +10,6 @@ export { default as LatestCourses } from "./LatestCourses";
 export { default as LatestOrders } from "./LatestOrders";
 export { default as RevenueSummary } from "./RevenueSummary";
 export { default as SalesOverview } from "./SalesOverview";
-export { default as PlatformOperationsOverview } from "./PlatformOperationsOverview"
+export { default as PlatformOperationsOverview } from "./PlatformOperationsOverview";
 export { default as DashboardTopbar } from "./DashboardTopbar";
 export { default as DashboardBreadcrumb } from "./DashboardBreadcrumb";

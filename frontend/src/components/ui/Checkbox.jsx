@@ -19,5 +19,3 @@ export default function Checkbox({ label, className = "", ...props }) {
     </label>
   );
 }
-
-

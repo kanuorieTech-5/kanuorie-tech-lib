@@ -15,7 +15,9 @@ export default function TeamCard({ member }) {
 
       <p className="text-primary">{member.role}</p>
 
-      <p className="mt-4 line-clamp-3 text-gray-500 dark:text-slate-400">{member.bio}</p>
+      <p className="mt-4 line-clamp-3 text-gray-500 dark:text-slate-400">
+        {member.bio}
+      </p>
 
       <div className="mt-6 flex justify-center gap-4">
         {member.linkedin && (
@@ -39,5 +41,3 @@ export default function TeamCard({ member }) {
     </Card>
   );
 }
-
-

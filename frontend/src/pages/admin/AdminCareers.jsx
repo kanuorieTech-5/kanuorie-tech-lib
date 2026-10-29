@@ -38,7 +38,6 @@ const STATUSES = [
   "Rejected",
 ];
 
-
 const STATUS_STYLES = {
   New: "bg-blue-50 text-blue-700",
   Reviewing: "bg-amber-50 text-amber-700",
@@ -47,7 +46,6 @@ const STATUS_STYLES = {
   Accepted: "bg-emerald-50 text-emerald-700",
   Rejected: "bg-red-50 text-red-700",
 };
-
 
 export default function AdminCareers() {
   const [applications, setApplications] = useState([]);
@@ -71,8 +69,7 @@ export default function AdminCareers() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  const [selectedApplication, setSelectedApplication] =
-    useState(null);
+  const [selectedApplication, setSelectedApplication] = useState(null);
 
   const [notes, setNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
@@ -82,107 +79,89 @@ export default function AdminCareers() {
 
   const [error, setError] = useState("");
 
-
   /* ==========================================
      LOAD DATA
   ========================================== */
 
-  const loadData = useCallback(async (isRefresh = false) => {
-    try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
+  const loadData = useCallback(
+    async (isRefresh = false) => {
+      try {
+        if (isRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
 
-      setError("");
+        setError("");
 
-      const params = {
-        page: 1,
-        limit: 100,
-      };
+        const params = {
+          page: 1,
+          limit: 100,
+        };
 
-      if (statusFilter !== "All") {
-        params.status = statusFilter;
-      }
+        if (statusFilter !== "All") {
+          params.status = statusFilter;
+        }
 
-      if (search.trim()) {
-        params.search = search.trim();
-      }
+        if (search.trim()) {
+          params.search = search.trim();
+        }
 
-      const [applicationsResponse, statsResponse] =
-        await Promise.all([
+        const [applicationsResponse, statsResponse] = await Promise.all([
           getCareerApplications(params),
           getCareerApplicationStats(),
         ]);
 
-      const applicationData =
-        applicationsResponse?.data?.data ??
-        applicationsResponse?.data ??
-        applicationsResponse ??
-        [];
+        const applicationData =
+          applicationsResponse?.data?.data ??
+          applicationsResponse?.data ??
+          applicationsResponse ??
+          [];
 
-      const statsData =
-        statsResponse?.data?.data ??
-        statsResponse?.data ??
-        statsResponse ??
-        {};
+        const statsData =
+          statsResponse?.data?.data ??
+          statsResponse?.data ??
+          statsResponse ??
+          {};
 
-      setApplications(
-        Array.isArray(applicationData)
-          ? applicationData
-          : [],
-      );
+        setApplications(Array.isArray(applicationData) ? applicationData : []);
 
-      setStats({
-        total: Number(statsData?.total || 0),
-        unread: Number(statsData?.unread || 0),
-        statuses: {
-          new: Number(statsData?.statuses?.new || 0),
-          reviewing: Number(
-            statsData?.statuses?.reviewing || 0,
-          ),
-          shortlisted: Number(
-            statsData?.statuses?.shortlisted || 0,
-          ),
-          interview: Number(
-            statsData?.statuses?.interview || 0,
-          ),
-          accepted: Number(
-            statsData?.statuses?.accepted || 0,
-          ),
-          rejected: Number(
-            statsData?.statuses?.rejected || 0,
-          ),
-        },
-      });
-    } catch (err) {
-      console.error(
-        "Failed to load career applications:",
-        err,
-      );
+        setStats({
+          total: Number(statsData?.total || 0),
+          unread: Number(statsData?.unread || 0),
+          statuses: {
+            new: Number(statsData?.statuses?.new || 0),
+            reviewing: Number(statsData?.statuses?.reviewing || 0),
+            shortlisted: Number(statsData?.statuses?.shortlisted || 0),
+            interview: Number(statsData?.statuses?.interview || 0),
+            accepted: Number(statsData?.statuses?.accepted || 0),
+            rejected: Number(statsData?.statuses?.rejected || 0),
+          },
+        });
+      } catch (err) {
+        console.error("Failed to load career applications:", err);
 
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Unable to load career applications.";
+        const message =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Unable to load career applications.";
 
-      setError(message);
+        setError(message);
 
-      if (isRefresh) {
-        toast.error(message);
+        if (isRefresh) {
+          toast.error(message);
+        }
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [search, statusFilter]);
-
+    },
+    [search, statusFilter],
+  );
 
   useEffect(() => {
     loadData();
   }, [loadData]);
-
 
   /* ==========================================
      OPEN APPLICATION
@@ -197,13 +176,9 @@ export default function AdminCareers() {
       let currentApplication = application;
 
       if (!application.coverLetter) {
-        const response =
-          await getCareerApplication(id);
+        const response = await getCareerApplication(id);
 
-        currentApplication =
-          response?.data?.data ??
-          response?.data ??
-          response;
+        currentApplication = response?.data?.data ?? response?.data ?? response;
       }
 
       setSelectedApplication(currentApplication);
@@ -225,25 +200,17 @@ export default function AdminCareers() {
 
         setStats((current) => ({
           ...current,
-          unread: Math.max(
-            0,
-            Number(current.unread || 0) - 1,
-          ),
+          unread: Math.max(0, Number(current.unread || 0) - 1),
         }));
       }
     } catch (err) {
-      console.error(
-        "Failed to open career application:",
-        err,
-      );
+      console.error("Failed to open career application:", err);
 
       toast.error(
-        err?.response?.data?.message ||
-          "Unable to open this application.",
+        err?.response?.data?.message || "Unable to open this application.",
       );
     }
   };
-
 
   /* ==========================================
      CLOSE APPLICATION
@@ -254,15 +221,11 @@ export default function AdminCareers() {
     setNotes("");
   };
 
-
   /* ==========================================
      UPDATE STATUS
   ========================================== */
 
-  const handleStatusChange = async (
-    application,
-    status,
-  ) => {
+  const handleStatusChange = async (application, status) => {
     const id = application?._id || application?.id;
 
     if (!id || !status) return;
@@ -270,19 +233,11 @@ export default function AdminCareers() {
     try {
       setUpdatingStatusId(id);
 
-      const response =
-        await updateCareerApplicationStatus(
-          id,
-          status,
-        );
+      const response = await updateCareerApplicationStatus(id, status);
 
-      const payload =
-        response?.data?.data ??
-        response?.data ??
-        response;
+      const payload = response?.data?.data ?? response?.data ?? response;
 
-      const updated =
-        payload?.application ?? payload;
+      const updated = payload?.application ?? payload;
 
       setApplications((current) =>
         current.map((item) =>
@@ -297,8 +252,7 @@ export default function AdminCareers() {
       );
 
       setSelectedApplication((current) =>
-        current &&
-        (current?._id || current?.id) === id
+        current && (current?._id || current?.id) === id
           ? {
               ...current,
               ...updated,
@@ -307,7 +261,7 @@ export default function AdminCareers() {
           : current,
       );
 
-           await loadData(true);
+      await loadData(true);
 
       if (status === "Accepted") {
         toast.success(
@@ -318,47 +272,32 @@ export default function AdminCareers() {
       } else {
         toast.success("Application status updated.");
       }
-
     } catch (err) {
-      console.error(
-        "Failed to update application status:",
-        err,
-      );
+      console.error("Failed to update application status:", err);
 
       toast.error(
-        err?.response?.data?.message ||
-          "Failed to update application status.",
+        err?.response?.data?.message || "Failed to update application status.",
       );
     } finally {
       setUpdatingStatusId(null);
     }
   };
 
-
   /* ==========================================
      SAVE NOTES
   ========================================== */
 
   const handleSaveNotes = async () => {
-    const id =
-      selectedApplication?._id ||
-      selectedApplication?.id;
+    const id = selectedApplication?._id || selectedApplication?.id;
 
     if (!id) return;
 
     try {
       setSavingNotes(true);
 
-      const response =
-        await updateCareerApplicationNotes(
-          id,
-          notes,
-        );
+      const response = await updateCareerApplicationNotes(id, notes);
 
-      const updated =
-        response?.data?.data ??
-        response?.data ??
-        response;
+      const updated = response?.data?.data ?? response?.data ?? response;
 
       setSelectedApplication((current) => ({
         ...current,
@@ -379,20 +318,13 @@ export default function AdminCareers() {
 
       toast.success("Notes saved.");
     } catch (err) {
-      console.error(
-        "Failed to save application notes:",
-        err,
-      );
+      console.error("Failed to save application notes:", err);
 
-      toast.error(
-        err?.response?.data?.message ||
-          "Failed to save notes.",
-      );
+      toast.error(err?.response?.data?.message || "Failed to save notes.");
     } finally {
       setSavingNotes(false);
     }
   };
-
 
   /* ==========================================
      TOGGLE READ STATUS
@@ -424,8 +356,7 @@ export default function AdminCareers() {
         }));
 
         setSelectedApplication((current) =>
-          current &&
-          (current?._id || current?.id) === id
+          current && (current?._id || current?.id) === id
             ? {
                 ...current,
                 isRead: false,
@@ -450,15 +381,11 @@ export default function AdminCareers() {
 
         setStats((current) => ({
           ...current,
-          unread: Math.max(
-            0,
-            Number(current.unread || 0) - 1,
-          ),
+          unread: Math.max(0, Number(current.unread || 0) - 1),
         }));
 
         setSelectedApplication((current) =>
-          current &&
-          (current?._id || current?.id) === id
+          current && (current?._id || current?.id) === id
             ? {
                 ...current,
                 isRead: true,
@@ -470,12 +397,10 @@ export default function AdminCareers() {
       }
     } catch (err) {
       toast.error(
-        err?.response?.data?.message ||
-          "Unable to update read status.",
+        err?.response?.data?.message || "Unable to update read status.",
       );
     }
   };
-
 
   /* ==========================================
      DELETE
@@ -500,48 +425,35 @@ export default function AdminCareers() {
       await deleteCareerApplication(id);
 
       setApplications((current) =>
-        current.filter(
-          (item) =>
-            (item?._id || item?.id) !== id,
-        ),
+        current.filter((item) => (item?._id || item?.id) !== id),
       );
 
       if (
         selectedApplication &&
-        (selectedApplication?._id ||
-          selectedApplication?.id) === id
+        (selectedApplication?._id || selectedApplication?.id) === id
       ) {
         closeApplication();
       }
 
-     await loadData(true);
+      await loadData(true);
 
       toast.success("Application deleted.");
     } catch (err) {
-      console.error(
-        "Failed to delete application:",
-        err,
-      );
+      console.error("Failed to delete application:", err);
 
       toast.error(
-        err?.response?.data?.message ||
-          "Failed to delete application.",
+        err?.response?.data?.message || "Failed to delete application.",
       );
     } finally {
       setDeletingId(null);
     }
   };
 
-
   /* ==========================================
      SUMMARY
   ========================================== */
 
-  const visibleApplications = useMemo(
-    () => applications,
-    [applications],
-  );
-
+  const visibleApplications = useMemo(() => applications, [applications]);
 
   /* ==========================================
      LOADING
@@ -561,7 +473,6 @@ export default function AdminCareers() {
     );
   }
 
-
   /* ==========================================
      ERROR
   ========================================== */
@@ -575,8 +486,7 @@ export default function AdminCareers() {
           </h1>
 
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Manage applications submitted through
-            KanuorieTech Careers.
+            Manage applications submitted through KanuorieTech Careers.
           </p>
         </div>
 
@@ -585,22 +495,15 @@ export default function AdminCareers() {
             Unable to load applications
           </h2>
 
-          <p className="mt-1 text-sm text-red-600">
-            {error}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{error}</p>
 
-          <Button
-            type="button"
-            onClick={() => loadData()}
-            className="mt-4"
-          >
+          <Button type="button" onClick={() => loadData()} className="mt-4">
             Try Again
           </Button>
         </Card>
       </section>
     );
   }
-
 
   return (
     <section className="space-y-8">
@@ -633,14 +536,10 @@ export default function AdminCareers() {
         >
           <RefreshCw
             size={17}
-            className={`mr-2 ${
-              refreshing ? "animate-spin" : ""
-            }`}
+            className={`mr-2 ${refreshing ? "animate-spin" : ""}`}
           />
 
-          {refreshing
-            ? "Refreshing..."
-            : "Refresh"}
+          {refreshing ? "Refreshing..." : "Refresh"}
         </Button>
       </div>
 
@@ -710,10 +609,7 @@ export default function AdminCareers() {
           };
 
           return (
-            <Card
-              key={item.label}
-              className="p-5"
-            >
+            <Card key={item.label} className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -725,9 +621,7 @@ export default function AdminCareers() {
                   </p>
                 </div>
 
-                <div
-                  className={`rounded-xl p-3 ${colors[item.color]}`}
-                >
+                <div className={`rounded-xl p-3 ${colors[item.color]}`}>
                   <Icon size={22} />
                 </div>
               </div>
@@ -744,9 +638,7 @@ export default function AdminCareers() {
             <p className="text-3xl font-bold text-emerald-700">
               {stats.total
                 ? `${Math.round(
-                    (stats.statuses.accepted /
-                      stats.total) *
-                      100,
+                    (stats.statuses.accepted / stats.total) * 100,
                   )}%`
                 : "0%"}
             </p>
@@ -766,9 +658,7 @@ export default function AdminCareers() {
             <p className="text-3xl font-bold text-rose-700">
               {stats.total
                 ? `${Math.round(
-                    (stats.statuses.rejected /
-                      stats.total) *
-                      100,
+                    (stats.statuses.rejected / stats.total) * 100,
                   )}%`
                 : "0%"}
             </p>
@@ -792,9 +682,7 @@ export default function AdminCareers() {
             <input
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search applicants, email or position..."
               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
             />
@@ -802,14 +690,10 @@ export default function AdminCareers() {
 
           <select
             value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(event.target.value)
-            }
+            onChange={(event) => setStatusFilter(event.target.value)}
             className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100"
           >
-            <option value="All">
-              All statuses
-            </option>
+            <option value="All">All statuses</option>
 
             {STATUSES.map((status) => (
               <option key={status} value={status}>
@@ -819,7 +703,6 @@ export default function AdminCareers() {
           </select>
         </div>
       </Card>
-
 
       {/* APPLICATIONS */}
 
@@ -831,26 +714,20 @@ export default function AdminCareers() {
 
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {visibleApplications.length} application
-            {visibleApplications.length !== 1
-              ? "s"
-              : ""}
+            {visibleApplications.length !== 1 ? "s" : ""}
           </p>
         </div>
 
         {visibleApplications.length === 0 ? (
           <div className="px-6 py-16 text-center">
-            <BriefcaseBusiness
-              size={44}
-              className="mx-auto text-slate-300"
-            />
+            <BriefcaseBusiness size={44} className="mx-auto text-slate-300" />
 
             <h3 className="mt-4 font-semibold text-slate-900 dark:text-slate-100">
               No applications found
             </h3>
 
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Try changing your search or status
-              filter.
+              Try changing your search or status filter.
             </p>
           </div>
         ) : (
@@ -881,171 +758,123 @@ export default function AdminCareers() {
               </thead>
 
               <tbody className="divide-y divide-slate-100">
-                {visibleApplications.map(
-                  (application) => {
-                    const id =
-                      application?._id ||
-                      application?.id;
+                {visibleApplications.map((application) => {
+                  const id = application?._id || application?.id;
 
-                    const status =
-                      application?.status || "New";
+                  const status = application?.status || "New";
 
-                    return (
-                      <tr
-                        key={id}
-                        className={`transition hover:bg-slate-50 ${
-                          !application?.isRead
-                            ? "bg-blue-50/30"
-                            : ""
-                        }`}
-                      >
-                        <td className="px-6 py-5">
+                  return (
+                    <tr
+                      key={id}
+                      className={`transition hover:bg-slate-50 ${
+                        !application?.isRead ? "bg-blue-50/30" : ""
+                      }`}
+                    >
+                      <td className="px-6 py-5">
+                        <button
+                          type="button"
+                          onClick={() => openApplication(application)}
+                          className="flex items-center gap-3 text-left"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700">
+                            {String(application?.fullName || "A")
+                              .charAt(0)
+                              .toUpperCase()}
+                          </div>
+
+                          <div>
+                            <p
+                              className={`font-semibold ${
+                                application?.isRead
+                                  ? "text-slate-900"
+                                  : "text-blue-700"
+                              }`}
+                            >
+                              {application?.fullName || "Unnamed Applicant"}
+                            </p>
+
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                              {application?.email || "No email"}
+                            </p>
+                          </div>
+                        </button>
+                      </td>
+
+                      <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
+                        {application?.position || "General Application"}
+                      </td>
+
+                      <td className="px-6 py-5">
+                        <select
+                          value={status}
+                          disabled={updatingStatusId === id}
+                          onChange={(event) =>
+                            handleStatusChange(application, event.target.value)
+                          }
+                          className={`rounded-full border-0 px-3 py-1.5 text-xs font-semibold outline-none ${
+                            STATUS_STYLES[status] ||
+                            "bg-slate-100 text-slate-700"
+                          }`}
+                        >
+                          {STATUSES.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td className="px-6 py-5 text-sm text-slate-500 dark:text-slate-400">
+                        {application?.createdAt
+                          ? new Date(application.createdAt).toLocaleDateString()
+                          : "—"}
+                      </td>
+
+                      <td className="px-6 py-5">
+                        <div className="flex justify-end gap-2">
                           <button
                             type="button"
-                            onClick={() =>
-                              openApplication(
-                                application,
-                              )
-                            }
-                            className="flex items-center gap-3 text-left"
+                            onClick={() => openApplication(application)}
+                            className="rounded-lg p-2 text-blue-600 transition hover:bg-blue-50"
+                            title="View application"
                           >
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700">
-                              {String(
-                                application?.fullName ||
-                                  "A",
-                              )
-                                .charAt(0)
-                                .toUpperCase()}
-                            </div>
-
-                            <div>
-                              <p
-                                className={`font-semibold ${
-                                  application?.isRead
-                                    ? "text-slate-900"
-                                    : "text-blue-700"
-                                }`}
-                              >
-                                {application?.fullName ||
-                                  "Unnamed Applicant"}
-                              </p>
-
-                              <p className="text-sm text-slate-500 dark:text-slate-400">
-                                {application?.email ||
-                                  "No email"}
-                              </p>
-                            </div>
+                            <Eye size={17} />
                           </button>
-                        </td>
 
-                        <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
-                          {application?.position ||
-                            "General Application"}
-                        </td>
-
-                        <td className="px-6 py-5">
-                          <select
-                            value={status}
-                            disabled={
-                              updatingStatusId === id
+                          <button
+                            type="button"
+                            onClick={() => toggleReadStatus(application)}
+                            className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100"
+                            title={
+                              application?.isRead ? "Mark unread" : "Mark read"
                             }
-                            onChange={(event) =>
-                              handleStatusChange(
-                                application,
-                                event.target.value,
-                              )
-                            }
-                            className={`rounded-full border-0 px-3 py-1.5 text-xs font-semibold outline-none ${
-                              STATUS_STYLES[
-                                status
-                              ] ||
-                              "bg-slate-100 text-slate-700"
-                            }`}
                           >
-                            {STATUSES.map(
-                              (item) => (
-                                <option
-                                  key={item}
-                                  value={item}
-                                >
-                                  {item}
-                                </option>
-                              ),
-                            )}
-                          </select>
-                        </td>
-
-                        <td className="px-6 py-5 text-sm text-slate-500 dark:text-slate-400">
-                          {application?.createdAt
-                            ? new Date(
-                                application.createdAt,
-                              ).toLocaleDateString()
-                            : "—"}
-                        </td>
-
-                        <td className="px-6 py-5">
-                          <div className="flex justify-end gap-2">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                openApplication(
-                                  application,
-                                )
-                              }
-                              className="rounded-lg p-2 text-blue-600 transition hover:bg-blue-50"
-                              title="View application"
-                            >
+                            {application?.isRead ? (
+                              <EyeOff size={17} />
+                            ) : (
                               <Eye size={17} />
-                            </button>
+                            )}
+                          </button>
 
-                            <button
-                              type="button"
-                              onClick={() =>
-                                toggleReadStatus(
-                                  application,
-                                )
-                              }
-                              className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-slate-100"
-                              title={
-                                application?.isRead
-                                  ? "Mark unread"
-                                  : "Mark read"
-                              }
-                            >
-                              {application?.isRead ? (
-                                <EyeOff size={17} />
-                              ) : (
-                                <Eye size={17} />
-                              )}
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleDelete(
-                                  application,
-                                )
-                              }
-                              disabled={
-                                deletingId === id
-                              }
-                              className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 disabled:opacity-50"
-                              title="Delete application"
-                            >
-                              <Trash2 size={17} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  },
-                )}
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(application)}
+                            disabled={deletingId === id}
+                            className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 disabled:opacity-50"
+                            title="Delete application"
+                          >
+                            <Trash2 size={17} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </Card>
-
 
       {/* APPLICATION DETAILS MODAL */}
 
@@ -1092,7 +921,6 @@ export default function AdminCareers() {
               </button>
             </div>
 
-
             {/* MODAL BODY */}
 
             <div className="space-y-6 p-6">
@@ -1103,8 +931,7 @@ export default function AdminCareers() {
                   </p>
 
                   <p className="mt-2 font-semibold text-slate-900 dark:text-slate-100">
-                    {selectedApplication.position ||
-                      "General Application"}
+                    {selectedApplication.position || "General Application"}
                   </p>
                 </div>
 
@@ -1115,14 +942,11 @@ export default function AdminCareers() {
 
                   <p className="mt-2 font-semibold text-slate-900 dark:text-slate-100">
                     {selectedApplication.createdAt
-                      ? new Date(
-                          selectedApplication.createdAt,
-                        ).toLocaleString()
+                      ? new Date(selectedApplication.createdAt).toLocaleString()
                       : "—"}
                   </p>
                 </div>
               </div>
-
 
               {/* PORTFOLIO */}
 
@@ -1133,9 +957,7 @@ export default function AdminCareers() {
                   </p>
 
                   <a
-                    href={
-                      selectedApplication.portfolio
-                    }
+                    href={selectedApplication.portfolio}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-2 inline-block break-all text-sm text-blue-600 hover:underline"
@@ -1144,7 +966,6 @@ export default function AdminCareers() {
                   </a>
                 </div>
               )}
-
 
               {/* COVER LETTER */}
 
@@ -1168,7 +989,6 @@ export default function AdminCareers() {
                 </div>
               </div>
 
-
               {/* STATUS */}
 
               <div>
@@ -1177,34 +997,23 @@ export default function AdminCareers() {
                 </label>
 
                 <select
-                  value={
-                    selectedApplication.status ||
-                    "New"
-                  }
+                  value={selectedApplication.status || "New"}
                   disabled={
                     updatingStatusId ===
-                    (selectedApplication._id ||
-                      selectedApplication.id)
+                    (selectedApplication._id || selectedApplication.id)
                   }
                   onChange={(event) =>
-                    handleStatusChange(
-                      selectedApplication,
-                      event.target.value,
-                    )
+                    handleStatusChange(selectedApplication, event.target.value)
                   }
                   className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-slate-900 dark:text-slate-100"
                 >
                   {STATUSES.map((status) => (
-                    <option
-                      key={status}
-                      value={status}
-                    >
+                    <option key={status} value={status}>
                       {status}
                     </option>
                   ))}
                 </select>
               </div>
-
 
               {/* NOTES */}
 
@@ -1222,9 +1031,7 @@ export default function AdminCareers() {
 
                 <textarea
                   value={notes}
-                  onChange={(event) =>
-                    setNotes(event.target.value)
-                  }
+                  onChange={(event) => setNotes(event.target.value)}
                   rows={5}
                   maxLength={5000}
                   placeholder="Add private notes about this applicant..."
@@ -1241,24 +1048,17 @@ export default function AdminCareers() {
                     onClick={handleSaveNotes}
                     disabled={savingNotes}
                   >
-                    {savingNotes
-                      ? "Saving..."
-                      : "Save Notes"}
+                    {savingNotes ? "Saving..." : "Save Notes"}
                   </Button>
                 </div>
               </div>
-
 
               {/* FOOTER ACTIONS */}
 
               <div className="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-700 pt-5 sm:flex-row sm:justify-between">
                 <button
                   type="button"
-                  onClick={() =>
-                    toggleReadStatus(
-                      selectedApplication,
-                    )
-                  }
+                  onClick={() => toggleReadStatus(selectedApplication)}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 transition hover:bg-slate-50"
                 >
                   {selectedApplication.isRead ? (
@@ -1276,11 +1076,7 @@ export default function AdminCareers() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    handleDelete(
-                      selectedApplication,
-                    )
-                  }
+                  onClick={() => handleDelete(selectedApplication)}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700"
                 >
                   <Trash2 size={17} />
@@ -1294,4 +1090,3 @@ export default function AdminCareers() {
     </section>
   );
 }
-

@@ -40,7 +40,7 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
   const visibleLinks = links.filter((item) =>
-    isPrimaryNavLinkVisible(item.path, user)
+    isPrimaryNavLinkVisible(item.path, user),
   );
 
   const handleLogout = async () => {

@@ -172,7 +172,6 @@ export default function CourseDetails() {
       setProgress(null);
       setRelatedCourses([]);
 
-
       try {
         // Public catalog data is always loaded first so non-enrolled
         // learners can view the course before enrollment/purchase.
@@ -321,7 +320,8 @@ export default function CourseDetails() {
       setEnrollmentLoading(true);
 
       const response = await enrollCourse(id);
-      const enrolledProgress = response?.data?.progress || response?.data || null;
+      const enrolledProgress =
+        response?.data?.progress || response?.data || null;
 
       setProgress(enrolledProgress);
 
@@ -356,31 +356,20 @@ export default function CourseDetails() {
 
       const response = await initializePaystackCoursePayment(id);
 
-      const authorizationUrl =
-        response?.data?.paystack?.authorization_url;
+      const authorizationUrl = response?.data?.paystack?.authorization_url;
 
       if (!authorizationUrl) {
-        throw new Error(
-          "Secure Paystack checkout could not be initialized.",
-        );
+        throw new Error("Secure Paystack checkout could not be initialized.");
       }
 
-      toast.success(
-        "Redirecting you to secure payment checkout...",
-      );
+      toast.success("Redirecting you to secure payment checkout...");
 
       window.location.assign(authorizationUrl);
     } catch (error) {
-      console.error(
-        "Initialize Paystack course payment error:",
-        error,
-      );
+      console.error("Initialize Paystack course payment error:", error);
 
       toast.error(
-        getApiMessage(
-          error,
-          "Unable to start secure payment checkout.",
-        ),
+        getApiMessage(error, "Unable to start secure payment checkout."),
       );
 
       setPurchaseLoading(false);
@@ -1117,7 +1106,8 @@ export default function CourseDetails() {
 
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <span className="text-slate-300">
-                        {completedLessonsCount} of {totalLessons} lessons completed
+                        {completedLessonsCount} of {totalLessons} lessons
+                        completed
                       </span>
 
                       <span className="font-semibold text-blue-300">
@@ -1208,7 +1198,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Duration</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Course Duration
+                  </p>
 
                   <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {formatCourseDuration(course.duration)}
@@ -1222,7 +1214,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Total Lessons</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Total Lessons
+                  </p>
 
                   <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {totalLessons}
@@ -1236,7 +1230,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Instructor</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Course Instructor
+                  </p>
 
                   <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {instructorName(course.instructor)}
@@ -1250,7 +1246,9 @@ export default function CourseDetails() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Course Added</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Course Added
+                  </p>
 
                   <p className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                     {formattedDate || "Recently"}
@@ -1285,7 +1283,9 @@ export default function CourseDetails() {
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700 dark:text-slate-300">{item}</span>
+                  <span className="leading-7 text-slate-700 dark:text-slate-300">
+                    {item}
+                  </span>
                 </Card>
               ))}
             </div>
@@ -1303,7 +1303,9 @@ export default function CourseDetails() {
                     size={20}
                   />
 
-                  <span className="leading-7 text-slate-700 dark:text-slate-300">{item}</span>
+                  <span className="leading-7 text-slate-700 dark:text-slate-300">
+                    {item}
+                  </span>
                 </Card>
               ))}
             </div>
@@ -1334,7 +1336,9 @@ export default function CourseDetails() {
                     size={22}
                   />
 
-                  <p className="leading-7 text-slate-700 dark:text-slate-300">{item}</p>
+                  <p className="leading-7 text-slate-700 dark:text-slate-300">
+                    {item}
+                  </p>
                 </Card>
               ))}
             </div>
@@ -1355,339 +1359,632 @@ export default function CourseDetails() {
       ================================================== */}
 
       {isEnrolled && (
-      <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
-        <div className="mx-auto max-w-5xl px-6">
-          <SectionTitle
-            title="Course Curriculum"
-            subtitle={`${modules.length} ${
-              modules.length === 1 ? "module" : "modules"
-            } • ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
-          />
+        <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
+          <div className="mx-auto max-w-5xl px-6">
+            <SectionTitle
+              title="Course Curriculum"
+              subtitle={`${modules.length} ${
+                modules.length === 1 ? "module" : "modules"
+              } • ${totalLessons} ${totalLessons === 1 ? "lesson" : "lessons"}`}
+            />
 
-          {currentLessonDetails && progressPercentage < 100 && (
-            <div className="mt-8 overflow-hidden rounded-3xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-cyan-50 shadow-sm">
-              <div className="p-5 sm:p-6">
-                <div className="flex flex-col gap-5">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
-                      <PlayCircle size={24} />
+            {currentLessonDetails && progressPercentage < 100 && (
+              <div className="mt-8 overflow-hidden rounded-3xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-cyan-50 shadow-sm">
+                <div className="p-5 sm:p-6">
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
+                        <PlayCircle size={24} />
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                          Continue Learning
+                        </p>
+
+                        <h3 className="mt-1 text-lg font-black text-slate-900 dark:text-slate-100 sm:text-xl">
+                          {currentLessonDetails.lesson.title ||
+                            "Current Lesson"}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                          {currentLessonDetails.module?.title ||
+                            "Course Curriculum"}
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                        Continue Learning
-                      </p>
-
-                      <h3 className="mt-1 text-lg font-black text-slate-900 dark:text-slate-100 sm:text-xl">
-                        {currentLessonDetails.lesson.title || "Current Lesson"}
-                      </h3>
-
-                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                        {currentLessonDetails.module?.title ||
-                          "Course Curriculum"}
-                      </p>
-                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleResumeLesson}
+                      className="w-full sm:w-auto"
+                    >
+                      <PlayCircle className="mr-2" size={18} />
+                      Resume Lesson
+                    </Button>
                   </div>
-
-                  <Button
-                    type="button"
-                    onClick={handleResumeLesson}
-                    className="w-full sm:w-auto"
-                  >
-                    <PlayCircle className="mr-2" size={18} />
-                    Resume Lesson
-                  </Button>
                 </div>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
-            <div className="flex flex-col gap-5">
-              <div>
-                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                  Your course progress
-                </p>
-
-                <div className="mt-2 flex items-end gap-2">
-                  <span className="text-3xl font-black text-slate-900 dark:text-slate-100">
-                    {progressPercentage}%
-                  </span>
-
-                  <span className="pb-1 text-sm text-slate-500 dark:text-slate-400">completed</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                <CheckCircle2 className="text-green-500" size={20} />
-                <span>
-                  {completedLessonsCount} of {totalLessons} lessons
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPercentage}%` }}
-                transition={{ duration: 0.7 }}
-                className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
-              />
-            </div>
-
-            {totalLearningHours && (
-              <div className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <Clock3 size={16} />
-                Approximately {totalLearningHours} hours of lesson content
               </div>
             )}
-          </div>
 
-          {modules.length > 0 ? (
-            <div className="mt-10 space-y-4 lg:mt-12">
-              {modules.map((module, moduleIndex) => {
-                const moduleKey = module._id || `module-${moduleIndex}`;
+            <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-5">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Your course progress
+                  </p>
 
-                const lessons = Array.isArray(module.lessons)
-                  ? [...module.lessons].sort(
-                      (a, b) => Number(a?.order || 0) - Number(b?.order || 0),
-                    )
-                  : [];
+                  <div className="mt-2 flex items-end gap-2">
+                    <span className="text-3xl font-black text-slate-900 dark:text-slate-100">
+                      {progressPercentage}%
+                    </span>
 
-                const isOpen = Boolean(openModules[moduleKey]);
+                    <span className="pb-1 text-sm text-slate-500 dark:text-slate-400">
+                      completed
+                    </span>
+                  </div>
+                </div>
 
-                const moduleCompletedLessons = lessons.filter((lesson) =>
-                  completedLessonIds.has(String(lesson._id)),
-                ).length;
+                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                  <CheckCircle2 className="text-green-500" size={20} />
+                  <span>
+                    {completedLessonsCount} of {totalLessons} lessons
+                  </span>
+                </div>
+              </div>
 
-                const modulePercentage =
-                  lessons.length > 0
-                    ? Math.round(
-                        (moduleCompletedLessons / lessons.length) * 100,
+              <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.7 }}
+                  className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                />
+              </div>
+
+              {totalLearningHours && (
+                <div className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                  <Clock3 size={16} />
+                  Approximately {totalLearningHours} hours of lesson content
+                </div>
+              )}
+            </div>
+
+            {modules.length > 0 ? (
+              <div className="mt-10 space-y-4 lg:mt-12">
+                {modules.map((module, moduleIndex) => {
+                  const moduleKey = module._id || `module-${moduleIndex}`;
+
+                  const lessons = Array.isArray(module.lessons)
+                    ? [...module.lessons].sort(
+                        (a, b) => Number(a?.order || 0) - Number(b?.order || 0),
                       )
-                    : 0;
+                    : [];
 
-                const assessment = module.assessment || null;
+                  const isOpen = Boolean(openModules[moduleKey]);
 
-                return (
-                  <Card key={moduleKey} className="overflow-hidden p-0">
-                    <button
-                      type="button"
-                      onClick={() => toggleModule(moduleKey)}
-                      aria-expanded={isOpen}
-                      className="flex w-full items-center justify-between gap-5 p-5 text-left transition hover:bg-slate-50 sm:p-6"
-                    >
-                      <div className="flex min-w-0 items-center gap-4">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-700">
-                          {moduleIndex + 1}
+                  const moduleCompletedLessons = lessons.filter((lesson) =>
+                    completedLessonIds.has(String(lesson._id)),
+                  ).length;
+
+                  const modulePercentage =
+                    lessons.length > 0
+                      ? Math.round(
+                          (moduleCompletedLessons / lessons.length) * 100,
+                        )
+                      : 0;
+
+                  const assessment = module.assessment || null;
+
+                  return (
+                    <Card key={moduleKey} className="overflow-hidden p-0">
+                      <button
+                        type="button"
+                        onClick={() => toggleModule(moduleKey)}
+                        aria-expanded={isOpen}
+                        className="flex w-full items-center justify-between gap-5 p-5 text-left transition hover:bg-slate-50 sm:p-6"
+                      >
+                        <div className="flex min-w-0 items-center gap-4">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-700">
+                            {moduleIndex + 1}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3 className="truncate text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">
+                              {module.title || `Module ${moduleIndex + 1}`}
+                            </h3>
+
+                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
+                              <span>
+                                {lessons.length}{" "}
+                                {lessons.length === 1 ? "lesson" : "lessons"}
+                              </span>
+
+                              {lessons.length > 0 && (
+                                <>
+                                  <span className="text-slate-300">•</span>
+                                  <span>
+                                    {moduleCompletedLessons} completed
+                                  </span>
+                                </>
+                              )}
+
+                              {assessment && (
+                                <>
+                                  <span className="text-slate-300">•</span>
+                                  <span className="inline-flex items-center gap-1 text-blue-600">
+                                    <ClipboardCheck size={14} />
+                                    Assessment
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="min-w-0">
-                          <h3 className="truncate text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">
-                            {module.title || `Module ${moduleIndex + 1}`}
-                          </h3>
-
-                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
-                            <span>
-                              {lessons.length}{" "}
-                              {lessons.length === 1 ? "lesson" : "lessons"}
+                        <div className="flex shrink-0 items-center gap-4">
+                          {lessons.length > 0 && (
+                            <span className="hidden text-xs font-bold text-blue-600 sm:block">
+                              {modulePercentage}%
                             </span>
+                          )}
 
-                            {lessons.length > 0 && (
-                              <>
-                                <span className="text-slate-300">•</span>
-                                <span>{moduleCompletedLessons} completed</span>
-                              </>
-                            )}
-
-                            {assessment && (
-                              <>
-                                <span className="text-slate-300">•</span>
-                                <span className="inline-flex items-center gap-1 text-blue-600">
-                                  <ClipboardCheck size={14} />
-                                  Assessment
-                                </span>
-                              </>
-                            )}
-                          </div>
+                          {isOpen ? (
+                            <ChevronUp
+                              className="text-slate-500 dark:text-slate-400"
+                              size={22}
+                            />
+                          ) : (
+                            <ChevronDown
+                              className="text-slate-500 dark:text-slate-400"
+                              size={22}
+                            />
+                          )}
                         </div>
-                      </div>
+                      </button>
 
-                      <div className="flex shrink-0 items-center gap-4">
-                        {lessons.length > 0 && (
-                          <span className="hidden text-xs font-bold text-blue-600 sm:block">
-                            {modulePercentage}%
-                          </span>
-                        )}
+                      {isOpen && (
+                        <div className="border-t bg-white dark:bg-slate-900">
+                          {module.description && (
+                            <div className="border-b bg-slate-50/70 px-5 py-5 sm:px-6">
+                              <p className="leading-7 text-slate-600 dark:text-slate-400">
+                                {module.description}
+                              </p>
+                            </div>
+                          )}
 
-                        {isOpen ? (
-                          <ChevronUp className="text-slate-500 dark:text-slate-400" size={22} />
-                        ) : (
-                          <ChevronDown className="text-slate-500 dark:text-slate-400" size={22} />
-                        )}
-                      </div>
-                    </button>
+                          {lessons.length > 0 ? (
+                            <div className="divide-y">
+                              {lessons.map((lesson, lessonIndex) => {
+                                const lessonId = lesson._id;
+                                const isCompleted = lessonId
+                                  ? completedLessonIds.has(String(lessonId))
+                                  : false;
+                                const isCurrent =
+                                  lessonId &&
+                                  currentLessonId === String(lessonId);
 
-                    {isOpen && (
-                      <div className="border-t bg-white dark:bg-slate-900">
-                        {module.description && (
-                          <div className="border-b bg-slate-50/70 px-5 py-5 sm:px-6">
-                            <p className="leading-7 text-slate-600 dark:text-slate-400">
-                              {module.description}
-                            </p>
-                          </div>
-                        )}
-
-                        {lessons.length > 0 ? (
-                          <div className="divide-y">
-                            {lessons.map((lesson, lessonIndex) => {
-                              const lessonId = lesson._id;
-                              const isCompleted = lessonId
-                                ? completedLessonIds.has(String(lessonId))
-                                : false;
-                              const isCurrent =
-                                lessonId &&
-                                currentLessonId === String(lessonId);
-
-                              return (
-                                <div
-                                  ref={isCurrent ? currentLessonRef : null}
-                                  key={
-                                    lessonId ||
-                                    `${moduleKey}-lesson-${lessonIndex}`
-                                  }
-                                  onClick={() => {
-                                    if (lessonId) {
-                                      handleSetCurrentLesson(lessonId);
+                                return (
+                                  <div
+                                    ref={isCurrent ? currentLessonRef : null}
+                                    key={
+                                      lessonId ||
+                                      `${moduleKey}-lesson-${lessonIndex}`
                                     }
-                                  }}
-                                  className={`cursor-pointer border-l-4 px-5 py-5 transition sm:px-6 ${
-                                    isCurrent
-                                      ? "border-blue-600 bg-blue-50/70"
-                                      : isCompleted
-                                        ? "border-green-500 bg-green-50/40"
-                                        : "border-transparent bg-white hover:bg-slate-50"
-                                  }`}
-                                >
-                                  <div className="flex flex-col gap-5">
-                                    <div className="flex min-w-0 items-start gap-4">
-                                      <div
-                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                                          isCompleted
-                                            ? "bg-green-100"
-                                            : "bg-blue-50"
-                                        }`}
-                                      >
-                                        {isCompleted ? (
-                                          <CheckCircle2
-                                            className="text-green-600"
-                                            size={21}
-                                          />
-                                        ) : (
-                                          <PlayCircle
-                                            className="text-blue-600"
-                                            size={21}
-                                          />
+                                    onClick={() => {
+                                      if (lessonId) {
+                                        handleSetCurrentLesson(lessonId);
+                                      }
+                                    }}
+                                    className={`cursor-pointer border-l-4 px-5 py-5 transition sm:px-6 ${
+                                      isCurrent
+                                        ? "border-blue-600 bg-blue-50/70"
+                                        : isCompleted
+                                          ? "border-green-500 bg-green-50/40"
+                                          : "border-transparent bg-white hover:bg-slate-50"
+                                    }`}
+                                  >
+                                    <div className="flex flex-col gap-5">
+                                      <div className="flex min-w-0 items-start gap-4">
+                                        <div
+                                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                                            isCompleted
+                                              ? "bg-green-100"
+                                              : "bg-blue-50"
+                                          }`}
+                                        >
+                                          {isCompleted ? (
+                                            <CheckCircle2
+                                              className="text-green-600"
+                                              size={21}
+                                            />
+                                          ) : (
+                                            <PlayCircle
+                                              className="text-blue-600"
+                                              size={21}
+                                            />
+                                          )}
+                                        </div>
+
+                                        <div className="min-w-0">
+                                          <div className="flex flex-wrap items-center gap-2">
+                                            <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                                              {lessonIndex + 1}.{" "}
+                                              {lesson.title ||
+                                                "Untitled Lesson"}
+                                            </h4>
+
+                                            {isCompleted && (
+                                              <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
+                                                Completed
+                                              </span>
+                                            )}
+
+                                            {isCurrent && !isCompleted && (
+                                              <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
+                                                Current Lesson
+                                              </span>
+                                            )}
+                                          </div>
+
+                                          {lesson.description && (
+                                            <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                                              {lesson.description}
+                                            </p>
+                                          )}
+
+                                          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                            <span className="inline-flex items-center gap-1.5">
+                                              <Clock3 size={14} />
+                                              {formatLessonDuration(
+                                                lesson.duration,
+                                              )}
+                                            </span>
+
+                                            {lesson.videoUrl && (
+                                              <a
+                                                href={lesson.videoUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                                              >
+                                                Watch lesson
+                                                <ExternalLink size={12} />
+                                              </a>
+                                            )}
+                                          </div>
+
+                                          {lesson.lessonContent && (
+                                            <div className="mt-4">
+                                              <button
+                                                type="button"
+                                                onClick={(event) => {
+                                                  event.stopPropagation();
+                                                  setOpenLessonContentId(
+                                                    (current) =>
+                                                      current ===
+                                                      String(lessonId)
+                                                        ? null
+                                                        : String(lessonId),
+                                                  );
+                                                }}
+                                                className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-100"
+                                              >
+                                                <BookOpen size={17} />
+
+                                                {openLessonContentId ===
+                                                String(lessonId)
+                                                  ? "Hide Lesson Content"
+                                                  : "View Lesson Content"}
+
+                                                {openLessonContentId ===
+                                                String(lessonId) ? (
+                                                  <ChevronUp size={16} />
+                                                ) : (
+                                                  <ChevronDown size={16} />
+                                                )}
+                                              </button>
+
+                                              {openLessonContentId ===
+                                                String(lessonId) && (
+                                                <div
+                                                  className="mt-4 rounded-2xl border border-blue-200 bg-blue-50/60 p-5"
+                                                  onClick={(event) =>
+                                                    event.stopPropagation()
+                                                  }
+                                                >
+                                                  <div className="mb-3 flex items-center gap-2">
+                                                    <BookOpen
+                                                      size={18}
+                                                      className="text-blue-600"
+                                                    />
+
+                                                    <h5 className="font-bold text-slate-900 dark:text-slate-100">
+                                                      Lesson Content
+                                                    </h5>
+                                                  </div>
+
+                                                  <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
+                                                    {lesson.lessonContent}
+                                                  </div>
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
+
+                                          {Array.isArray(lesson.resources) &&
+                                            lesson.resources.length > 0 && (
+                                              <div className="mt-3 flex flex-wrap gap-3">
+                                                {lesson.resources.map(
+                                                  (resource, resourceIndex) => {
+                                                    if (
+                                                      typeof resource !==
+                                                        "string" ||
+                                                      !resource.trim()
+                                                    ) {
+                                                      return null;
+                                                    }
+
+                                                    return (
+                                                      <a
+                                                        key={`${resource}-${resourceIndex}`}
+                                                        href={resource}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                                      >
+                                                        Resource{" "}
+                                                        {resourceIndex + 1}
+                                                        <ExternalLink
+                                                          size={12}
+                                                        />
+                                                      </a>
+                                                    );
+                                                  },
+                                                )}
+                                              </div>
+                                            )}
+
+                                          <div className="mt-5 border-t border-slate-200 dark:border-slate-700 pt-4">
+                                            {openNoteLessonId ===
+                                            String(lessonId) ? (
+                                              <div
+                                                className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
+                                                onClick={(event) =>
+                                                  event.stopPropagation()
+                                                }
+                                              >
+                                                <div className="flex items-center gap-2">
+                                                  <StickyNote
+                                                    size={18}
+                                                    className="text-blue-600"
+                                                  />
+                                                  <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                                    Lesson Note
+                                                  </p>
+                                                </div>
+
+                                                <textarea
+                                                  value={noteDraft}
+                                                  onChange={(event) =>
+                                                    setNoteDraft(
+                                                      event.target.value,
+                                                    )
+                                                  }
+                                                  onClick={(event) =>
+                                                    event.stopPropagation()
+                                                  }
+                                                  rows={4}
+                                                  placeholder="Write something you want to remember about this lesson..."
+                                                  className="mt-3 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                                />
+
+                                                <div className="mt-3 flex flex-wrap items-center gap-3">
+                                                  <Button
+                                                    type="button"
+                                                    onClick={(event) => {
+                                                      event.stopPropagation();
+                                                      handleSaveNote(lessonId);
+                                                    }}
+                                                  >
+                                                    <Save
+                                                      className="mr-2"
+                                                      size={16}
+                                                    />
+                                                    Save Note
+                                                  </Button>
+
+                                                  <button
+                                                    type="button"
+                                                    onClick={(event) => {
+                                                      event.stopPropagation();
+                                                      handleCancelNote();
+                                                    }}
+                                                    className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
+                                                  >
+                                                    <X size={16} />
+                                                    Cancel
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            ) : lessonNotes[
+                                                String(lessonId)
+                                              ] ? (
+                                              <div
+                                                className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4"
+                                                onClick={(event) =>
+                                                  event.stopPropagation()
+                                                }
+                                              >
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="flex min-w-0 items-start gap-3">
+                                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+                                                      <StickyNote
+                                                        size={17}
+                                                        className="text-amber-600"
+                                                      />
+                                                    </div>
+
+                                                    <div className="min-w-0">
+                                                      <p className="text-xs font-bold uppercase tracking-wide text-amber-700">
+                                                        My Note
+                                                      </p>
+                                                      <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">
+                                                        {
+                                                          lessonNotes[
+                                                            String(lessonId)
+                                                          ]
+                                                        }
+                                                      </p>
+                                                    </div>
+                                                  </div>
+
+                                                  <div className="flex shrink-0 items-center gap-2">
+                                                    <button
+                                                      type="button"
+                                                      onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        handleOpenNote(
+                                                          lessonId,
+                                                        );
+                                                      }}
+                                                      className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
+                                                    >
+                                                      <Pencil size={14} />
+                                                      Edit
+                                                    </button>
+
+                                                    <button
+                                                      type="button"
+                                                      onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        handleDeleteNote(
+                                                          lessonId,
+                                                        );
+                                                      }}
+                                                      className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
+                                                    >
+                                                      <Trash2 size={14} />
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            ) : (
+                                              <button
+                                                type="button"
+                                                onClick={(event) => {
+                                                  event.stopPropagation();
+                                                  handleOpenNote(lessonId);
+                                                }}
+                                                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                                              >
+                                                <Plus size={17} />
+                                                <StickyNote size={16} />
+                                                Add Note
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="px-5 py-6 text-sm text-slate-500 dark:text-slate-400 sm:px-6">
+                              Lessons for this module will be added soon.
+                            </div>
+                          )}
+
+                          {assessment && (
+                            <div className="border-t bg-gradient-to-br from-blue-50 to-slate-50 px-5 py-6 sm:px-6">
+                              <div className="flex flex-col gap-5">
+                                <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                                  <div className="flex min-w-0 items-start gap-4">
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100">
+                                      <ClipboardCheck
+                                        className="text-blue-600"
+                                        size={22}
+                                      />
+                                    </div>
+
+                                    <div className="min-w-0">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <h4 className="font-bold text-slate-900 dark:text-slate-100">
+                                          {assessment.title ||
+                                            "Module Assessment"}
+                                        </h4>
+
+                                        <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
+                                          {assessment.type === "project"
+                                            ? "Project"
+                                            : "Exercise"}
+                                        </span>
+
+                                        {assessment.required && (
+                                          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-700">
+                                            Required
+                                          </span>
                                         )}
                                       </div>
 
-                                      <div className="min-w-0">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                          <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                                            {lessonIndex + 1}.{" "}
-                                            {lesson.title || "Untitled Lesson"}
-                                          </h4>
+                                      {assessment.description && (
+                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                                          {assessment.description}
+                                        </p>
+                                      )}
 
-                                          {isCompleted && (
-                                            <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
-                                              Completed
-                                            </span>
-                                          )}
-
-                                          {isCurrent && !isCompleted && (
-                                            <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
-                                              Current Lesson
-                                            </span>
-                                          )}
-                                        </div>
-
-                                        {lesson.description && (
-                                          <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                            {lesson.description}
+                                      {assessment.instructions && (
+                                        <div className="mt-5">
+                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                            Instructions
                                           </p>
-                                        )}
-                                        
-                                        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
-                                          <span className="inline-flex items-center gap-1.5">
-                                            <Clock3 size={14} />
-                                            {formatLessonDuration(
-                                              lesson.duration,
-                                            )}
-                                          </span>
-
-                                          {lesson.videoUrl && (
-                                            <a
-                                              href={lesson.videoUrl}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="inline-flex items-center gap-1 text-blue-600 hover:underline"
-                                            >
-                                              Watch lesson
-                                              <ExternalLink size={12} />
-                                            </a>
-                                          )}
+                                          <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
+                                            {assessment.instructions}
+                                          </p>
                                         </div>
+                                      )}
 
-                                        {lesson.lessonContent && (
-                                          <div className="mt-4">
-                                            <button
-                                              type="button"
-                                              onClick={(event) => {
-                                                event.stopPropagation();
-                                                setOpenLessonContentId((current) =>
-                                                  current === String(lessonId) ? null : String(lessonId),
-                                                );
-                                              }}
-                                              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-100"
-                                            >
-                                              <BookOpen size={17} />
+                                      {Array.isArray(assessment.requirements) &&
+                                        assessment.requirements.length > 0 && (
+                                          <div className="mt-5">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                              Requirements
+                                            </p>
 
-                                              {openLessonContentId === String(lessonId)
-                                                ? "Hide Lesson Content"
-                                                : "View Lesson Content"}
-
-                                              {openLessonContentId === String(lessonId) ? (
-                                                <ChevronUp size={16} />
-                                              ) : (
-                                                <ChevronDown size={16} />
+                                            <ul className="mt-2 space-y-2">
+                                              {assessment.requirements.map(
+                                                (
+                                                  requirement,
+                                                  requirementIndex,
+                                                ) => (
+                                                  <li
+                                                    key={`${requirement}-${requirementIndex}`}
+                                                    className="flex items-start gap-2 text-sm leading-6 text-slate-700 dark:text-slate-300"
+                                                  >
+                                                    <CheckCircle2
+                                                      className="mt-1 shrink-0 text-green-500"
+                                                      size={16}
+                                                    />
+                                                    <span>{requirement}</span>
+                                                  </li>
+                                                ),
                                               )}
-                                            </button>
-
-                                            {openLessonContentId === String(lessonId) && (
-                                              <div
-                                                className="mt-4 rounded-2xl border border-blue-200 bg-blue-50/60 p-5"
-                                                onClick={(event) => event.stopPropagation()}
-                                              >
-                                                <div className="mb-3 flex items-center gap-2">
-                                                  <BookOpen size={18} className="text-blue-600" />
-
-                                                  <h5 className="font-bold text-slate-900 dark:text-slate-100">
-                                                    Lesson Content
-                                                  </h5>
-                                                </div>
-
-                                                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
-                                                  {lesson.lessonContent}
-                                                </div>
-                                              </div>
-                                            )}
+                                            </ul>
                                           </div>
                                         )}
 
-                                        {Array.isArray(lesson.resources) &&
-                                          lesson.resources.length > 0 && (
-                                            <div className="mt-3 flex flex-wrap gap-3">
-                                              {lesson.resources.map(
+                                      {Array.isArray(assessment.resources) &&
+                                        assessment.resources.length > 0 && (
+                                          <div className="mt-5">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                              Resources
+                                            </p>
+
+                                            <div className="mt-2 flex flex-wrap gap-3">
+                                              {assessment.resources.map(
                                                 (resource, resourceIndex) => {
                                                   if (
                                                     typeof resource !==
@@ -1703,658 +2000,401 @@ export default function CourseDetails() {
                                                       href={resource}
                                                       target="_blank"
                                                       rel="noopener noreferrer"
-                                                      className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                                      className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-50"
                                                     >
                                                       Resource{" "}
                                                       {resourceIndex + 1}
-                                                      <ExternalLink size={12} />
+                                                      <ExternalLink size={13} />
                                                     </a>
                                                   );
                                                 },
                                               )}
                                             </div>
-                                          )}
-
-                                        <div className="mt-5 border-t border-slate-200 dark:border-slate-700 pt-4">
-                                          {openNoteLessonId ===
-                                          String(lessonId) ? (
-                                            <div
-                                              className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
-                                              onClick={(event) =>
-                                                event.stopPropagation()
-                                              }
-                                            >
-                                              <div className="flex items-center gap-2">
-                                                <StickyNote
-                                                  size={18}
-                                                  className="text-blue-600"
-                                                />
-                                                <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                                  Lesson Note
-                                                </p>
-                                              </div>
-
-                                              <textarea
-                                                value={noteDraft}
-                                                onChange={(event) =>
-                                                  setNoteDraft(
-                                                    event.target.value,
-                                                  )
-                                                }
-                                                onClick={(event) =>
-                                                  event.stopPropagation()
-                                                }
-                                                rows={4}
-                                                placeholder="Write something you want to remember about this lesson..."
-                                                className="mt-3 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                              />
-
-                                              <div className="mt-3 flex flex-wrap items-center gap-3">
-                                                <Button
-                                                  type="button"
-                                                  onClick={(event) => {
-                                                    event.stopPropagation();
-                                                    handleSaveNote(lessonId);
-                                                  }}
-                                                >
-                                                  <Save
-                                                    className="mr-2"
-                                                    size={16}
-                                                  />
-                                                  Save Note
-                                                </Button>
-
-                                                <button
-                                                  type="button"
-                                                  onClick={(event) => {
-                                                    event.stopPropagation();
-                                                    handleCancelNote();
-                                                  }}
-                                                  className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
-                                                >
-                                                  <X size={16} />
-                                                  Cancel
-                                                </button>
-                                              </div>
-                                            </div>
-                                          ) : lessonNotes[String(lessonId)] ? (
-                                            <div
-                                              className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4"
-                                              onClick={(event) =>
-                                                event.stopPropagation()
-                                              }
-                                            >
-                                              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                                <div className="flex min-w-0 items-start gap-3">
-                                                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
-                                                    <StickyNote
-                                                      size={17}
-                                                      className="text-amber-600"
-                                                    />
-                                                  </div>
-
-                                                  <div className="min-w-0">
-                                                    <p className="text-xs font-bold uppercase tracking-wide text-amber-700">
-                                                      My Note
-                                                    </p>
-                                                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">
-                                                      {
-                                                        lessonNotes[
-                                                          String(lessonId)
-                                                        ]
-                                                      }
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="flex shrink-0 items-center gap-2">
-                                                  <button
-                                                    type="button"
-                                                    onClick={(event) => {
-                                                      event.stopPropagation();
-                                                      handleOpenNote(lessonId);
-                                                    }}
-                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 transition hover:bg-slate-50"
-                                                  >
-                                                    <Pencil size={14} />
-                                                    Edit
-                                                  </button>
-
-                                                  <button
-                                                    type="button"
-                                                    onClick={(event) => {
-                                                      event.stopPropagation();
-                                                      handleDeleteNote(
-                                                        lessonId,
-                                                      );
-                                                    }}
-                                                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
-                                                  >
-                                                    <Trash2 size={14} />
-                                                    Delete
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          ) : (
-                                            <button
-                                              type="button"
-                                              onClick={(event) => {
-                                                event.stopPropagation();
-                                                handleOpenNote(lessonId);
-                                              }}
-                                              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-400 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
-                                            >
-                                              <Plus size={17} />
-                                              <StickyNote size={16} />
-                                              Add Note
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <div className="px-5 py-6 text-sm text-slate-500 dark:text-slate-400 sm:px-6">
-                            Lessons for this module will be added soon.
-                          </div>
-                        )}
-
-                        {assessment && (
-                          <div className="border-t bg-gradient-to-br from-blue-50 to-slate-50 px-5 py-6 sm:px-6">
-                            <div className="flex flex-col gap-5">
-                              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                                <div className="flex min-w-0 items-start gap-4">
-                                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100">
-                                    <ClipboardCheck
-                                      className="text-blue-600"
-                                      size={22}
-                                    />
-                                  </div>
-
-                                  <div className="min-w-0">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <h4 className="font-bold text-slate-900 dark:text-slate-100">
-                                        {assessment.title ||
-                                          "Module Assessment"}
-                                      </h4>
-
-                                      <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
-                                        {assessment.type === "project"
-                                          ? "Project"
-                                          : "Exercise"}
-                                      </span>
-
-                                      {assessment.required && (
-                                        <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-700">
-                                          Required
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {assessment.description && (
-                                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
-                                        {assessment.description}
-                                      </p>
-                                    )}
-
-                                    {assessment.instructions && (
-                                      <div className="mt-5">
-                                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                                          Instructions
-                                        </p>
-                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-700 dark:text-slate-300">
-                                          {assessment.instructions}
-                                        </p>
-                                      </div>
-                                    )}
-
-                                    {Array.isArray(assessment.requirements) &&
-                                      assessment.requirements.length > 0 && (
-                                        <div className="mt-5">
-                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                                            Requirements
-                                          </p>
-
-                                          <ul className="mt-2 space-y-2">
-                                            {assessment.requirements.map(
-                                              (
-                                                requirement,
-                                                requirementIndex,
-                                              ) => (
-                                                <li
-                                                  key={`${requirement}-${requirementIndex}`}
-                                                  className="flex items-start gap-2 text-sm leading-6 text-slate-700 dark:text-slate-300"
-                                                >
-                                                  <CheckCircle2
-                                                    className="mt-1 shrink-0 text-green-500"
-                                                    size={16}
-                                                  />
-                                                  <span>{requirement}</span>
-                                                </li>
-                                              ),
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-
-                                    {Array.isArray(assessment.resources) &&
-                                      assessment.resources.length > 0 && (
-                                        <div className="mt-5">
-                                          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                                            Resources
-                                          </p>
-
-                                          <div className="mt-2 flex flex-wrap gap-3">
-                                            {assessment.resources.map(
-                                              (resource, resourceIndex) => {
-                                                if (
-                                                  typeof resource !==
-                                                    "string" ||
-                                                  !resource.trim()
-                                                ) {
-                                                  return null;
-                                                }
-
-                                                return (
-                                                  <a
-                                                    key={`${resource}-${resourceIndex}`}
-                                                    href={resource}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-50"
-                                                  >
-                                                    Resource {resourceIndex + 1}
-                                                    <ExternalLink size={13} />
-                                                  </a>
-                                                );
-                                              },
-                                            )}
                                           </div>
-                                        </div>
-                                      )}
+                                        )}
+                                    </div>
+                                  </div>
+
+                                  <div className="shrink-0">
+                                    <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                                      <ClipboardCheck size={17} />
+                                      Assessment
+                                    </span>
                                   </div>
                                 </div>
 
-                                <div className="shrink-0">
-                                  <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                                    <ClipboardCheck size={17} />
-                                    Assessment
-                                  </span>
-                                </div>
-                              </div>
+                                {assessment.submissionType &&
+                                  assessment.submissionType !== "none" && (
+                                    <div className="rounded-2xl border border-blue-200 bg-white dark:bg-slate-900 p-5 shadow-sm">
+                                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                            Submit Your Assessment
+                                          </p>
+                                          <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                            Submit your work before marking this
+                                            module as complete.
+                                          </p>
+                                        </div>
 
-                              {assessment.submissionType &&
-                                assessment.submissionType !== "none" && (
-                                  <div className="rounded-2xl border border-blue-200 bg-white dark:bg-slate-900 p-5 shadow-sm">
-                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                      <div>
-                                        <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                          Submit Your Assessment
-                                        </p>
-                                        <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                                          Submit your work before marking this
-                                          module as complete.
-                                        </p>
+                                        <span className="inline-flex w-fit items-center rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold capitalize text-blue-700">
+                                          {assessment.submissionType === "url"
+                                            ? "Project URL"
+                                            : assessment.submissionType}
+                                        </span>
                                       </div>
 
-                                      <span className="inline-flex w-fit items-center rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold capitalize text-blue-700">
-                                        {assessment.submissionType === "url"
-                                          ? "Project URL"
-                                          : assessment.submissionType}
-                                      </span>
-                                    </div>
+                                      {(() => {
+                                        const submission =
+                                          getAssessmentSubmission(module);
+                                        const draft =
+                                          getAssessmentDraft(moduleKey);
+                                        const isSubmitting =
+                                          String(submittingAssessment || "") ===
+                                          String(moduleKey);
 
-                                    {(() => {
-                                      const submission =
-                                        getAssessmentSubmission(module);
-                                      const draft =
-                                        getAssessmentDraft(moduleKey);
-                                      const isSubmitting =
-                                        String(submittingAssessment || "") ===
-                                        String(moduleKey);
+                                        return (
+                                          <>
+                                            {submission && (
+                                              <div className="mt-5 rounded-xl border border-green-200 bg-green-50 p-4">
+                                                <div className="flex items-start gap-3">
+                                                  <CheckCircle2
+                                                    className="mt-0.5 shrink-0 text-green-600"
+                                                    size={20}
+                                                  />
+                                                  <div>
+                                                    <p className="text-sm font-bold text-green-800">
+                                                      Assessment Submitted
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-green-700">
+                                                      Status:{" "}
+                                                      <span className="font-bold capitalize">
+                                                        {submission.status ||
+                                                          "submitted"}
+                                                      </span>
+                                                    </p>
+                                                    {submission.submittedAt && (
+                                                      <p className="mt-1 text-xs text-green-700/80">
+                                                        Submitted{" "}
+                                                        {formatDate(
+                                                          submission.submittedAt,
+                                                        )}
+                                                      </p>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
 
-                                      return (
-                                        <>
-                                          {submission && (
-                                            <div className="mt-5 rounded-xl border border-green-200 bg-green-50 p-4">
-                                              <div className="flex items-start gap-3">
-                                                <CheckCircle2
-                                                  className="mt-0.5 shrink-0 text-green-600"
-                                                  size={20}
+                                            {assessment.submissionType ===
+                                              "text" && (
+                                              <div className="mt-5">
+                                                <label
+                                                  htmlFor={`assessment-text-${moduleKey}`}
+                                                  className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                                                >
+                                                  Your Response
+                                                </label>
+                                                <textarea
+                                                  id={`assessment-text-${moduleKey}`}
+                                                  value={draft.text || ""}
+                                                  onChange={(event) =>
+                                                    handleAssessmentDraftChange(
+                                                      moduleKey,
+                                                      "text",
+                                                      event.target.value,
+                                                    )
+                                                  }
+                                                  rows={7}
+                                                  placeholder="Enter your assessment response..."
+                                                  className="mt-2 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm leading-7 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                                                 />
-                                                <div>
-                                                  <p className="text-sm font-bold text-green-800">
-                                                    Assessment Submitted
+                                              </div>
+                                            )}
+
+                                            {assessment.submissionType ===
+                                              "url" && (
+                                              <div className="mt-5">
+                                                <label
+                                                  htmlFor={`assessment-url-${moduleKey}`}
+                                                  className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                                                >
+                                                  Project URL
+                                                </label>
+                                                <input
+                                                  id={`assessment-url-${moduleKey}`}
+                                                  type="url"
+                                                  value={draft.url || ""}
+                                                  onChange={(event) =>
+                                                    handleAssessmentDraftChange(
+                                                      moduleKey,
+                                                      "url",
+                                                      event.target.value,
+                                                    )
+                                                  }
+                                                  placeholder="https://github.com/username/project"
+                                                  className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                                                />
+                                              </div>
+                                            )}
+
+                                            {assessment.submissionType ===
+                                              "file" && (
+                                              <div className="mt-5">
+                                                <label
+                                                  htmlFor={`assessment-file-${moduleKey}`}
+                                                  className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                                                >
+                                                  Assessment File
+                                                </label>
+
+                                                <div className="mt-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 p-4 transition hover:border-blue-300 hover:bg-blue-50/40">
+                                                  <input
+                                                    id={`assessment-file-${moduleKey}`}
+                                                    type="file"
+                                                    onChange={(event) =>
+                                                      handleAssessmentFileChange(
+                                                        moduleKey,
+                                                        event.target
+                                                          .files?.[0] || null,
+                                                      )
+                                                    }
+                                                    className="block w-full text-sm text-slate-600 dark:text-slate-400 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700"
+                                                  />
+
+                                                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                                                    Maximum file size: 10MB.
                                                   </p>
-                                                  <p className="mt-1 text-xs text-green-700">
-                                                    Status:{" "}
-                                                    <span className="font-bold capitalize">
-                                                      {submission.status ||
-                                                        "submitted"}
-                                                    </span>
-                                                  </p>
-                                                  {submission.submittedAt && (
-                                                    <p className="mt-1 text-xs text-green-700/80">
-                                                      Submitted{" "}
-                                                      {formatDate(
-                                                        submission.submittedAt,
-                                                      )}
+
+                                                  {assessmentFiles[
+                                                    moduleKey
+                                                  ] && (
+                                                    <p className="mt-3 text-xs font-semibold text-blue-600">
+                                                      Selected:{" "}
+                                                      {
+                                                        assessmentFiles[
+                                                          moduleKey
+                                                        ].name
+                                                      }
                                                     </p>
                                                   )}
                                                 </div>
                                               </div>
-                                            </div>
-                                          )}
+                                            )}
 
-                                          {assessment.submissionType ===
-                                            "text" && (
-                                            <div className="mt-5">
-                                              <label
-                                                htmlFor={`assessment-text-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                                            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                              <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                                You can resubmit your work if
+                                                you need to make changes.
+                                              </p>
+
+                                              <Button
+                                                type="button"
+                                                onClick={(event) => {
+                                                  event.stopPropagation();
+                                                  handleSubmitAssessment(
+                                                    module,
+                                                  );
+                                                }}
+                                                disabled={isSubmitting}
+                                                className="w-full sm:w-auto"
                                               >
-                                                Your Response
-                                              </label>
-                                              <textarea
-                                                id={`assessment-text-${moduleKey}`}
-                                                value={draft.text || ""}
-                                                onChange={(event) =>
-                                                  handleAssessmentDraftChange(
-                                                    moduleKey,
-                                                    "text",
-                                                    event.target.value,
-                                                  )
-                                                }
-                                                rows={7}
-                                                placeholder="Enter your assessment response..."
-                                                className="mt-2 w-full resize-y rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm leading-7 text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-                                              />
-                                            </div>
-                                          )}
-
-                                          {assessment.submissionType ===
-                                            "url" && (
-                                            <div className="mt-5">
-                                              <label
-                                                htmlFor={`assessment-url-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
-                                              >
-                                                Project URL
-                                              </label>
-                                              <input
-                                                id={`assessment-url-${moduleKey}`}
-                                                type="url"
-                                                value={draft.url || ""}
-                                                onChange={(event) =>
-                                                  handleAssessmentDraftChange(
-                                                    moduleKey,
-                                                    "url",
-                                                    event.target.value,
-                                                  )
-                                                }
-                                                placeholder="https://github.com/username/project"
-                                                className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-                                              />
-                                            </div>
-                                          )}
-
-                                          {assessment.submissionType ===
-                                            "file" && (
-                                            <div className="mt-5">
-                                              <label
-                                                htmlFor={`assessment-file-${moduleKey}`}
-                                                className="text-sm font-semibold text-slate-700 dark:text-slate-300"
-                                              >
-                                                Assessment File
-                                              </label>
-
-                                              <div className="mt-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:bg-slate-950 p-4 transition hover:border-blue-300 hover:bg-blue-50/40">
-                                                <input
-                                                  id={`assessment-file-${moduleKey}`}
-                                                  type="file"
-                                                  onChange={(event) =>
-                                                    handleAssessmentFileChange(
-                                                      moduleKey,
-                                                      event.target.files?.[0] ||
-                                                        null,
-                                                    )
-                                                  }
-                                                  className="block w-full text-sm text-slate-600 dark:text-slate-400 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700"
-                                                />
-
-                                                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                                                  Maximum file size: 10MB.
-                                                </p>
-
-                                                {assessmentFiles[moduleKey] && (
-                                                  <p className="mt-3 text-xs font-semibold text-blue-600">
-                                                    Selected:{" "}
-                                                    {
-                                                      assessmentFiles[moduleKey]
-                                                        .name
-                                                    }
-                                                  </p>
+                                                {isSubmitting ? (
+                                                  <>
+                                                    <Loader2
+                                                      className="mr-2 animate-spin"
+                                                      size={17}
+                                                    />
+                                                    Submitting...
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <ClipboardCheck
+                                                      className="mr-2"
+                                                      size={17}
+                                                    />
+                                                    {submission
+                                                      ? "Resubmit Assessment"
+                                                      : "Submit Assessment"}
+                                                  </>
                                                 )}
-                                              </div>
+                                              </Button>
                                             </div>
-                                          )}
-
-                                          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                            <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
-                                              You can resubmit your work if you
-                                              need to make changes.
-                                            </p>
-
-                                            <Button
-                                              type="button"
-                                              onClick={(event) => {
-                                                event.stopPropagation();
-                                                handleSubmitAssessment(module);
-                                              }}
-                                              disabled={isSubmitting}
-                                              className="w-full sm:w-auto"
-                                            >
-                                              {isSubmitting ? (
-                                                <>
-                                                  <Loader2
-                                                    className="mr-2 animate-spin"
-                                                    size={17}
-                                                  />
-                                                  Submitting...
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <ClipboardCheck
-                                                    className="mr-2"
-                                                    size={17}
-                                                  />
-                                                  {submission
-                                                    ? "Resubmit Assessment"
-                                                    : "Submit Assessment"}
-                                                </>
-                                              )}
-                                            </Button>
-                                          </div>
-                                        </>
-                                      );
-                                    })()}
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        )}
-
-                        {(() => {
-                          const completedModuleIds = new Set(
-                            (progress?.completedModules || []).map((moduleId) =>
-                              String(moduleId),
-                            ),
-                          );
-
-                          const moduleIsCompleted = completedModuleIds.has(
-                            String(module?._id),
-                          );
-
-                          const allLessonsCompleted =
-                            lessons.length === 0 ||
-                            lessons.every(
-                              (lesson) =>
-                                lesson?._id &&
-                                completedLessonIds.has(String(lesson._id)),
-                            );
-
-                          const assessmentRequired =
-                            Boolean(assessment?.required) &&
-                            assessment?.submissionType !== "none";
-
-                          const assessmentSubmission =
-                            getAssessmentSubmission(module);
-                          const assessmentSubmitted =
-                            Boolean(assessmentSubmission);
-                          const canCompleteModule =
-                            allLessonsCompleted &&
-                            (!assessmentRequired || assessmentSubmitted);
-
-                          const isCompletingModule =
-                            String(completingModule || "") ===
-                            String(moduleKey);
-
-                          return (
-                            <div className="border-t bg-white dark:bg-slate-900 px-5 py-5 sm:px-6">
-                              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <div>
-                                  <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                    Module Completion
-                                  </p>
-
-                                  {moduleIsCompleted ? (
-                                    <p className="mt-1 text-xs leading-5 text-green-600">
-                                      You have completed this module.
-                                    </p>
-                                  ) : !allLessonsCompleted ? (
-                                    <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                                      Complete all lessons in this module first.
-                                    </p>
-                                  ) : assessmentRequired &&
-                                    !assessmentSubmitted ? (
-                                    <p className="mt-1 text-xs leading-5 text-amber-600">
-                                      Submit the required assessment before
-                                      completing this module.
-                                    </p>
-                                  ) : (
-                                    <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                                      Your lessons and required assessment are
-                                      complete. You can now mark this module as
-                                      complete.
-                                    </p>
+                                          </>
+                                        );
+                                      })()}
+                                    </div>
                                   )}
-                                </div>
-
-                                {moduleIsCompleted ? (
-                                  <div className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-100 px-4 py-2.5 text-sm font-semibold text-green-700">
-                                    <CheckCircle2 size={17} />
-                                    Module Complete
-                                  </div>
-                                ) : (
-                                  <Button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      handleCompleteModule(module);
-                                    }}
-                                    disabled={
-                                      !canCompleteModule ||
-                                      Boolean(completingModule)
-                                    }
-                                    className="w-full sm:w-auto"
-                                  >
-                                    {isCompletingModule ? (
-                                      <>
-                                        <Loader2
-                                          className="mr-2 animate-spin"
-                                          size={17}
-                                        />
-                                        Completing...
-                                      </>
-                                    ) : (
-                                      <>
-                                        Mark Module Complete
-                                        <CheckCircle2
-                                          className="ml-2"
-                                          size={17}
-                                        />
-                                      </>
-                                    )}
-                                  </Button>
-                                )}
                               </div>
                             </div>
-                          );
-                        })()}
-                      </div>
-                    )}
-                  </Card>
-                );
-              })}
+                          )}
 
-              {allLessons.length > 0 && (
-                <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={!previousLesson}
-                    onClick={handlePreviousLesson}
-                    className="w-full sm:w-auto"
-                  >
-                    <ArrowLeft className="mr-2" size={18} />
-                    <span>
-                      {previousLesson ? "Previous Lesson" : "First Lesson"}
-                    </span>
-                  </Button>
+                          {(() => {
+                            const completedModuleIds = new Set(
+                              (progress?.completedModules || []).map(
+                                (moduleId) => String(moduleId),
+                              ),
+                            );
 
-                  <div className="text-center">
-                    {currentLessonIndex >= 0 && (
-                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                        Lesson {currentLessonIndex + 1} of {allLessons.length}
-                      </p>
-                    )}
+                            const moduleIsCompleted = completedModuleIds.has(
+                              String(module?._id),
+                            );
+
+                            const allLessonsCompleted =
+                              lessons.length === 0 ||
+                              lessons.every(
+                                (lesson) =>
+                                  lesson?._id &&
+                                  completedLessonIds.has(String(lesson._id)),
+                              );
+
+                            const assessmentRequired =
+                              Boolean(assessment?.required) &&
+                              assessment?.submissionType !== "none";
+
+                            const assessmentSubmission =
+                              getAssessmentSubmission(module);
+                            const assessmentSubmitted =
+                              Boolean(assessmentSubmission);
+                            const canCompleteModule =
+                              allLessonsCompleted &&
+                              (!assessmentRequired || assessmentSubmitted);
+
+                            const isCompletingModule =
+                              String(completingModule || "") ===
+                              String(moduleKey);
+
+                            return (
+                              <div className="border-t bg-white dark:bg-slate-900 px-5 py-5 sm:px-6">
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                      Module Completion
+                                    </p>
+
+                                    {moduleIsCompleted ? (
+                                      <p className="mt-1 text-xs leading-5 text-green-600">
+                                        You have completed this module.
+                                      </p>
+                                    ) : !allLessonsCompleted ? (
+                                      <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                        Complete all lessons in this module
+                                        first.
+                                      </p>
+                                    ) : assessmentRequired &&
+                                      !assessmentSubmitted ? (
+                                      <p className="mt-1 text-xs leading-5 text-amber-600">
+                                        Submit the required assessment before
+                                        completing this module.
+                                      </p>
+                                    ) : (
+                                      <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                        Your lessons and required assessment are
+                                        complete. You can now mark this module
+                                        as complete.
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  {moduleIsCompleted ? (
+                                    <div className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-100 px-4 py-2.5 text-sm font-semibold text-green-700">
+                                      <CheckCircle2 size={17} />
+                                      Module Complete
+                                    </div>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleCompleteModule(module);
+                                      }}
+                                      disabled={
+                                        !canCompleteModule ||
+                                        Boolean(completingModule)
+                                      }
+                                      className="w-full sm:w-auto"
+                                    >
+                                      {isCompletingModule ? (
+                                        <>
+                                          <Loader2
+                                            className="mr-2 animate-spin"
+                                            size={17}
+                                          />
+                                          Completing...
+                                        </>
+                                      ) : (
+                                        <>
+                                          Mark Module Complete
+                                          <CheckCircle2
+                                            className="ml-2"
+                                            size={17}
+                                          />
+                                        </>
+                                      )}
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
+
+                {allLessons.length > 0 && (
+                  <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 dark:border-slate-700 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={!previousLesson}
+                      onClick={handlePreviousLesson}
+                      className="w-full sm:w-auto"
+                    >
+                      <ArrowLeft className="mr-2" size={18} />
+                      <span>
+                        {previousLesson ? "Previous Lesson" : "First Lesson"}
+                      </span>
+                    </Button>
+
+                    <div className="text-center">
+                      {currentLessonIndex >= 0 && (
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          Lesson {currentLessonIndex + 1} of {allLessons.length}
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      type="button"
+                      disabled={!nextLesson}
+                      onClick={handleNextLesson}
+                      className="w-full sm:w-auto"
+                    >
+                      <span>
+                        {nextLesson ? "Next Lesson" : "Course Complete"}
+                      </span>
+                      {nextLesson && <ArrowRight className="ml-2" size={18} />}
+                    </Button>
                   </div>
+                )}
+              </div>
+            ) : (
+              <Card className="mt-12 text-center lg:mt-16">
+                <BookOpen className="mx-auto text-blue-500" size={42} />
 
-                  <Button
-                    type="button"
-                    disabled={!nextLesson}
-                    onClick={handleNextLesson}
-                    className="w-full sm:w-auto"
-                  >
-                    <span>
-                      {nextLesson ? "Next Lesson" : "Course Complete"}
-                    </span>
-                    {nextLesson && <ArrowRight className="ml-2" size={18} />}
-                  </Button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <Card className="mt-12 text-center lg:mt-16">
-              <BookOpen className="mx-auto text-blue-500" size={42} />
+                <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">
+                  Curriculum Coming Soon
+                </h3>
 
-              <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">
-                Curriculum Coming Soon
-              </h3>
-
-              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
-                The curriculum for this course is being prepared.
-              </p>
-            </Card>
-          )}
-        </div>
-      </section>
-
+                <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
+                  The curriculum for this course is being prepared.
+                </p>
+              </Card>
+            )}
+          </div>
+        </section>
       )}
 
       {/* ==================================================
@@ -2362,37 +2402,36 @@ export default function CourseDetails() {
       ================================================== */}
 
       {isEnrolled && (
-      <section className="py-10 sm:py-24">
-        <div className="mx-auto max-w-5xl px-6">
-          <Card className="text-center">
-            <Award className="mx-auto text-yellow-500" size={60} />
+        <section className="py-10 sm:py-24">
+          <div className="mx-auto max-w-5xl px-6">
+            <Card className="text-center">
+              <Award className="mx-auto text-yellow-500" size={60} />
 
-            <h2 className="mt-8 text-3xl font-black text-slate-900 dark:text-slate-100 sm:text-4xl">
-              Earn Your Certificate
-            </h2>
+              <h2 className="mt-8 text-3xl font-black text-slate-900 dark:text-slate-100 sm:text-4xl">
+                Earn Your Certificate
+              </h2>
 
-            <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600 dark:text-slate-400">
-              Complete the required course lessons and assessments to receive
-              your KanuorieTech Certificate of Completion.
-            </p>
+              <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-600 dark:text-slate-400">
+                Complete the required course lessons and assessments to receive
+                your KanuorieTech Certificate of Completion.
+              </p>
 
-            {progressPercentage >= 100 && (
-              <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
-                <div className="flex items-center justify-center gap-2 font-bold text-yellow-800">
-                  <Trophy size={20} />
-                  Lesson requirements completed
+              {progressPercentage >= 100 && (
+                <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+                  <div className="flex items-center justify-center gap-2 font-bold text-yellow-800">
+                    <Trophy size={20} />
+                    Lesson requirements completed
+                  </div>
+
+                  <p className="mt-2 text-sm leading-6 text-yellow-700">
+                    Your remaining assessments and final course requirements
+                    will determine certificate eligibility.
+                  </p>
                 </div>
-
-                <p className="mt-2 text-sm leading-6 text-yellow-700">
-                  Your remaining assessments and final course requirements will
-                  determine certificate eligibility.
-                </p>
-              </div>
-            )}
-          </Card>
-        </div>
-      </section>
-
+              )}
+            </Card>
+          </div>
+        </section>
       )}
 
       {/* ==================================================
@@ -2506,9 +2545,3 @@ export default function CourseDetails() {
     </>
   );
 }
-
-
-
-
-
-

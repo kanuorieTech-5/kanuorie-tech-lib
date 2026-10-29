@@ -84,8 +84,12 @@ export default function Services() {
 
         if (isMounted) {
           setServices(data);
-          setServiceCategories(Array.isArray(result.categories) ? result.categories : []);
-          setTotalPages(Math.max(1, Number(pagination.pages || pagination.totalPages) || 1));
+          setServiceCategories(
+            Array.isArray(result.categories) ? result.categories : [],
+          );
+          setTotalPages(
+            Math.max(1, Number(pagination.pages || pagination.totalPages) || 1),
+          );
         }
       } catch (error) {
         console.error("Failed to load services:", error);
@@ -305,5 +309,3 @@ export default function Services() {
     </>
   );
 }
-
-

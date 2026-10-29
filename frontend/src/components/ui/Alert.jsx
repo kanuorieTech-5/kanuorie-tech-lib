@@ -12,5 +12,3 @@ export default function Alert({ children, variant = "info" }) {
     <div className={clsx("rounded-xl p-4", variants[variant])}>{children}</div>
   );
 }
-
-

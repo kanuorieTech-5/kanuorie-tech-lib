@@ -51,9 +51,13 @@ export default function LatestOrders({ orders = [] }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Latest Orders</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              Latest Orders
+            </h2>
 
-            <p className="text-sm text-slate-500 dark:text-slate-400">Recent customer orders</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Recent customer orders
+            </p>
           </div>
         </div>
 
@@ -70,7 +74,9 @@ export default function LatestOrders({ orders = [] }) {
         <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-6 py-10 text-center">
           <ShoppingBag className="mx-auto mb-3 text-slate-400" size={32} />
 
-          <p className="font-medium text-slate-700 dark:text-slate-300">No orders yet</p>
+          <p className="font-medium text-slate-700 dark:text-slate-300">
+            No orders yet
+          </p>
 
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             New customer orders will appear here.
@@ -129,5 +135,3 @@ export default function LatestOrders({ orders = [] }) {
     </section>
   );
 }
-
-

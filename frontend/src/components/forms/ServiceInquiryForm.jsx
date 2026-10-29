@@ -98,9 +98,7 @@ function Section({ title, description, children }) {
   return (
     <section className="space-y-4">
       <div>
-        <h3 className="font-bold text-slate-900 dark:text-white">
-          {title}
-        </h3>
+        <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
 
         {description && (
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -129,8 +127,7 @@ export default function ServiceInquiryForm({
       const matchedService = serviceOptions.find(
         (option) =>
           option.value === initialService ||
-          option.label.toLowerCase() ===
-            String(initialService).toLowerCase(),
+          option.label.toLowerCase() === String(initialService).toLowerCase(),
       );
 
       if (matchedService) {
@@ -154,12 +151,9 @@ export default function ServiceInquiryForm({
   const toggleFeature = (feature) => {
     setForm((previous) => ({
       ...previous,
-      projectRequirements:
-        previous.projectRequirements.includes(feature)
-          ? previous.projectRequirements.filter(
-              (item) => item !== feature,
-            )
-          : [...previous.projectRequirements, feature],
+      projectRequirements: previous.projectRequirements.includes(feature)
+        ? previous.projectRequirements.filter((item) => item !== feature)
+        : [...previous.projectRequirements, feature],
     }));
   };
 
@@ -197,8 +191,8 @@ export default function ServiceInquiryForm({
     <form onSubmit={handleSubmit} className="space-y-7">
       <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
         <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Tell us a little about your project. We will ask only the
-          additional questions relevant to the service you choose.
+          Tell us a little about your project. We will ask only the additional
+          questions relevant to the service you choose.
         </p>
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
           Fields marked with * are required.
@@ -345,9 +339,7 @@ export default function ServiceInquiryForm({
 
         {isEcommerce && (
           <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
-            <p className={labelClass}>
-              Which features do you need?
-            </p>
+            <p className={labelClass}>Which features do you need?</p>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {ecommerceFeatures.map((feature) => (

@@ -218,5 +218,3 @@ function FAQItem({ question, children }) {
     </details>
   );
 }
-
-

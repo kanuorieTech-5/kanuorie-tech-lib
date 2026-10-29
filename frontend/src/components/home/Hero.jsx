@@ -53,7 +53,7 @@ export default function Hero() {
           rgba(30, 58, 138, 0.30)
         ), url("${heroImage}")`,
       }}
-     >
+    >
       {/* Background */}
 
       <div className="absolute inset-0">
@@ -98,14 +98,26 @@ export default function Hero() {
             transition={{ delay: 0.3 }}
             className="mt-4 max-w-2xl text-lg leading-8 text-slate-300"
           >
-            KanuorieTech is a technology company building useful solution and empowering people all over the world.
-            <p>For business owners, we build custom digital solution - websites, apps and business tools that solve real problems and drive growth,
-            our goal is to become the technology brand that powers business growth in emerging markets.</p>
-            <p>For students and future developers, we provide industry-focused training through practical courses, books, real-world projects,
-              and career resources to help you learn faster and become job-ready.</p>
-            <p>For investors and collaborators, we're building a scalable ecosystem where products, education, and innovation create lasting value.</p>
+            KanuorieTech is a technology company building useful solution and
+            empowering people all over the world.
+            <p>
+              For business owners, we build custom digital solution - websites,
+              apps and business tools that solve real problems and drive growth,
+              our goal is to become the technology brand that powers business
+              growth in emerging markets.
+            </p>
+            <p>
+              For students and future developers, we provide industry-focused
+              training through practical courses, books, real-world projects,
+              and career resources to help you learn faster and become
+              job-ready.
+            </p>
+            <p>
+              For investors and collaborators, we're building a scalable
+              ecosystem where products, education, and innovation create lasting
+              value.
+            </p>
             <p>Join us today!</p>
-
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -255,5 +267,3 @@ export default function Hero() {
     </section>
   );
 }
-
-

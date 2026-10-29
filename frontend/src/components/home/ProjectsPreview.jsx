@@ -79,18 +79,13 @@ export default function ProjectsPreview() {
   /* ========================================
      CALCULATE MAX SLIDE
   ======================================== */
-  const maxIndex = Math.max(
-    projects.length - visibleCards,
-    0,
-  );
+  const maxIndex = Math.max(projects.length - visibleCards, 0);
 
   /* ========================================
      KEEP INDEX VALID WHEN SCREEN RESIZES
   ======================================== */
   useEffect(() => {
-    setCurrentIndex((previous) =>
-      Math.min(previous, maxIndex),
-    );
+    setCurrentIndex((previous) => Math.min(previous, maxIndex));
   }, [maxIndex]);
 
   /* ========================================
@@ -104,18 +99,14 @@ export default function ProjectsPreview() {
      NEXT SLIDE
   ======================================== */
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1,
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   /* ========================================
      PREVIOUS SLIDE
   ======================================== */
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1,
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   /* ========================================
@@ -127,9 +118,7 @@ export default function ProjectsPreview() {
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex ? 0 : previous + 1,
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
@@ -162,13 +151,11 @@ export default function ProjectsPreview() {
           />
 
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <h3 className="text-xl font-bold">
-              Projects Coming Soon
-            </h3>
+            <h3 className="text-xl font-bold">Projects Coming Soon</h3>
 
             <p className="mx-auto mt-3 max-w-lg text-slate-400">
-              We're currently updating our portfolio. Check back
-              soon to explore projects built by KanuorieTech.
+              We're currently updating our portfolio. Check back soon to explore
+              projects built by KanuorieTech.
             </p>
           </div>
         </div>
@@ -252,10 +239,7 @@ export default function ProjectsPreview() {
                       "
                     >
                       <img
-                        src={
-                          project.image ||
-                          "/images/project-placeholder.png"
-                        }
+                        src={project.image || "/images/project-placeholder.png"}
                         alt={
                           project.title
                             ? `${project.title} project`
@@ -345,14 +329,13 @@ export default function ProjectsPreview() {
                 SLIDE INDICATORS
             ======================================== */}
             <div className="mt-6 flex justify-center gap-2">
-              {Array.from({ length: maxIndex + 1 }).map(
-                (_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => setCurrentIndex(index)}
-                    aria-label={`Go to project slide ${index + 1}`}
-                    className={`
+              {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setCurrentIndex(index)}
+                  aria-label={`Go to project slide ${index + 1}`}
+                  className={`
                       h-2
                       rounded-full
                       transition-all
@@ -363,9 +346,8 @@ export default function ProjectsPreview() {
                           : "w-2 bg-white/30 hover:bg-white/60"
                       }
                     `}
-                  />
-                ),
-              )}
+                />
+              ))}
             </div>
           </>
         )}
@@ -376,9 +358,7 @@ export default function ProjectsPreview() {
         {projects.length > 3 && (
           <div className="mt-12 text-center">
             <Link to="/projects">
-              <Button variant="secondary">
-                View All Projects
-              </Button>
+              <Button variant="secondary">View All Projects</Button>
             </Link>
           </div>
         )}
@@ -386,4 +366,3 @@ export default function ProjectsPreview() {
     </section>
   );
 }
-

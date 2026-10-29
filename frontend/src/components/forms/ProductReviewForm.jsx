@@ -51,6 +51,3 @@ export default function ProductReviewForm({ loading = false, onSubmit }) {
     </Card>
   );
 }
-
-
-

@@ -57,7 +57,8 @@ const opportunityTypes = [
 const inputClass =
   "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
-const labelClass = "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300";
+const labelClass =
+  "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300";
 
 const normalizeList = (value) =>
   String(value || "")
@@ -145,13 +146,11 @@ export default function AdminOpportunities() {
           limit: 12,
           total: items.length,
           pages: items.length ? 1 : 0,
-        }
+        },
       );
     } catch (error) {
       console.error("Failed to load opportunities:", error);
-      toast.error(
-        getErrorMessage(error, "Unable to load opportunities.")
-      );
+      toast.error(getErrorMessage(error, "Unable to load opportunities."));
     } finally {
       setLoading(false);
     }
@@ -283,9 +282,7 @@ export default function AdminOpportunities() {
       await loadOpportunities();
     } catch (error) {
       console.error("Failed to save opportunity:", error);
-      toast.error(
-        getErrorMessage(error, "Unable to save opportunity.")
-      );
+      toast.error(getErrorMessage(error, "Unable to save opportunity."));
     } finally {
       setSaving(false);
     }
@@ -301,7 +298,7 @@ export default function AdminOpportunities() {
 
     if (
       !window.confirm(
-        `Delete "${item.title}"?\n\nThis action cannot be undone.`
+        `Delete "${item.title}"?\n\nThis action cannot be undone.`,
       )
     ) {
       return;
@@ -320,9 +317,7 @@ export default function AdminOpportunities() {
       }
     } catch (error) {
       console.error("Failed to delete opportunity:", error);
-      toast.error(
-        getErrorMessage(error, "Unable to delete opportunity.")
-      );
+      toast.error(getErrorMessage(error, "Unable to delete opportunity."));
     } finally {
       setDeletingId(null);
     }
@@ -357,7 +352,8 @@ export default function AdminOpportunities() {
               Opportunities
             </h1>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Create, publish, and manage opportunities independently of Careers.
+              Create, publish, and manage opportunities independently of
+              Careers.
             </p>
           </div>
         </div>
@@ -907,9 +903,7 @@ export default function AdminOpportunities() {
               type="button"
               disabled={page >= pagination.pages || loading}
               onClick={() =>
-                setPage((current) =>
-                  Math.min(pagination.pages, current + 1)
-                )
+                setPage((current) => Math.min(pagination.pages, current + 1))
               }
               className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold disabled:opacity-40"
             >

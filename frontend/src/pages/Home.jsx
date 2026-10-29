@@ -1,6 +1,6 @@
 ﻿import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Mail, UserPlus, } from "lucide-react";
+import { ArrowRight, Mail, UserPlus } from "lucide-react";
 import AboutPreview from "../components/home/AboutPreview";
 import Features from "../components/home/Features";
 import PlatformFeatures from "../components/home/FeaturesSlider";
@@ -15,7 +15,6 @@ import TechStack from "../components/home/TechStack";
 import TeamPreview from "../components/home/TeamPreview";
 import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
-
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -50,7 +49,10 @@ export default function Home() {
           variants={reveal}
           className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14"
         >
-          <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl"
+          />
           <div className="relative flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-blue-200">
@@ -61,7 +63,8 @@ export default function Home() {
                 Have a goal in mind?
               </h2>
               <p className="mt-3 leading-7 text-slate-300">
-                Tell us what you’re working toward. We’ll help you find the right next step.
+                Tell us what you’re working toward. We’ll help you find the
+                right next step.
               </p>
             </div>
             <Link
@@ -92,12 +95,13 @@ export default function Home() {
             Explore opportunities, share your skills, and become part of the
             KanuorieTech journey.
           </p>
-          <Link to="/careers"
+          <Link
+            to="/careers"
             className="mt-7 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-500"
           >
             Join the Talent Network
             <ArrowRight className="h-4 w-4" />
-          </Link>    
+          </Link>
         </div>
       </section>
       <Newsletter />

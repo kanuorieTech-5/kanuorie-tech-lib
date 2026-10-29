@@ -228,9 +228,7 @@ export default function ServiceDetails() {
 
           {/* BUTTONS OPEN THE MODAL */}
           <div className="flex flex-wrap gap-4">
-            <Button onClick={openEnquiryModal}>
-              Request a Quote
-            </Button>
+            <Button onClick={openEnquiryModal}>Request a Quote</Button>
 
             <Button variant="secondary" onClick={openEnquiryModal}>
               Book Consultation
@@ -272,7 +270,9 @@ export default function ServiceDetails() {
                     {index + 1}
                   </span>
 
-                  <p className="leading-7 text-gray-700 dark:text-slate-300">{feature}</p>
+                  <p className="leading-7 text-gray-700 dark:text-slate-300">
+                    {feature}
+                  </p>
                 </div>
               </Card>
             ))}
@@ -330,10 +330,7 @@ export default function ServiceDetails() {
             </div>
 
             {/* ENQUIRY FORM */}
-            <ServiceInquiryForm
-              onSubmit={handleEnquiry}
-              loading={submitting}
-            />
+            <ServiceInquiryForm onSubmit={handleEnquiry} loading={submitting} />
 
             <p className="mt-4 text-center text-xs text-slate-500 dark:text-slate-400">
               Your project details will be sent securely to our team.

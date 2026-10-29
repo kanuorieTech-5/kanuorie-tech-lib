@@ -10,9 +10,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const referralCode = (searchParams.get("ref") || "")
-    .trim()
-    .toUpperCase();
+  const referralCode = (searchParams.get("ref") || "").trim().toUpperCase();
 
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -70,10 +68,7 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const {
-        confirmPassword,
-        ...additionalRegistrationData
-      } = form;
+      const { confirmPassword, ...additionalRegistrationData } = form;
 
       const registrationData = {
         ...additionalRegistrationData,
@@ -89,7 +84,7 @@ export default function Register() {
 
       if (!authData?.token || !authData?.user) {
         throw new Error(
-          "Registration succeeded but authentication data was not returned."
+          "Registration succeeded but authentication data was not returned.",
         );
       }
 
@@ -98,7 +93,7 @@ export default function Register() {
       toast.success(
         form.userType === "business_owner"
           ? "Account created and business service request sent to our team."
-          : "Account created successfully!"
+          : "Account created successfully!",
       );
 
       navigate("/");
@@ -108,7 +103,7 @@ export default function Register() {
       toast.error(
         err.response?.data?.message ||
           err.message ||
-          "Registration failed. Please try again."
+          "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -118,10 +113,7 @@ export default function Register() {
   return (
     <section className="min-h-[80vh] bg-slate-50 dark:bg-slate-950 px-2 py-2 sm:px-2 sm:py-2 lg:px-2 lg:py-2">
       <div className="">
-        <RegisterForm
-          onSubmit={handleSubmit}
-          loading={loading}
-        />
+        <RegisterForm onSubmit={handleSubmit} loading={loading} />
       </div>
     </section>
   );

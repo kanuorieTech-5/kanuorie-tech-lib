@@ -8,7 +8,13 @@ import {
   ChevronRight,
   Download,
   ExternalLink,
-  FileBadge2, Loader2, Printer, Search, ShieldCheck, Sparkles, X,
+  FileBadge2,
+  Loader2,
+  Printer,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -39,17 +45,13 @@ const getCertificateId = (certificate) =>
   certificate?.certificateId || certificate?._id || "";
 
 const getCourseTitle = (certificate) =>
-  certificate?.courseTitle ||
-  certificate?.course?.title ||
-  "Completed Course";
+  certificate?.courseTitle || certificate?.course?.title || "Completed Course";
 
 const getRecipientName = (certificate) =>
   certificate?.recipientName || "Certificate Recipient";
 
 const getInstructor = (certificate) =>
-  certificate?.instructor ||
-  certificate?.course?.instructor ||
-  "KanuorieTech";
+  certificate?.instructor || certificate?.course?.instructor || "KanuorieTech";
 
 /* ==========================================
    CERTIFICATE PREVIEW
@@ -172,8 +174,7 @@ function CertificatePreview({ certificate, onClose }) {
                     <div className="border-t border-slate-300 pt-1 sm:pt-2">
                       <p className="text-[7px] font-semibold text-slate-900 dark:text-slate-100 sm:text-xs">
                         {formatDate(
-                          certificate?.completionDate ||
-                            certificate?.issuedAt,
+                          certificate?.completionDate || certificate?.issuedAt,
                         )}
                       </p>
 
@@ -276,8 +277,7 @@ export default function Certificates() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCertificate, setSelectedCertificate] =
-    useState(null);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -290,8 +290,7 @@ export default function Certificates() {
         const response = await getCertificates();
 
         const data =
-          response?.data ??
-          (Array.isArray(response) ? response : []);
+          response?.data ?? (Array.isArray(response) ? response : []);
 
         if (mounted) {
           setCertificates(Array.isArray(data) ? data : []);
@@ -329,13 +328,9 @@ export default function Certificates() {
 
     return certificates.filter((certificate) => {
       const courseTitle = getCourseTitle(certificate).toLowerCase();
-      const certificateId =
-        getCertificateId(certificate).toLowerCase();
+      const certificateId = getCertificateId(certificate).toLowerCase();
 
-      return (
-        courseTitle.includes(query) ||
-        certificateId.includes(query)
-      );
+      return courseTitle.includes(query) || certificateId.includes(query);
     });
   }, [certificates, searchQuery]);
 
@@ -348,31 +343,23 @@ export default function Certificates() {
       (certificate) => certificate?.status === "revoked",
     ).length;
 
-    const latest = certificates.reduce(
-      (currentLatest, certificate) => {
-        const date = new Date(
-          certificate?.issuedAt ||
-            certificate?.completionDate ||
-            0,
-        );
+    const latest = certificates.reduce((currentLatest, certificate) => {
+      const date = new Date(
+        certificate?.issuedAt || certificate?.completionDate || 0,
+      );
 
-        if (!currentLatest || date > currentLatest) {
-          return date;
-        }
+      if (!currentLatest || date > currentLatest) {
+        return date;
+      }
 
-        return currentLatest;
-      },
-      null,
-    );
+      return currentLatest;
+    }, null);
 
     return {
       total: certificates.length,
       issued,
       revoked,
-      latest:
-        latest && !Number.isNaN(latest.getTime())
-          ? latest
-          : null,
+      latest: latest && !Number.isNaN(latest.getTime()) ? latest : null,
     };
   }, [certificates]);
 
@@ -401,8 +388,8 @@ export default function Certificates() {
               </h1>
 
               <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-400">
-                View, verify, and print certificates you have earned
-                through your KanuorieTech learning journey.
+                View, verify, and print certificates you have earned through
+                your KanuorieTech learning journey.
               </p>
             </div>
 
@@ -443,14 +430,11 @@ export default function Certificates() {
             {
               label: "Latest",
               value: statistics.latest
-                ? statistics.latest.toLocaleDateString(
-                    undefined,
-                    {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    },
-                  )
+                ? statistics.latest.toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
                 : "—",
               icon: CalendarDays,
               description: "Most recent issue",
@@ -504,9 +488,7 @@ export default function Certificates() {
             <input
               type="search"
               value={searchQuery}
-              onChange={(event) =>
-                setSearchQuery(event.target.value)
-              }
+              onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Search certificates..."
               className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-800 dark:bg-gray-900 dark:text-white"
             />
@@ -548,9 +530,7 @@ export default function Certificates() {
               <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
 
               <div>
-                <p className="font-semibold">
-                  Unable to load certificates
-                </p>
+                <p className="font-semibold">Unable to load certificates</p>
 
                 <p className="mt-1 text-sm">{errorMessage}</p>
               </div>
@@ -562,192 +542,170 @@ export default function Certificates() {
             EMPTY STATE
         ====================================== */}
 
-        {!loading &&
-          !errorMessage &&
-          filteredCertificates.length === 0 && (
-            <div className="rounded-3xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center dark:border-gray-700 dark:bg-gray-900">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/50">
-                <Award className="h-8 w-8" />
-              </div>
-
-              <h2 className="mt-5 text-xl font-bold text-gray-900 dark:text-white">
-                {searchQuery
-                  ? "No matching certificates"
-                  : "Your certificates will appear here"}
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500 dark:text-gray-400">
-                {searchQuery
-                  ? "Try another course title or certificate ID."
-                  : "Complete an eligible KanuorieTech course to earn your first certificate."}
-              </p>
-
-              {!searchQuery && (
-                <Link
-                  to="/courses"
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
-                >
-                  Browse Courses
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              )}
+        {!loading && !errorMessage && filteredCertificates.length === 0 && (
+          <div className="rounded-3xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center dark:border-gray-700 dark:bg-gray-900">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/50">
+              <Award className="h-8 w-8" />
             </div>
-          )}
+
+            <h2 className="mt-5 text-xl font-bold text-gray-900 dark:text-white">
+              {searchQuery
+                ? "No matching certificates"
+                : "Your certificates will appear here"}
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500 dark:text-gray-400">
+              {searchQuery
+                ? "Try another course title or certificate ID."
+                : "Complete an eligible KanuorieTech course to earn your first certificate."}
+            </p>
+
+            {!searchQuery && (
+              <Link
+                to="/courses"
+                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
+              >
+                Browse Courses
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
+        )}
 
         {/* ======================================
             CERTIFICATE GRID
         ====================================== */}
 
-        {!loading &&
-          !errorMessage &&
-          filteredCertificates.length > 0 && (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {filteredCertificates.map(
-                (certificate, index) => {
-                  const certificateId =
-                    getCertificateId(certificate);
+        {!loading && !errorMessage && filteredCertificates.length > 0 && (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filteredCertificates.map((certificate, index) => {
+              const certificateId = getCertificateId(certificate);
 
-                  const status =
-                    certificate?.status || "issued";
+              const status = certificate?.status || "issued";
 
-                  return (
-                    <motion.div
-                      key={
-                        certificate?._id ||
-                        certificateId ||
-                        index
-                      }
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.4,
-                        delay: index * 0.05,
-                      }}
-                    >
-                      <Card className="group overflow-hidden rounded-3xl border-gray-200 bg-white p-0 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900">
-                        {/* VISUAL */}
+              return (
+                <motion.div
+                  key={certificate?._id || certificateId || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.05,
+                  }}
+                >
+                  <Card className="group overflow-hidden rounded-3xl border-gray-200 bg-white p-0 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900">
+                    {/* VISUAL */}
 
-                        <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 p-6">
-                          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-500/20 blur-2xl" />
+                    <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 p-6">
+                      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-500/20 blur-2xl" />
 
-                          <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-yellow-400/10 blur-2xl" />
+                      <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-yellow-400/10 blur-2xl" />
 
-                          <div className="relative flex items-center justify-between">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-yellow-400 backdrop-blur">
-                              <Award className="h-6 w-6" />
-                            </div>
+                      <div className="relative flex items-center justify-between">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-yellow-400 backdrop-blur">
+                          <Award className="h-6 w-6" />
+                        </div>
 
-                            <span
-                              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                                status === "issued"
-                                  ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
-                                  : "border-red-400/20 bg-red-400/10 text-red-300"
-                              }`}
-                            >
-                              <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                              {status === "issued"
-                                ? "Issued"
-                                : "Revoked"}
-                            </span>
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                            status === "issued"
+                              ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
+                              : "border-red-400/20 bg-red-400/10 text-red-300"
+                          }`}
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                          {status === "issued" ? "Issued" : "Revoked"}
+                        </span>
+                      </div>
+
+                      <div className="relative mt-8">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                          KanuorieTech
+                        </p>
+
+                        <h2 className="mt-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold text-white">
+                          {getCourseTitle(certificate)}
+                        </h2>
+                      </div>
+                    </div>
+
+                    {/* CONTENT */}
+
+                    <div className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600 dark:bg-blue-950/50">
+                            <CheckCircle2 className="h-4 w-4" />
                           </div>
 
-                          <div className="relative mt-8">
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-                              KanuorieTech
+                          <div className="min-w-0">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Recipient
                             </p>
 
-                            <h2 className="mt-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold text-white">
-                              {getCourseTitle(
-                                certificate,
+                            <p className="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-white">
+                              {getRecipientName(certificate)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <div className="rounded-xl bg-yellow-50 p-2.5 text-yellow-600 dark:bg-yellow-950/30">
+                            <CalendarDays className="h-4 w-4" />
+                          </div>
+
+                          <div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Completion Date
+                            </p>
+
+                            <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                              {formatDate(
+                                certificate?.completionDate ||
+                                  certificate?.issuedAt,
                               )}
-                            </h2>
+                            </p>
                           </div>
                         </div>
 
-                        {/* CONTENT */}
+                        <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-950">
+                          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                            Certificate ID
+                          </p>
 
-                        <div className="p-6">
-                          <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                              <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600 dark:bg-blue-950/50">
-                                <CheckCircle2 className="h-4 w-4" />
-                              </div>
-
-                              <div className="min-w-0">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  Recipient
-                                </p>
-
-                                <p className="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-white">
-                                  {getRecipientName(
-                                    certificate,
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                              <div className="rounded-xl bg-yellow-50 p-2.5 text-yellow-600 dark:bg-yellow-950/30">
-                                <CalendarDays className="h-4 w-4" />
-                              </div>
-
-                              <div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  Completion Date
-                                </p>
-
-                                <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-                                  {formatDate(
-                                    certificate?.completionDate ||
-                                      certificate?.issuedAt,
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-950">
-                              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                                Certificate ID
-                              </p>
-
-                              <p className="mt-1 break-all font-mono text-xs text-gray-600 dark:text-gray-300">
-                                {certificateId || "Unavailable"}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-6 flex gap-3">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setSelectedCertificate(
-                                  certificate,
-                                )
-                              }
-                              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-                            >
-                              <Award className="h-4 w-4" />
-                              View Certificate
-                            </button>
-
-                            <Link
-                              to={`/verify-certificate/${encodeURIComponent(
-                                certificateId,
-                              )}`}
-                              className="inline-flex items-center justify-center rounded-xl border border-gray-200 px-3.5 text-gray-600 transition hover:bg-gray-50 hover:text-blue-600 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-                              title="Verify certificate"
-                            >
-                              <ShieldCheck className="h-4 w-4" />
-                            </Link>
-                          </div>
+                          <p className="mt-1 break-all font-mono text-xs text-gray-600 dark:text-gray-300">
+                            {certificateId || "Unavailable"}
+                          </p>
                         </div>
-                      </Card>
-                    </motion.div>
-                  );
-                },
-              )}
-            </div>
-          )}
+                      </div>
+
+                      <div className="mt-6 flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCertificate(certificate)}
+                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                        >
+                          <Award className="h-4 w-4" />
+                          View Certificate
+                        </button>
+
+                        <Link
+                          to={`/verify-certificate/${encodeURIComponent(
+                            certificateId,
+                          )}`}
+                          className="inline-flex items-center justify-center rounded-xl border border-gray-200 px-3.5 text-gray-600 transition hover:bg-gray-50 hover:text-blue-600 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                          title="Verify certificate"
+                        >
+                          <ShieldCheck className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ======================================
@@ -763,5 +721,3 @@ export default function Certificates() {
     </div>
   );
 }
-
-

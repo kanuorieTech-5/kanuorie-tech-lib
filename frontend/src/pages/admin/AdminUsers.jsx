@@ -196,7 +196,9 @@ export default function AdminUsers() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Users</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                Total Users
+              </p>
 
               <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
                 {totalUsers}
@@ -253,7 +255,22 @@ export default function AdminUsers() {
       <Card className="overflow-hidden">
         {/* Toolbar */}
 
-        <AdminUserForm {...{ Button, ROLES, RefreshCw, Search, fetchUsers, refreshing, role, search, setRole, setSearch }} onSubmit={(event) => event.preventDefault()} className="border-b border-slate-200 dark:border-slate-700 p-5" />
+        <AdminUserForm
+          {...{
+            Button,
+            ROLES,
+            RefreshCw,
+            Search,
+            fetchUsers,
+            refreshing,
+            role,
+            search,
+            setRole,
+            setSearch,
+          }}
+          onSubmit={(event) => event.preventDefault()}
+          className="border-b border-slate-200 dark:border-slate-700 p-5"
+        />
 
         {/* Error */}
 
@@ -369,5 +386,3 @@ export default function AdminUsers() {
     </div>
   );
 }
-
-

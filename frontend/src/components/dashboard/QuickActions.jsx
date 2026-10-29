@@ -13,5 +13,3 @@ export default function QuickActions({ actions = [] }) {
     </div>
   );
 }
-
-

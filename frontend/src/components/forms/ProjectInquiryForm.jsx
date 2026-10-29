@@ -79,5 +79,3 @@ export default function ProjectInquiryForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
-
-

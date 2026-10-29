@@ -112,27 +112,34 @@ export default function Payments() {
       getOrders(),
       getBillingProfile(),
     ])
-      .then(([overviewResponse, transactionResponse, orderResponse, billingResponse]) => {
-        if (!active) return;
-        setOverview(overviewResponse?.data || null);
-        setTransactions(
-          transactionResponse?.data?.transactions ||
-            transactionResponse?.data?.payments ||
-            [],
-        );
-        setOrders(orderResponse?.data?.orders || []);
-        const profile = billingResponse?.data?.billingProfile || {};
-        setBillingProfile(profile);
-        setBillingForm({
-          companyName: profile.companyName || "",
-          addressLine1: profile.addressLine1 || "",
-          addressLine2: profile.addressLine2 || "",
-          city: profile.city || "",
-          state: profile.state || "",
-          postalCode: profile.postalCode || "",
-          country: profile.country || "",
-        });
-      })
+      .then(
+        ([
+          overviewResponse,
+          transactionResponse,
+          orderResponse,
+          billingResponse,
+        ]) => {
+          if (!active) return;
+          setOverview(overviewResponse?.data || null);
+          setTransactions(
+            transactionResponse?.data?.transactions ||
+              transactionResponse?.data?.payments ||
+              [],
+          );
+          setOrders(orderResponse?.data?.orders || []);
+          const profile = billingResponse?.data?.billingProfile || {};
+          setBillingProfile(profile);
+          setBillingForm({
+            companyName: profile.companyName || "",
+            addressLine1: profile.addressLine1 || "",
+            addressLine2: profile.addressLine2 || "",
+            city: profile.city || "",
+            state: profile.state || "",
+            postalCode: profile.postalCode || "",
+            country: profile.country || "",
+          });
+        },
+      )
       .catch((error) => {
         if (active) {
           setPageError(
@@ -171,7 +178,8 @@ export default function Payments() {
       .catch((error) => {
         if (active) {
           setNewPaymentError(
-            error?.response?.data?.message || "Unable to load available courses.",
+            error?.response?.data?.message ||
+              "Unable to load available courses.",
           );
         }
       })
@@ -190,7 +198,8 @@ export default function Payments() {
       setPayingOrderId(orderId);
       const response = await initializePaystackOrderPayment(orderId);
       const authorizationUrl = response?.data?.paystack?.authorization_url;
-      if (!authorizationUrl) throw new Error("Paystack did not return a checkout link.");
+      if (!authorizationUrl)
+        throw new Error("Paystack did not return a checkout link.");
       window.location.assign(authorizationUrl);
     } catch (error) {
       setPageError(
@@ -208,15 +217,17 @@ export default function Payments() {
     setNewPaymentLoading(true);
 
     try {
-      const response = newPaymentCategory === "course"
-        ? await initializePaystackCoursePayment(selectedCourseId)
-        : await initializePaystackCustomPayment({
-            category: newPaymentCategory,
-            amount: Number(newPaymentAmount),
-            description: newPaymentDescription.trim(),
-          });
+      const response =
+        newPaymentCategory === "course"
+          ? await initializePaystackCoursePayment(selectedCourseId)
+          : await initializePaystackCustomPayment({
+              category: newPaymentCategory,
+              amount: Number(newPaymentAmount),
+              description: newPaymentDescription.trim(),
+            });
       const authorizationUrl = response?.data?.paystack?.authorization_url;
-      if (!authorizationUrl) throw new Error("Paystack did not return a checkout link.");
+      if (!authorizationUrl)
+        throw new Error("Paystack did not return a checkout link.");
       window.location.assign(authorizationUrl);
     } catch (error) {
       setNewPaymentError(
@@ -250,19 +261,25 @@ export default function Payments() {
     }
   };
 
-  const displayTransactions = useMemo(() => transactions.map((payment) => ({
-    ...payment,
-    id: payment._id,
-    reference: payment.providerReference,
-    description:
-      payment.order?.items?.map((item) => item.title).filter(Boolean).join(", ") ||
-      `Order ${payment.order?.orderNumber || "payment"}`,
-    amount: formatCurrency(payment.amount, payment.currency),
-    date: payment.createdAt
-      ? new Date(payment.createdAt).toLocaleDateString()
-      : "—",
-    status: payment.status === "successful" ? "successful" : payment.status,
-  })), [transactions]);
+  const displayTransactions = useMemo(
+    () =>
+      transactions.map((payment) => ({
+        ...payment,
+        id: payment._id,
+        reference: payment.providerReference,
+        description:
+          payment.order?.items
+            ?.map((item) => item.title)
+            .filter(Boolean)
+            .join(", ") || `Order ${payment.order?.orderNumber || "payment"}`,
+        amount: formatCurrency(payment.amount, payment.currency),
+        date: payment.createdAt
+          ? new Date(payment.createdAt).toLocaleDateString()
+          : "—",
+        status: payment.status === "successful" ? "successful" : payment.status,
+      })),
+    [transactions],
+  );
 
   const filteredTransactions = useMemo(() => {
     if (!search.trim()) {
@@ -273,12 +290,8 @@ export default function Payments() {
 
     return displayTransactions.filter((transaction) => {
       return (
-        transaction.reference
-          ?.toLowerCase()
-          .includes(query) ||
-        transaction.description
-          ?.toLowerCase()
-          .includes(query)
+        transaction.reference?.toLowerCase().includes(query) ||
+        transaction.description?.toLowerCase().includes(query)
       );
     });
   }, [search, displayTransactions]);
@@ -293,7 +306,9 @@ export default function Payments() {
     billingProfile?.state,
     billingProfile?.postalCode,
     billingProfile?.country,
-  ].filter(Boolean).join(", ");
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -319,8 +334,8 @@ export default function Payments() {
               </h1>
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">
-                View your purchases, transactions, payment methods, and
-                billing information in one secure place.
+                View your purchases, transactions, payment methods, and billing
+                information in one secure place.
               </p>
             </div>
           </div>
@@ -338,7 +353,14 @@ export default function Payments() {
         >
           <OverviewCard
             label="Total Spent"
-            value={pageLoading ? "—" : formatCurrency(overview?.totalPaid || 0, overview?.currency || "NGN")}
+            value={
+              pageLoading
+                ? "—"
+                : formatCurrency(
+                    overview?.totalPaid || 0,
+                    overview?.currency || "NGN",
+                  )
+            }
             icon={WalletCards}
           />
 
@@ -362,7 +384,10 @@ export default function Payments() {
         </motion.div>
 
         {pageError && (
-          <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+          <div
+            role="alert"
+            className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
+          >
             {pageError}
           </div>
         )}
@@ -456,9 +481,7 @@ export default function Payments() {
                   <input
                     type="search"
                     value={search}
-                    onChange={(event) =>
-                      setSearch(event.target.value)
-                    }
+                    onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search transactions..."
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-700 py-2.5 pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -500,23 +523,34 @@ export default function Payments() {
 
               {pageLoading ? (
                 <div className="flex items-center justify-center gap-2 px-5 py-12 text-sm text-slate-500 dark:text-slate-400">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Loading purchases...
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading
+                  purchases...
                 </div>
               ) : orders.length ? (
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {orders.map((order) => {
                     const isPending = order.status === "pending";
-                    const supportsPaystack = String(order.currency).toUpperCase() === "NGN";
-                    const itemNames = order.items?.map((item) => item.title).filter(Boolean).join(", ");
+                    const supportsPaystack =
+                      String(order.currency).toUpperCase() === "NGN";
+                    const itemNames = order.items
+                      ?.map((item) => item.title)
+                      .filter(Boolean)
+                      .join(", ");
 
                     return (
-                      <div key={order._id} className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                      <div
+                        key={order._id}
+                        className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+                      >
                         <div className="min-w-0">
                           <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                             {itemNames || `Order ${order.orderNumber}`}
                           </h3>
                           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            {order.orderNumber} · {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : ""}
+                            {order.orderNumber} ·{" "}
+                            {order.createdAt
+                              ? new Date(order.createdAt).toLocaleDateString()
+                              : ""}
                           </p>
                         </div>
                         <div className="flex items-center justify-between gap-4 sm:justify-end">
@@ -524,7 +558,9 @@ export default function Payments() {
                             <p className="font-semibold text-slate-900 dark:text-slate-100">
                               {formatCurrency(order.total, order.currency)}
                             </p>
-                            <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">{order.status?.replaceAll("_", " ")}</p>
+                            <p className="mt-1 text-xs capitalize text-slate-500 dark:text-slate-400">
+                              {order.status?.replaceAll("_", " ")}
+                            </p>
                           </div>
                           {isPending && supportsPaystack && (
                             <button
@@ -533,12 +569,18 @@ export default function Payments() {
                               disabled={Boolean(payingOrderId)}
                               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-wait disabled:opacity-70"
                             >
-                              {payingOrderId === order._id && <Loader2 className="h-4 w-4 animate-spin" />}
-                              {payingOrderId === order._id ? "Opening checkout..." : "Pay Now"}
+                              {payingOrderId === order._id && (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              )}
+                              {payingOrderId === order._id
+                                ? "Opening checkout..."
+                                : "Pay Now"}
                             </button>
                           )}
                           {isPending && !supportsPaystack && (
-                            <span className="max-w-36 text-right text-xs text-amber-700 dark:text-amber-300">Paystack checkout currently supports NGN only.</span>
+                            <span className="max-w-36 text-right text-xs text-amber-700 dark:text-amber-300">
+                              Paystack checkout currently supports NGN only.
+                            </span>
                           )}
                         </div>
                       </div>
@@ -567,7 +609,8 @@ export default function Payments() {
                   </h2>
 
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Pay securely through the configured KanuorieTech Paystack account when you check out an eligible order.
+                    Pay securely through the configured KanuorieTech Paystack
+                    account when you check out an eligible order.
                   </p>
                 </div>
               </div>
@@ -575,8 +618,12 @@ export default function Payments() {
               <div className="px-5 py-12 sm:px-6">
                 <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-blue-100 bg-blue-50 p-5 dark:border-blue-900/60 dark:bg-blue-950/30 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">Need to make a new payment?</h3>
-                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Pay for a course, a service quote, or another agreed item.</p>
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                      Need to make a new payment?
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                      Pay for a course, a service quote, or another agreed item.
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -600,7 +647,9 @@ export default function Payments() {
                   </h3>
 
                   <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                    Use “Make a New Payment” for courses, services, or another agreed charge, or choose “Pay Now” for an existing pending NGN order. Paystack handles your card details securely.
+                    Use “Make a New Payment” for courses, services, or another
+                    agreed charge, or choose “Pay Now” for an existing pending
+                    NGN order. Paystack handles your card details securely.
                   </p>
                 </div>
               </div>
@@ -642,7 +691,13 @@ export default function Payments() {
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <BillingField
                     label="Full Name"
-                    value={[user?.firstName, user?.lastName].filter(Boolean).join(" ") || billingProfile?.fullName || "Not provided"}
+                    value={
+                      [user?.firstName, user?.lastName]
+                        .filter(Boolean)
+                        .join(" ") ||
+                      billingProfile?.fullName ||
+                      "Not provided"
+                    }
                   />
 
                   <BillingField
@@ -661,7 +716,10 @@ export default function Payments() {
                   />
 
                   {billingProfile?.companyName && (
-                    <BillingField label="Company" value={billingProfile.companyName} />
+                    <BillingField
+                      label="Company"
+                      value={billingProfile.companyName}
+                    />
                   )}
                 </div>
 
@@ -674,21 +732,36 @@ export default function Payments() {
                     }}
                     className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
                   >
-                    {billingEditing ? "Close billing editor" : "Update Billing Address"}
+                    {billingEditing
+                      ? "Close billing editor"
+                      : "Update Billing Address"}
                     <ChevronRight className="h-4 w-4" />
                   </button>
-                  <Link to="/profile" className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                  <Link
+                    to="/profile"
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
                     Update name, email, or phone in your profile
                   </Link>
                 </div>
 
                 {billingMessage && (
-                  <p role="status" className="mt-4 text-sm text-slate-600 dark:text-slate-300">{billingMessage}</p>
+                  <p
+                    role="status"
+                    className="mt-4 text-sm text-slate-600 dark:text-slate-300"
+                  >
+                    {billingMessage}
+                  </p>
                 )}
 
                 {billingEditing && (
-                  <form onSubmit={saveBillingAddress} className="mt-5 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 sm:p-5">
-                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">Billing address</h3>
+                  <form
+                    onSubmit={saveBillingAddress}
+                    className="mt-5 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 sm:p-5"
+                  >
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                      Billing address
+                    </h3>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       {[
                         { name: "companyName", label: "Company (optional)" },
@@ -699,12 +772,20 @@ export default function Payments() {
                         { name: "postalCode", label: "Postal code" },
                         { name: "country", label: "Country" },
                       ].map((field) => (
-                        <label key={field.name} className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <label
+                          key={field.name}
+                          className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                        >
                           {field.label}
                           <input
                             name={field.name}
                             value={billingForm[field.name]}
-                            onChange={(event) => setBillingForm((current) => ({ ...current, [field.name]: event.target.value }))}
+                            onChange={(event) =>
+                              setBillingForm((current) => ({
+                                ...current,
+                                [field.name]: event.target.value,
+                              }))
+                            }
                             className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                           />
                         </label>
@@ -729,8 +810,14 @@ export default function Payments() {
                       >
                         Cancel
                       </button>
-                      <button type="submit" disabled={billingSaving} className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
-                        {billingSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                      <button
+                        type="submit"
+                        disabled={billingSaving}
+                        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                      >
+                        {billingSaving && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
                         {billingSaving ? "Saving..." : "Save Billing Address"}
                       </button>
                     </div>
@@ -759,13 +846,29 @@ export default function Payments() {
             className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900 sm:p-8"
           >
             <div className="mb-6">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">Secure Paystack checkout</p>
-              <h2 id="new-payment-title" className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Make a new payment</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Choose what you are paying for. Course prices are loaded from the catalog; service and other payments should match your agreed amount.</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+                Secure Paystack checkout
+              </p>
+              <h2
+                id="new-payment-title"
+                className="mt-2 text-2xl font-bold text-slate-900 dark:text-white"
+              >
+                Make a new payment
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Choose what you are paying for. Course prices are loaded from
+                the catalog; service and other payments should match your agreed
+                amount.
+              </p>
             </div>
 
             {newPaymentError && (
-              <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">{newPaymentError}</p>
+              <p
+                role="alert"
+                className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
+              >
+                {newPaymentError}
+              </p>
             )}
 
             <form onSubmit={handleNewPayment} className="space-y-5">
@@ -791,31 +894,48 @@ export default function Payments() {
                   <select
                     required
                     value={selectedCourseId}
-                    onChange={(event) => setSelectedCourseId(event.target.value)}
+                    onChange={(event) =>
+                      setSelectedCourseId(event.target.value)
+                    }
                     disabled={coursesLoading}
                     className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   >
-                    <option value="">{coursesLoading ? "Loading paid courses..." : "Choose a course"}</option>
+                    <option value="">
+                      {coursesLoading
+                        ? "Loading paid courses..."
+                        : "Choose a course"}
+                    </option>
                     {availableCourses.map((course) => (
                       <option key={course._id} value={course._id}>
-                        {course.title} — {formatCurrency(course.price, course.currency)}
+                        {course.title} —{" "}
+                        {formatCurrency(course.price, course.currency)}
                       </option>
                     ))}
                   </select>
                   {!coursesLoading && availableCourses.length === 0 && (
-                    <span className="mt-2 block font-normal text-slate-500 dark:text-slate-400">No paid NGN courses are currently available.</span>
+                    <span className="mt-2 block font-normal text-slate-500 dark:text-slate-400">
+                      No paid NGN courses are currently available.
+                    </span>
                   )}
                 </label>
               ) : (
                 <>
                   <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-                    {newPaymentCategory === "service" ? "Service or quote description" : "What is this payment for?"}
+                    {newPaymentCategory === "service"
+                      ? "Service or quote description"
+                      : "What is this payment for?"}
                     <input
                       required
                       maxLength={160}
                       value={newPaymentDescription}
-                      onChange={(event) => setNewPaymentDescription(event.target.value)}
-                      placeholder={newPaymentCategory === "service" ? "e.g. Website design project" : "e.g. Invoice or product name"}
+                      onChange={(event) =>
+                        setNewPaymentDescription(event.target.value)
+                      }
+                      placeholder={
+                        newPaymentCategory === "service"
+                          ? "e.g. Website design project"
+                          : "e.g. Invoice or product name"
+                      }
                       className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </label>
@@ -828,7 +948,9 @@ export default function Payments() {
                       max="100000000"
                       step="0.01"
                       value={newPaymentAmount}
-                      onChange={(event) => setNewPaymentAmount(event.target.value)}
+                      onChange={(event) =>
+                        setNewPaymentAmount(event.target.value)
+                      }
                       placeholder="Enter agreed amount"
                       className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
@@ -847,11 +969,19 @@ export default function Payments() {
                 </button>
                 <button
                   type="submit"
-                  disabled={newPaymentLoading || (newPaymentCategory === "course" && (coursesLoading || availableCourses.length === 0))}
+                  disabled={
+                    newPaymentLoading ||
+                    (newPaymentCategory === "course" &&
+                      (coursesLoading || availableCourses.length === 0))
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
                 >
-                  {newPaymentLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {newPaymentLoading ? "Preparing checkout..." : "Continue to Paystack"}
+                  {newPaymentLoading && (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  )}
+                  {newPaymentLoading
+                    ? "Preparing checkout..."
+                    : "Continue to Paystack"}
                 </button>
               </div>
             </form>
@@ -879,11 +1009,7 @@ const formatCurrency = (amount = 0, currency = "NGN") => {
    OVERVIEW CARD
 ========================================= */
 
-function OverviewCard({
-  label,
-  value,
-  icon: Icon,
-}) {
+function OverviewCard({ label, value, icon: Icon }) {
   return (
     <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -928,9 +1054,7 @@ function TransactionRow({ transaction }) {
     },
   };
 
-  const config =
-    statusConfig[transaction.status] ||
-    statusConfig.pending;
+  const config = statusConfig[transaction.status] || statusConfig.pending;
 
   const StatusIcon = config.icon;
 
@@ -956,9 +1080,7 @@ function TransactionRow({ transaction }) {
             {transaction.amount}
           </p>
 
-          <p className="mt-1 text-xs text-slate-400">
-            {transaction.date}
-          </p>
+          <p className="mt-1 text-xs text-slate-400">{transaction.date}</p>
         </div>
 
         <div

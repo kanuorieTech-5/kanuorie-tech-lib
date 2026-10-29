@@ -33,7 +33,7 @@ export default function ForgotPassword() {
 
       toast.error(
         error?.response?.data?.message ||
-          "Unable to send reset email. Please try again."
+          "Unable to send reset email. Please try again.",
       );
     } finally {
       setLoading(false);

@@ -663,5 +663,3 @@ function PasswordInput({ label, name, value, onChange, visible, onToggle }) {
     </div>
   );
 }
-
-

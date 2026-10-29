@@ -1,5 +1,5 @@
 ﻿import { Link } from "react-router-dom";
-import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, } from "react-icons/fa";
+import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import logo from "../../assets/logo.jpeg";
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -8,7 +8,11 @@ export default function Footer() {
       <div className="mx-auto grid gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <h1>
-            <img src={logo} alt="KanuorieTech" className="h-8 w-8 object-contain"/>
+            <img
+              src={logo}
+              alt="KanuorieTech"
+              className="h-8 w-8 object-contain"
+            />
             KanuorieTech
           </h1>
 
@@ -210,10 +214,7 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link
-                to="/cookie-policy"
-                className="transition hover:text-white"
-              >
+              <Link to="/cookie-policy" className="transition hover:text-white">
                 Cookie Policy
               </Link>
             </li>
@@ -228,7 +229,10 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link to="/terms-of-service#disclaimers" className="transition hover:text-white">
+              <Link
+                to="/terms-of-service#disclaimers"
+                className="transition hover:text-white"
+              >
                 Disclaimers
               </Link>
             </li>
@@ -293,5 +297,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-

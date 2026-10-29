@@ -132,13 +132,17 @@ export default function Affiliate() {
     setError("");
 
     try {
-      const [dashboardResponse, referralResponse, earningsResponse, payoutsResponse] =
-        await Promise.all([
-          getAffiliateDashboard(),
-          getAffiliateReferrals({ page: 1, limit: 10 }),
-          getAffiliateEarnings(),
-          getAffiliatePayouts(),
-        ]);
+      const [
+        dashboardResponse,
+        referralResponse,
+        earningsResponse,
+        payoutsResponse,
+      ] = await Promise.all([
+        getAffiliateDashboard(),
+        getAffiliateReferrals({ page: 1, limit: 10 }),
+        getAffiliateEarnings(),
+        getAffiliatePayouts(),
+      ]);
 
       setDashboard(dashboardResponse?.data || null);
       setReferrals(referralResponse?.data?.items || []);
@@ -280,10 +284,7 @@ export default function Affiliate() {
     }
 
     try {
-      const response = await updateAffiliatePayout(
-        payoutMethod,
-        payoutDetails
-      );
+      const response = await updateAffiliatePayout(payoutMethod, payoutDetails);
 
       if (response?.success === false) {
         throw new Error(response.message || "Could not save payout details.");
@@ -302,7 +303,7 @@ export default function Affiliate() {
   const handleRequestPayout = async () => {
     if (
       !window.confirm(
-        "Request a payout of your currently approved affiliate earnings?"
+        "Request a payout of your currently approved affiliate earnings?",
       )
     ) {
       return;
@@ -351,7 +352,9 @@ export default function Affiliate() {
           <h1 className="mt-4 text-lg font-bold text-slate-900 dark:text-slate-100">
             Unable to load affiliate dashboard
           </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{error}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+            {error}
+          </p>
           <button
             type="button"
             onClick={() => loadDashboard()}
@@ -464,9 +467,7 @@ export default function Affiliate() {
               disabled={activating}
               className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {activating && (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-              )}
+              {activating && <LoaderCircle className="h-4 w-4 animate-spin" />}
               {activating ? "Activating..." : "Activate Affiliate Account"}
             </button>
           </section>
@@ -668,7 +669,7 @@ export default function Affiliate() {
                           <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-800 dark:text-slate-200">
                             {formatMoney(
                               item.commissionAmount,
-                              item.commissionCurrency || currency
+                              item.commissionCurrency || currency,
                             )}
                           </td>
                         </tr>
@@ -744,7 +745,9 @@ export default function Affiliate() {
                 onClick={() => setShowPayoutHistory((current) => !current)}
                 className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700"
               >
-                {showPayoutHistory ? "Hide payout history" : "View payout history"}
+                {showPayoutHistory
+                  ? "Hide payout history"
+                  : "View payout history"}
                 <ArrowUpRight className="h-4 w-4" />
               </button>
 
@@ -762,7 +765,10 @@ export default function Affiliate() {
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-semibold text-slate-800 dark:text-slate-200">
-                            {formatMoney(payout.amount, payout.currency || currency)}
+                            {formatMoney(
+                              payout.amount,
+                              payout.currency || currency,
+                            )}
                           </span>
                           <StatusBadge status={payout.status} />
                         </div>
@@ -1101,7 +1107,7 @@ export default function Affiliate() {
                       <td className="whitespace-nowrap px-5 py-4 font-semibold text-slate-800 dark:text-slate-200">
                         {formatMoney(
                           item.commissionAmount,
-                          item.commissionCurrency || currency
+                          item.commissionCurrency || currency,
                         )}
                       </td>
                     </tr>

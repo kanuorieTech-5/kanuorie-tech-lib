@@ -735,13 +735,29 @@ export default function AdminProjects() {
 
             {/* Form */}
 
-            <AdminProjectForm {...{ closeModal, editingProject, form, galleryFiles, galleryPreviews, handleChange, handleGalleryChange, handleMainImageChange, handleSubmit, mainImageFile, mainImagePreview, saving, setMainImageFile, setMainImagePreview }} onSubmit={handleSubmit} className="space-y-6 p-6" />
+            <AdminProjectForm
+              {...{
+                closeModal,
+                editingProject,
+                form,
+                galleryFiles,
+                galleryPreviews,
+                handleChange,
+                handleGalleryChange,
+                handleMainImageChange,
+                handleSubmit,
+                mainImageFile,
+                mainImagePreview,
+                saving,
+                setMainImageFile,
+                setMainImagePreview,
+              }}
+              onSubmit={handleSubmit}
+              className="space-y-6 p-6"
+            />
           </div>
         </div>
       )}
     </section>
   );
 }
-
-
-

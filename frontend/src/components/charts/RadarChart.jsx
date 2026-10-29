@@ -26,5 +26,3 @@ export default function CustomRadarChart({ title, subtitle, data }) {
     </ChartCard>
   );
 }
-
-

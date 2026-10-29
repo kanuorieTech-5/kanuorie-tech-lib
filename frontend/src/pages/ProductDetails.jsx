@@ -552,9 +552,7 @@ export default function ProductDetails() {
           DETAILS
       ===================================================== */}
 
-      <section
-        className=" bg-slate-50 dark:bg-slate-950 px-6 py-16 lg:px-8 lg:py-20"
-      >
+      <section className=" bg-slate-50 dark:bg-slate-950 px-6 py-16 lg:px-8 lg:py-20">
         <div
           className="mx-auto grid gap-8lg:grid-cols-[1fr_360px]
           "
@@ -586,16 +584,12 @@ export default function ProductDetails() {
                   About this technology
                 </p>
 
-                <h2
-                  className="text-3xlfont-bold text-slate-900 dark:text-slate-100"
-                >
+                <h2 className="text-3xlfont-bold text-slate-900 dark:text-slate-100">
                   {product.name}
                 </h2>
               </div>
 
-              <div
-                className=" whitespace-pre-line text-base leading-8 text-slate-600 dark:text-slate-400"
-              >
+              <div className=" whitespace-pre-line text-base leading-8 text-slate-600 dark:text-slate-400">
                 {product.description ||
                   "No detailed description has been provided yet."}
               </div>
@@ -604,9 +598,7 @@ export default function ProductDetails() {
 
               {technologies.length > 0 && (
                 <div className="mt-10">
-                  <h3
-                    className="mb-4 text-lg font-bold text-slate-900 dark:text-slate-100"
-                  >
+                  <h3 className="mb-4 text-lg font-bold text-slate-900 dark:text-slate-100">
                     Technologies & Tags
                   </h3>
 
@@ -856,5 +848,3 @@ export default function ProductDetails() {
     </>
   );
 }
-
-

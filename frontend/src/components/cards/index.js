@@ -13,5 +13,3 @@ export { default as PricingCard } from "./PricingCard";
 
 export { default as DashboardCard } from "./DashboardCard";
 export { default as StatisticCard } from "./StatisticCard";
-
-

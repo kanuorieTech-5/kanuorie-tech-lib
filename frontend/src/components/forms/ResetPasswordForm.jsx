@@ -23,7 +23,9 @@ export default function ResetPasswordForm({ onSubmit, loading = false }) {
     <Card className="mx-auto max-w-md p-8">
       <h2 className="mb-2 text-3xl font-bold">Reset Password</h2>
 
-      <p className="mb-8 text-gray-500 dark:text-slate-400">Enter your new password.</p>
+      <p className="mb-8 text-gray-500 dark:text-slate-400">
+        Enter your new password.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <Input
@@ -51,5 +53,3 @@ export default function ResetPasswordForm({ onSubmit, loading = false }) {
     </Card>
   );
 }
-
-

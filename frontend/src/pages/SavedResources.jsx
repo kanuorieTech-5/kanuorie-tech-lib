@@ -27,33 +27,51 @@ export default function SavedResources() {
     setLoading(true);
     setError("");
     try {
-      const items = extractItems(await getSavedResources()).map((item) => ({
-        ...item,
-        resourceId: getId(item),
-        resourceType: item.resourceType || "external",
-        description: item.description ?? item.desc ?? "",
-        image: item.image ?? item.coverImage ?? item.img ?? "",
-        link: item.link ?? item.url ?? "",
-      })).filter((item) => item.resourceId);
+      const items = extractItems(await getSavedResources())
+        .map((item) => ({
+          ...item,
+          resourceId: getId(item),
+          resourceType: item.resourceType || "external",
+          description: item.description ?? item.desc ?? "",
+          image: item.image ?? item.coverImage ?? item.img ?? "",
+          link: item.link ?? item.url ?? "",
+        }))
+        .filter((item) => item.resourceId);
       setResources(items);
     } catch (err) {
-      setError(err?.response?.data?.message || "We couldn't load your saved resources. Please try again.");
+      setError(
+        err?.response?.data?.message ||
+          "We couldn't load your saved resources. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { loadResources(); }, [loadResources]);
+  useEffect(() => {
+    loadResources();
+  }, [loadResources]);
 
   const handleRemove = async (resource) => {
     if (removingId) return;
     setRemovingId(resource.resourceId);
     try {
       await removeSavedResource(resource.resourceId, resource.resourceType);
-      setResources((current) => current.filter((item) => !(item.resourceId === resource.resourceId && item.resourceType === resource.resourceType)));
+      setResources((current) =>
+        current.filter(
+          (item) =>
+            !(
+              item.resourceId === resource.resourceId &&
+              item.resourceType === resource.resourceType
+            ),
+        ),
+      );
       window.dispatchEvent(new Event("library-update"));
     } catch (err) {
-      setError(err?.response?.data?.message || "Unable to remove this resource. Please try again.");
+      setError(
+        err?.response?.data?.message ||
+          "Unable to remove this resource. Please try again.",
+      );
     } finally {
       setRemovingId("");
     }
@@ -72,30 +90,57 @@ export default function SavedResources() {
               Saved Resources
             </h1>
             <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-              Keep your books, courses, and useful learning links together so you can pick up where you left off.
+              Keep your books, courses, and useful learning links together so
+              you can pick up where you left off.
             </p>
           </div>
-          {!loading && 
+          {!loading && (
             <span className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200">
-              {resources.length} {resources.length === 1 ? "resource" : "resources"}
+              {resources.length}{" "}
+              {resources.length === 1 ? "resource" : "resources"}
             </span>
-          }
-        </div>
-      </header>
-      {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300"><span>{error}</span><button type="button" onClick={loadResources} className="inline-flex items-center gap-2 font-semibold"><RefreshCw className="h-4 w-4" />Try again</button></div>}
-      {loading ? <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">{[1, 2, 3].map((n) =>
-        <div key={n} className="h-80 animate-pulse rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
-      )}
-      </div>
-      : resources.length ? 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {resources.map((resource) => 
-            <div key={resource.resourceType + "-" + resource.resourceId}>
-              <ResourceCard resource={resource} isSaved saving={removingId === resource.resourceId} onSave={handleRemove} />
-            </div>
           )}
         </div>
-        :
+      </header>
+      {error && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300"
+        >
+          <span>{error}</span>
+          <button
+            type="button"
+            onClick={loadResources}
+            className="inline-flex items-center gap-2 font-semibold"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Try again
+          </button>
+        </div>
+      )}
+      {loading ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="h-80 animate-pulse rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+            />
+          ))}
+        </div>
+      ) : resources.length ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {resources.map((resource) => (
+            <div key={resource.resourceType + "-" + resource.resourceId}>
+              <ResourceCard
+                resource={resource}
+                isSaved
+                saving={removingId === resource.resourceId}
+                onSave={handleRemove}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
           <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 dark:bg-blue-400/10 dark:text-blue-300">
             <BookOpen className="h-7 w-7" />
@@ -104,14 +149,18 @@ export default function SavedResources() {
             Your saved list is empty
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
-            Browse the library and use the bookmark button on a resource to keep it here.
+            Browse the library and use the bookmark button on a resource to keep
+            it here.
           </p>
-          <Link to="/library" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700">
-            Explore the library 
-          <ArrowRight className="h-4 w-4" />
+          <Link
+            to="/library"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+          >
+            Explore the library
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-      }
+      )}
     </section>
   );
 }

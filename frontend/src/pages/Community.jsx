@@ -143,9 +143,8 @@ const getAuthorName = (author) => {
   }
 
   return (
-    `${author.firstName || ""} ${
-      author.lastName || ""
-    }`.trim() || "KanuorieTech Member"
+    `${author.firstName || ""} ${author.lastName || ""}`.trim() ||
+    "KanuorieTech Member"
   );
 };
 
@@ -174,8 +173,7 @@ export default function Community() {
      FILTER STATE
   ======================================== */
 
-  const [activeCategory, setActiveCategory] =
-    useState("All Discussions");
+  const [activeCategory, setActiveCategory] = useState("All Discussions");
 
   const [search, setSearch] = useState("");
 
@@ -183,25 +181,19 @@ export default function Community() {
      CREATE POST STATE
   ======================================== */
 
-  const [showCreatePost, setShowCreatePost] =
-    useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
 
   const [postTitle, setPostTitle] = useState("");
 
-  const [postContent, setPostContent] =
-    useState("");
+  const [postContent, setPostContent] = useState("");
 
-  const [postCategory, setPostCategory] =
-    useState("Questions & Help");
+  const [postCategory, setPostCategory] = useState("Questions & Help");
 
-  const [creatingPost, setCreatingPost] =
-    useState(false);
+  const [creatingPost, setCreatingPost] = useState(false);
 
-  const [createError, setCreateError] =
-    useState("");
+  const [createError, setCreateError] = useState("");
 
-  const [successMessage, setSuccessMessage] =
-    useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   /* ========================================
      LOAD COMMUNITY POSTS
@@ -221,10 +213,7 @@ export default function Community() {
 
       setPosts(Array.isArray(items) ? items : []);
     } catch (err) {
-      console.error(
-        "Failed to load community posts:",
-        err,
-      );
+      console.error("Failed to load community posts:", err);
 
       setError(
         err?.response?.data?.message ||
@@ -240,7 +229,10 @@ export default function Community() {
   }, []);
 
   const setPostNotice = (postId, message, isError = false) => {
-    setActionNotices((current) => ({ ...current, [postId]: { message, isError } }));
+    setActionNotices((current) => ({
+      ...current,
+      [postId]: { message, isError },
+    }));
   };
 
   const requireSignIn = (postId) => {
@@ -257,13 +249,24 @@ export default function Community() {
     try {
       const response = await toggleCommunityLike(postId);
       const result = response?.data || {};
-      setPosts((items) => items.map((item) =>
-        (item._id || item.id) === postId
-          ? { ...item, likedByMe: result.liked, likesCount: result.likesCount }
-          : item
-      ));
+      setPosts((items) =>
+        items.map((item) =>
+          (item._id || item.id) === postId
+            ? {
+                ...item,
+                likedByMe: result.liked,
+                likesCount: result.likesCount,
+              }
+            : item,
+        ),
+      );
     } catch (err) {
-      setPostNotice(postId, err?.response?.data?.message || "Could not update your like. Please try again.", true);
+      setPostNotice(
+        postId,
+        err?.response?.data?.message ||
+          "Could not update your like. Please try again.",
+        true,
+      );
     } finally {
       setActionBusy((current) => ({ ...current, [postId]: false }));
     }
@@ -277,12 +280,24 @@ export default function Community() {
     try {
       const response = await toggleCommunitySave(postId);
       const saved = response?.data?.saved;
-      setPosts((items) => items.map((item) =>
-        (item._id || item.id) === postId ? { ...item, savedByMe: saved } : item
-      ));
-      setPostNotice(postId, saved ? "Post saved." : "Post removed from saved posts.");
+      setPosts((items) =>
+        items.map((item) =>
+          (item._id || item.id) === postId
+            ? { ...item, savedByMe: saved }
+            : item,
+        ),
+      );
+      setPostNotice(
+        postId,
+        saved ? "Post saved." : "Post removed from saved posts.",
+      );
     } catch (err) {
-      setPostNotice(postId, err?.response?.data?.message || "Could not update your saved posts. Please try again.", true);
+      setPostNotice(
+        postId,
+        err?.response?.data?.message ||
+          "Could not update your saved posts. Please try again.",
+        true,
+      );
     } finally {
       setActionBusy((current) => ({ ...current, [postId]: false }));
     }
@@ -298,10 +313,21 @@ export default function Community() {
     if (commentsByPost[postId]) return;
     setCommentsLoading((current) => ({ ...current, [postId]: true }));
     try {
-      const response = await getCommunityComments(postId, { page: 1, limit: 50 });
-      setCommentsByPost((current) => ({ ...current, [postId]: response?.data?.items || [] }));
+      const response = await getCommunityComments(postId, {
+        page: 1,
+        limit: 50,
+      });
+      setCommentsByPost((current) => ({
+        ...current,
+        [postId]: response?.data?.items || [],
+      }));
     } catch (err) {
-      setPostNotice(postId, err?.response?.data?.message || "Could not load comments. Please try again.", true);
+      setPostNotice(
+        postId,
+        err?.response?.data?.message ||
+          "Could not load comments. Please try again.",
+        true,
+      );
       setOpenComments((current) => ({ ...current, [postId]: false }));
     } finally {
       setCommentsLoading((current) => ({ ...current, [postId]: false }));
@@ -324,15 +350,22 @@ export default function Community() {
           ...current,
           [postId]: [...(current[postId] || []), comment],
         }));
-        setPosts((items) => items.map((item) =>
-          (item._id || item.id) === postId
-            ? { ...item, commentsCount: (item.commentsCount || 0) + 1 }
-            : item
-        ));
+        setPosts((items) =>
+          items.map((item) =>
+            (item._id || item.id) === postId
+              ? { ...item, commentsCount: (item.commentsCount || 0) + 1 }
+              : item,
+          ),
+        );
         setCommentDrafts((current) => ({ ...current, [postId]: "" }));
       }
     } catch (err) {
-      setPostNotice(postId, err?.response?.data?.message || "Could not add your comment. Please try again.", true);
+      setPostNotice(
+        postId,
+        err?.response?.data?.message ||
+          "Could not add your comment. Please try again.",
+        true,
+      );
     } finally {
       setCommentSubmitting((current) => ({ ...current, [postId]: false }));
     }
@@ -352,7 +385,12 @@ export default function Community() {
       }
     } catch (err) {
       if (err?.name === "AbortError") return;
-      setPostNotice(postId, err?.response?.data?.message || "Could not share this post. Please try again.", true);
+      setPostNotice(
+        postId,
+        err?.response?.data?.message ||
+          "Could not share this post. Please try again.",
+        true,
+      );
     }
   };
 
@@ -368,10 +406,7 @@ export default function Community() {
     ====================================== */
 
     if (activeCategory !== "All Discussions") {
-      result = result.filter(
-        (post) =>
-          post.category === activeCategory,
-      );
+      result = result.filter((post) => post.category === activeCategory);
     }
 
     /* ======================================
@@ -382,18 +417,13 @@ export default function Community() {
 
     if (query) {
       result = result.filter((post) => {
-        const title =
-          post.title?.toLowerCase() || "";
+        const title = post.title?.toLowerCase() || "";
 
-        const content =
-          post.content?.toLowerCase() || "";
+        const content = post.content?.toLowerCase() || "";
 
-        const category =
-          post.category?.toLowerCase() || "";
+        const category = post.category?.toLowerCase() || "";
 
-        const author =
-          getAuthorName(post.author)
-            .toLowerCase();
+        const author = getAuthorName(post.author).toLowerCase();
 
         return (
           title.includes(query) ||
@@ -405,11 +435,7 @@ export default function Community() {
     }
 
     return result;
-  }, [
-    posts,
-    activeCategory,
-    search,
-  ]);
+  }, [posts, activeCategory, search]);
 
   /* ========================================
      OPEN CREATE POST MODAL
@@ -458,17 +484,13 @@ export default function Community() {
     const content = postContent.trim();
 
     if (!title) {
-      setCreateError(
-        "Please enter a title for your post.",
-      );
+      setCreateError("Please enter a title for your post.");
 
       return;
     }
 
     if (!content) {
-      setCreateError(
-        "Please enter something to share with the community.",
-      );
+      setCreateError("Please enter something to share with the community.");
 
       return;
     }
@@ -476,21 +498,16 @@ export default function Community() {
     try {
       setCreatingPost(true);
 
-      const response =
-        await createCommunityPost({
-          title,
-          content,
-          category: postCategory,
-        });
+      const response = await createCommunityPost({
+        title,
+        content,
+        category: postCategory,
+      });
 
-      const createdPost =
-        response?.data?.post;
+      const createdPost = response?.data?.post;
 
       if (createdPost) {
-        setPosts((currentPosts) => [
-          createdPost,
-          ...currentPosts,
-        ]);
+        setPosts((currentPosts) => [createdPost, ...currentPosts]);
       } else {
         await loadPosts();
       }
@@ -500,18 +517,13 @@ export default function Community() {
       setPostCategory("Questions & Help");
       setShowCreatePost(false);
 
-      setSuccessMessage(
-        "Your post was published successfully.",
-      );
+      setSuccessMessage("Your post was published successfully.");
 
       window.setTimeout(() => {
         setSuccessMessage("");
       }, 4000);
     } catch (err) {
-      console.error(
-        "Failed to create community post:",
-        err,
-      );
+      console.error("Failed to create community post:", err);
 
       setCreateError(
         err?.response?.data?.message ||
@@ -559,10 +571,8 @@ export default function Community() {
               </h1>
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">
-                Connect with other learners, ask
-                questions, share projects, exchange
-                ideas, and grow your technology
-                skills together.
+                Connect with other learners, ask questions, share projects,
+                exchange ideas, and grow your technology skills together.
               </p>
             </div>
 
@@ -615,9 +625,7 @@ export default function Community() {
             <input
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search discussions..."
               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3.5 pl-12 pr-4 text-sm text-slate-900 dark:text-slate-100 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
@@ -639,19 +647,13 @@ export default function Community() {
             {categories.map((category) => {
               const Icon = category.icon;
 
-              const active =
-                activeCategory ===
-                category.name;
+              const active = activeCategory === category.name;
 
               return (
                 <button
                   key={category.name}
                   type="button"
-                  onClick={() =>
-                    setActiveCategory(
-                      category.name,
-                    )
-                  }
+                  onClick={() => setActiveCategory(category.name)}
                   className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                     active
                       ? "bg-blue-600 text-white shadow-sm"
@@ -692,8 +694,7 @@ export default function Community() {
                     <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
 
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Loading community
-                      discussions...
+                      Loading community discussions...
                     </p>
                   </div>
                 </div>
@@ -723,31 +724,22 @@ export default function Community() {
                     Try Again
                   </button>
                 </div>
-              ) : filteredPosts.length >
-                0 ? (
+              ) : filteredPosts.length > 0 ? (
                 /* =====================================
                    POSTS
                 ===================================== */
 
                 <div className="divide-y divide-slate-100">
                   {filteredPosts.map((post) => {
-                    const author =
-                      post.author;
+                    const author = post.author;
 
-                    const authorName =
-                      getAuthorName(author);
+                    const authorName = getAuthorName(author);
 
-                    const authorInitial =
-                      getAuthorInitial(
-                        author,
-                      );
+                    const authorInitial = getAuthorInitial(author);
 
                     return (
                       <article
-                        key={
-                          post._id ||
-                          post.id
-                        }
+                        key={post._id || post.id}
                         id={`post-${post._id || post.id}`}
                         className="p-5 sm:p-6"
                       >
@@ -781,9 +773,7 @@ export default function Community() {
                               )}
 
                               <span className="text-xs text-slate-400">
-                                {formatPostDate(
-                                  post.createdAt,
-                                )}
+                                {formatPostDate(post.createdAt)}
                               </span>
                             </div>
 
@@ -809,20 +799,25 @@ export default function Community() {
                                 disabled={actionBusy[post._id || post.id]}
                                 className={`inline-flex items-center gap-1.5 transition hover:text-red-500 disabled:opacity-60 ${post.likedByMe ? "font-semibold text-red-500" : ""}`}
                               >
-                                <Heart className="h-4 w-4" fill={post.likedByMe ? "currentColor" : "none"} />
-                                {post.likesCount ||
-                                  0}
+                                <Heart
+                                  className="h-4 w-4"
+                                  fill={
+                                    post.likedByMe ? "currentColor" : "none"
+                                  }
+                                />
+                                {post.likesCount || 0}
                               </button>
 
                               <button
                                 type="button"
                                 onClick={() => handleToggleComments(post)}
-                                aria-expanded={Boolean(openComments[post._id || post.id])}
+                                aria-expanded={Boolean(
+                                  openComments[post._id || post.id],
+                                )}
                                 className="inline-flex items-center gap-1.5 transition hover:text-blue-600"
                               >
                                 <MessageCircle className="h-4 w-4" />
-                                {post.commentsCount ||
-                                  0}
+                                {post.commentsCount || 0}
                               </button>
 
                               <button
@@ -838,59 +833,134 @@ export default function Community() {
                                 type="button"
                                 onClick={() => handleToggleSave(post)}
                                 disabled={actionBusy[post._id || post.id]}
-                                aria-label={post.savedByMe ? "Unsave post" : "Save post"}
+                                aria-label={
+                                  post.savedByMe ? "Unsave post" : "Save post"
+                                }
                                 aria-pressed={Boolean(post.savedByMe)}
                                 className={`ml-auto transition hover:text-blue-600 disabled:opacity-60 ${post.savedByMe ? "text-blue-600" : ""}`}
                               >
-                                <Bookmark className="h-4 w-4" fill={post.savedByMe ? "currentColor" : "none"} />
+                                <Bookmark
+                                  className="h-4 w-4"
+                                  fill={
+                                    post.savedByMe ? "currentColor" : "none"
+                                  }
+                                />
                               </button>
                             </div>
 
                             {actionNotices[post._id || post.id]?.message && (
-                              <p className={`mt-2 text-xs ${actionNotices[post._id || post.id].isError ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                              <p
+                                className={`mt-2 text-xs ${actionNotices[post._id || post.id].isError ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}
+                              >
                                 {actionNotices[post._id || post.id].message}
-                                {actionNotices[post._id || post.id].isError && !user && (
-                                  <> <Link to="/login" className="font-semibold underline">Sign in</Link> to continue.</>
-                                )}
+                                {actionNotices[post._id || post.id].isError &&
+                                  !user && (
+                                    <>
+                                      {" "}
+                                      <Link
+                                        to="/login"
+                                        className="font-semibold underline"
+                                      >
+                                        Sign in
+                                      </Link>{" "}
+                                      to continue.
+                                    </>
+                                  )}
                               </p>
                             )}
 
                             {openComments[post._id || post.id] && (
-                              <section className="mt-5 space-y-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-900/70" aria-label="Post comments">
+                              <section
+                                className="mt-5 space-y-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-900/70"
+                                aria-label="Post comments"
+                              >
                                 {commentsLoading[post._id || post.id] ? (
-                                  <p className="text-sm text-slate-500 dark:text-slate-400">Loading comments…</p>
-                                ) : (commentsByPost[post._id || post.id] || []).length ? (
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                                    Loading comments…
+                                  </p>
+                                ) : (commentsByPost[post._id || post.id] || [])
+                                    .length ? (
                                   <div className="space-y-4">
-                                    {commentsByPost[post._id || post.id].map((comment) => (
-                                      <div key={comment._id || comment.id} className="border-b border-slate-200 pb-3 last:border-0 last:pb-0 dark:border-slate-700">
-                                        <div className="flex items-center justify-between gap-3">
-                                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{getAuthorName(comment.author)}</span>
-                                          <time className="text-xs text-slate-400">{formatPostDate(comment.createdAt)}</time>
+                                    {commentsByPost[post._id || post.id].map(
+                                      (comment) => (
+                                        <div
+                                          key={comment._id || comment.id}
+                                          className="border-b border-slate-200 pb-3 last:border-0 last:pb-0 dark:border-slate-700"
+                                        >
+                                          <div className="flex items-center justify-between gap-3">
+                                            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                                              {getAuthorName(comment.author)}
+                                            </span>
+                                            <time className="text-xs text-slate-400">
+                                              {formatPostDate(
+                                                comment.createdAt,
+                                              )}
+                                            </time>
+                                          </div>
+                                          <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-slate-300">
+                                            {comment.content}
+                                          </p>
                                         </div>
-                                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-slate-300">{comment.content}</p>
-                                      </div>
-                                    ))}
+                                      ),
+                                    )}
                                   </div>
                                 ) : (
-                                  <p className="text-sm text-slate-500 dark:text-slate-400">No comments yet. Start the conversation.</p>
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                                    No comments yet. Start the conversation.
+                                  </p>
                                 )}
 
                                 {user ? (
-                                  <form onSubmit={(event) => handleCreateComment(event, post)} className="flex flex-col gap-2 sm:flex-row">
+                                  <form
+                                    onSubmit={(event) =>
+                                      handleCreateComment(event, post)
+                                    }
+                                    className="flex flex-col gap-2 sm:flex-row"
+                                  >
                                     <input
-                                      value={commentDrafts[post._id || post.id] || ""}
-                                      onChange={(event) => setCommentDrafts((current) => ({ ...current, [post._id || post.id]: event.target.value }))}
+                                      value={
+                                        commentDrafts[post._id || post.id] || ""
+                                      }
+                                      onChange={(event) =>
+                                        setCommentDrafts((current) => ({
+                                          ...current,
+                                          [post._id || post.id]:
+                                            event.target.value,
+                                        }))
+                                      }
                                       maxLength={2000}
                                       placeholder="Write a comment…"
                                       aria-label="Write a comment"
                                       className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                     />
-                                    <button type="submit" disabled={commentSubmitting[post._id || post.id] || !(commentDrafts[post._id || post.id] || "").trim()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-                                      {commentSubmitting[post._id || post.id] ? "Posting…" : "Comment"}
+                                    <button
+                                      type="submit"
+                                      disabled={
+                                        commentSubmitting[
+                                          post._id || post.id
+                                        ] ||
+                                        !(
+                                          commentDrafts[post._id || post.id] ||
+                                          ""
+                                        ).trim()
+                                      }
+                                      className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                      {commentSubmitting[post._id || post.id]
+                                        ? "Posting…"
+                                        : "Comment"}
                                     </button>
                                   </form>
                                 ) : (
-                                  <p className="text-sm text-slate-500 dark:text-slate-400"><Link to="/login" className="font-semibold text-blue-600 hover:underline">Sign in</Link> to add a comment.</p>
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                                    <Link
+                                      to="/login"
+                                      className="font-semibold text-blue-600 hover:underline"
+                                    >
+                                      Sign in
+                                    </Link>{" "}
+                                    to add a comment.
+                                  </p>
                                 )}
                               </section>
                             )}
@@ -911,33 +981,27 @@ export default function Community() {
                   </div>
 
                   <h2 className="mt-5 text-lg font-semibold text-slate-900 dark:text-slate-100">
-                    {search.trim() ||
-                    activeCategory !==
-                      "All Discussions"
+                    {search.trim() || activeCategory !== "All Discussions"
                       ? "No discussions found"
                       : "The community is getting ready"}
                   </h2>
 
                   <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
-                    {search.trim() ||
-                    activeCategory !==
-                      "All Discussions"
+                    {search.trim() || activeCategory !== "All Discussions"
                       ? "Try another search term or choose a different community category."
                       : "There are no discussions to display yet. Start the first conversation and help build the KanuorieTech community."}
                   </p>
 
-                  {!search.trim() &&
-                    activeCategory ===
-                      "All Discussions" && (
-                      <button
-                        type="button"
-                        onClick={openCreatePost}
-                        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Start a Discussion
-                      </button>
-                    )}
+                  {!search.trim() && activeCategory === "All Discussions" && (
+                    <button
+                      type="button"
+                      onClick={openCreatePost}
+                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Start a Discussion
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -975,15 +1039,12 @@ export default function Community() {
 
               <div className="mt-5 space-y-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 <p>
-                  Ask thoughtful questions,
-                  share what you're building,
-                  and help other learners when
-                  you can.
+                  Ask thoughtful questions, share what you're building, and help
+                  other learners when you can.
                 </p>
 
                 <p>
-                  Keep conversations respectful,
-                  useful, and focused on learning
+                  Keep conversations respectful, useful, and focused on learning
                   and professional growth.
                 </p>
               </div>
@@ -997,30 +1058,21 @@ export default function Community() {
               </h2>
 
               <div className="mt-4 space-y-2">
-                {categories
-                  .slice(1)
-                  .map((category) => {
-                    const Icon =
-                      category.icon;
+                {categories.slice(1).map((category) => {
+                  const Icon = category.icon;
 
-                    return (
-                      <button
-                        key={category.name}
-                        type="button"
-                        onClick={() =>
-                          setActiveCategory(
-                            category.name,
-                          )
-                        }
-                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-600 dark:text-slate-400 transition hover:bg-slate-50 hover:text-blue-600"
-                      >
-                        <Icon className="h-4 w-4 shrink-0" />
-                        <span>
-                          {category.name}
-                        </span>
-                      </button>
-                    );
-                  })}
+                  return (
+                    <button
+                      key={category.name}
+                      type="button"
+                      onClick={() => setActiveCategory(category.name)}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-slate-600 dark:text-slate-400 transition hover:bg-slate-50 hover:text-blue-600"
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span>{category.name}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </motion.aside>
@@ -1057,8 +1109,7 @@ export default function Community() {
                 </h2>
 
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Start a conversation with the
-                  community.
+                  Start a conversation with the community.
                 </p>
               </div>
 
@@ -1077,9 +1128,7 @@ export default function Community() {
                 FORM
             ===================================== */}
 
-            <form
-              onSubmit={handleCreatePost}
-            >
+            <form onSubmit={handleCreatePost}>
               <div className="space-y-5 p-5 sm:p-6">
                 {/* =================================
                     ERROR
@@ -1109,11 +1158,7 @@ export default function Community() {
                     id="community-post-title"
                     type="text"
                     value={postTitle}
-                    onChange={(event) =>
-                      setPostTitle(
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => setPostTitle(event.target.value)}
                     maxLength={150}
                     placeholder="Give your discussion a clear title..."
                     className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -1135,23 +1180,14 @@ export default function Community() {
                   <select
                     id="community-post-category"
                     value={postCategory}
-                    onChange={(event) =>
-                      setPostCategory(
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => setPostCategory(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
-                    {categories
-                      .slice(1)
-                      .map((category) => (
-                        <option
-                          key={category.name}
-                          value={category.name}
-                        >
-                          {category.name}
-                        </option>
-                      ))}
+                    {categories.slice(1).map((category) => (
+                      <option key={category.name} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1170,11 +1206,7 @@ export default function Community() {
                   <textarea
                     id="community-post"
                     value={postContent}
-                    onChange={(event) =>
-                      setPostContent(
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => setPostContent(event.target.value)}
                     maxLength={5000}
                     rows={6}
                     placeholder="Share a question, project, idea, or something you've learned..."
@@ -1204,9 +1236,7 @@ export default function Community() {
                 <button
                   type="submit"
                   disabled={
-                    creatingPost ||
-                    !postTitle.trim() ||
-                    !postContent.trim()
+                    creatingPost || !postTitle.trim() || !postContent.trim()
                   }
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -1227,4 +1257,3 @@ export default function Community() {
     </div>
   );
 }
-

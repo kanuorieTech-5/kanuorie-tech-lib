@@ -3,7 +3,7 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { resetPassword } from "../services";
-import { Card, Button, } from "../components/ui";
+import { Card, Button } from "../components/ui";
 
 export default function ResetPassword() {
   const { token: pathToken } = useParams();
@@ -19,7 +19,9 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (!token) {
-      toast.error("Reset token is missing or invalid. Please request a new reset link.");
+      toast.error(
+        "Reset token is missing or invalid. Please request a new reset link.",
+      );
       return;
     }
 
@@ -39,9 +41,7 @@ export default function ResetPassword() {
       toast.success("Password updated successfully.");
       navigate("/login", { replace: true });
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Password reset failed."
-      );
+      toast.error(err.response?.data?.message || "Password reset failed.");
     } finally {
       setLoading(false);
     }
@@ -50,9 +50,7 @@ export default function ResetPassword() {
   return (
     <section className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-slate-900 px-6">
       <Card className="w-full max-w-md p-8">
-        <h1 className="mb-3 text-center text-3xl font-bold">
-          Reset Password
-        </h1>
+        <h1 className="mb-3 text-center text-3xl font-bold">Reset Password</h1>
 
         <p className="mb-8 text-center text-sm text-gray-600 dark:text-slate-400">
           Enter your new password below.

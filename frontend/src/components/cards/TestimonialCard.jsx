@@ -9,7 +9,9 @@ export default function TestimonialCard({ testimonial }) {
         <div>
           <h4 className="font-semibold">{testimonial.name}</h4>
 
-          <p className="text-sm text-gray-500 dark:text-slate-400">{testimonial.position}</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">
+            {testimonial.position}
+          </p>
         </div>
       </div>
 
@@ -23,6 +25,3 @@ export default function TestimonialCard({ testimonial }) {
     </Card>
   );
 }
-
-
-

@@ -28,5 +28,3 @@ export default function VerifyEmail() {
 
   return <Loader />;
 }
-
-

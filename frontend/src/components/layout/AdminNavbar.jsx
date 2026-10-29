@@ -8,7 +8,9 @@ export default function AdminNavbar() {
       <div>
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
-        <p className="text-sm text-gray-500 dark:text-slate-400">Welcome back</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400">
+          Welcome back
+        </p>
       </div>
 
       <div className="flex items-center gap-5">
@@ -26,5 +28,3 @@ export default function AdminNavbar() {
     </header>
   );
 }
-
-

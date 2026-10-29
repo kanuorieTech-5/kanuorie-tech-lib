@@ -292,10 +292,7 @@ function CheckboxGroup({
   );
 }
 
-export default function RegisterForm({
-  onSubmit,
-  loading = false,
-}) {
+export default function RegisterForm({ onSubmit, loading = false }) {
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
@@ -377,7 +374,6 @@ export default function RegisterForm({
         setError("Please select at least one interest.");
         return false;
       }
-
     }
 
     if (
@@ -427,48 +423,43 @@ export default function RegisterForm({
   };
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  setError("");
+    event.preventDefault();
+    setError("");
 
-  if (step !== 4) {
-    handleNext();
-    return;
-  }
+    if (step !== 4) {
+      handleNext();
+      return;
+    }
 
-  if (!validateStep()) return;
+    if (!validateStep()) return;
 
-  // Keep confirmPassword for validation in Register.jsx.
-  // Register.jsx removes it before sending data to the backend.
-  const payload = {
-    ...form,
-    firstName: form.firstName.trim(),
-    lastName: form.lastName.trim(),
-    email: form.email.trim().toLowerCase(),
-    discoverySourceOther:
-      form.discoverySource === "other"
-        ? form.discoverySourceOther.trim()
-        : "",
-    otherInterest: form.otherInterest,
-    techStack: form.techStack,
+    // Keep confirmPassword for validation in Register.jsx.
+    // Register.jsx removes it before sending data to the backend.
+    const payload = {
+      ...form,
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim().toLowerCase(),
+      discoverySourceOther:
+        form.discoverySource === "other"
+          ? form.discoverySourceOther.trim()
+          : "",
+      otherInterest: form.otherInterest,
+      techStack: form.techStack,
+    };
+
+    try {
+      await onSubmit?.(payload);
+    } catch (submitError) {
+      setError(
+        submitError?.response?.data?.message ||
+          submitError?.message ||
+          "We couldn't create your account. Please try again.",
+      );
+    }
   };
 
-  try {
-    await onSubmit?.(payload);
-  } catch (submitError) {
-    setError(
-      submitError?.response?.data?.message ||
-        submitError?.message ||
-        "We couldn't create your account. Please try again."
-    );
-  }
-};
-
-  const renderCheckboxGroup = (
-    title,
-    name,
-    options,
-    description
-  ) => (
+  const renderCheckboxGroup = (title, name, options, description) => (
     <CheckboxGroup
       title={title}
       name={name}
@@ -505,7 +496,7 @@ export default function RegisterForm({
               "What would you like to learn?",
               "learningGoals",
               LEARNING_GOALS,
-              "Select all the skills you want to develop."
+              "Select all the skills you want to develop.",
             )}
           </section>
         );
@@ -541,7 +532,7 @@ export default function RegisterForm({
             {renderCheckboxGroup(
               "What opportunities interest you?",
               "preferredOpportunities",
-              OPPORTUNITIES
+              OPPORTUNITIES,
             )}
           </section>
         );
@@ -593,7 +584,7 @@ export default function RegisterForm({
             {renderCheckboxGroup(
               "How would you like to collaborate?",
               "collaborationInterests",
-              COLLABORATION_INTERESTS
+              COLLABORATION_INTERESTS,
             )}
           </section>
         );
@@ -623,7 +614,7 @@ export default function RegisterForm({
             {renderCheckboxGroup(
               "What services does your business need?",
               "businessNeeds",
-              BUSINESS_NEEDS
+              BUSINESS_NEEDS,
             )}
 
             <SelectField
@@ -652,7 +643,7 @@ export default function RegisterForm({
             {renderCheckboxGroup(
               "What else interests you?",
               "generalInterests",
-              OTHER_INTERESTS
+              OTHER_INTERESTS,
             )}
           </section>
         );
@@ -725,40 +716,37 @@ export default function RegisterForm({
         </div>
 
         <div className="mt-4 grid grid-cols-4 gap-2">
-          {[
-            "Account",
-            "About you",
-            "Your goals",
-            "Finish",
-          ].map((title, index) => {
-            const number = index + 1;
-            const active = step === number;
-            const completed = step > number;
+          {["Account", "About you", "Your goals", "Finish"].map(
+            (title, index) => {
+              const number = index + 1;
+              const active = step === number;
+              const completed = step > number;
 
-            return (
-              <button
-                key={title}
-                type="button"
-                onClick={() => {
-                  if (number < step) {
-                    setError("");
-                    setStep(number);
-                  }
-                }}
-                disabled={number >= step || loading}
-                className={`rounded-lg px-1 py-2 text-center text-xs font-semibold transition sm:text-sm ${
-                  active
-                    ? "bg-blue-600 text-white"
-                    : completed
-                      ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-200"
-                      : "bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-                }`}
-              >
-                {completed ? "✓ " : ""}
-                {title}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={title}
+                  type="button"
+                  onClick={() => {
+                    if (number < step) {
+                      setError("");
+                      setStep(number);
+                    }
+                  }}
+                  disabled={number >= step || loading}
+                  className={`rounded-lg px-1 py-2 text-center text-xs font-semibold transition sm:text-sm ${
+                    active
+                      ? "bg-blue-600 text-white"
+                      : completed
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-200"
+                        : "bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                  }`}
+                >
+                  {completed ? "✓ " : ""}
+                  {title}
+                </button>
+              );
+            },
+          )}
         </div>
       </div>
 
@@ -878,7 +866,7 @@ export default function RegisterForm({
               "What are you interested in?",
               "interests",
               INTERESTS,
-              "Choose all that apply. These interests help personalize your recommendations."
+              "Choose all that apply. These interests help personalize your recommendations.",
             )}
 
             <div>
@@ -908,15 +896,12 @@ export default function RegisterForm({
         {/* STEP 3: ROLE-SPECIFIC QUESTIONS */}
 
         {step === 3 && (
-          <section className="space-y-5">
-            {renderRoleQuestions()}
-          </section>
+          <section className="space-y-5">{renderRoleQuestions()}</section>
         )}
 
         {/* STEP 4: DISCOVERY AND CONSENT */}
         {step === 4 && (
           <section className="space-y-6">
-            
             <SelectField
               label="How did you discover KanuorieTech?"
               name="discoverySource"
@@ -928,10 +913,7 @@ export default function RegisterForm({
 
             {form.discoverySource === "other" && (
               <div>
-                <label
-                  htmlFor="discoverySourceOther"
-                  className={labelClass}
-                >
+                <label htmlFor="discoverySourceOther" className={labelClass}>
                   Please specify *
                 </label>
 
@@ -959,9 +941,10 @@ export default function RegisterForm({
                 />
 
                 <span>
-                  I'd like to receive occasional KanuorieTech news, project updates, learning
-                  resources, product updates and relevant opportunities by
-                  email. I understand I can unsubscribe at any time.
+                  I'd like to receive occasional KanuorieTech news, project
+                  updates, learning resources, product updates and relevant
+                  opportunities by email. I understand I can unsubscribe at any
+                  time.
                 </span>
               </label>
             </div>
@@ -969,8 +952,9 @@ export default function RegisterForm({
             <div className="rounded-xl bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:bg-blue-950/50 dark:text-blue-100">
               <strong>Great!</strong>
               <p className="mt-1">
-                Your preferences will help us personalize your experience.
-                You can edit and update your profile details and preferences anytime.
+                Your preferences will help us personalize your experience. You
+                can edit and update your profile details and preferences
+                anytime.
               </p>
             </div>
           </section>

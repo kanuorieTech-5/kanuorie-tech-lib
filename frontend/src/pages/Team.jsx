@@ -1,11 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import {
-  Linkedin,
-  Github,
-  Twitter,
-  Globe,
-  Mail,
-} from "lucide-react";
+import { Linkedin, Github, Twitter, Globe, Mail } from "lucide-react";
 
 import { Loader, Card } from "../components/common";
 import { getTeamMembers } from "../services/team.service";
@@ -66,7 +60,6 @@ export default function Team() {
   return (
     <section className="min-h-screen bg-gray-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto">
-
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <span className="mb-3 inline-block text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Leadership and Team
@@ -78,8 +71,8 @@ export default function Team() {
 
           <p className="mt-5 text-lg leading-8 text-gray-600 dark:text-slate-400">
             Meet the talented people behind KanuorieTech, working together to
-            build meaningful digital solutions, innovative learning
-            experiences, and technology that creates real impact.
+            build meaningful digital solutions, innovative learning experiences,
+            and technology that creates real impact.
           </p>
         </div>
 
@@ -96,8 +89,8 @@ export default function Team() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-lg text-gray-600 dark:text-slate-400">
-              We are currently updating our team information. Please check
-              back soon to meet the people behind KanuorieTech.
+              We are currently updating our team information. Please check back
+              soon to meet the people behind KanuorieTech.
             </p>
           </div>
         )}
@@ -114,10 +107,7 @@ export default function Team() {
               const name = member.name || "KanuorieTech Team Member";
 
               const position =
-                member.position ||
-                member.role ||
-                member.title ||
-                "Team Member";
+                member.position || member.role || member.title || "Team Member";
 
               const bio = member.bio || member.description;
 
@@ -128,7 +118,6 @@ export default function Team() {
                   key={member._id || member.id}
                   className="group overflow-hidden rounded-3xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                 >
-               
                   <div className="relative overflow-hidden bg-gray-100 dark:bg-slate-900">
                     <img
                       src={image}
@@ -144,8 +133,7 @@ export default function Team() {
                           return;
                         }
 
-                        event.currentTarget.src =
-                          "/images/default-avatar.png";
+                        event.currentTarget.src = "/images/default-avatar.png";
                       }}
                     />
 

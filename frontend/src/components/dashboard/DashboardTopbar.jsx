@@ -69,7 +69,9 @@ export default function DashboardTopbar() {
                 Administrator
               </p>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400">Admin</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Admin
+              </p>
             </div>
           </div>
         </div>
@@ -77,5 +79,3 @@ export default function DashboardTopbar() {
     </header>
   );
 }
-
-

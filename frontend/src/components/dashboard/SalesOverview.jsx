@@ -22,7 +22,9 @@ export default function SalesOverview({ data = {} }) {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Sales Overview</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              Sales Overview
+            </h2>
 
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Monitor your sales performance
@@ -55,7 +57,9 @@ export default function SalesOverview({ data = {} }) {
         </div>
 
         <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Today</p>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            Today
+          </p>
 
           <p className="mt-2 text-xl font-bold text-slate-900 dark:text-slate-100">
             {Number(today || 0).toLocaleString()}
@@ -83,5 +87,3 @@ export default function SalesOverview({ data = {} }) {
     </section>
   );
 }
-
-

@@ -4,12 +4,14 @@
       <div className="mb-6">
         <h3 className="text-lg font-semibold">{title}</h3>
 
-        {subtitle && <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{subtitle}</p>}
+        {subtitle && (
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {children}
     </div>
   );
 }
-
-

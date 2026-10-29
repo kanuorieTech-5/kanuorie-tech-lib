@@ -88,8 +88,8 @@ export default function ForgotPasswordForm({
                 {email.trim().toLowerCase()}
               </p>
               <p className="mt-2 text-sm leading-5 text-emerald-800">
-                Check your inbox and spam folder. Follow the instructions in
-                the email if it arrives.
+                Check your inbox and spam folder. Follow the instructions in the
+                email if it arrives.
               </p>
             </div>
           </div>
@@ -120,10 +120,7 @@ export default function ForgotPasswordForm({
             />
 
             {error && (
-              <p
-                role="alert"
-                className="mt-2 text-sm font-medium text-red-600"
-              >
+              <p role="alert" className="mt-2 text-sm font-medium text-red-600">
                 {error}
               </p>
             )}
@@ -148,11 +145,7 @@ export default function ForgotPasswordForm({
 
       {/* Security note */}
       <div className="mt-8 flex items-start justify-center gap-2 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-400">
-        <LockKeyhole
-          size={15}
-          className="mt-0.5 shrink-0"
-          aria-hidden="true"
-        />
+        <LockKeyhole size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
         Your account security matters. Password reset instructions should only
         be sent through your configured account recovery process.
       </div>

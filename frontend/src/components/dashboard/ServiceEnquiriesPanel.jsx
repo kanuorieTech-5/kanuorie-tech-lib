@@ -84,7 +84,7 @@ export default function ServiceEnquiriesPanel() {
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          "Unable to load service enquiries. Check your admin access and try again."
+          "Unable to load service enquiries. Check your admin access and try again.",
       );
     } finally {
       setLoading(false);
@@ -103,14 +103,14 @@ export default function ServiceEnquiriesPanel() {
       await updateAdminServiceEnquiryStatus(id, status);
 
       setSelected((current) =>
-        current?._id === id ? { ...current, status } : current
+        current?._id === id ? { ...current, status } : current,
       );
 
       await loadEnquiries();
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          "Unable to update this enquiry's status."
+          "Unable to update this enquiry's status.",
       );
     } finally {
       setSavingId("");
@@ -148,7 +148,9 @@ export default function ServiceEnquiriesPanel() {
             key={card.key}
             className="rounded-2xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900"
           >
-            <p className="text-sm text-slate-500 dark:text-slate-400">{card.label}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {card.label}
+            </p>
             <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
               {Number(stats[card.key] ?? 0).toLocaleString()}
             </p>
@@ -200,7 +202,8 @@ export default function ServiceEnquiriesPanel() {
             No service enquiries found
           </h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            New requests submitted through the service enquiry form will appear here.
+            New requests submitted through the service enquiry form will appear
+            here.
           </p>
         </div>
       ) : (
@@ -236,7 +239,10 @@ export default function ServiceEnquiriesPanel() {
                         : enquiry.service || enquiry.subject || "—"}
                     </p>
                     <p className="mt-1 text-slate-500 dark:text-slate-400">
-                      {enquiry.company || enquiry.budget || enquiry.projectType || "—"}
+                      {enquiry.company ||
+                        enquiry.budget ||
+                        enquiry.projectType ||
+                        "—"}
                     </p>
                   </td>
                   <td className="px-4 py-4 text-slate-500 dark:text-slate-400">
@@ -313,7 +319,9 @@ export default function ServiceEnquiriesPanel() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Email</p>
+                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                  Email
+                </p>
                 <a
                   href={`mailto:${selected.email}`}
                   className="mt-1 block break-all font-medium text-cyan-700 dark:text-cyan-400"
@@ -322,20 +330,26 @@ export default function ServiceEnquiriesPanel() {
                 </a>
               </div>
               <div>
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Service</p>
+                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                  Service
+                </p>
                 <p className="mt-1 font-medium text-slate-900 dark:text-white">
                   {selected.service || selected.subject || "—"}
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Budget</p>
+                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                  Budget
+                </p>
                 <p className="mt-1 font-medium text-slate-900 dark:text-white">
                   {selected.budget || "Not provided"}
                 </p>
               </div>
               {selected.company && (
                 <div>
-                  <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Business type</p>
+                  <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                    Business type
+                  </p>
                   <p className="mt-1 font-medium text-slate-900 dark:text-white">
                     {selected.company}
                   </p>
@@ -343,14 +357,18 @@ export default function ServiceEnquiriesPanel() {
               )}
               {selected.timeline && (
                 <div>
-                  <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Preferred timeline</p>
+                  <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                    Preferred timeline
+                  </p>
                   <p className="mt-1 font-medium text-slate-900 dark:text-white">
                     {selected.timeline}
                   </p>
                 </div>
               )}
               <div>
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Submitted</p>
+                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                  Submitted
+                </p>
                 <p className="mt-1 font-medium text-slate-900 dark:text-white">
                   {formatDate(selected.createdAt)}
                 </p>
@@ -358,7 +376,9 @@ export default function ServiceEnquiriesPanel() {
             </div>
 
             <div className="mt-6">
-              <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Project details</p>
+              <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                Project details
+              </p>
               <p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700 dark:text-slate-300">
                 {selected.message}
               </p>
@@ -366,7 +386,9 @@ export default function ServiceEnquiriesPanel() {
 
             {selected.projectRequirements?.length > 0 && (
               <div className="mt-5">
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Requested services</p>
+                <p className="text-xs uppercase text-slate-500 dark:text-slate-400">
+                  Requested services
+                </p>
                 <p className="mt-2 leading-7 text-slate-700 dark:text-slate-300">
                   {selected.projectRequirements.join(", ")}
                 </p>

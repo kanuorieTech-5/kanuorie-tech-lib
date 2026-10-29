@@ -10,23 +10,12 @@ export default function RevenueSummary({ data = {} }) {
     revenue.amount ??
     0;
 
-  const today =
-    revenue.today ??
-    revenue.todayRevenue ??
-    revenue.daily ??
-    0;
+  const today = revenue.today ?? revenue.todayRevenue ?? revenue.daily ?? 0;
 
-  const month =
-    revenue.month ??
-    revenue.monthly ??
-    revenue.monthRevenue ??
-    0;
+  const month = revenue.month ?? revenue.monthly ?? revenue.monthRevenue ?? 0;
 
   const growth =
-    revenue.growth ??
-    revenue.growthRate ??
-    revenue.percentage ??
-    0;
+    revenue.growth ?? revenue.growthRate ?? revenue.percentage ?? 0;
 
   /*
    * Revenue can be:
@@ -61,8 +50,8 @@ export default function RevenueSummary({ data = {} }) {
     }
 
     if (typeof value === "object") {
-      const entries = Object.entries(value).filter(
-        ([, amount]) => Number.isFinite(Number(amount))
+      const entries = Object.entries(value).filter(([, amount]) =>
+        Number.isFinite(Number(amount)),
       );
 
       if (!entries.length) {
@@ -119,13 +108,12 @@ export default function RevenueSummary({ data = {} }) {
       </div>
 
       <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-5">
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Revenue</p>
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          Total Revenue
+        </p>
 
         <div className="mt-2 flex items-start gap-2">
-          <DollarSign
-            size={22}
-            className="mt-1 shrink-0 text-emerald-600"
-          />
+          <DollarSign size={22} className="mt-1 shrink-0 text-emerald-600" />
 
           <h3 className="break-words text-3xl font-black text-slate-900 dark:text-slate-100">
             {formatCurrency(total)}

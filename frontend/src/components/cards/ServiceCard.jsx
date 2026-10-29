@@ -8,7 +8,9 @@ export default function ServiceCard({ service }) {
 
       <h3 className="mb-3 text-2xl font-semibold">{service.title}</h3>
 
-      <p className="mb-6 line-clamp-3 text-gray-500 dark:text-slate-400">{service.description}</p>
+      <p className="mb-6 line-clamp-3 text-gray-500 dark:text-slate-400">
+        {service.description}
+      </p>
 
       <Button as={Link} to={`/services/${service._id}`}>
         Learn More
@@ -16,5 +18,3 @@ export default function ServiceCard({ service }) {
     </Card>
   );
 }
-
-

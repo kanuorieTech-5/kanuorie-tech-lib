@@ -217,8 +217,7 @@ export default function Courses() {
     try {
       const response = await initializePaystackCoursePayment(course._id);
 
-      const authorizationUrl =
-        response?.data?.paystack?.authorization_url;
+      const authorizationUrl = response?.data?.paystack?.authorization_url;
 
       if (!authorizationUrl) {
         throw new Error(
@@ -252,10 +251,7 @@ export default function Courses() {
       }
 
       toast.error(
-        getApiMessage(
-          error,
-          "Unable to start payment. Please try again.",
-        ),
+        getApiMessage(error, "Unable to start payment. Please try again."),
       );
     } finally {
       setPurchasingId(null);
@@ -512,8 +508,7 @@ export default function Courses() {
                             fullWidth
                             loading={purchasingId === featuredCourse._id}
                             disabled={
-                              Boolean(enrollingId) ||
-                              Boolean(purchasingId)
+                              Boolean(enrollingId) || Boolean(purchasingId)
                             }
                             onClick={() => handleBuyCourse(featuredCourse)}
                           >
@@ -531,8 +526,7 @@ export default function Courses() {
                             fullWidth
                             loading={enrollingId === featuredCourse._id}
                             disabled={
-                              Boolean(enrollingId) ||
-                              Boolean(purchasingId)
+                              Boolean(enrollingId) || Boolean(purchasingId)
                             }
                             onClick={() => handleEnroll(featuredCourse)}
                           >
@@ -550,8 +544,7 @@ export default function Courses() {
                             fullWidth
                             variant="outline"
                             disabled={
-                              Boolean(enrollingId) ||
-                              Boolean(purchasingId)
+                              Boolean(enrollingId) || Boolean(purchasingId)
                             }
                           >
                             <ArrowRight size={18} />
@@ -635,9 +628,7 @@ export default function Courses() {
                               : "bg-emerald-500 text-white"
                           }`}
                         >
-                          {isPremiumCourse(course) && (
-                            <LockKeyhole size={13} />
-                          )}
+                          {isPremiumCourse(course) && <LockKeyhole size={13} />}
 
                           {isPremiumCourse(course) ? "Premium" : "Free"}
                         </span>
@@ -687,8 +678,7 @@ export default function Courses() {
                               fullWidth
                               loading={purchasingId === course._id}
                               disabled={
-                                Boolean(enrollingId) ||
-                                Boolean(purchasingId)
+                                Boolean(enrollingId) || Boolean(purchasingId)
                               }
                               onClick={() => handleBuyCourse(course)}
                             >
@@ -706,8 +696,7 @@ export default function Courses() {
                               fullWidth
                               loading={enrollingId === course._id}
                               disabled={
-                                Boolean(enrollingId) ||
-                                Boolean(purchasingId)
+                                Boolean(enrollingId) || Boolean(purchasingId)
                               }
                               onClick={() => handleEnroll(course)}
                             >
@@ -717,16 +706,12 @@ export default function Courses() {
                             </Button>
                           )}
 
-                          <Link
-                            to={`/courses/${course._id}`}
-                            className="block"
-                          >
+                          <Link to={`/courses/${course._id}`} className="block">
                             <Button
                               fullWidth
                               variant="outline"
                               disabled={
-                                Boolean(enrollingId) ||
-                                Boolean(purchasingId)
+                                Boolean(enrollingId) || Boolean(purchasingId)
                               }
                             >
                               View Course
@@ -800,7 +785,11 @@ export default function Courses() {
                 description: "Gain practical skills employers are looking for.",
               },
             ].map((item) => (
-              <Card key={item.title} hover className="text-center text-slate-900 dark:text-slate-100">
+              <Card
+                key={item.title}
+                hover
+                className="text-center text-slate-900 dark:text-slate-100"
+              >
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
                   <BookOpen className="text-blue-600" size={28} />
                 </div>

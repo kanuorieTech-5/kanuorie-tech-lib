@@ -719,7 +719,29 @@ export default function AdminProducts() {
 
             {/* FORM */}
 
-            <AdminProductForm {...{ BookOpen, CATEGORIES, FileText, FormField, FormSection, Globe, PRICING_TYPES, Save, Sparkles, Star, editingId, form, handleChange, handleSubmit, inputClass, saving, setModalOpen }} onSubmit={handleSubmit} className="overflow-y-auto p-6" />
+            <AdminProductForm
+              {...{
+                BookOpen,
+                CATEGORIES,
+                FileText,
+                FormField,
+                FormSection,
+                Globe,
+                PRICING_TYPES,
+                Save,
+                Sparkles,
+                Star,
+                editingId,
+                form,
+                handleChange,
+                handleSubmit,
+                inputClass,
+                saving,
+                setModalOpen,
+              }}
+              onSubmit={handleSubmit}
+              className="overflow-y-auto p-6"
+            />
           </div>
         </div>
       )}
@@ -786,5 +808,3 @@ function FormSection({ icon, title, description, children }) {
     </section>
   );
 }
-
-

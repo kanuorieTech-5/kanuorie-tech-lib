@@ -603,7 +603,9 @@ export default function Library() {
             <div className="text-center">
               <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-300 dark:border-slate-600 border-t-blue-600" />
 
-              <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">Loading library...</p>
+              <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">
+                Loading library...
+              </p>
             </div>
           </div>
         ) : paginatedResources.length > 0 ? (
@@ -636,7 +638,8 @@ export default function Library() {
                       behavior: "smooth",
                     });
                   }}
-                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
+                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
                   Previous
                 </button>
 
@@ -657,7 +660,8 @@ export default function Library() {
                       behavior: "smooth",
                     });
                   }}
-                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"                >
+                  className="rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
                   Next
                 </button>
               </div>

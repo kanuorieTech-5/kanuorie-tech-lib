@@ -4,5 +4,3 @@ export { default as ResourceGrid } from "./ResourceGrid";
 export { default as CategoryFilter } from "./CategoryFilter";
 export { default as TrendingResources } from "./TrendingResources";
 export { default as RecommendedResources } from "./RecommendedResources";
-
-

@@ -9,5 +9,3 @@ export { default as CustomLineChart } from "./LineChart";
 export { default as CustomPieChart } from "./PieChart";
 
 export { default as CustomRadarChart } from "./RadarChart";
-
-

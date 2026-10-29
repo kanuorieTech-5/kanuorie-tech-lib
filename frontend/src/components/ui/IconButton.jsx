@@ -7,5 +7,3 @@ export default function IconButton({ icon, ...props }) {
     </Button>
   );
 }
-
-

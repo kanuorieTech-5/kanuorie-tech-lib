@@ -129,7 +129,10 @@ export default function AdminLearning() {
 
       const firstResponse = await getAdminLearning({ page: 1, limit: 100 });
       const firstPage = extractData(firstResponse);
-      const pageCount = Math.max(1, Number(extractMeta(firstResponse).pages) || 1);
+      const pageCount = Math.max(
+        1,
+        Number(extractMeta(firstResponse).pages) || 1,
+      );
       const remainingResponses = await Promise.all(
         Array.from({ length: pageCount - 1 }, (_, index) =>
           getAdminLearning({ page: index + 2, limit: 100 }),
@@ -145,7 +148,9 @@ export default function AdminLearning() {
     } catch (err) {
       console.error("Failed to load learningResources:", err);
 
-      setError(err?.response?.data?.message || "Unable to load learningResources.");
+      setError(
+        err?.response?.data?.message || "Unable to load learningResources.",
+      );
 
       setlearningResources(defaultResources.map(normalizeBundledResource));
     } finally {
@@ -178,7 +183,9 @@ export default function AdminLearning() {
       Array.from(
         new Set([
           ...categories,
-          ...defaultResources.map((resource) => resource.category).filter(Boolean),
+          ...defaultResources
+            .map((resource) => resource.category)
+            .filter(Boolean),
         ]),
       ).sort((a, b) => String(a).localeCompare(String(b))),
     [categories],
@@ -201,10 +208,24 @@ export default function AdminLearning() {
         .toLowerCase();
 
       if (query && !searchableText.includes(query)) return false;
-      if (category && String(resource.category).toLowerCase() !== category.toLowerCase()) return false;
-      if (difficulty && !resource.isBundledResource && resource.difficulty !== difficulty) return false;
-      if (premium !== "" && Boolean(resource.premium) !== (premium === "true")) return false;
-      if (featured !== "" && Boolean(resource.featured) !== (featured === "true")) return false;
+      if (
+        category &&
+        String(resource.category).toLowerCase() !== category.toLowerCase()
+      )
+        return false;
+      if (
+        difficulty &&
+        !resource.isBundledResource &&
+        resource.difficulty !== difficulty
+      )
+        return false;
+      if (premium !== "" && Boolean(resource.premium) !== (premium === "true"))
+        return false;
+      if (
+        featured !== "" &&
+        Boolean(resource.featured) !== (featured === "true")
+      )
+        return false;
       return true;
     });
 
@@ -212,16 +233,29 @@ export default function AdminLearning() {
       if (sort === "oldest") {
         return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
       }
-      if (sort === "downloads") return Number(b.downloads || 0) - Number(a.downloads || 0);
-      if (sort === "rating") return Number(b.rating || 0) - Number(a.rating || 0);
+      if (sort === "downloads")
+        return Number(b.downloads || 0) - Number(a.downloads || 0);
+      if (sort === "rating")
+        return Number(b.rating || 0) - Number(a.rating || 0);
       if (sort === "views") return Number(b.views || 0) - Number(a.views || 0);
       return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
     });
 
     return matches;
-  }, [learningResources, search, category, difficulty, premium, featured, sort]);
+  }, [
+    learningResources,
+    search,
+    category,
+    difficulty,
+    premium,
+    featured,
+    sort,
+  ]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredResources.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredResources.length / PAGE_SIZE),
+  );
   const visibleResources = filteredResources.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE,
@@ -234,9 +268,15 @@ export default function AdminLearning() {
   const stats = useMemo(() => {
     return {
       total: learningResources.length,
-      published: learningResources.filter((learningResource) => learningResource.published).length,
-      premium: learningResources.filter((learningResource) => learningResource.premium).length,
-      featured: learningResources.filter((learningResource) => learningResource.featured).length,
+      published: learningResources.filter(
+        (learningResource) => learningResource.published,
+      ).length,
+      premium: learningResources.filter(
+        (learningResource) => learningResource.premium,
+      ).length,
+      featured: learningResources.filter(
+        (learningResource) => learningResource.featured,
+      ).length,
     };
   }, [learningResources]);
 
@@ -258,14 +298,19 @@ export default function AdminLearning() {
       pdf: learningResource.pdf || "",
       link: learningResource.link || "",
       preview: learningResource.preview || "",
-      tags: Array.isArray(learningResource.tags) ? learningResource.tags.join(", ") : "",
+      tags: Array.isArray(learningResource.tags)
+        ? learningResource.tags.join(", ")
+        : "",
       difficulty: learningResource.difficulty || "Beginner",
       language: learningResource.language || "English",
       pages: learningResource.pages || 0,
       featured: Boolean(learningResource.featured),
       premium: Boolean(learningResource.premium),
       price: learningResource.price || 0,
-      published: learningResource.published !== undefined ? Boolean(learningResource.published) : true,
+      published:
+        learningResource.published !== undefined
+          ? Boolean(learningResource.published)
+          : true,
       fileSize: learningResource.fileSize || 0,
       isbn: learningResource.isbn || "",
     });
@@ -360,7 +405,9 @@ export default function AdminLearning() {
     } catch (err) {
       console.error("learningResource save error:", err);
 
-      toast.error(err?.response?.data?.message || "Failed to save learningResource.");
+      toast.error(
+        err?.response?.data?.message || "Failed to save learningResource.",
+      );
     } finally {
       setSaving(false);
     }
@@ -384,7 +431,9 @@ export default function AdminLearning() {
     } catch (err) {
       console.error("learningResource deletion error:", err);
 
-      toast.error(err?.response?.data?.message || "Failed to delete learningResource.");
+      toast.error(
+        err?.response?.data?.message || "Failed to delete learningResource.",
+      );
     } finally {
       setDeletingId(null);
     }
@@ -409,7 +458,9 @@ export default function AdminLearning() {
             Content Management
           </p>
 
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">learningResources</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            learningResources
+          </h1>
 
           <p className="mt-2 text-slate-500 dark:text-slate-400">
             Manage your digital library, publications and downloadable
@@ -425,7 +476,11 @@ export default function AdminLearning() {
 
       {/* STATS */}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Total Learning Resources" value={stats.total} icon={BookOpen} />
+        <Stat
+          label="Total Learning Resources"
+          value={stats.total}
+          icon={BookOpen}
+        />
 
         <Stat label="Published" value={stats.published} icon={Eye} />
 
@@ -439,7 +494,9 @@ export default function AdminLearning() {
         <div className="mb-5 flex items-center gap-2">
           <Filter className="h-5 w-5 text-slate-500 dark:text-slate-400" />
 
-          <h2 className="font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+            Filters
+          </h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -712,13 +769,18 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
       <td className="px-6 py-4">
         <div className="flex min-w-[280px] items-center gap-4">
           <img
-            src={learningResource.image || "/images/learningResource-placeholder.png"}
+            src={
+              learningResource.image ||
+              "/images/learningResource-placeholder.png"
+            }
             alt={learningResource.title}
             className="h-16 w-12 rounded-lg object-cover"
           />
 
           <div>
-            <p className="font-semibold text-slate-900 dark:text-slate-100">{learningResource.title}</p>
+            <p className="font-semibold text-slate-900 dark:text-slate-100">
+              {learningResource.title}
+            </p>
 
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {learningResource.author || "Unknown"}
@@ -755,7 +817,9 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
       <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
         <div>{Number(learningResource.views || 0).toLocaleString()} views</div>
 
-        <div>{Number(learningResource.downloads || 0).toLocaleString()} downloads</div>
+        <div>
+          {Number(learningResource.downloads || 0).toLocaleString()} downloads
+        </div>
       </td>
 
       <td className="px-6 py-4">
@@ -794,18 +858,27 @@ function LearningRow({ learningResource, onEdit, onDelete, deletingId }) {
    MOBILE learningResource CARD
 ========================================== */
 
-function LearningMobileCard({ learningResource, onEdit, onDelete, deletingId }) {
+function LearningMobileCard({
+  learningResource,
+  onEdit,
+  onDelete,
+  deletingId,
+}) {
   return (
     <div className="p-5">
       <div className="flex gap-4">
         <img
-          src={learningResource.image || "/images/learningResource-placeholder.png"}
+          src={
+            learningResource.image || "/images/learningResource-placeholder.png"
+          }
           alt={learningResource.title}
           className="h-24 w-16 rounded-lg object-cover"
         />
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-slate-900 dark:text-slate-100">{learningResource.title}</h3>
+          <h3 className="font-bold text-slate-900 dark:text-slate-100">
+            {learningResource.title}
+          </h3>
 
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {learningResource.author || "Unknown"}
@@ -885,7 +958,9 @@ function EmptyState({ onAdd }) {
         <BookOpen className="h-10 w-10 text-slate-400" />
       </div>
 
-      <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">No learningResources found</h3>
+      <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-slate-100">
+        No learningResources found
+      </h3>
 
       <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
         There are no learningResources matching your current filters.
@@ -903,7 +978,14 @@ function EmptyState({ onAdd }) {
    learningResource MODAL
 ========================================== */
 
-function LearningModal({ form, editingLearningResource, saving, onChange, onSubmit, onClose }) {
+function LearningModal({
+  form,
+  editingLearningResource,
+  saving,
+  onChange,
+  onSubmit,
+  onClose,
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
       <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 shadow-2xl">
@@ -911,7 +993,9 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-5">
           <div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              {editingLearningResource ? "Edit learningResource" : "Add New learningResource"}
+              {editingLearningResource
+                ? "Edit learningResource"
+                : "Add New learningResource"}
             </h2>
 
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -932,7 +1016,24 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
         </div>
 
         {/* FORM */}
-        <AdminLearningForm {...{ Button, Checkbox, FormSection, Input, Select, TextArea, editingLearningResource, form, onChange, onClose, onSubmit, saving }} onSubmit={onSubmit} className="overflow-y-auto p-6" />
+        <AdminLearningForm
+          {...{
+            Button,
+            Checkbox,
+            FormSection,
+            Input,
+            Select,
+            TextArea,
+            editingLearningResource,
+            form,
+            onChange,
+            onClose,
+            onSubmit,
+            saving,
+          }}
+          onSubmit={onSubmit}
+          className="overflow-y-auto p-6"
+        />
       </div>
     </div>
   );
@@ -945,7 +1046,9 @@ function LearningModal({ form, editingLearningResource, saving, onChange, onSubm
 function FormSection({ title, children }) {
   return (
     <section>
-      <h3 className="mb-5 text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h3>
+      <h3 className="mb-5 text-lg font-bold text-slate-900 dark:text-slate-100">
+        {title}
+      </h3>
 
       <div className="space-y-5">{children}</div>
     </section>
@@ -1013,13 +1116,9 @@ function Checkbox({ label, ...props }) {
         className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
       />
 
-      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
+      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        {label}
+      </span>
     </label>
   );
 }
-
-
-
-
-
-

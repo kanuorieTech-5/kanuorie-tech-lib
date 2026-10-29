@@ -46,7 +46,7 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const visibleNavigationLinks = navigationLinks.filter((item) =>
-    isPrimaryNavLinkVisible(item.path, user)
+    isPrimaryNavLinkVisible(item.path, user),
   );
   const firstName =
     user?.firstName ||
@@ -87,7 +87,9 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
       />
 
       {/* Navigation panel */}
-      <div className={`absolute ${side === "right" ? "right-0" : "left-0"} top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950`}>
+      <div
+        className={`absolute ${side === "right" ? "right-0" : "left-0"} top-0 z-10 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto overscroll-contain bg-gray-300 shadow-xl dark:bg-gray-950`}
+      >
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-400 p-5 dark:border-gray-800">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -109,12 +111,12 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
           {/* Welcome banner */}
           {user && (
             <section className="mx-4 my-4 overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 via-indigo-700 to-slate-900 p-5 text-white shadow-lg">
-               <div className="mt-4 flex items-center gap-3">
+              <div className="mt-4 flex items-center gap-3">
                 <img
                   src={
                     user.avatar ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      user.name || user.username || "User"
+                      user.name || user.username || "User",
                     )}&background=ffffff&color=1d4ed8&bold=true`
                   }
                   alt={`${user.name || user.username || "User"}'s avatar`}
@@ -130,7 +132,6 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
                   <h2 className="text-xl font-extrabold">
                     Welcome back, {firstName}!
                   </h2>
-                  
                 </div>
               </div>
 
@@ -151,7 +152,12 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
             </div>
           )}
           {visibleNavigationLinks.map(({ path, label, icon: Icon }) => (
-            <Link key={path} to={path} onClick={onClose} className={linkClasses}>
+            <Link
+              key={path}
+              to={path}
+              onClick={onClose}
+              className={linkClasses}
+            >
               <Icon size={18} />
               {label}
             </Link>
@@ -161,28 +167,28 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
           {user && (
             <>
               <div className="mx-5 my-3 border-t border-gray-400 dark:border-gray-800" />
-                <Link
-                  to="/notifications"
-                  onClick={onClose}
-                  className={linkClasses}
-                >
-                  <Bell size={18} />
-                  Notifications
-                </Link>
+              <Link
+                to="/notifications"
+                onClick={onClose}
+                className={linkClasses}
+              >
+                <Bell size={18} />
+                Notifications
+              </Link>
 
-                <Link to="/settings" onClick={onClose} className={linkClasses}>
-                  <Settings size={18} />
-                  Settings
-                </Link>
+              <Link to="/settings" onClick={onClose} className={linkClasses}>
+                <Settings size={18} />
+                Settings
+              </Link>
 
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="relative z-10 mt-3 flex w-full items-center gap-3 px-5 py-3 text-left text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 dark:text-red-400 dark:hover:bg-red-950/30"
-                >
-                  <LogOut size={18} />
-                  Logout
-                </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="relative z-10 mt-3 flex w-full items-center gap-3 px-5 py-3 text-left text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 dark:text-red-400 dark:hover:bg-red-950/30"
+              >
+                <LogOut size={18} />
+                Logout
+              </button>
             </>
           )}
 

@@ -28,5 +28,3 @@ export default function NewsletterForm({ onSubmit, loading = false }) {
     </form>
   );
 }
-
-

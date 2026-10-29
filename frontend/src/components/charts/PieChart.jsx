@@ -21,5 +21,3 @@ export default function CustomPieChart({ title, subtitle, data }) {
     </ChartCard>
   );
 }
-
-

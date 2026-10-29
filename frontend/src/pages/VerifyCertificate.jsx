@@ -56,14 +56,14 @@ const VerifyCertificate = () => {
 
       try {
         const response = await verifyCertificate(
-          decodeURIComponent(certificateId)
+          decodeURIComponent(certificateId),
         );
 
         const data = response?.data;
 
         if (!data?.certificate) {
           throw new Error(
-            response?.message || "Certificate could not be verified."
+            response?.message || "Certificate could not be verified.",
           );
         }
 
@@ -72,7 +72,7 @@ const VerifyCertificate = () => {
         setError(
           err?.response?.data?.message ||
             err?.message ||
-            "Certificate not found or invalid."
+            "Certificate not found or invalid.",
         );
       } finally {
         setLoading(false);
@@ -92,9 +92,7 @@ const VerifyCertificate = () => {
       return;
     }
 
-    navigate(
-      `/verify-certificate/${encodeURIComponent(value)}`
-    );
+    navigate(`/verify-certificate/${encodeURIComponent(value)}`);
   };
 
   const isValid = certificate?.status === "issued";
@@ -122,8 +120,8 @@ const VerifyCertificate = () => {
           </h1>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-            Verify the authenticity of a KanuorieTech certificate using
-            its unique certificate ID.
+            Verify the authenticity of a KanuorieTech certificate using its
+            unique certificate ID.
           </p>
         </motion.div>
 
@@ -177,9 +175,7 @@ const VerifyCertificate = () => {
           >
             <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-blue-400" />
 
-            <p className="text-sm text-slate-300">
-              Verifying certificate...
-            </p>
+            <p className="text-sm text-slate-300">Verifying certificate...</p>
           </motion.div>
         )}
 
@@ -207,9 +203,7 @@ const VerifyCertificate = () => {
 
                 <div>
                   <p className="text-lg font-bold">
-                    {isValid
-                      ? "Certificate Verified"
-                      : "Certificate Revoked"}
+                    {isValid ? "Certificate Verified" : "Certificate Revoked"}
                   </p>
 
                   <p className="text-sm text-white/80">
@@ -249,9 +243,7 @@ const VerifyCertificate = () => {
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
                   <CheckCircle2
                     className={`h-9 w-9 ${
-                      isValid
-                        ? "text-emerald-500"
-                        : "text-red-500"
+                      isValid ? "text-emerald-500" : "text-red-500"
                     }`}
                   />
                 </div>
@@ -356,9 +348,9 @@ const VerifyCertificate = () => {
             {/* Footer */}
             <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-6 py-5 text-center sm:px-8">
               <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
-                This verification result is provided by KanuorieTech.
-                The certificate ID above can be used to independently
-                verify this credential.
+                This verification result is provided by KanuorieTech. The
+                certificate ID above can be used to independently verify this
+                credential.
               </p>
             </div>
           </motion.div>
@@ -393,5 +385,3 @@ const VerifyCertificate = () => {
 };
 
 export default VerifyCertificate;
-
-

@@ -7,5 +7,3 @@ export default function ImagePreviewModal({ isOpen, onClose, image }) {
     </Modal>
   );
 }
-
-

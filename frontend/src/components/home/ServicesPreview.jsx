@@ -45,8 +45,7 @@ const getServicesData = (response) => {
   return [];
 };
 
-const getServiceId = (service) =>
-  service?._id || service?.id || null;
+const getServiceId = (service) => service?._id || service?.id || null;
 
 const getServiceDescription = (service) => {
   const description = service?.description?.trim();
@@ -126,18 +125,13 @@ export default function ServicesPreview() {
     };
   }, []);
 
-  const displayedServices = services.filter((service) =>
-    getServiceId(service),
-  );
+  const displayedServices = services.filter((service) => getServiceId(service));
 
   /* ==========================================
      MAX SLIDE INDEX
   ========================================== */
 
-  const maxIndex = Math.max(
-    displayedServices.length - visibleCards,
-    0,
-  );
+  const maxIndex = Math.max(displayedServices.length - visibleCards, 0);
 
   /* ==========================================
      KEEP INDEX VALID WHEN RESPONSIVE SIZE CHANGES
@@ -154,9 +148,7 @@ export default function ServicesPreview() {
   ========================================== */
 
   const nextSlide = () => {
-    setCurrentIndex((previous) =>
-      previous >= maxIndex ? 0 : previous + 1,
-    );
+    setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
   };
 
   /* ==========================================
@@ -164,9 +156,7 @@ export default function ServicesPreview() {
   ========================================== */
 
   const prevSlide = () => {
-    setCurrentIndex((previous) =>
-      previous <= 0 ? maxIndex : previous - 1,
-    );
+    setCurrentIndex((previous) => (previous <= 0 ? maxIndex : previous - 1));
   };
 
   /* ==========================================
@@ -179,17 +169,11 @@ export default function ServicesPreview() {
     }
 
     const interval = setInterval(() => {
-      setCurrentIndex((previous) =>
-        previous >= maxIndex ? 0 : previous + 1,
-      );
+      setCurrentIndex((previous) => (previous >= maxIndex ? 0 : previous + 1));
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [
-    displayedServices.length,
-    visibleCards,
-    maxIndex,
-  ]);
+  }, [displayedServices.length, visibleCards, maxIndex]);
 
   /* ==========================================
      LOADING
@@ -208,7 +192,6 @@ export default function ServicesPreview() {
   return (
     <section className="bg-slate-900 py-10 text-white">
       <div className="px-6 text-center">
-
         {/* ==========================================
             HEADER
         ========================================== */}
@@ -227,9 +210,7 @@ export default function ServicesPreview() {
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
             <Code2 className="mx-auto mb-5 h-10 w-10 text-cyan-400" />
 
-            <h3 className="text-xl font-bold">
-              Services Coming Soon
-            </h3>
+            <h3 className="text-xl font-bold">Services Coming Soon</h3>
 
             <p className="mx-auto mt-3 max-w-lg text-slate-400">
               We're currently updating our service offerings.
@@ -255,10 +236,7 @@ export default function ServicesPreview() {
                 {displayedServices.map((service, index) => {
                   const serviceId = getServiceId(service);
 
-                  const Icon =
-                    SERVICE_ICONS[
-                      index % SERVICE_ICONS.length
-                    ];
+                  const Icon = SERVICE_ICONS[index % SERVICE_ICONS.length];
 
                   return (
                     <div
@@ -278,8 +256,7 @@ export default function ServicesPreview() {
                         <Icon className="mb-6 h-10 w-10 text-cyan-400" />
 
                         <h3 className="mb-4 text-2xl font-bold">
-                          {service.title ||
-                            "Technology Service"}
+                          {service.title || "Technology Service"}
                         </h3>
 
                         <p className="mb-8 flex-1 leading-7 text-slate-400">
@@ -290,9 +267,7 @@ export default function ServicesPreview() {
                           to={`/services/${serviceId}`}
                           className="mt-auto inline-flex"
                         >
-                          <Button>
-                            Learn More
-                          </Button>
+                          <Button>Learn More</Button>
                         </Link>
                       </Card>
                     </div>
@@ -354,12 +329,8 @@ export default function ServicesPreview() {
                     <button
                       key={index}
                       type="button"
-                      onClick={() =>
-                        setCurrentIndex(index)
-                      }
-                      aria-label={`Go to service slide ${
-                        index + 1
-                      }`}
+                      onClick={() => setCurrentIndex(index)}
+                      aria-label={`Go to service slide ${index + 1}`}
                       className={`h-2 rounded-full transition-all ${
                         currentIndex === index
                           ? "w-6 bg-cyan-400"
@@ -380,9 +351,7 @@ export default function ServicesPreview() {
         {services.length > 6 && (
           <div className="mt-12 text-center">
             <Link to="/services">
-              <Button variant="secondary">
-                View All Services
-              </Button>
+              <Button variant="secondary">View All Services</Button>
             </Link>
           </div>
         )}
@@ -390,4 +359,3 @@ export default function ServicesPreview() {
     </section>
   );
 }
-

@@ -155,11 +155,7 @@ export default function AdminSidebar() {
           transition-transform duration-300 ease-in-out
           lg:static lg:z-auto lg:translate-x-0
           lg:shadow-none
-          ${
-            isOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
         {/* ==========================================
@@ -167,9 +163,7 @@ export default function AdminSidebar() {
         ========================================== */}
 
         <div className="flex items-center justify-between border-b border-slate-800 p-6">
-          <h2 className="text-2xl font-bold">
-            Admin Panel
-          </h2>
+          <h2 className="text-2xl font-bold">Admin Panel</h2>
 
           <button
             type="button"
@@ -213,5 +207,3 @@ export default function AdminSidebar() {
     </>
   );
 }
-
-

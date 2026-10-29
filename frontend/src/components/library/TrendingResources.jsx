@@ -69,10 +69,7 @@ export function TrendingResourcesSkeleton() {
 
       <div className="flex gap-5 overflow-x-auto p-4 pb-6 sm:gap-6 sm:px-6 scrollbar-hide">
         {[1, 2, 3].map((item) => (
-          <div
-            key={item}
-            className="w-[280px] flex-shrink-0 sm:w-[320px]"
-          >
+          <div key={item} className="w-[280px] flex-shrink-0 sm:w-[320px]">
             <div className="h-48 animate-pulse rounded-t-2xl bg-gray-200 dark:bg-gray-700" />
             <div className="space-y-3 rounded-b-2xl border border-slate-200 p-4 dark:border-gray-800">
               <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
