@@ -18,14 +18,10 @@ import {
   Bookmark,
   X,
 } from "lucide-react";
-
 import { Card, Button, Loader, Badge } from "../components/common";
 import { getCourses } from "../services/course.service";
 import { getProgress } from "../services/progress.service";
-import {
-  getSavedResources,
-  removeSavedResource,
-} from "../services/library.service";
+import { getSavedResources, removeSavedResource,} from "../services/library.service";
 import { useAuth } from "../contexts";
 
 /* ==========================================
@@ -59,7 +55,6 @@ const getListFromResponse = (response) => {
 
   return [];
 };
-
 const WISHLIST_STORAGE_KEY = "kanuorietech-learning-wishlist";
 const STREAK_STORAGE_KEY = "kanuorietech-learning-streak";
 const SCHEDULE_STORAGE_KEY = "kanuorietech-learning-schedule";
@@ -145,10 +140,6 @@ const getTotalLessons = (item) => {
   return Number.isFinite(total) && total > 0 ? total : 0;
 };
 
-/* ==========================================
-   AUTO HORIZONTAL CAROUSEL
-========================================== */
-
 function AutoCarousel({ children, speed = 30, className = "" }) {
   const viewportRef = useRef(null);
   const animationRef = useRef(null);
@@ -225,10 +216,6 @@ function AutoCarousel({ children, speed = 30, className = "" }) {
     </div>
   );
 }
-
-/* ==========================================
-   ENROLLED COURSE CARD
-========================================== */
 
 function LearningCard({ item }) {
   const course = item?.course || item || {};
@@ -348,10 +335,6 @@ function RecommendedCourseCard({ course }) {
   );
 }
 
-/* ==========================================
-   SAVED RESOURCE CARD
-========================================== */
-
 function SavedResourceCard({ resource, removingId, onRemove }) {
   const resourceId = String(resource?.resourceId || "");
 
@@ -451,10 +434,6 @@ function SavedResourceCard({ resource, removingId, onRemove }) {
     </motion.div>
   );
 }
-
-/* ==========================================
-   SAVED RESOURCES SECTION
-========================================== */
 
 function SavedResourcesSection({ isAuthenticated }) {
   const [savedResources, setSavedResources] = useState([]);
@@ -661,10 +640,6 @@ function SavedResourcesSection({ isAuthenticated }) {
     </section>
   );
 }
-
-/* ==========================================
-   LEARNING DASHBOARD
-========================================== */
 
 function LearningDashboard({
   isAuthenticated,
@@ -1449,10 +1424,6 @@ export default function Learning() {
         </div>
       </section>
 
-      {/* ======================================
-          DASHBOARD
-      ====================================== */}
-
       <LearningDashboard
         isAuthenticated={isAuthenticated}
         courses={courses}
@@ -1460,10 +1431,6 @@ export default function Learning() {
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
       />
-
-      {/* ======================================
-          MY LEARNING
-      ====================================== */}
 
       <section id="my-learning" className="scroll-mt-24 py-16 lg:py-20">
         <div className="mx-auto px-6 lg:px-8">
@@ -1645,19 +1612,11 @@ export default function Learning() {
         </section>
       )}
 
-      {/* ======================================
-          SAVED RESOURCES
-      ====================================== */}
-
       <section id="saved-resources">
         <SavedResourcesSection isAuthenticated={isAuthenticated} />
       </section>
 
-      {/* ======================================
-          COURSES CTA
-      ====================================== */}
-
-      <section className="relative isolate overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 py-5 text-white sm:py-20">
+      <section className="relative isolate bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 py-5 text-white sm:py-20">
         <div className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-cyan-400/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
         <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-8">

@@ -21,6 +21,7 @@ const Learning = lazy(() => import("../pages/Learning"));
 const LearningDetails = lazy(() => import("../pages/LearningDetails"));
 const Library = lazy(() => import("../pages/Library"));
 const Courses = lazy(() => import("../pages/Courses"));
+const LearningPathwayDetails = lazy(() => import("../pages/LearningPathwayDetails"));
 const CourseDetails = lazy(() => import("../pages/CourseDetails"));
 const Products = lazy(() => import("../pages/Products"));
 const ProductDetails = lazy(() => import("../pages/ProductDetails"));
@@ -60,6 +61,7 @@ const AdminDashboard = lazy(() => import("../pages/Admin"));
 const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
 const AdminLearning = lazy(() => import("../pages/admin/AdminLearning"));
 const AdminCourses = lazy(() => import("../pages/admin/AdminCourses"));
+const AdminLearningPaths = lazy(() => import("../pages/admin/AdminLearningPaths"));
 const AdminProducts = lazy(() => import("../pages/admin/AdminProducts"));
 const AdminProjects = lazy(() => import("../pages/admin/AdminProjects"));
 const AdminServices = lazy(() => import("../pages/admin/AdminServices"));
@@ -96,6 +98,7 @@ export default function AppRoutes() {
           <Route path="verify-certificate/:certificateId" element={<VerifyCertificate />} />
           <Route path="library" element={<Library />} />
           <Route path="courses" element={<Courses />} />
+          <Route path="courses/pathways/:slug" element={<LearningPathwayDetails />} />
           <Route path="courses/:id" element={<CourseDetails />} />
           <Route path="products" element={<Products />} />
           <Route path="products/:id" element={<ProductDetails />} />
@@ -180,6 +183,7 @@ export default function AppRoutes() {
               {/* Content */}
               <Route path="learning" element={<AdminLearning />} />
               <Route path="courses" element={<AdminCourses />} />
+              <Route path="learning-paths" element={<AdminLearningPaths />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="projects" element={<AdminProjects />} />
               <Route path="services" element={<AdminServices />} />

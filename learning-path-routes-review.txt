@@ -1,0 +1,1999 @@
+﻿
+========== adminRoutes.js ==========
+const express = require("express");
+
+const {
+  getStats,
+  getUsers,
+  getUser,
+  deleteUser,
+  toggleBlockUser,
+} = require("../controllers/adminController");
+
+const {
+  getAdminNotifications,
+  deleteAdminNotification,
+  clearAdminNotifications,
+} = require("../controllers/notificationController");
+
+const {
+  getBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+} = require("../controllers/blogController");
+
+const {
+  createLearningResource,
+  getLearningResources,
+  updateLearningResource,
+  deleteLearningResource,
+} = require("../controllers/learningController");
+
+const {
+  getOperationsAffiliates,
+  updateOperationsAffiliateStatus,
+  getOperationsPayouts,
+  updateOperationsPayoutStatus,
+  getOperationsCommunityReports,
+  updateOperationsCommunityReport,
+  updateOperationsCommunityPost,
+} = require("../controllers/adminOperationsController");
+
+const {
+  getOperationsInquiries,
+  updateOperationsInquiryStatus,
+  getOperationsEnrollments,
+  getOperationsCertificates,
+  getOperationsPayments,
+  getOperationsIssues,
+  getOperationsFeedback,
+  getOperationsReports,
+  updateOperationsReportStatus,
+} = require("../controllers/adminOperationsRecordsController");
+
+const {
+  createOpportunity,
+  getOpportunities,
+  getOpportunity,
+  updateOpportunity,
+  deleteOpportunity,
+} = require("../controllers/opportunityController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+const router = express.Router();
+
+/* ==========================================
+   ADMIN PROTECTION
+========================================== */
+
+router.use(protect);
+router.use(adminOnly);
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+router.get(
+  "/dashboard",
+  getStats
+);
+
+router.get(
+  "/stats",
+  getStats
+);
+
+/* ==========================================
+   USERS
+========================================== */
+
+router.get(
+  "/users",
+  getUsers
+);
+
+router.get(
+  "/users/:id",
+  getUser
+);
+
+router.patch(
+  "/users/:id/block",
+  toggleBlockUser
+);
+
+router.delete(
+  "/users/:id",
+  deleteUser
+);
+
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+router.get(
+  "/notifications",
+  getAdminNotifications
+);
+
+router.delete(
+  "/notifications/:id",
+  deleteAdminNotification
+);
+
+router.delete(
+  "/notifications",
+  clearAdminNotifications
+);
+
+/* ==========================================
+   BLOG
+========================================== */
+
+router.get(
+  "/blog",
+  getBlogs
+);
+
+router.post(
+  "/blog",
+  createBlog
+);
+
+router.put(
+  "/blog/:id",
+  updateBlog
+);
+
+router.delete(
+  "/blog/:id",
+  deleteBlog
+);
+
+/* ==========================================
+   LEARNING RESOURCES
+========================================== */
+
+router
+  .route("/learning")
+  .get(getLearningResources)
+  .post(createLearningResource);
+
+router
+  .route("/learning/:id")
+  .put(updateLearningResource)
+  .delete(deleteLearningResource);
+
+/* ==========================================
+  PLATFORM OPERATIONS
+========================================== */
+
+// Affiliates
+router.get(
+  "/operations/affiliates",
+  getOperationsAffiliates
+);
+
+router.patch(
+  "/operations/affiliates/:id/status",
+  updateOperationsAffiliateStatus
+);
+
+// Affiliate payouts
+router.get(
+  "/operations/payouts",
+  getOperationsPayouts
+);
+
+router.patch(
+  "/operations/payouts/:id/status",
+  updateOperationsPayoutStatus
+);
+
+// Community reports
+router.get(
+  "/operations/community-reports",
+  getOperationsCommunityReports
+);
+
+router.patch(
+  "/operations/community-reports/:id/status",
+  updateOperationsCommunityReport
+);
+
+// Community post moderation
+router.patch(
+  "/operations/community-posts/:id/status",
+  updateOperationsCommunityPost
+);
+
+/* ==========================================
+   PLATFORM OPERATION RECORDS
+   Protected by router-level protect + adminOnly
+========================================== */
+
+// Investors and partners
+router.get(
+  "/operations/inquiries",
+  getOperationsInquiries
+);
+
+router.patch(
+  "/operations/inquiries/:id/status",
+  updateOperationsInquiryStatus
+);
+
+// Learner enrollments and progress
+router.get(
+  "/operations/enrollments",
+  getOperationsEnrollments
+);
+
+// Certificates
+router.get(
+  "/operations/certificates",
+  getOperationsCertificates
+);
+
+// Payments: read-only
+router.get(
+  "/operations/payments",
+  getOperationsPayments
+);
+
+// Issues
+router.get(
+  "/operations/issues",
+  getOperationsIssues
+);
+
+// Feedback
+router.get(
+  "/operations/feedback",
+  getOperationsFeedback
+);
+
+router.get("/operations/reports", getOperationsReports);
+
+router.patch(
+  "/operations/reports/:id/status",
+  updateOperationsReportStatus
+);
+
+/* ==========================================
+   OPPORTUNITIES
+========================================== */
+
+router
+  .route("/opportunities")
+  .get(getOpportunities)
+  .post(createOpportunity);
+
+router
+  .route("/opportunities/:id")
+  .get(getOpportunity)
+  .put(updateOpportunity)
+  .delete(deleteOpportunity);
+
+module.exports = router;
+
+========== affiliateRoutes.js ==========
+const express = require("express");
+
+const {
+  getAffiliateDashboard,
+  activateAffiliate,
+  trackReferralClick,
+  getAffiliateReferrals,
+  getAffiliateEarnings,
+  getAffiliatePayouts,
+  updatePayoutInformation,
+  requestAffiliatePayout,
+} = require("../controllers/affiliateController");
+
+const protect = require("../middleware/auth");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC REFERRAL TRACKING
+========================================== */
+
+router.post(
+  "/referral",
+  trackReferralClick
+);
+
+/* ==========================================
+   AUTHENTICATED AFFILIATE
+========================================== */
+
+router.get(
+  "/",
+  protect,
+  getAffiliateDashboard
+);
+
+router.post(
+  "/activate",
+  protect,
+  activateAffiliate
+);
+
+router.get(
+  "/referrals",
+  protect,
+  getAffiliateReferrals
+);
+
+router.get(
+  "/earnings",
+  protect,
+  getAffiliateEarnings
+);
+
+router.get(
+  "/payouts",
+  protect,
+  getAffiliatePayouts
+);
+
+router.put(
+  "/payout",
+  protect,
+  updatePayoutInformation
+);
+
+router.post(
+  "/payout",
+  protect,
+  requestAffiliatePayout
+);
+
+module.exports = router;
+
+========== authRoutes.js ==========
+const express = require("express");
+
+const {
+  register,
+  login,
+  getCurrentUser,
+  updateProfile,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/authController");
+
+const protect = require("../middleware/auth");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router.route("/register").post(register);
+
+router.route("/login").post(login);
+
+// Password recovery routes
+router.route("/forgot-password").post(forgotPassword);
+
+router.route("/reset-password").post(resetPassword);
+
+/* ==========================================
+   PROTECTED ROUTES
+========================================== */
+
+router.route("/me").get(protect, getCurrentUser);
+
+router.route("/profile").put(protect, updateProfile);
+
+router.route("/change-password").put(protect, changePassword);
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
+
+module.exports = router;
+
+========== blogRoutes.js ==========
+const express = require("express");
+
+const {
+  createBlog,
+  getBlogs,
+  getFeaturedBlogs,
+  getBlog,
+  updateBlog,
+  deleteBlog,
+} = require("../controllers/blogController");
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+const validate = require("../validators/validate");
+
+const {
+  createBlogValidator,
+  updateBlogValidator,
+} = require("../validators/blogValidator");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router.get("/featured", getFeaturedBlogs);
+
+router
+  .route("/")
+  .get(getBlogs)
+  .post(
+    protect,
+    admin,
+    createBlogValidator,
+    validate,
+    createBlog
+  );
+
+router
+  .route("/:id")
+  .get(getBlog)
+  .put(
+    protect,
+    admin,
+    updateBlogValidator,
+    validate,
+    updateBlog
+  )
+  .delete(
+    protect,
+    admin,
+    deleteBlog
+  );
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
+
+module.exports = router;
+
+========== careerApplicationRoutes.js ==========
+const express = require("express");
+
+const {
+  createApplication,
+  getApplications,
+  getApplication,
+  updateApplicationStatus,
+  updateApplicationNotes,
+  markAsRead,
+  markAsUnread,
+  deleteApplication,
+  getApplicationStats,
+} = require("../controllers/careerApplicationController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC
+========================================== */
+
+router.post("/", createApplication);
+
+/* ==========================================
+   ADMIN
+========================================== */
+
+router.get(
+  "/stats",
+  protect,
+  adminOnly,
+  getApplicationStats
+);
+
+router.get(
+  "/",
+  protect,
+  adminOnly,
+  getApplications
+);
+
+router.get(
+  "/:id",
+  protect,
+  adminOnly,
+  getApplication
+);
+
+router.patch(
+  "/:id/status",
+  protect,
+  adminOnly,
+  updateApplicationStatus
+);
+
+router.patch(
+  "/:id/notes",
+  protect,
+  adminOnly,
+  updateApplicationNotes
+);
+
+router.patch(
+  "/:id/read",
+  protect,
+  adminOnly,
+  markAsRead
+);
+
+router.patch(
+  "/:id/unread",
+  protect,
+  adminOnly,
+  markAsUnread
+);
+
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  deleteApplication
+);
+
+module.exports = router;
+
+========== certificateRoutes.js ==========
+const express = require("express");
+
+const {
+  getMyCertificates,
+  getMyCertificate,
+  verifyCertificate,
+} = require("../controllers/certificateController");
+
+const protect = require("../middleware/auth");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC CERTIFICATE VERIFICATION
+
+   MUST COME BEFORE /:certificateId
+========================================== */
+
+router.get(
+  "/verify/:certificateId",
+  verifyCertificate
+);
+
+/* ==========================================
+   AUTHENTICATED CERTIFICATES
+========================================== */
+
+router.get(
+  "/",
+  protect,
+  getMyCertificates
+);
+
+router.get(
+  "/:certificateId",
+  protect,
+  getMyCertificate
+);
+
+module.exports = router;
+
+========== communityRoutes.js ==========
+const express = require("express");
+const {
+  getCommunityPosts,
+  getCommunityPost,
+  createCommunityPost,
+  deleteCommunityPost,
+  getCommunityCategories,
+  getCommunityComments,
+  createCommunityComment,
+  toggleCommunityLike,
+  toggleCommunitySave,
+  shareCommunityPost,
+} = require("../controllers/communityController");
+
+const protect = require("../middleware/auth");
+const optionalAuth = require("../middleware/optionalAuth");
+
+const router = express.Router();
+
+// Get published community posts
+router.get("/", optionalAuth, getCommunityPosts);
+
+// Get community categories
+router.get(
+  "/categories",
+  getCommunityCategories
+);
+
+// Get one published post
+router.get("/:id", optionalAuth, getCommunityPost);
+
+/* ==========================================
+   AUTHENTICATED COMMUNITY ACTIONS
+========================================== */
+
+router.post(
+  "/",
+  protect,
+  createCommunityPost
+);
+
+router.get("/:id/comments", getCommunityComments);
+router.post("/:id/comments", protect, createCommunityComment);
+router.post("/:id/like", protect, toggleCommunityLike);
+router.post("/:id/save", protect, toggleCommunitySave);
+router.post("/:id/share", shareCommunityPost);
+
+router.delete(
+  "/:id",
+  protect,
+  deleteCommunityPost
+);
+
+module.exports = router;
+
+========== contactRoutes.js ==========
+const express = require("express");
+
+const {
+  createMessage,
+  createReport,
+  getMessages,
+  getMessage,
+  markAsRead,
+  deleteMessage,
+  getContactStats,
+} = require("../controllers/contactController");
+
+const {
+  createServiceEnquiry,
+  getServiceEnquiries,
+  getServiceEnquiryStats,
+  updateServiceEnquiryStatus,
+} = require("../controllers/serviceEnquiryController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+const router = express.Router();
+
+/* PUBLIC CONTACT AND SERVICE ENQUIRY SUBMISSIONS */
+
+router.post("/", createMessage);
+router.post("/service-enquiries", createServiceEnquiry);
+router.post("/reports", createReport);
+/* ADMIN SERVICE ENQUIRIES */
+
+router.get(
+  "/service-enquiries/stats",
+  protect,
+  adminOnly,
+  getServiceEnquiryStats
+);
+
+router.get(
+  "/service-enquiries",
+  protect,
+  adminOnly,
+  getServiceEnquiries
+);
+
+router.patch(
+  "/service-enquiries/:id/status",
+  protect,
+  adminOnly,
+  updateServiceEnquiryStatus
+);
+
+/* ADMIN CONTACT MESSAGES */
+
+router.get("/stats", protect, adminOnly, getContactStats);
+router.get("/", protect, adminOnly, getMessages);
+
+router
+  .route("/:id")
+  .get(protect, adminOnly, getMessage)
+  .delete(protect, adminOnly, deleteMessage);
+
+router.put("/:id/read", protect, adminOnly, markAsRead);
+
+module.exports = router;
+
+========== contactRoutes.js.backup ==========
+const express = require("express");
+
+const {
+  createMessage,
+  getMessages,
+  getMessage,
+  markAsRead,
+  deleteMessage,
+  getContactStats,
+} = require("../controllers/contactController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router
+  .route("/")
+  .post(createMessage);
+
+/* ==========================================
+   ADMIN ROUTES
+========================================== */
+
+router.get(
+  "/stats",
+  protect,
+  adminOnly,
+  getContactStats
+);
+
+router
+  .route("/")
+  .get(
+    protect,
+    adminOnly,
+    getMessages
+  );
+
+router
+  .route("/:id")
+  .get(
+    protect,
+    adminOnly,
+    getMessage
+  )
+  .delete(
+    protect,
+    adminOnly,
+    deleteMessage
+  );
+
+router.put(
+  "/:id/read",
+  protect,
+  adminOnly,
+  markAsRead
+);
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
+
+module.exports = router;
+
+========== courseRoutes.js ==========
+const express = require("express");
+
+const {
+  saveCourse,
+  getCourses,
+  getAdminCourses,
+  getCourse,
+  updateCourse,
+  deleteCourse,
+  enrollCourse,
+  completeLesson,
+  submitAssessment,
+  completeModule,
+  updateCurrentLesson,
+  updateProgress,
+  updateNotes,
+} = require("../controllers/courseController");
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC COURSE CATALOG
+========================================== */
+
+router
+  .route("/")
+  .get(getCourses)
+  .post(protect, adminOnly, saveCourse);
+
+/* ==========================================
+   ADMIN COURSE CATALOG
+   Full curriculum available to admins.
+   MUST COME BEFORE /:id
+========================================== */
+
+router.get(
+  "/admin",
+  protect,
+  adminOnly,
+  getAdminCourses
+);
+
+/* ==========================================
+   ENROLL IN COURSE
+========================================== */
+
+router.post(
+  "/:id/enroll",
+  protect,
+  enrollCourse
+);
+
+/* ==========================================
+   COMPLETE LESSON
+========================================== */
+
+router.put(
+  "/:id/lessons/:lessonId",
+  protect,
+  completeLesson
+);
+
+/* ==========================================
+   SUBMIT MODULE ASSESSMENT
+========================================== */
+
+router.post(
+  "/:id/modules/:moduleId/assessment",
+  protect,
+  submitAssessment
+);
+
+/* ==========================================
+   COMPLETE MODULE
+========================================== */
+
+router.put(
+  "/:id/modules/:moduleId/complete",
+  protect,
+  completeModule
+);
+
+/* ==========================================
+   UPDATE CURRENT LESSON
+========================================== */
+
+router.put(
+  "/:id/current-lesson/:lessonId",
+  protect,
+  updateCurrentLesson
+);
+
+/* ==========================================
+   COURSE DETAILS
+   ENROLLED USERS ONLY
+========================================== */
+
+router
+  .route("/:id")
+  .get(protect, getCourse)
+  .put(protect, adminOnly, updateCourse)
+  .delete(protect, adminOnly, deleteCourse);
+
+/* ==========================================
+   COURSE PROGRESS
+========================================== */
+
+router.put(
+  "/:id/progress",
+  protect,
+  updateProgress
+);
+
+/* ==========================================
+   COURSE NOTES
+========================================== */
+
+router.put(
+  "/:id/notes",
+  protect,
+  updateNotes
+);
+
+module.exports = router;
+
+========== faqRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+const validate = require("../validators/validate");
+
+const {
+  createFAQValidator,
+  updateFAQValidator,
+} = require("../validators/faqValidator");
+
+const {
+  createFAQ,
+  getFAQs,
+  getFAQ,
+  updateFAQ,
+  deleteFAQ,
+  getFeaturedFAQs,
+} = require("../controllers/faqController");
+
+/* =========================
+   PUBLIC ROUTES
+========================= */
+
+router.get("/", getFAQs);
+
+router.get("/featured", getFeaturedFAQs);
+
+router.get("/:id", getFAQ);
+
+/* =========================
+   ADMIN ROUTES
+========================= */
+
+router.post(
+  "/",
+  protect,
+  admin,
+  createFAQValidator,
+  validate,
+  createFAQ
+);
+
+router.put(
+  "/:id",
+  protect,
+  admin,
+  updateFAQValidator,
+  validate,
+  updateFAQ
+);
+
+router.delete(
+  "/:id",
+  protect,
+  admin,
+  deleteFAQ
+);
+
+module.exports = router;
+
+========== index.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+router.use("/auth", require("./authRoutes"));
+router.use("/users", require("./userRoutes"));
+
+router.use("/learning", require("./learningRoutes"));
+
+router.use("/courses", require("./courseRoutes"));
+router.use("/learning-paths", require("./learningPathRoutes"));
+router.use("/progress", require("./progressRoutes"));
+router.use("/products", require("./productRoutes"));
+router.use("/projects", require("./projectRoutes"));
+router.use("/services", require("./serviceRoutes"));
+router.use("/blog", require("./blogRoutes"));
+router.use("/team", require("./teamRoutes"));
+router.use("/testimonials", require("./testimonialRoutes"));
+router.use("/faq", require("./faqRoutes"));
+router.use("/newsletter", require("./newsletterRoutes"));
+router.use("/contact", require("./contactRoutes"));
+router.use("/notifications", require("./notificationRoutes"));
+router.use("/upload", require("./uploadRoutes"));
+router.use("/admin", require("./adminRoutes"));
+router.use("/library", require("./libraryRoutes"));
+router.use("/community", require("./communityRoutes"));
+router.use("/affiliate", require("./affiliateRoutes"));
+router.use("/payments", require("./paymentRoutes"));
+router.use("/certificates", require("./certificateRoutes"));
+
+module.exports = router;
+
+========== learningPathRoutes.js ==========
+const express = require("express");
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+const optionalAuth = require("../middleware/optionalAuth");
+const controller = require("../controllers/learningPathController");
+const router = express.Router();
+router.get("/", controller.getPaths);
+router.get("/admin", protect, adminOnly, controller.listAdmin);
+router.post("/", protect, adminOnly, controller.createPath);
+router.put("/:id", protect, adminOnly, controller.updatePath);
+router.delete("/:id", protect, adminOnly, controller.removePath);
+router.put("/courses/:courseId", protect, adminOnly, controller.assignCourse);
+router.get("/:id", optionalAuth, controller.getPath);
+module.exports = router;
+
+========== learningRoutes.js ==========
+const express = require("express");
+
+const {
+  createLearningResource,
+  getLearningResources,
+  getLearningResource,
+  updateLearningResource,
+  deleteLearningResource,
+  getFeaturedLearning,
+  getLearningCategories,
+  downloadLearningResource,
+} = require("../controllers/learningController");
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+const validate = require("../validators/validate");
+
+const {
+  createLearningValidator,
+  updateLearningValidator,
+} = require("../validators/learningValidator");
+
+const router = express.Router();
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router.get(
+  "/featured",
+  getFeaturedLearning
+);
+
+router.get(
+  "/categories",
+  getLearningCategories
+);
+
+router
+  .route("/")
+  .get(getLearningResources)
+  .post(
+    protect,
+    admin,
+    createLearningValidator,
+    validate,
+    createLearningResource
+  );
+
+/* ==========================================
+   DOWNLOAD
+========================================== */
+
+router.get(
+  "/:id/download",
+  protect,
+  downloadLearningResource
+);
+
+/* ==========================================
+   SINGLE RESOURCE
+========================================== */
+
+router
+  .route("/:id")
+  .get(getLearningResource)
+  .put(
+    protect,
+    admin,
+    updateLearningValidator,
+    validate,
+    updateLearningResource
+  )
+  .delete(
+    protect,
+    admin,
+    deleteLearningResource
+  );
+
+module.exports = router;
+
+========== libraryRoutes.js ==========
+const express = require("express");
+
+const {
+  getSavedResources,
+  saveResource,
+  removeSavedResource,
+  checkSavedResource,
+} = require("../controllers/savedResourceController");
+
+const protect = require("../middleware/auth");
+
+const router = express.Router();
+
+/* ==========================================
+   ALL LIBRARY ROUTES REQUIRE AUTHENTICATION
+========================================== */
+
+router.use(protect);
+
+/* ==========================================
+   SAVED RESOURCES
+========================================== */
+
+// Get all resources saved by current user
+router.get("/saved", getSavedResources);
+
+// Save a course/book/resource
+router.post("/saved", saveResource);
+
+// Check whether current user saved a resource
+router.get(
+  "/saved/:resourceId",
+  checkSavedResource
+);
+
+// Remove saved resource
+router.delete(
+  "/saved/:resourceId",
+  removeSavedResource
+);
+
+module.exports = router;
+
+========== newsletterRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+const validate = require("../validators/validate");
+
+const {
+  subscribeValidator,
+} = require("../validators/newsletterValidator");
+
+const {
+  subscribe,
+  unsubscribe,
+  getSubscribers,
+  deleteSubscriber,
+} = require("../controllers/newsletterController");
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router.post(
+  "/subscribe",
+  subscribeValidator,
+  validate,
+  subscribe
+);
+
+router.post(
+  "/unsubscribe",
+  subscribeValidator,
+  validate,
+  unsubscribe
+);
+
+/* ==========================================
+   ADMIN ROUTES
+========================================== */
+
+router
+  .route("/")
+  .get(
+    protect,
+    admin,
+    getSubscribers
+  );
+
+router
+  .route("/:id")
+  .delete(
+    protect,
+    admin,
+    deleteSubscriber
+  );
+
+module.exports = router;
+
+========== notificationRoutes.js ==========
+const express = require("express");
+const router = express.Router();
+const {
+  createNotification,
+  getNotifications,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  clearNotifications,
+  getUnreadCount,
+  broadcastNotification,
+  getAdminNotifications,
+  deleteAdminNotification,
+} = require("../controllers/notificationController");
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+/* ==========================================
+   USER ROUTES
+========================================== */
+
+router
+  .route("/")
+  .get(protect, getNotifications)
+  .delete(protect, clearNotifications);
+
+router.get(
+  "/unread-count",
+  protect,
+  getUnreadCount
+);
+
+router.put(
+  "/read-all",
+  protect,
+  markAllAsRead
+);
+
+router.put(
+  "/:id/read",
+  protect,
+  markAsRead
+);
+
+router.delete(
+  "/:id",
+  protect,
+  deleteNotification
+);
+
+/* ==========================================
+   ADMIN ROUTES
+========================================== */
+router.get(
+  "/admin",
+  protect,
+  admin,
+  getAdminNotifications
+);
+
+router.post(
+  "/",
+  protect,
+  admin,
+  createNotification
+);
+
+router.post(
+  "/broadcast",
+  protect,
+  admin,
+  broadcastNotification
+);
+
+router.delete(
+  "/admin/:id",
+  protect,
+  admin,
+  deleteAdminNotification
+);
+
+module.exports = router;
+
+========== opportunityRoutes.js ==========
+const express = require("express");
+
+const {
+  getPublicOpportunities,
+  getPublicOpportunity,
+} = require("../controllers/opportunityController");
+
+const router = express.Router();
+
+router.get("/", getPublicOpportunities);
+router.get("/:id", getPublicOpportunity);
+
+module.exports = router;
+
+========== paymentRoutes.js ==========
+const express = require("express");
+const protect = require("../middleware/auth");
+
+const {
+  getPaymentOverview,
+  getTransactions,
+  getOrders,
+  getOrder,
+  createNewOrder,
+  createPremiumCourseOrder,
+  createNewPayment,
+
+  initializePaystackCoursePayment,
+  initializePaystackOrderPayment,
+  initializePaystackCustomPayment,
+  verifyPaystackPayment,
+  paystackWebhook,
+
+  getPaymentMethods,
+  addPaymentMethod,
+  removePaymentMethod,
+  getBillingProfile,
+  updateBillingProfile,
+  getInvoices,
+  getInvoice,
+} = require("../controllers/paymentController");
+
+const router = express.Router();
+
+/* ==========================================
+   PAYSTACK WEBHOOK
+   IMPORTANT:
+   This route must NOT use authentication.
+   Paystack authenticates the webhook using
+   x-paystack-signature.
+========================================== */
+
+router.post("/paystack/webhook", paystackWebhook);
+
+/* ==========================================
+   PAYSTACK CHECKOUT
+========================================== */
+
+router.post(
+  "/paystack/initialize",
+  protect,
+  initializePaystackCoursePayment
+);
+
+router.post(
+  "/paystack/initialize-order",
+  protect,
+  initializePaystackOrderPayment
+);
+
+router.post(
+  "/paystack/initialize-custom",
+  protect,
+  initializePaystackCustomPayment
+);
+
+router.get(
+  "/paystack/verify/:reference",
+  protect,
+  verifyPaystackPayment
+);
+
+/* ==========================================
+   PAYMENT OVERVIEW
+========================================== */
+
+router.get("/", protect, getPaymentOverview);
+
+/* ==========================================
+   TRANSACTIONS
+========================================== */
+
+router.get(
+  "/transactions",
+  protect,
+  getTransactions
+);
+
+/* ==========================================
+   ORDERS
+========================================== */
+
+router.get(
+  "/orders",
+  protect,
+  getOrders
+);
+
+router.get(
+  "/orders/:id",
+  protect,
+  getOrder
+);
+
+router.post(
+  "/orders",
+  protect,
+  createNewOrder
+);
+
+router.post(
+  "/orders/course",
+  protect,
+  createPremiumCourseOrder
+);
+
+/* ==========================================
+   PAYMENT RECORDS
+========================================== */
+
+router.post(
+  "/payments",
+  protect,
+  createNewPayment
+);
+
+/*
+  IMPORTANT:
+  The old development-only endpoint:
+
+  POST /payments/:id/success
+
+  has intentionally been removed.
+
+  Payment success must now come from Paystack
+  verification/webhook processing.
+*/
+
+/* ==========================================
+   PAYMENT METHODS
+========================================== */
+
+router.get(
+  "/methods",
+  protect,
+  getPaymentMethods
+);
+
+router.post(
+  "/methods",
+  protect,
+  addPaymentMethod
+);
+
+router.delete(
+  "/methods/:id",
+  protect,
+  removePaymentMethod
+);
+
+/* ==========================================
+   BILLING
+========================================== */
+
+router.get(
+  "/billing",
+  protect,
+  getBillingProfile
+);
+
+router.put(
+  "/billing",
+  protect,
+  updateBillingProfile
+);
+
+/* ==========================================
+   INVOICES
+========================================== */
+
+router.get(
+  "/invoices",
+  protect,
+  getInvoices
+);
+
+router.get(
+  "/invoices/:id",
+  protect,
+  getInvoice
+);
+
+module.exports = router;
+
+========== productRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  createProduct,
+  getProducts,
+  getProduct,
+  updateProduct,
+  deleteProduct,
+  getFeaturedProducts,
+  getProductStats,
+} = require("../controllers/productController");
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+/* ==========================================
+   FEATURED PRODUCTS
+========================================== */
+
+router.get(
+  "/featured",
+  getFeaturedProducts
+);
+
+/* ==========================================
+   PRODUCT STATISTICS
+========================================== */
+
+router.get(
+  "/stats",
+  protect,
+  admin,
+  getProductStats
+);
+
+/* ==========================================
+   PRODUCTS
+========================================== */
+
+router
+  .route("/")
+  .get(getProducts)
+  .post(
+    protect,
+    admin,
+    createProduct
+  );
+
+router
+  .route("/:id")
+  .get(getProduct)
+  .put(
+    protect,
+    admin,
+    updateProduct
+  )
+  .delete(
+    protect,
+    admin,
+    deleteProduct
+  );
+
+module.exports = router;
+
+========== progressRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const protect = require("../middleware/auth");
+
+const {
+  getUserProgress,
+  getCourseProgress,
+} = require("../controllers/progressController");
+
+/* ==========================================
+   GET ALL PROGRESS FOR LOGGED-IN USER
+   GET /api/v1/progress
+========================================== */
+
+router.get("/", protect, getUserProgress);
+
+/* ==========================================
+   GET PROGRESS FOR ONE COURSE
+   GET /api/v1/progress/:id
+========================================== */
+
+router.get("/:id", protect, getCourseProgress);
+
+module.exports = router;
+
+========== projectRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  createProject,
+  getProjects,
+  getProject,
+  updateProject,
+  deleteProject,
+} = require("../controllers/projectController");
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router
+  .route("/")
+  .get(getProjects)
+  .post(
+    protect,
+    admin,
+    createProject
+  );
+
+router
+  .route("/:id")
+  .get(getProject)
+  .put(
+    protect,
+    admin,
+    updateProject
+  )
+  .delete(
+    protect,
+    admin,
+    deleteProject
+  );
+
+/* ==========================================
+   EXPORT ROUTER
+========================================== */
+
+module.exports = router;
+
+========== serviceRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  createService,
+  getServices,
+  getService,
+  updateService,
+  deleteService,
+} = require("../controllers/serviceController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+
+/* ==========================================
+   PUBLIC ROUTES
+========================================== */
+
+router
+  .route("/")
+  .get(getServices)
+  .post(
+    protect,
+    adminOnly,
+    createService
+  );
+
+router
+  .route("/:id")
+  .get(getService)
+  .put(
+    protect,
+    adminOnly,
+    updateService
+  )
+  .delete(
+    protect,
+    adminOnly,
+    deleteService
+  );
+
+module.exports = router;
+
+========== teamRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+const upload = require("../middleware/upload");
+
+const validate = require("../validators/validate");
+
+const {
+  createTeamValidator,
+  updateTeamValidator,
+} = require("../validators/teamValidator");
+
+const {
+  createTeamMember,
+  getTeamMembers,
+  getTeamMember,
+  deleteTeamMember,
+  updateTeamMember,
+  getFeaturedMembers,
+  getTeamStats,
+} = require("../controllers/teamController");
+
+/* =========================
+   PUBLIC ROUTES
+========================= */
+
+router.get("/", getTeamMembers);
+
+router.get("/featured", getFeaturedMembers);
+
+/* =========================
+   ADMIN STATISTICS
+========================= */
+
+router.get(
+  "/stats",
+  protect,
+  admin,
+  getTeamStats
+);
+
+/* =========================
+   PUBLIC SINGLE MEMBER
+========================= */
+
+router.get("/:id", getTeamMember);
+
+/* =========================
+   ADMIN CREATE
+========================= */
+
+router.post(
+  "/",
+  protect,
+  admin,
+  upload.single("image"),
+  createTeamValidator,
+  validate,
+  createTeamMember
+);
+
+/* =========================
+   ADMIN UPDATE
+========================= */
+
+router.put(
+  "/:id",
+  protect,
+  admin,
+  upload.single("image"),
+  updateTeamValidator,
+  validate,
+  updateTeamMember
+);
+
+/* =========================
+   ADMIN DELETE
+========================= */
+
+router.delete(
+  "/:id",
+  protect,
+  admin,
+  deleteTeamMember
+);
+
+module.exports = router;
+
+========== testimonialRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const protect = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+const validate = require("../validators/validate");
+
+const {
+  createTestimonialValidator,
+  updateTestimonialValidator,
+} = require("../validators/testimonialValidator");
+
+const {
+  createTestimonial,
+  getTestimonials,
+  getTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  getFeaturedTestimonials,
+} = require("../controllers/testimonialController");
+
+// Public
+router.get("/", getTestimonials);
+router.get("/featured", getFeaturedTestimonials);
+router.get("/:id", getTestimonial);
+
+// Admin
+router.post(
+  "/",
+  protect,
+  admin,
+  createTestimonialValidator,
+  validate,
+  createTestimonial
+);
+
+router.put(
+  "/:id",
+  protect,
+  admin,
+  updateTestimonialValidator,
+  validate,
+  updateTestimonial
+);
+
+router.delete(
+  "/:id",
+  protect,
+  admin,
+  deleteTestimonial
+);
+
+module.exports = router;
+
+========== uploadRoutes.js ==========
+const express = require("express");
+const router = express.Router();
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+const upload = require("../middleware/upload");
+const assessmentUpload = require("../middleware/assessmentUpload");
+const {
+  uploadImage,
+  uploadAssessmentFile,
+  deleteImage,
+} = require("../controllers/uploadController");
+
+/* ==========================================
+   IMAGE UPLOAD
+   Admin only
+========================================== */
+
+router.post(
+  "/image",
+  protect,
+  adminOnly,
+  upload.single("image"),
+  uploadImage
+);
+
+/* ==========================================
+   ASSESSMENT FILE UPLOAD
+   Authenticated learners
+========================================== */
+
+router.post(
+  "/assessment",
+  protect,
+  assessmentUpload.single("file"),
+  uploadAssessmentFile
+);
+
+/* ==========================================
+   IMAGE / FILE DELETE
+   Admin only
+========================================== */
+
+router.delete(
+  "/:publicId",
+  protect,
+  adminOnly,
+  deleteImage
+);
+
+module.exports = router;
+
+========== userRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  getProfile,
+  updateProfile,
+  uploadAvatar,
+  deleteAvatar,
+  changePassword,
+  deleteAccount,
+  getSettings,
+  updateSettings,
+  getUsers,
+  getUser,
+  updateUserRole,
+  deleteUser,
+} = require("../controllers/userController");
+
+const protect = require("../middleware/auth");
+const adminOnly = require("../middleware/admin");
+const upload = require("../middleware/upload");
+
+/* ==========================================
+   CURRENT USER PROFILE
+========================================== */
+
+router
+  .route("/profile")
+  .get(protect, getProfile)
+  .put(protect, updateProfile)
+  .delete(protect, deleteAccount);
+
+/* ==========================================
+   CURRENT USER AVATAR
+========================================== */
+
+router.put(
+  "/avatar",
+  protect,
+  upload.single("avatar"),
+  uploadAvatar,
+);
+
+router.delete(
+  "/avatar",
+  protect,
+  deleteAvatar,
+);
+
+/* ==========================================
+   CURRENT USER PASSWORD
+========================================== */
+
+router.put(
+  "/change-password",
+  protect,
+  changePassword,
+);
+
+/* ==========================================
+   CURRENT USER SETTINGS
+========================================== */
+
+router
+  .route("/settings")
+  .get(protect, getSettings)
+  .put(protect, updateSettings);
+
+/* ==========================================
+   ADMIN USER MANAGEMENT
+========================================== */
+
+router.get(
+  "/",
+  protect,
+  adminOnly,
+  getUsers,
+);
+
+router.get(
+  "/:id",
+  protect,
+  adminOnly,
+  getUser,
+);
+
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  deleteUser,
+);
+
+router.put(
+  "/:id/role",
+  protect,
+  adminOnly,
+  updateUserRole,
+);
+
+module.exports = router;

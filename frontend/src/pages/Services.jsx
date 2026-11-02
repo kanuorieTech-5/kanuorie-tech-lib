@@ -6,11 +6,10 @@ import { Card, Button, Loader, Pagination } from "../components/common";
 import { SearchBar } from "../components/layout";
 
 import { getServices } from "../services";
-import { CTA, Newsletter } from "../components/home";
 
 const PER_PAGE = 9;
 
-// const FALLBACK_IMAGE = "/images/service-placeholder.jpg";
+const FALLBACK_IMAGE = "/images/service-placeholder.jpg";
 
 const FALLBACK_DESCRIPTION =
   "Learn more about this service and how it can help your business.";
@@ -245,7 +244,7 @@ export default function Services() {
                       hover:border-cyan-400/30 hover:shadow-2xl hover:shadow-cyan-500/10"
                   >
                     <div className="overflow-hidden">
-                      {/* <img
+                     <img
                         src={
                           service?.image ||
                           FALLBACK_IMAGE
@@ -259,7 +258,7 @@ export default function Services() {
                           event.currentTarget.src =
                             FALLBACK_IMAGE;
                         }}
-                      /> */}
+                      /> 
                     </div>
                     <div className="flex flex-1 flex-col p-6">
                       {service?.category && (

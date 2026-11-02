@@ -129,7 +129,7 @@ export default function ProductsPreview() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-16 text-white lg:py-24">
+    <section className="relative overflow-hidden bg-transparent py-16 text-white lg:py-24">
       <div
         className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
         aria-hidden="true"

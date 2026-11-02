@@ -22,6 +22,11 @@ import {
   BookOpen,
   Award,
   Bookmark,
+  CalendarDays,
+  MapPin,
+  Bell,
+  LockKeyhole,
+  ChevronRight,
   Users,
   Handshake,
   CreditCard,
@@ -513,11 +518,6 @@ export default function Profile() {
           : "Profile updated successfully.",
       );
 
-      /*
-       * Give the user a moment to see the success
-       * message before closing the modal.
-       */
-
       setTimeout(() => {
         setIsEditModalOpen(false);
         setSuccessMessage("");
@@ -540,90 +540,24 @@ export default function Profile() {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (character) => character.toUpperCase());
 
-  const registrationDetails = [
-    {
-      label: "Account Type",
-      value: user?.userType,
-    },
-    {
-      label: "Interests",
-      value: user?.interests,
-    },
-    {
-      label: "General Interests",
-      value: user?.generalInterests,
-    },
-    {
-      label: "How You Found Us",
-      value:
-        user?.discoverySource === "other"
-          ? user?.discoverySourceOther || "Other"
-          : user?.discoverySource,
-    },
-    {
-      label: "Learning Level",
-      value: user?.learningLevel,
-    },
-    {
-      label: "Learning Goals",
-      value: user?.learningGoals,
-    },
-    {
-      label: "Business Type",
-      value: user?.businessType,
-    },
-    {
-      label: "Business Needs",
-      value: user?.businessNeeds,
-    },
-    {
-      label: "Project Timeline",
-      value: user?.projectTimeline,
-    },
-    {
-      label: "Career Goal",
-      value: user?.careerGoal,
-    },
-    {
-      label: "Experience Level",
-      value: user?.experienceLevel,
-    },
-    {
-      label: "Preferred Opportunities",
-      value: user?.preferredOpportunities,
-    },
-    {
-      label: "Technology Stack",
-      value: user?.techStack,
-    },
-    {
-      label: "Collaboration Interests",
-      value: user?.collaborationInterests,
-    },
-    {
-      label: "Other Interests",
-      value: user?.otherInterest,
-    },
-    {
-      label: "Marketing Emails",
-      value:
-        typeof user?.marketingConsent === "boolean"
-          ? user.marketingConsent
-            ? "Opted in"
-            : "Not opted in"
-          : "",
-    },
-  ].filter((item) => {
-    if (Array.isArray(item.value)) {
-      return item.value.length > 0;
-    }
-
-    return (
-      item.value !== undefined &&
-      item.value !== null &&
-      String(item.value).trim() !== ""
+  const profileInterests = [
+    ...(Array.isArray(user?.interests) ? user.interests : []),
+    ...(Array.isArray(user?.generalInterests) ? user.generalInterests : []),
+    ...(Array.isArray(user?.learningGoals) ? user.learningGoals : []),
+    ...(Array.isArray(user?.businessNeeds) ? user.businessNeeds : []),
+    ...(Array.isArray(user?.preferredOpportunities)
+      ? user.preferredOpportunities
+      : []),
+    ...(Array.isArray(user?.techStack) ? user.techStack : []),
+    ...(Array.isArray(user?.collaborationInterests)
+      ? user.collaborationInterests
+      : []),
+    user?.otherInterest,
+  ]
+    .filter(Boolean)
+    .filter(
+      (interest, index, interests) => interests.indexOf(interest) === index,
     );
-  });
 
   /* ==========================================
      AVATAR DISPLAY
@@ -917,206 +851,111 @@ export default function Profile() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <div className="mx-auto">
-        <div className="mb-8">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
-            Account
-          </p>
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                My Profile
-              </h1>
-
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Manage your personal information and account details.
-              </p>
-            </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-400">
+              Account
+            </p>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+              My Profile
+            </h1>
+            <p className="mt-2 text-slate-600 dark:text-slate-400">
+              Manage your profile and keep your learning preferences up to date.
+            </p>
           </div>
-        </div>
-        <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 sm:h-40" />
-          <div className="px-1 pb-7 sm:px-5 lg:px-7">
-            <div className="-mt-16 flex flex-col gap-5 sm:-mt-20 sm:flex-row sm:items-end sm:justify-between">
-              {/* AVATAR */}
-              <div className="flex items-end gap-4">
-                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gray-100 text-3xl font-bold text-gray-600 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300 sm:h-36 sm:w-36">
-                  {displayAvatar ? (
-                    <img
-                      src={displayAvatar}
-                      alt={`${user.firstName} ${user.lastName}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    initials
-                  )}
-                </div>
-                <div className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {user.firstName} {user.lastName}
-                    </h2>
+        </header>
 
-                    {user.role === "admin" && (
-                      <ShieldCheck className="h-5 w-5 text-blue-600" />
-                    )}
-                  </div>
-
-                  <p className="mt-1 text-gray-500 dark:text-gray-400">
-                    {user.role === "admin"
-                      ? "Administrator"
-                      : "KanuorieTech User"}
-                  </p>
-                </div>
+        <section
+          aria-label="Profile summary"
+          className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
+          <div className="grid gap-6 p-5 sm:p-7 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-start">
+            <div className="relative mx-auto lg:mx-0">
+              <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-3xl font-bold text-indigo-700 ring-4 ring-indigo-50 dark:bg-indigo-950 dark:text-indigo-200 dark:ring-slate-800 sm:h-36 sm:w-36">
+                {displayAvatar ? (
+                  <img
+                    src={displayAvatar}
+                    alt={user.firstName + " " + user.lastName}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  initials
+                )}
               </div>
+              <button
+                type="button"
+                onClick={openEditModal}
+                aria-label="Edit profile photo and information"
+                className="absolute bottom-1 right-1 flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-indigo-600 text-white shadow-md transition hover:bg-indigo-700 dark:border-slate-900"
+              >
+                <Edit3 className="h-4 w-4" />
+              </button>
             </div>
 
-            {/* INFORMATION */}
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              {/* EMAIL */}
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-950">
-                    <Mail className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Email Address
-                    </p>
-                    <p className="mt-1 break-all font-semibold text-gray-900 dark:text-white">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
+            <div className="min-w-0 text-center lg:pt-1 lg:text-left">
+              <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
+                  {user.firstName} {user.lastName}
+                </h2>
+                {user.role === "admin" && (
+                  <ShieldCheck
+                    className="h-5 w-5 text-indigo-600"
+                    aria-label="Administrator"
+                  />
+                )}
               </div>
-
-              {/* PHONE */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-950">
-                    <Phone className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Phone Number
-                    </p>
-
-                    <p className="mt-1 font-semibold text-gray-900 dark:text-white">
-                      {user.phone || "Not provided"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ROLE */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-950">
-                    <User className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Account Role
-                    </p>
-
-                    <p className="mt-1 font-semibold capitalize text-gray-900 dark:text-white">
-                      {user.role || "user"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* STATUS */}
-
-              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-950">
-                    <CheckCircle2 className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Account Status
-                    </p>
-
-                    <p className="mt-1 font-semibold text-emerald-600">
-                      Active
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* BIO */}
-            <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                About Me
+              <p className="mt-1 font-semibold text-indigo-600 dark:text-indigo-400">
+                @{user.username || user.email?.split("@")[0] || "member"}
               </p>
-
-              <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700 dark:text-gray-300">
-                {user.bio || "You haven't added a bio yet."}
+              <p className="mt-3 max-w-2xl leading-7 text-slate-600 dark:text-slate-300">
+                {user.bio ||
+                  "Add a short bio to introduce yourself to the KanuorieTech community."}
               </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm text-slate-600 dark:text-slate-300 lg:justify-start">
+                <span className="inline-flex min-w-0 items-center gap-2">
+                  <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                  <span className="break-all">{user.email}</span>
+                </span>
+                {user.createdAt && (
+                  <span className="inline-flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" />
+                    Joined{" "}
+                    {new Date(user.createdAt).toLocaleDateString(undefined, {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                )}
+                {(user.location || user.city || user.country) && (
+                  <span className="inline-flex items-center gap-2">
+                    <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
+                    {[user.location, user.city, user.country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </span>
+                )}
+                {user.phone && (
+                  <span className="inline-flex items-center gap-2">
+                    <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                    {user.phone}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* REGISTRATION PREFERENCES */}
-            {registrationDetails.length > 0 && (
-              <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950 sm:p-6">
-                <div className="mb-5">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Interests & Preferences
-                  </h3>
-
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    A summary of your registration preferences and interests.
-                  </p>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {registrationDetails.map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-                    >
-                      <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {item.label}
-                      </p>
-
-                      {Array.isArray(item.value) ? (
-                        <div className="flex flex-wrap gap-2">
-                          {item.value.map((value) => (
-                            <span
-                              key={value}
-                              className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                            >
-                              {formatLabel(value)}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="break-words text-sm font-semibold text-gray-900 dark:text-white">
-                          {formatLabel(String(item.value))}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
             <button
               type="button"
               onClick={openEditModal}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-300 px-5 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-indigo-500/50 dark:text-indigo-300 dark:hover:bg-indigo-950/50 lg:w-auto"
             >
               <Edit3 className="h-4 w-4" />
               Edit Profile
             </button>
           </div>
-        </div>
+        </section>
+
         {/* PROFILE STATISTICS */}
         {user.userType === "student" && (
           <section className="mt-6">
@@ -1188,6 +1027,77 @@ export default function Profile() {
             </div>
           </section>
         )}
+        <section className="grid gap-5 lg:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+            <div className="mb-5">
+              <h2 className="text-lg font-bold text-slate-950 dark:text-white">
+                My Interests
+              </h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Your selected interests and preferences.
+              </p>
+            </div>
+            {profileInterests.length > 0 ? (
+              <div className="flex flex-wrap gap-2.5">
+                {profileInterests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-2 text-sm font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-300"
+                  >
+                    {formatLabel(interest)}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Add interests from Edit Profile to personalize your experience.
+              </p>
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+            <div className="mb-3">
+              <h2 className="text-lg font-bold text-slate-950 dark:text-white">
+                Account Settings
+              </h2>
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <button
+                type="button"
+                onClick={openEditModal}
+                className="flex w-full items-center gap-3 py-3 text-left text-sm font-medium text-slate-700 transition hover:text-indigo-600 dark:text-slate-200 dark:hover:text-indigo-400"
+              >
+                <User className="h-4 w-4 text-slate-500" />
+                <span className="flex-1">Personal Information</span>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </button>
+              <Link
+                to="/settings"
+                className="flex items-center gap-3 py-3 text-sm font-medium text-slate-700 transition hover:text-indigo-600 dark:text-slate-200 dark:hover:text-indigo-400"
+              >
+                <LockKeyhole className="h-4 w-4 text-slate-500" />
+                <span className="flex-1">Change Password</span>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </Link>
+              <Link
+                to="/settings"
+                className="flex items-center gap-3 py-3 text-sm font-medium text-slate-700 transition hover:text-indigo-600 dark:text-slate-200 dark:hover:text-indigo-400"
+              >
+                <Bell className="h-4 w-4 text-slate-500" />
+                <span className="flex-1">Notification Preferences</span>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </Link>
+              <Link
+                to="/settings"
+                className="flex items-center gap-3 py-3 text-sm font-medium text-slate-700 transition hover:text-indigo-600 dark:text-slate-200 dark:hover:text-indigo-400"
+              >
+                <ShieldCheck className="h-4 w-4 text-slate-500" />
+                <span className="flex-1">Privacy Settings</span>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
 
       {serviceEnquirySuccess && (
@@ -1564,10 +1474,6 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* =================================
-                  AVATAR
-              ================================= */}
-
               <div className="mb-7 flex flex-col items-center">
                 <div className="relative">
                   <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-gray-100 bg-gray-100 text-2xl font-bold text-gray-500 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-300">
@@ -1637,7 +1543,7 @@ export default function Profile() {
                   <div>
                     <label
                       htmlFor="firstName"
-                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300 text-gray-900 dark:text-white"
                     >
                       First Name
                     </label>
@@ -1649,14 +1555,14 @@ export default function Profile() {
                       value={formData.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white text-gray-900 dark:text-white"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="lastName"
-                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                      className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300 text-gray-900 dark:text-white"
                     >
                       Last Name
                     </label>
@@ -1668,7 +1574,7 @@ export default function Profile() {
                       value={formData.lastName}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white text-gray-900 dark:text-white"
                     />
                   </div>
                 </div>
@@ -1678,7 +1584,7 @@ export default function Profile() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300 text-gray-900 dark:text-white"
                   >
                     Email Address
                   </label>
@@ -1690,7 +1596,7 @@ export default function Profile() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white text-gray-900 dark:text-white"
                   />
                 </div>
 
@@ -1699,7 +1605,7 @@ export default function Profile() {
                 <div>
                   <label
                     htmlFor="phone"
-                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                    className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300 text-gray-900 dark:text-white"
                   >
                     Phone Number
                   </label>
@@ -1711,7 +1617,7 @@ export default function Profile() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Enter your phone number"
-                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white text-gray-900 dark:text-white"
                   />
                 </div>
 
@@ -1721,7 +1627,7 @@ export default function Profile() {
                   <div className="mb-2 flex items-center justify-between">
                     <label
                       htmlFor="bio"
-                      className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                      className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-gray-900 dark:text-white"
                     >
                       Bio
                     </label>
@@ -1739,7 +1645,7 @@ export default function Profile() {
                     value={formData.bio}
                     onChange={handleChange}
                     placeholder="Tell us a little about yourself..."
-                    className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                    className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-white text-gray-900 dark:text-white"
                   />
                 </div>
 
@@ -1804,7 +1710,7 @@ export default function Profile() {
                           value={formData.discoverySourceOther}
                           onChange={handleChange}
                           placeholder="Enter your source"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-gray-900"
                         />
                       </label>
                     )}

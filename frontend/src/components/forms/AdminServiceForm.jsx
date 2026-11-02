@@ -9,6 +9,9 @@ export default function AdminServiceForm(props) {
     editingService,
     form,
     handleChange,
+    galleryFiles = [],
+    setGalleryFiles,
+    setForm,
     handleSubmit,
     removeBenefit,
     removeTechnology,
@@ -110,6 +113,60 @@ export default function AdminServiceForm(props) {
             placeholder="https://..."
             className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-400 focus:border-cyan-400/50"
           />
+        </div>
+
+        {/* WEBSITE DESIGN GALLERY */}
+        <div className="md:col-span-2">
+          <label className="mb-2 block text-sm font-medium text-slate-300">
+            Website design gallery
+          </label>
+          <p className="mb-3 text-sm text-slate-500">
+            Upload examples of website styles offered for this service. Select multiple images.
+          </p>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-semibold text-white transition hover:bg-white/10">
+            Add gallery images
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              className="sr-only"
+              onChange={(event) => {
+                const selected = Array.from(event.target.files || []).filter((file) => file.type.startsWith("image/"));
+                setGalleryFiles((previous) => [...previous, ...selected]);
+                event.target.value = "";
+              }}
+            />
+          </label>
+          {(form.gallery.length > 0 || galleryFiles.length > 0) && (
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {form.gallery.map((image, index) => (
+                <div key={image + index} className="relative overflow-hidden rounded-xl border border-white/10">
+                  <img src={image} alt={`Gallery example ${index + 1}`} className="h-28 w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setForm((previous) => ({ ...previous, gallery: previous.gallery.filter((_, itemIndex) => itemIndex !== index) }))}
+                    aria-label={`Remove gallery image ${index + 1}`}
+                    className="absolute right-2 top-2 rounded-full bg-slate-950/80 p-1.5 text-white hover:bg-red-600"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+              {galleryFiles.map((file, index) => (
+                <div key={file.name + file.lastModified + index} className="relative flex h-28 items-center justify-center rounded-xl border border-dashed border-cyan-400/40 bg-cyan-400/5 px-3 text-center text-xs text-slate-300">
+                  <span className="break-all">{file.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryFiles((previous) => previous.filter((_, itemIndex) => itemIndex !== index))}
+                    aria-label={`Remove selected file ${file.name}`}
+                    className="absolute right-2 top-2 rounded-full bg-slate-950/80 p-1.5 text-white hover:bg-red-600"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* PRICE */}

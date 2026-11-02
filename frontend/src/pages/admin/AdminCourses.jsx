@@ -22,6 +22,7 @@ import {
   createCourse,
   updateCourse,
   deleteCourse,
+  getAdminLearningPaths,
 } from "../../services";
 
 /* ==========================================
@@ -124,6 +125,7 @@ export default function AdminCourses() {
   ======================================== */
 
   const [courses, setCourses] = useState([]);
+  const [learningPaths, setLearningPaths] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -175,6 +177,7 @@ export default function AdminCourses() {
 
   useEffect(() => {
     loadCourses();
+    getAdminLearningPaths().then((response) => setLearningPaths(response?.data || [])).catch(() => setLearningPaths([]));
   }, []);
 
   /* ========================================
@@ -764,6 +767,13 @@ export default function AdminCourses() {
           ? form.outcomes.map((item) => String(item).trim()).filter(Boolean)
           : [],
 
+        learningPath: form.learningPath || null,
+        learningStage: form.learningPath ? Number(form.learningStage) || 1 : null,
+        courseOrder: form.learningPath ? Number(form.courseOrder) || 1 : null,
+        estimatedDuration: form.estimatedDuration || "",
+        learningObjectives: Array.isArray(form.learningObjectives) ? form.learningObjectives : [],
+        skillsAcquired: Array.isArray(form.skillsAcquired) ? form.skillsAcquired : [],
+
         modules: normalizedModules,
       };
 
@@ -1155,6 +1165,7 @@ export default function AdminCourses() {
                 addModule,
                 addModuleLesson,
                 categories,
+                learningPaths,
                 closeForm,
                 editingId,
                 enableModuleAssessment,
@@ -1305,11 +1316,15 @@ function SelectField({ label, value, onChange, options }) {
         onChange={(event) => onChange(event.target.value)}
         className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+        {options.map((option) => {
+          const optionValue = typeof option === "object" ? option.value : option;
+          const optionLabel = typeof option === "object" ? option.label : option;
+          return (
+          <option key={optionValue} value={optionValue}>
+            {optionLabel}
           </option>
-        ))}
+          );
+        })}
       </select>
     </label>
   );

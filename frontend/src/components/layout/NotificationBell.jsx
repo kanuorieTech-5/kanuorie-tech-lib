@@ -8,7 +8,7 @@ export default function NotificationBell() {
   return (
     <Link
       to="/notifications"
-      className="relative rounded-lg p-2 hover:bg-gray-100"
+      className="relative rounded-lg p-2 hover:bg-gray-100 border border-red-400 text-blue-600"
     >
       <Bell size={20} />
 

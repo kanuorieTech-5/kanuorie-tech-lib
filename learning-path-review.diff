@@ -1,0 +1,413 @@
+﻿diff --git a/backend/package.json b/backend/package.json
+index 9dbbb43..3a77cb6 100644
+--- a/backend/package.json
++++ b/backend/package.json
+@@ -6,7 +6,8 @@
+   "private": true,
+   "scripts": {
+     "start": "node src/server.js",
+-    "dev": "nodemon src/server.js"
++    "dev": "nodemon src/server.js",
++    "seed:frontend-pathway": "node scripts/seedFrontendLearningPath.js"
+   },
+   "engines": {
+     "node": ">=20"
+diff --git a/backend/src/controllers/courseController.js b/backend/src/controllers/courseController.js
+index a3c8bd3..e0aed63 100644
+--- a/backend/src/controllers/courseController.js
++++ b/backend/src/controllers/courseController.js
+@@ -6,13 +6,28 @@ const ApiResponse = require("../utils/ApiResponse");
+ const ApiError = require("../utils/ApiError");
+ const { enrollUserInCourse } = require("../services/courseEnrollmentService");
+ const certificateService = require("../services/certificateService");
++const LearningPath = require("../models/LearningPath");
++
++const validatePathPlacement = async (payload) => {
++  if (!payload.learningPath) return;
++  const path = await LearningPath.findById(payload.learningPath);
++  if (!path) throw new ApiError(400, "Learning pathway not found.");
++  const stageNumber = Number(payload.learningStage);
++  if (!path.stages.some((stage) => stage.number === stageNumber)) {
++    throw new ApiError(400, "Learning stage must exist in the selected pathway.");
++  }
++  payload.learningStage = stageNumber;
++  payload.courseOrder = Math.max(1, Number(payload.courseOrder) || 1);
++};
+ /* ==========================================
+    CREATE COURSE
+ ========================================== */
+ 
+ const saveCourse = asyncHandler(async (req, res) => {
++  const payload = { ...req.body };
++  await validatePathPlacement(payload);
+   const course = await Course.create({
+-    ...req.body,
++    ...payload,
+     createdBy: req.user._id,
+   });
+ 
+@@ -34,7 +49,7 @@ const getCourses = asyncHandler(async (req, res) => {
+   const limit = Number(req.query.limit) || 12;
+   const skip = (page - 1) * limit;
+ 
+-  const filter = {};
++  const filter = { published: true };
+ 
+   if (req.query.category) {
+     filter.category = req.query.category;
+@@ -52,6 +67,9 @@ const getCourses = asyncHandler(async (req, res) => {
+     filter.level = req.query.level;
+   }
+ 
++  if (req.query.learningPath) filter.learningPath = req.query.learningPath;
++  if (req.query.learningStage) filter.learningStage = Number(req.query.learningStage);
++
+   if (req.query.search) {
+     filter.$or = [
+       {
+@@ -271,6 +289,12 @@ const updateCourse = asyncHandler(async (req, res) => {
+     "tags",
+     "prerequisites",
+     "outcomes",
++    "learningPath",
++    "learningStage",
++    "courseOrder",
++    "estimatedDuration",
++    "learningObjectives",
++    "skillsAcquired",
+     "modules",
+   ];
+ 
+@@ -282,6 +306,8 @@ const updateCourse = asyncHandler(async (req, res) => {
+     }
+   }
+ 
++  await validatePathPlacement(updateData);
++
+   /*
+    * IMPORTANT:
+    *
+diff --git a/backend/src/models/Course.js b/backend/src/models/Course.js
+index 3760440..7cec381 100644
+--- a/backend/src/models/Course.js
++++ b/backend/src/models/Course.js
+@@ -292,6 +292,14 @@ const courseSchema = new mongoose.Schema(
+       },
+     ],
+ 
++    // Optional pathway placement; existing course documents remain valid.
++    learningPath: { type: mongoose.Schema.Types.ObjectId, ref: "LearningPath", default: null, index: true },
++    learningStage: { type: Number, min: 1, default: null, index: true },
++    courseOrder: { type: Number, min: 1, default: null },
++    estimatedDuration: { type: String, default: "", trim: true },
++    learningObjectives: { type: [String], default: [] },
++    skillsAcquired: { type: [String], default: [] },
++
+     outcomes: [
+       {
+         type: String,
+@@ -394,4 +402,4 @@ courseSchema.index({
+    EXPORT MODEL
+ ========================================== */
+ 
+-module.exports = mongoose.model("Course", courseSchema);
+\ No newline at end of file
++module.exports = mongoose.model("Course", courseSchema);
+diff --git a/backend/src/routes/index.js b/backend/src/routes/index.js
+index e9aef2a..7b7867a 100644
+--- a/backend/src/routes/index.js
++++ b/backend/src/routes/index.js
+@@ -8,6 +8,7 @@ router.use("/users", require("./userRoutes"));
+ router.use("/learning", require("./learningRoutes"));
+ 
+ router.use("/courses", require("./courseRoutes"));
++router.use("/learning-paths", require("./learningPathRoutes"));
+ router.use("/progress", require("./progressRoutes"));
+ router.use("/products", require("./productRoutes"));
+ router.use("/projects", require("./projectRoutes"));
+@@ -27,4 +28,4 @@ router.use("/affiliate", require("./affiliateRoutes"));
+ router.use("/payments", require("./paymentRoutes"));
+ router.use("/certificates", require("./certificateRoutes"));
+ 
+-module.exports = router;
+\ No newline at end of file
++module.exports = router;
+diff --git a/frontend/src/api/courseApi.js b/frontend/src/api/courseApi.js
+index 142973f..6325a3e 100644
+--- a/frontend/src/api/courseApi.js
++++ b/frontend/src/api/courseApi.js
+@@ -1,5 +1,13 @@
+ ∩╗┐import API from "./axiosApi";
+ 
++export const getLearningPaths = async () => (await API.get("/learning-paths")).data;
++export const getLearningPath = async (slug) => (await API.get(`/learning-paths/${slug}`)).data;
++export const getAdminLearningPaths = async () => (await API.get("/learning-paths/admin")).data;
++export const createLearningPath = async (payload) => (await API.post("/learning-paths", payload)).data;
++export const updateLearningPath = async (id, payload) => (await API.put(`/learning-paths/${id}`, payload)).data;
++export const deleteLearningPath = async (id) => (await API.delete(`/learning-paths/${id}`)).data;
++export const assignCourseToPath = async (courseId, payload) => (await API.put(`/learning-paths/courses/${courseId}`, payload)).data;
++
+ /* ==========================================
+    COURSES
+ ========================================== */
+@@ -128,6 +136,13 @@ export const updateCourseNotes = async (id, notes) => {
+ };
+ 
+ export default {
++  getLearningPaths,
++  getLearningPath,
++  getAdminLearningPaths,
++  createLearningPath,
++  updateLearningPath,
++  deleteLearningPath,
++  assignCourseToPath,
+   getCourses,
+   getAdminCourses,
+   getCourse,
+diff --git a/frontend/src/components/forms/AdminCourseForm.jsx b/frontend/src/components/forms/AdminCourseForm.jsx
+index 91eeae3..0e25a82 100644
+--- a/frontend/src/components/forms/AdminCourseForm.jsx
++++ b/frontend/src/components/forms/AdminCourseForm.jsx
+@@ -22,6 +22,7 @@ export default function AdminCourseForm(props) {
+     form,
+     handleSubmit,
+     levels,
++    learningPaths = [],
+     removeModule,
+     removeModuleAssessment,
+     removeModuleLesson,
+@@ -215,6 +216,17 @@ export default function AdminCourseForm(props) {
+         />
+       </FormSection>
+ 
++      <FormSection title="Learning Path Placement" description="Assign this course explicitly to a pathway stage and sequence. Leaving it unassigned keeps it in the general catalogue.">
++        <div className="grid gap-4 md:grid-cols-2">
++          <SelectField label="Learning pathway" value={form.learningPath || ""} onChange={(value) => updateField("learningPath", value)} options={[{ value: "", label: "Not assigned" }, ...learningPaths.map((path) => ({ value: path._id, label: path.title }))]} />
++          {form.learningPath && <>
++            <SelectField label="Stage" value={String(form.learningStage || 1)} onChange={(value) => updateField("learningStage", Number(value))} options={(learningPaths.find((path) => path._id === form.learningPath)?.stages || []).slice().sort((a,b) => a.number-b.number).map((stage) => ({ value: String(stage.number), label: `Stage ${stage.number}: ${stage.title}` }))} />
++            <Field label="Course order" type="number" value={form.courseOrder || 1} onChange={(value) => updateField("courseOrder", Number(value))} />
++            <Field label="Estimated duration" value={form.estimatedDuration || ""} onChange={(value) => updateField("estimatedDuration", value)} placeholder="e.g. 2 weeks" />
++          </>}
++        </div>
++      </FormSection>
++
+       {/* CURRICULUM */}
+ 
+       <FormSection
+diff --git a/frontend/src/constants/navigation.js b/frontend/src/constants/navigation.js
+index 97b89d5..5c3bc1d 100644
+--- a/frontend/src/constants/navigation.js
++++ b/frontend/src/constants/navigation.js
+@@ -63,6 +63,10 @@ export const adminNavigation = [
+         label: "Courses",
+         path: "/admin/courses",
+       },
++    {
++      label: "Learning Pathways",
++      path: "/admin/learning-paths",
++    },
+       {
+         label: "Lessons",
+         path: "/admin/lessons",
+diff --git a/frontend/src/pages/Courses.jsx b/frontend/src/pages/Courses.jsx
+index 095fbba..b3de645 100644
+--- a/frontend/src/pages/Courses.jsx
++++ b/frontend/src/pages/Courses.jsx
+@@ -28,6 +28,7 @@ import {
+   initializePaystackCoursePayment,
+ } from "../services";
+ import { FaMoneyBill } from "react-icons/fa";
++import { getLearningPaths } from "../api/courseApi";
+ 
+ const PER_PAGE = 9;
+ 
+@@ -73,10 +74,15 @@ export default function Courses() {
+   const navigate = useNavigate();
+ 
+   const [courses, setCourses] = useState([]);
++  const [learningPaths, setLearningPaths] = useState([]);
+   const [loading, setLoading] = useState(true);
+ 
+   const [search, setSearch] = useState("");
+   const [difficulty, setDifficulty] = useState("All");
++  const [categoryFilter, setCategoryFilter] = useState("All");
++  const [pathFilter, setPathFilter] = useState("All");
++  const [stageFilter, setStageFilter] = useState("All");
++  const [accessFilter, setAccessFilter] = useState("All");
+   const [page, setPage] = useState(1);
+ 
+   const [enrollingId, setEnrollingId] = useState(null);
+@@ -98,6 +104,7 @@ export default function Courses() {
+     }
+ 
+     loadCourses();
++    getLearningPaths().then((res) => setLearningPaths(res?.data || [])).catch((error) => console.error("Failed to load learning pathways:", error));
+   }, []);
+ 
+   const filteredCourses = useMemo(() => {
+@@ -115,9 +122,16 @@ export default function Courses() {
+       const matchesDifficulty =
+         difficulty === "All" || course.level === difficulty;
+ 
+-      return matchesSearch && matchesDifficulty;
++      const matchesCategory = categoryFilter === "All" || course.category === categoryFilter;
++      const matchesPath = pathFilter === "All" || String(course.learningPath || "") === pathFilter;
++      const matchesStage = stageFilter === "All" || String(course.learningStage || "") === stageFilter;
++      const matchesAccess = accessFilter === "All" || Boolean(course.premium) === (accessFilter === "Premium");
++
++      return matchesSearch && matchesDifficulty && matchesCategory && matchesPath && matchesStage && matchesAccess;
+     });
+-  }, [courses, search, difficulty]);
++  }, [courses, search, difficulty, categoryFilter, pathFilter, stageFilter, accessFilter]);
++
++  const categories = [...new Set(courses.map((course) => course.category).filter(Boolean))];
+ 
+   const featuredCourse = useMemo(() => {
+     return (
+@@ -261,6 +275,10 @@ export default function Courses() {
+   const resetFilters = () => {
+     setSearch("");
+     setDifficulty("All");
++    setCategoryFilter("All");
++    setPathFilter("All");
++    setStageFilter("All");
++    setAccessFilter("All");
+     setPage(1);
+   };
+ 
+@@ -312,6 +330,16 @@ export default function Courses() {
+         </div>
+       </section>
+ 
++      {learningPaths.length > 0 && <section id="learning-paths" className="bg-slate-50 px-6 py-12 dark:bg-slate-950 sm:py-16">
++        <div className="mx-auto max-w-7xl"><SectionTitle title="Featured Learning Pathways" subtitle="Follow a guided sequence from foundations to professional practice." />
++          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{learningPaths.map((path) => <Card key={path._id} hover className="overflow-hidden p-0">
++            <div className="h-2 bg-gradient-to-r from-blue-700 via-blue-500 to-yellow-400"/><div className="p-6"><div className="flex items-center justify-between gap-3"><span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-800">{path.difficulty}</span><span className="text-xs text-slate-500">{path.totalStages} stages</span></div>
++              <h2 className="mt-4 text-xl font-black text-slate-900 dark:text-white">{path.title}</h2><p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{path.description}</p>
++              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500"><span>{path.publishedCourseCount} published courses</span><span>{path.duration ? `${path.duration} hours` : "Flexible duration"}</span></div>
++              <Link to={`/courses/pathways/${path.slug}`} className="mt-6 block"><Button fullWidth>Explore Pathway <ArrowRight className="ml-2" size={17}/></Button></Link>
++            </div></Card>)}</div>
++        </div></section>}
++
+       {/* ==========================================
+           COURSE CATALOG
+       ========================================== */}
+@@ -357,6 +385,12 @@ export default function Courses() {
+                   ))}
+                 </div>
+               </div>
++              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
++                <select aria-label="Filter by category" value={categoryFilter} onChange={(event) => { setCategoryFilter(event.target.value); setPage(1); }} className="rounded-xl border-0 px-4 py-3 dark:bg-slate-800"><option value="All">All categories</option>{categories.map((item) => <option key={item}>{item}</option>)}</select>
++                <select aria-label="Filter by learning pathway" value={pathFilter} onChange={(event) => { setPathFilter(event.target.value); setStageFilter("All"); setPage(1); }} className="rounded-xl border-0 px-4 py-3 dark:bg-slate-800"><option value="All">All pathways</option>{learningPaths.map((item) => <option key={item._id} value={item._id}>{item.title}</option>)}</select>
++                <select aria-label="Filter by course stage" value={stageFilter} onChange={(event) => { setStageFilter(event.target.value); setPage(1); }} className="rounded-xl border-0 px-4 py-3 dark:bg-slate-800"><option value="All">All stages</option>{Array.from(new Set(courses.filter((course) => pathFilter === "All" || String(course.learningPath || "") === pathFilter).map((course) => course.learningStage).filter(Boolean))).sort((a,b) => a-b).map((stage) => <option key={stage} value={stage}>Stage {stage}</option>)}</select>
++                <select aria-label="Filter by price" value={accessFilter} onChange={(event) => { setAccessFilter(event.target.value); setPage(1); }} className="rounded-xl border-0 px-4 py-3 dark:bg-slate-800"><option>All</option><option>Free</option><option>Premium</option></select>
++              </div>
+             </div>
+           </section>
+ 
+diff --git a/frontend/src/pages/admin/AdminCourses.jsx b/frontend/src/pages/admin/AdminCourses.jsx
+index f714d78..3ee67a8 100644
+--- a/frontend/src/pages/admin/AdminCourses.jsx
++++ b/frontend/src/pages/admin/AdminCourses.jsx
+@@ -22,6 +22,7 @@ import {
+   createCourse,
+   updateCourse,
+   deleteCourse,
++  getAdminLearningPaths,
+ } from "../../services";
+ 
+ /* ==========================================
+@@ -124,6 +125,7 @@ export default function AdminCourses() {
+   ======================================== */
+ 
+   const [courses, setCourses] = useState([]);
++  const [learningPaths, setLearningPaths] = useState([]);
+ 
+   const [loading, setLoading] = useState(true);
+   const [saving, setSaving] = useState(false);
+@@ -175,6 +177,7 @@ export default function AdminCourses() {
+ 
+   useEffect(() => {
+     loadCourses();
++    getAdminLearningPaths().then((response) => setLearningPaths(response?.data || [])).catch(() => setLearningPaths([]));
+   }, []);
+ 
+   /* ========================================
+@@ -764,6 +767,13 @@ export default function AdminCourses() {
+           ? form.outcomes.map((item) => String(item).trim()).filter(Boolean)
+           : [],
+ 
++        learningPath: form.learningPath || null,
++        learningStage: form.learningPath ? Number(form.learningStage) || 1 : null,
++        courseOrder: form.learningPath ? Number(form.courseOrder) || 1 : null,
++        estimatedDuration: form.estimatedDuration || "",
++        learningObjectives: Array.isArray(form.learningObjectives) ? form.learningObjectives : [],
++        skillsAcquired: Array.isArray(form.skillsAcquired) ? form.skillsAcquired : [],
++
+         modules: normalizedModules,
+       };
+ 
+@@ -1155,6 +1165,7 @@ export default function AdminCourses() {
+                 addModule,
+                 addModuleLesson,
+                 categories,
++                learningPaths,
+                 closeForm,
+                 editingId,
+                 enableModuleAssessment,
+@@ -1305,11 +1316,15 @@ function SelectField({ label, value, onChange, options }) {
+         onChange={(event) => onChange(event.target.value)}
+         className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+       >
+-        {options.map((option) => (
+-          <option key={option} value={option}>
+-            {option}
++        {options.map((option) => {
++          const optionValue = typeof option === "object" ? option.value : option;
++          const optionLabel = typeof option === "object" ? option.label : option;
++          return (
++          <option key={optionValue} value={optionValue}>
++            {optionLabel}
+           </option>
+-        ))}
++          );
++        })}
+       </select>
+     </label>
+   );
+diff --git a/frontend/src/routes/AppRoutes.jsx b/frontend/src/routes/AppRoutes.jsx
+index b217ee9..e982e8e 100644
+--- a/frontend/src/routes/AppRoutes.jsx
++++ b/frontend/src/routes/AppRoutes.jsx
+@@ -21,6 +21,7 @@ const Learning = lazy(() => import("../pages/Learning"));
+ const LearningDetails = lazy(() => import("../pages/LearningDetails"));
+ const Library = lazy(() => import("../pages/Library"));
+ const Courses = lazy(() => import("../pages/Courses"));
++const LearningPathwayDetails = lazy(() => import("../pages/LearningPathwayDetails"));
+ const CourseDetails = lazy(() => import("../pages/CourseDetails"));
+ const Products = lazy(() => import("../pages/Products"));
+ const ProductDetails = lazy(() => import("../pages/ProductDetails"));
+@@ -60,6 +61,7 @@ const AdminDashboard = lazy(() => import("../pages/Admin"));
+ const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
+ const AdminLearning = lazy(() => import("../pages/admin/AdminLearning"));
+ const AdminCourses = lazy(() => import("../pages/admin/AdminCourses"));
++const AdminLearningPaths = lazy(() => import("../pages/admin/AdminLearningPaths"));
+ const AdminProducts = lazy(() => import("../pages/admin/AdminProducts"));
+ const AdminProjects = lazy(() => import("../pages/admin/AdminProjects"));
+ const AdminServices = lazy(() => import("../pages/admin/AdminServices"));
+@@ -96,6 +98,7 @@ export default function AppRoutes() {
+           <Route path="verify-certificate/:certificateId" element={<VerifyCertificate />} />
+           <Route path="library" element={<Library />} />
+           <Route path="courses" element={<Courses />} />
++          <Route path="courses/pathways/:slug" element={<LearningPathwayDetails />} />
+           <Route path="courses/:id" element={<CourseDetails />} />
+           <Route path="products" element={<Products />} />
+           <Route path="products/:id" element={<ProductDetails />} />
+@@ -180,6 +183,7 @@ export default function AppRoutes() {
+               {/* Content */}
+               <Route path="learning" element={<AdminLearning />} />
+               <Route path="courses" element={<AdminCourses />} />
++              <Route path="learning-paths" element={<AdminLearningPaths />} />
+               <Route path="products" element={<AdminProducts />} />
+               <Route path="projects" element={<AdminProjects />} />
+               <Route path="services" element={<AdminServices />} />

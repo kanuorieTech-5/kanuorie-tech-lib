@@ -13,6 +13,7 @@ export default function ServiceDetails() {
   const [submitting, setSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notice, setNotice] = useState({ type: "", message: "" });
+  const [activeGalleryImage, setActiveGalleryImage] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -60,6 +61,17 @@ export default function ServiceDetails() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isModalOpen, submitting]);
+
+  useEffect(() => {
+    if (!activeGalleryImage) return;
+
+    const handleGalleryKeyDown = (event) => {
+      if (event.key === "Escape") setActiveGalleryImage(null);
+    };
+
+    document.addEventListener("keydown", handleGalleryKeyDown);
+    return () => document.removeEventListener("keydown", handleGalleryKeyDown);
+  }, [activeGalleryImage]);
 
   // Prevent background scrolling while the modal is open.
   useEffect(() => {
@@ -139,6 +151,8 @@ export default function ServiceDetails() {
       </section>
     );
   }
+
+  const gallery = Array.isArray(service.gallery) ? service.gallery.filter(Boolean) : [];
 
   const features = Array.isArray(service.features)
     ? service.features.filter(Boolean)
@@ -251,6 +265,43 @@ export default function ServiceDetails() {
         </div>
       </div>
 
+      {gallery.length > 0 && (
+        <section className="mt-16" aria-labelledby="service-gallery-title">
+          <div className="mb-6">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
+              Website design examples
+            </p>
+            <h2 id="service-gallery-title" className="text-3xl font-bold">
+              Explore our design gallery
+            </h2>
+            <p className="mt-2 text-gray-600 dark:text-slate-400">
+              Select an image to view it in full size.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {gallery.map((image, index) => (
+              <button
+                type="button"
+                key={image + index}
+                onClick={() => setActiveGalleryImage({ image, index })}
+                aria-label={`View website design example ${index + 1}`}
+                className="group relative overflow-hidden rounded-2xl bg-slate-100 text-left ring-offset-2 transition hover:ring-2 hover:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+              >
+                <img
+                  src={image}
+                  alt={`${service.title} website design example ${index + 1}`}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-105"
+                />
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-3 pt-8 text-sm font-medium text-white">
+                  Design example {index + 1}
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* SERVICE FEATURES */}
       {features.length > 0 && (
         <section className="mt-20">
@@ -278,6 +329,35 @@ export default function ServiceDetails() {
             ))}
           </div>
         </section>
+      )}
+
+      {activeGalleryImage && (
+        <div
+          className="fixed inset-0 z-[210] flex items-center justify-center bg-black/90 p-4"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setActiveGalleryImage(null);
+          }}
+        >
+          <div role="dialog" aria-modal="true" aria-label="Website design image viewer" className="relative flex max-h-[90vh] max-w-6xl flex-col items-center">
+            <button
+              type="button"
+              onClick={() => setActiveGalleryImage(null)}
+              aria-label="Close image viewer"
+              className="absolute -right-2 -top-12 rounded-full bg-white/10 px-4 py-2 text-2xl text-white hover:bg-white/20 sm:right-0"
+            >
+              &times;
+            </button>
+            <img
+              src={activeGalleryImage.image}
+              alt={`${service.title} website design example ${activeGalleryImage.index + 1}`}
+              className="max-h-[78vh] max-w-full rounded-xl object-contain"
+            />
+            <p className="mt-3 text-sm text-white/80">
+              {activeGalleryImage.index + 1} of {gallery.length}
+            </p>
+          </div>
+        </div>
       )}
 
       {/* SERVICE ENQUIRY MODAL */}

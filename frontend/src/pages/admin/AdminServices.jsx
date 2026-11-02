@@ -12,6 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { uploadImage } from "../../api/uploadApi";
 import {
   getAdminServices,
   createAdminService,
@@ -25,6 +26,7 @@ const initialForm = {
   description: "",
   icon: "",
   image: "",
+  gallery: [],
   featured: false,
   active: true,
   order: 0,
@@ -47,6 +49,7 @@ export default function AdminServices() {
 
   const [technologyInput, setTechnologyInput] = useState("");
   const [benefitInput, setBenefitInput] = useState("");
+  const [galleryFiles, setGalleryFiles] = useState([]);
 
   const loadServices = async () => {
     try {
@@ -76,6 +79,7 @@ export default function AdminServices() {
     setForm(initialForm);
     setTechnologyInput("");
     setBenefitInput("");
+    setGalleryFiles([]);
     setShowForm(true);
   };
 
@@ -88,6 +92,7 @@ export default function AdminServices() {
       description: service.description || "",
       icon: service.icon || "",
       image: service.image || "",
+      gallery: Array.isArray(service.gallery) ? service.gallery : [],
       featured: Boolean(service.featured),
       active: service.active !== false,
       order: service.order || 0,
@@ -100,6 +105,7 @@ export default function AdminServices() {
 
     setTechnologyInput("");
     setBenefitInput("");
+    setGalleryFiles([]);
     setShowForm(true);
   };
 
@@ -111,6 +117,7 @@ export default function AdminServices() {
     setForm(initialForm);
     setTechnologyInput("");
     setBenefitInput("");
+    setGalleryFiles([]);
   };
 
   const handleChange = (event) => {
@@ -188,8 +195,18 @@ export default function AdminServices() {
     try {
       setSaving(true);
 
+      const uploadedGallery = await Promise.all(
+        galleryFiles.map(async (file) => {
+          const response = await uploadImage(file, "kanuorietech/services");
+          const url = response?.data?.url || response?.url;
+          if (!url) throw new Error(`Upload failed for ${file.name}.`);
+          return url;
+        }),
+      );
+
       const payload = {
         ...form,
+        gallery: [...form.gallery, ...uploadedGallery],
         title: form.title.trim(),
         shortDescription: form.shortDescription.trim(),
         description: form.description.trim(),
@@ -429,7 +446,7 @@ export default function AdminServices() {
                         <button
                           type="button"
                           onClick={() => openEditForm(service)}
-                          className="rounded-lg border border-white/10 p-2 text-slate-400 transition hover:border-cyan-400/30 hover:text-cyan-400"
+                          className="rounded-lg border border-white/10 p-2 text-blue-400 transition hover:border-cyan-400/30 hover:text-cyan-400"
                           title="Edit service"
                         >
                           <Pencil size={17} />
@@ -438,7 +455,7 @@ export default function AdminServices() {
                         <button
                           type="button"
                           onClick={() => handleDelete(service)}
-                          className="rounded-lg border border-white/10 p-2 text-slate-400 transition hover:border-red-400/30 hover:text-red-400"
+                          className="rounded-lg border border-white/10 p-2 text-red-600 transition hover:border-red-400/30 hover:text-red-400"
                           title="Delete service"
                         >
                           <Trash2 size={17} />
@@ -501,6 +518,9 @@ export default function AdminServices() {
                 setBenefitInput,
                 setTechnologyInput,
                 technologyInput,
+                galleryFiles,
+                setGalleryFiles,
+                setForm,
               }}
               onSubmit={handleSubmit}
               className="space-y-6 p-6"

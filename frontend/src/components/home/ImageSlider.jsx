@@ -59,11 +59,11 @@ export default function ImageSlider() {
     return () => clearInterval(timer);
   }, [paused]);
   return (
-    <section className="py-10 bg-slate-900 dark:bg-slate-900 ">
+    <section className="py-10 bg-transparent dark:bg-slate-900 ">
       <div className="px-6 text-center text-white">
         <div className="mb-12 text-center">
           <span className="rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-cyan-400">
-            KanuorieTech Experience
+            The KanuorieTech Experience
           </span>
           <h2 className="mt-6 text-4xl font-bold text-white">
             Learn. Build. Innovate.

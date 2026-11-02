@@ -17,7 +17,6 @@ import {
   LogOut,
   LoaderCircle,
 } from "lucide-react";
-
 import { useAuth } from "../../contexts";
 import { isPrimaryNavLinkVisible } from "../../constants/primaryNavLinks";
 
@@ -82,7 +81,7 @@ export default function Sidebar() {
               </NavLink>
             );
           })}
-
+          
           {/* Logout */}
           <button
             type="button"

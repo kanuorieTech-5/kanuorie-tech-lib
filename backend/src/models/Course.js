@@ -292,6 +292,14 @@ const courseSchema = new mongoose.Schema(
       },
     ],
 
+    // Optional pathway placement; existing course documents remain valid.
+    learningPath: { type: mongoose.Schema.Types.ObjectId, ref: "LearningPath", default: null, index: true },
+    learningStage: { type: Number, min: 1, default: null, index: true },
+    courseOrder: { type: Number, min: 1, default: null },
+    estimatedDuration: { type: String, default: "", trim: true },
+    learningObjectives: { type: [String], default: [] },
+    skillsAcquired: { type: [String], default: [] },
+
     outcomes: [
       {
         type: String,

@@ -22,6 +22,7 @@ export default function AdminCourseForm(props) {
     form,
     handleSubmit,
     levels,
+    learningPaths = [],
     removeModule,
     removeModuleAssessment,
     removeModuleLesson,
@@ -213,6 +214,17 @@ export default function AdminCourseForm(props) {
           onChange={(value) => updateArrayField("outcomes", value)}
           placeholder="Build React apps, Manage state, Work with APIs"
         />
+      </FormSection>
+
+      <FormSection title="Learning Path Placement" description="Assign this course explicitly to a pathway stage and sequence. Leaving it unassigned keeps it in the general catalogue.">
+        <div className="grid gap-4 md:grid-cols-2">
+          <SelectField label="Learning pathway" value={form.learningPath || ""} onChange={(value) => updateField("learningPath", value)} options={[{ value: "", label: "Not assigned" }, ...learningPaths.map((path) => ({ value: path._id, label: path.title }))]} />
+          {form.learningPath && <>
+            <SelectField label="Stage" value={String(form.learningStage || 1)} onChange={(value) => updateField("learningStage", Number(value))} options={(learningPaths.find((path) => path._id === form.learningPath)?.stages || []).slice().sort((a,b) => a.number-b.number).map((stage) => ({ value: String(stage.number), label: `Stage ${stage.number}: ${stage.title}` }))} />
+            <Field label="Course order" type="number" value={form.courseOrder || 1} onChange={(value) => updateField("courseOrder", Number(value))} />
+            <Field label="Estimated duration" value={form.estimatedDuration || ""} onChange={(value) => updateField("estimatedDuration", value)} placeholder="e.g. 2 weeks" />
+          </>}
+        </div>
       </FormSection>
 
       {/* CURRICULUM */}

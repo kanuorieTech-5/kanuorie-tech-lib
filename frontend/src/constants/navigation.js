@@ -63,6 +63,10 @@ export const adminNavigation = [
         label: "Courses",
         path: "/admin/courses",
       },
+    {
+      label: "Learning Pathways",
+      path: "/admin/learning-paths",
+    },
       {
         label: "Lessons",
         path: "/admin/lessons",

@@ -1,0 +1,506 @@
+﻿========== LEARNING PATH MODEL ==========
+const mongoose = require("mongoose");
+const slugify = require("../helpers/slugify");
+
+const stageSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  number: { type: Number, required: true, min: 1 },
+  description: { type: String, default: "", trim: true },
+  learningObjectives: { type: [String], default: [] },
+}, { _id: true });
+
+const learningPathSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  description: { type: String, default: "", trim: true },
+  category: { type: String, default: "Software Development", trim: true },
+  difficulty: { type: String, enum: ["Beginner", "Intermediate", "Advanced", "All levels"], default: "Beginner" },
+  featuredImage: { type: String, default: "" },
+  published: { type: Boolean, default: false },
+  displayOrder: { type: Number, default: 0 },
+  learningObjectives: { type: [String], default: [] },
+  skillsAcquired: { type: [String], default: [] },
+  stages: { type: [stageSchema], default: [] },
+}, { timestamps: true });
+
+learningPathSchema.pre("validate", function (next) {
+  if (!this.slug && this.title) this.slug = slugify(this.title);
+  next();
+});
+learningPathSchema.index({ published: 1, displayOrder: 1 });
+
+module.exports = mongoose.model("LearningPath", learningPathSchema);
+
+========== LEARNING PATH CONTROLLER ==========
+const LearningPath = require("../models/LearningPath");
+const Course = require("../models/Course");
+const Progress = require("../models/Progress");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
+
+const findPath = (id) => LearningPath.findOne(/^[0-9a-fA-F]{24}$/.test(id) ? { _id: id } : { slug: id });
+const getPaths = asyncHandler(async (req, res) => {
+  const paths = await LearningPath.find({ published: true }).sort({ displayOrder: 1, title: 1 }).lean();
+  const ids = paths.map((path) => path._id);
+  const counts = await Course.aggregate([{ $match: { learningPath: { $in: ids }, published: true } }, { $group: { _id: "$learningPath", count: { $sum: 1 }, duration: { $sum: "$duration" } } }]);
+  const countMap = new Map(counts.map((item) => [String(item._id), item]));
+  return ApiResponse.success(res, paths.map((path) => ({ ...path, totalStages: path.stages.length, ...(countMap.get(String(path._id)) || { count: 0, duration: 0 }), publishedCourseCount: countMap.get(String(path._id))?.count || 0 })), "Learning pathways retrieved successfully.");
+});
+
+const getPath = asyncHandler(async (req, res) => {
+  const path = await findPath(req.params.id);
+  if (!path || (!path.published && req.user?.role !== "admin")) throw new ApiError(404, "Learning pathway not found.");
+  const courses = await Course.find({ learningPath: path._id, ...(req.user?.role === "admin" ? {} : { published: true }) }).select("-modules").populate("createdBy", "name").sort({ learningStage: 1, courseOrder: 1, title: 1 }).lean();
+  const learnerId = req.user?._id || req.user?.id;
+  const progress = learnerId ? await Progress.find({ user: learnerId, course: { $in: courses.map((course) => course._id) } }).lean() : [];
+  const progressMap = new Map(progress.map((item) => [String(item.course), item]));
+  const stages = path.stages.slice().sort((a, b) => a.number - b.number).map((stage) => ({ ...stage.toObject(), courses: courses.filter((course) => course.learningStage === stage.number).map((course) => ({ ...course, progress: progressMap.get(String(course._id)) || null })) }));
+  const courseCount = courses.length;
+  const completed = courses.filter((course) => progressMap.get(String(course._id))?.status === "completed").length;
+  const totalDurationHours = courses.reduce((total, course) => total + (Number(course.duration) || 0), 0);
+  return ApiResponse.success(res, { ...path.toObject(), stages, totalStages: stages.length, totalCourses: courseCount, totalDurationHours, progress: courseCount ? Math.round((completed / courseCount) * 100) : 0 }, "Learning pathway retrieved successfully.");
+});
+
+const listAdmin = asyncHandler(async (_req, res) => ApiResponse.success(res, await LearningPath.find().sort({ displayOrder: 1, title: 1 }), "Learning pathways retrieved successfully."));
+const createPath = asyncHandler(async (req, res) => ApiResponse.success(res, await LearningPath.create(req.body), "Learning pathway created successfully.", 201));
+const updatePath = asyncHandler(async (req, res) => {
+  const allowed = ["title", "slug", "description", "category", "difficulty", "featuredImage", "published", "displayOrder", "learningObjectives", "skillsAcquired", "stages"];
+  const update = Object.fromEntries(allowed.filter((key) => Object.hasOwn(req.body, key)).map((key) => [key, req.body[key]]));
+  const path = await LearningPath.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
+  if (!path) throw new ApiError(404, "Learning pathway not found.");
+  return ApiResponse.success(res, path, "Learning pathway updated successfully.");
+});
+const removePath = asyncHandler(async (req, res) => {
+  const path = await LearningPath.findById(req.params.id);
+  if (!path) throw new ApiError(404, "Learning pathway not found.");
+  // Detach courses without deleting courses or their learning records.
+  await Course.updateMany({ learningPath: path._id }, { $set: { learningPath: null, learningStage: null, courseOrder: null } });
+  await path.deleteOne();
+  return ApiResponse.success(res, null, "Learning pathway deleted; course records were preserved.");
+});
+const assignCourse = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+  const { learningPath, learningStage, courseOrder } = req.body;
+  const course = await Course.findById(courseId);
+  if (!course) throw new ApiError(404, "Course not found.");
+  if (learningPath) {
+    const path = await LearningPath.findById(learningPath);
+    if (!path) throw new ApiError(404, "Learning pathway not found.");
+    if (!path.stages.some((stage) => stage.number === Number(learningStage))) throw new ApiError(400, "Select a stage that exists in this pathway.");
+  }
+  course.learningPath = learningPath || null;
+  course.learningStage = learningPath ? Number(learningStage) : null;
+  course.courseOrder = learningPath ? Math.max(1, Number(courseOrder) || 1) : null;
+  await course.save();
+  return ApiResponse.success(res, course, "Course pathway assignment updated.");
+});
+
+module.exports = { getPaths, getPath, listAdmin, createPath, updatePath, removePath, assignCourse };
+
+========== COURSE MODEL ==========
+const mongoose = require("mongoose");
+const slugify = require("../helpers/slugify");
+
+/* ==========================================
+   LESSON SCHEMA
+========================================== */
+
+const lessonSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+
+  description: {
+    type: String,
+    default: "",
+  },
+
+  lessonContent: {
+    type: String,
+    default: "",
+  },
+
+  videoUrl: {
+    type: String,
+    default: "",
+  },
+
+  duration: {
+    type: Number,
+    default: 0,
+  },
+
+  order: {
+    type: Number,
+    default: 1,
+  },
+
+  resources: {
+    type: [String],
+    default: [],
+  },
+});
+
+/* ==========================================
+   MODULE ASSESSMENT SCHEMA
+========================================== */
+
+const assessmentSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["exercise", "project"],
+      default: "exercise",
+    },
+
+    title: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    instructions: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    requirements: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    resources: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    submissionType: {
+      type: String,
+      enum: ["text", "url", "file", "none"],
+      default: "url",
+    },
+
+    required: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    _id: true,
+  }
+);
+
+/* ==========================================
+   MODULE SCHEMA
+========================================== */
+
+const moduleSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    order: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    lessons: {
+      type: [lessonSchema],
+      default: [],
+    },
+
+    assessment: {
+      type: assessmentSchema,
+      default: null,
+    },
+  },
+  {
+    _id: true,
+  }
+);
+
+/* ==========================================
+   COURSE SCHEMA
+========================================== */
+
+const courseSchema = new mongoose.Schema(
+  {
+    /* ----------------------------------------
+       BASIC INFORMATION
+    ---------------------------------------- */
+
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    category: {
+      type: String,
+      default: "General",
+      trim: true,
+      index: true,
+    },
+
+    image: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    link: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    instructor: {
+      type: String,
+      default: "KanuorieTech",
+      trim: true,
+    },
+
+    level: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      default: "Beginner",
+    },
+
+    language: {
+      type: String,
+      default: "English",
+      trim: true,
+    },
+
+    /*
+     * Course duration is stored in HOURS.
+     *
+     * Example:
+     * 20 = 20 hours
+     */
+    duration: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+        /* ----------------------------------------
+       PUBLISHING & SETTINGS
+    ---------------------------------------- */
+
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+
+    premium: {
+      type: Boolean,
+      default: false,
+    },
+
+    price: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    currency: {
+      type: String,
+      default: "USD",
+      uppercase: true,
+      trim: true,
+    },
+
+    published: {
+      type: Boolean,
+      default: true,
+    },
+    /* ----------------------------------------
+       COURSE STATISTICS
+    ---------------------------------------- */
+
+    enrollments: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+
+    totalRatings: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    /* ----------------------------------------
+       COURSE METADATA
+    ---------------------------------------- */
+
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    prerequisites: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    // Optional pathway placement; existing course documents remain valid.
+    learningPath: { type: mongoose.Schema.Types.ObjectId, ref: "LearningPath", default: null, index: true },
+    learningStage: { type: Number, min: 1, default: null, index: true },
+    courseOrder: { type: Number, min: 1, default: null },
+    estimatedDuration: { type: String, default: "", trim: true },
+    learningObjectives: { type: [String], default: [] },
+    skillsAcquired: { type: [String], default: [] },
+
+    outcomes: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    
+    /* ----------------------------------------
+       COURSE CURRICULUM
+
+       Course
+         â””â”€â”€ Modules
+               â””â”€â”€ Lessons
+    ---------------------------------------- */
+
+    modules: {
+      type: [moduleSchema],
+      default: [],
+    },
+
+    /* ----------------------------------------
+       COURSE OWNER / CREATOR
+    ---------------------------------------- */
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+  },
+
+  {
+    timestamps: true,
+  }
+);
+
+/* ==========================================
+   GENERATE SLUG BEFORE SAVE
+========================================== */
+
+courseSchema.pre("save", function (next) {
+  if (this.isModified("title") || !this.slug) {
+    this.slug = slugify(this.title);
+  }
+
+  next();
+});
+
+/* ==========================================
+   GENERATE SLUG BEFORE UPDATE
+========================================== */
+
+courseSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate();
+
+  if (!update) {
+    return next();
+  }
+
+  /*
+   * Support both:
+   *
+   * { title: "New Course" }
+   *
+   * and:
+   *
+   * { $set: { title: "New Course" } }
+   */
+
+  const title =
+    update.title ||
+    (update.$set && update.$set.title);
+
+  if (title) {
+    const newSlug = slugify(title);
+
+    if (update.$set) {
+      update.$set.slug = newSlug;
+    } else {
+      update.slug = newSlug;
+    }
+  }
+
+  next();
+});
+
+/* ==========================================
+   INDEXES
+========================================== */
+
+courseSchema.index({
+  title: "text",
+  description: "text",
+  category: "text",
+});
+
+/* ==========================================
+   EXPORT MODEL
+========================================== */
+
+module.exports = mongoose.model("Course", courseSchema);

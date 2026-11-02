@@ -145,12 +145,6 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
             </section>
           )}
 
-          {/* Admin dropdown */}
-          {user?.role === "admin" && (
-            <div className="mx-4 mb-3">
-              <UserDropdown />
-            </div>
-          )}
           {visibleNavigationLinks.map(({ path, label, icon: Icon }) => (
             <Link
               key={path}
@@ -167,6 +161,12 @@ export default function MobileMenu({ open, onClose, side = "left" }) {
           {user && (
             <>
               <div className="mx-5 my-3 border-t border-gray-400 dark:border-gray-800" />
+              {/* Admin dropdown */}
+              {user?.role === "admin" && (
+                <div className="mx-4 mb-3">
+                  <UserDropdown />
+                </div>
+              )}
               <Link
                 to="/notifications"
                 onClick={onClose}

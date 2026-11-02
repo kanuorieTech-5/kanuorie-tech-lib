@@ -2,22 +2,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FolderKanban, Search } from "lucide-react";
-
 import { Card, Button, Loader, Pagination } from "../components/common";
-
-import { Newsletter, CTA } from "../components/home";
-
-import { SearchBar } from "../components/layout";
-
+import { SearchBar } from "../components/layout"
 import { getProjects } from "../services";
 
 const PER_PAGE = 9;
-
 const PROJECT_PLACEHOLDER = "/images/project-placeholder.jpg";
-
-/* ==========================================
-   HELPERS
-========================================== */
 
 const getProjectsData = (response) => {
   if (Array.isArray(response)) {
@@ -53,10 +43,6 @@ const getProjectDescription = (project) => {
   return description;
 };
 
-/* ==========================================
-   COMPONENT
-========================================== */
-
 export default function Projects() {
   const [projects, setProjects] = useState([]);
 
@@ -66,12 +52,7 @@ export default function Projects() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
-
-  /* ==========================================
-     LOAD PROJECTS
-  ========================================== */
-
-  useEffect(() => {
+   useEffect(() => {
     let mounted = true;
 
     const loadProjects = async () => {
@@ -185,14 +166,7 @@ export default function Projects() {
 
   if (loading) {
     return (
-      <section
-        className="
-          flex
-          min-h-[60vh]
-          items-center
-          justify-center
-          px-6
-        "
+      <section className=" flex min-h-[60vh]items-center justify-center px-6 "
         aria-label="Loading projects"
       >
         <Loader />
@@ -200,60 +174,23 @@ export default function Projects() {
     );
   }
 
-  /* ==========================================
-     PAGE
-  ========================================== */
-
   return (
     <>
-      <section
-        className="
-          relative
-          overflow-hidden
-          bg-gradient-to-br
-          from-slate-950
-          via-slate-900
-          to-blue-950
-          py-10
-          text-white
-          lg:py-28
-        "
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-10 text-white lg:py-28"
       >
         {/* Background grid */}
 
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)]
-            bg-[size:45px_45px]
-          "
+        <div className="absoluteinset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]"
           aria-hidden="true"
         />
 
         {/* Glow */}
 
-        <div
-          className="
-            absolute
-            left-1/2
-            top-0
-            h-72
-            w-72
-            -translate-x-1/2
-            rounded-full
-            bg-blue-500/10
-            blur-3xl
-          "
+        <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
           aria-hidden="true"
         />
 
-        <div
-          className="
-            relative
-            px-6
-            text-center
-          "
+        <div className="relative px-6 text-center"
         >
           <motion.div
             initial={{
@@ -267,20 +204,7 @@ export default function Projects() {
             transition={{
               duration: 0.5,
             }}
-            className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-blue-500/30
-              bg-blue-500/10
-              px-5
-              py-2
-              text-sm
-              font-medium
-              text-blue-400
-            "
+            className="inline-flex items-centergap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-5 py-2 text-sm font-medium text-blue-400"
           >
             <FolderKanban size={16} aria-hidden="true" />
             Our Portfolio
@@ -299,14 +223,7 @@ export default function Projects() {
               delay: 0.1,
               duration: 0.6,
             }}
-            className="
-              mt-8
-              text-4xl
-              font-black
-              leading-tight
-              sm:text-5xl
-              lg:text-7xl
-            "
+            className="mt-8 text-4xl font-black leading-tight sm:text-5xl lg:text-7xl"
           >
             Projects That Create{" "}
             <span className="text-blue-400">Real Impact</span>
@@ -323,76 +240,31 @@ export default function Projects() {
               delay: 0.25,
               duration: 0.6,
             }}
-            className="
-              mx-auto
-              mt-6
-              text-base
-              leading-7
-              text-slate-300
-              sm:text-lg
-              sm:leading-8
-            "
+            className="mx-auto mt-6 text-base leading-7 text-slate-300 sm:text-lg sm:leading-8"
           >
             Explore digital products, websites, platforms and technology
             solutions built by KanuorieTech.
           </motion.p>
         </div>
       </section>
-
-      {/* ========================================
-          PROJECTS
-      ======================================== */}
-
-      <section
-        className="
-          bg-slate-50 dark:bg-slate-950
-          px-6
-          py-16
-          lg:px-8
-          lg:py-20
-        "
+      <section className="bg-slate-50 dark:bg-slate-950 px-6 py-16 lg:px-8 lg:py-20"
         aria-labelledby="projects-heading"
-      >
+       >
         <div className="">
-          {/* Header */}
-
           <div className="mb-12">
-            <p
-              className="
-                mb-3
-                text-sm
-                font-semibold
-                uppercase
-                tracking-wider
-                text-blue-600
-              "
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-600"
             >
               Our Work
             </p>
 
             <h2
               id="projects-heading"
-              className="
-                mb-4
-                text-3xl
-                font-bold
-                tracking-tight
-                text-slate-900 dark:text-slate-100
-                md:text-5xl
-              "
+              className="mb-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-5xl"
             >
               Explore Our Projects
             </h2>
 
-            <p
-              className="
-                max-w-2xl
-                text-base
-                leading-7
-                text-slate-600 dark:text-slate-400
-                lg:text-lg
-                lg:leading-8
-              "
+            <p className="max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 lg:text-lg lg:leading-8"
             >
               Discover some of the digital solutions, platforms and products we
               have built for businesses, organizations and learners.
@@ -402,7 +274,7 @@ export default function Projects() {
           {/* Filters */}
 
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="flex-1">
+            <div className="flex-1 text-blue-600">
               <SearchBar
                 value={search}
                 onChange={setSearch}
@@ -419,21 +291,8 @@ export default function Projects() {
                 id="project-category"
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
-                className="
-                  w-full
-                  rounded-lg
-                  border
-                  border-slate-300
-                  bg-white dark:bg-slate-900
-                  px-4
-                  py-3
-                  text-slate-900 dark:text-slate-100
-                  outline-none
-                  transition
-                  focus:border-blue-500
-                  focus:ring-2
-                  focus:ring-blue-100
-                "
+                className="w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-slate-100
+                  outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               >
                 {categories.map((item) => (
                   <option key={item} value={item}>
@@ -445,35 +304,19 @@ export default function Projects() {
           </div>
 
           {/* Error */}
-
           {error && (
-            <div
-              className="
-                mb-10
-                rounded-2xl
-                border
-                border-red-200
-                bg-red-50
-                p-6
-                text-center
-                text-red-700
-              "
+            <div className="mb-10 rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-700"
               role="alert"
-            >
+             >
               {error}
             </div>
           )}
 
           {/* Result count */}
-
           <div
             aria-live="polite"
-            className="
-              mb-6
-              text-sm
-              text-slate-500 dark:text-slate-400
-            "
-          >
+            className="mb-6 text-sm text-slate-500 dark:text-slate-400"
+           >
             {filteredProjects.length > 0
               ? `${filteredProjects.length} ${
                   filteredProjects.length === 1 ? "project" : "projects"
@@ -482,35 +325,19 @@ export default function Projects() {
           </div>
 
           {/* Projects */}
-
           {currentProjects.length === 0 ? (
             <Card className="p-12 text-center">
-              <Search
-                className="
-                  mx-auto
-                  mb-5
-                  h-10
-                  w-10
-                  text-slate-400
-                "
+              <Search 
+                className="mx-auto mb-5 h-10 w-10 text-slate-400"
                 aria-hidden="true"
               />
-
-              <h2
-                className="
-                  mb-3
-                  text-2xl
-                  font-bold
-                  text-slate-900 dark:text-slate-100
-                "
-              >
+              <h2 className="mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100"
+               >
                 No projects found
               </h2>
-
               <p className="text-slate-600 dark:text-slate-400">
                 Try changing your search or category filter.
               </p>
-
               {(search || category !== "All") && (
                 <button
                   type="button"
@@ -518,26 +345,14 @@ export default function Projects() {
                     setSearch("");
                     setCategory("All");
                   }}
-                  className="
-                    mt-6
-                    font-semibold
-                    text-blue-600
-                    transition
-                    hover:text-blue-700
-                  "
+                  className="mt-6 font-semibold text-blue-600 transition hover:text-blue-700"
                 >
                   Clear filters
                 </button>
               )}
             </Card>
           ) : (
-            <div
-              className="
-                grid
-                gap-8
-                sm:grid-cols-2
-                lg:grid-cols-3
-              "
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
             >
               {currentProjects.map((project, index) => {
                 const projectId = getProjectId(project);
@@ -563,20 +378,7 @@ export default function Projects() {
                     }}
                     className="h-full"
                   >
-                    <Card
-                      className="
-                          flex
-                          h-full
-                          flex-col
-                          overflow-hidden
-                          border-slate-200 dark:border-slate-700
-                          bg-white dark:bg-slate-900
-                          p-0
-                          transition
-                          duration-300
-                          hover:-translate-y-1
-                          hover:shadow-xl
-                        "
+                    <Card className="flex h-full flex-col overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-0 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
                       {/* Image */}
 
@@ -589,14 +391,7 @@ export default function Projects() {
                               : "KanuorieTech project"
                           }
                           loading="lazy"
-                          className="
-                              h-56
-                              w-full
-                              object-cover
-                              transition-transform
-                              duration-500
-                              hover:scale-105
-                            "
+                          className="h-56 w-full object-cover transition-transform duration-500 hover:scale-105"
                           onError={(event) => {
                             if (
                               event.currentTarget.src.includes(
@@ -612,53 +407,26 @@ export default function Projects() {
                       </div>
 
                       {/* Content */}
-
-                      <div
-                        className="
-                            flex
-                            flex-1
-                            flex-col
-                            p-6
-                          "
+                      <div className="flex flex-1 flex-col p-6"
                       >
                         {/* Category */}
-
                         {project?.category && (
-                          <p
-                            className="
-                                mb-2
-                                text-sm
-                                font-semibold
-                                text-blue-600
-                              "
+                          <p className="mb-2 text-sm font-semibold text-blue-600"
                           >
                             {project.category}
                           </p>
                         )}
 
                         {/* Title */}
-
                         <h3
-                          className="
-                              mb-3
-                              text-2xl
-                              font-bold
-                              text-slate-900 dark:text-slate-100
-                            "
+                          className="mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100"
                         >
                           {project?.title || "KanuorieTech Project"}
                         </h3>
 
                         {/* Description */}
 
-                        <p
-                          className="
-                              mb-8
-                              line-clamp-3
-                              flex-1
-                              leading-7
-                              text-slate-600 dark:text-slate-400
-                            "
+                        <p className="mb-8 line-clamp-3 flex-1 leading-7 text-slate-600 dark:text-slate-400"
                         >
                           {getProjectDescription(project)}
                         </p>
@@ -684,8 +452,6 @@ export default function Projects() {
               })}
             </div>
           )}
-
-          {/* Pagination */}
 
           {totalPages > 1 && (
             <div className="mt-12">

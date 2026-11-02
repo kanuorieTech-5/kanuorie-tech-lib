@@ -190,21 +190,13 @@ export default function ServicesPreview() {
   }
 
   return (
-    <section className="bg-slate-900 py-10 text-white">
+    <section className="bg-transparent py-10 text-white">
       <div className="px-6 text-center">
-        {/* ==========================================
-            HEADER
-        ========================================== */}
-
         <SectionTitle
           Badge="Our Services"
           title="Digital Solutions Built For Growth"
           subtitle="From software development to digital transformation, we help businesses build, scale and succeed."
         />
-
-        {/* ==========================================
-            EMPTY STATE
-        ========================================== */}
 
         {displayedServices.length === 0 ? (
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">

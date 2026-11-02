@@ -20,16 +20,8 @@ import {
   Upload,
   Image as ImageIcon,
 } from "lucide-react";
-
 import { Card, Button, Loader } from "../../components/common";
-
-import {
-  getAdminBlogs,
-  createAdminBlog,
-  updateAdminBlog,
-  deleteAdminBlog,
-} from "../../services";
-
+import { getAdminBlogs, createAdminBlog, updateAdminBlog, deleteAdminBlog, } from "../../services";
 import { uploadImage } from "../../api/uploadApi";
 
 const EMPTY_FORM = {
@@ -47,7 +39,6 @@ const EMPTY_FORM = {
 };
 
 const PAGE_LIMIT = 9;
-
 const BLOG_IMAGE_FOLDER = "kanuorietech/blog";
 
 export default function AdminBlog() {
@@ -56,14 +47,11 @@ export default function AdminBlog() {
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-
   const [error, setError] = useState("");
-
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [featuredFilter, setFeaturedFilter] = useState("");
   const [page, setPage] = useState(1);
-
   const [pagination, setPagination] = useState({
     page: 1,
     limit: PAGE_LIMIT,
@@ -76,20 +64,9 @@ export default function AdminBlog() {
 
   const [form, setForm] = useState(EMPTY_FORM);
 
-  /*
-   * Local preview is kept separately from the saved
-   * Cloudinary URL.
-   */
   const [coverPreview, setCoverPreview] = useState("");
 
-  /*
-   * Selected file waiting to be uploaded.
-   */
   const [coverImageFile, setCoverImageFile] = useState(null);
-
-  /* ==========================================
-     LOAD BLOGS
-  ========================================== */
 
   const loadBlogs = useCallback(async () => {
     try {
@@ -152,10 +129,6 @@ export default function AdminBlog() {
     loadBlogs();
   }, [loadBlogs]);
 
-  /* ==========================================
-     FORM CHANGE
-  ========================================== */
-
   const handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
 
@@ -164,10 +137,6 @@ export default function AdminBlog() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
-  /* ==========================================
-     RESET FORM
-  ========================================== */
 
   const resetForm = () => {
     if (coverPreview?.startsWith("blob:")) {
@@ -181,10 +150,6 @@ export default function AdminBlog() {
     setUploadingImage(false);
     setShowForm(false);
   };
-
-  /* ==========================================
-     CREATE FORM
-  ========================================== */
 
   const openCreateForm = () => {
     if (coverPreview?.startsWith("blob:")) {
@@ -204,10 +169,6 @@ export default function AdminBlog() {
 
     setShowForm(true);
   };
-
-  /* ==========================================
-     EDIT FORM
-  ========================================== */
 
   const openEditForm = (blog) => {
     if (coverPreview?.startsWith("blob:")) {
@@ -241,10 +202,6 @@ export default function AdminBlog() {
     });
   };
 
-  /* ==========================================
-     COVER IMAGE SELECT
-  ========================================== */
-
   const handleCoverImageChange = (event) => {
     const file = event.target.files?.[0];
 
@@ -252,20 +209,11 @@ export default function AdminBlog() {
       return;
     }
 
-    /*
-     * Validate file type.
-     */
-
     if (!file.type.startsWith("image/")) {
       toast.error("Please select a valid image file.");
       event.target.value = "";
       return;
     }
-
-    /*
-     * Keep frontend validation aligned with
-     * the backend Multer limit of 10 MB.
-     */
 
     const maxSize = 10 * 1024 * 1024;
 
@@ -274,11 +222,6 @@ export default function AdminBlog() {
       event.target.value = "";
       return;
     }
-
-    /*
-     * Revoke the previous local preview
-     * if there was one.
-     */
 
     if (coverPreview?.startsWith("blob:")) {
       URL.revokeObjectURL(coverPreview);
@@ -289,17 +232,8 @@ export default function AdminBlog() {
     setCoverImageFile(file);
     setCoverPreview(previewUrl);
 
-    /*
-     * The old Cloudinary URL remains in form.coverImage
-     * until the new image is successfully uploaded.
-     */
-
     toast.success("Image selected. It will upload when you save the post.");
   };
-
-  /* ==========================================
-     REMOVE / CLEAR COVER IMAGE
-  ========================================== */
 
   const handleRemoveCoverImage = () => {
     if (coverPreview?.startsWith("blob:")) {
@@ -314,10 +248,6 @@ export default function AdminBlog() {
       coverImage: "",
     }));
   };
-
-  /* ==========================================
-     UPLOAD COVER IMAGE
-  ========================================== */
 
   const uploadCoverImage = async () => {
     if (!coverImageFile) {
@@ -369,10 +299,6 @@ export default function AdminBlog() {
     }
   };
 
-  /* ==========================================
-     CREATE / UPDATE
-  ========================================== */
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -398,11 +324,6 @@ export default function AdminBlog() {
 
     try {
       setSaving(true);
-
-      /*
-       * Upload a newly selected image before
-       * creating/updating the Blog document.
-       */
 
       let coverImage = form.coverImage.trim();
 
@@ -451,19 +372,7 @@ export default function AdminBlog() {
 
       resetForm();
 
-      /*
-       * Return to first page so newly created/updated
-       * content is immediately visible.
-       */
-
       setPage(1);
-
-      /*
-       * loadBlogs uses the current page from the closure.
-       * When already on page 1, this refreshes immediately.
-       * If another page was active, the page state change
-       * will trigger the useEffect.
-       */
 
       if (page === 1) {
         await loadBlogs();
@@ -480,10 +389,6 @@ export default function AdminBlog() {
       setSaving(false);
     }
   };
-
-  /* ==========================================
-     DELETE
-  ========================================== */
 
   const handleDelete = async (blog) => {
     const id = blog._id || blog.id;
@@ -746,10 +651,6 @@ export default function AdminBlog() {
         </div>
       </Card>
 
-      {/* =========================
-          FORM
-      ========================= */}
-
       {showForm && (
         <Card className="overflow-hidden">
           <div className="flex items-start justify-between border-b border-slate-100 p-6">
@@ -804,10 +705,6 @@ export default function AdminBlog() {
           />
         </Card>
       )}
-
-      {/* =========================
-          BLOG LIST
-      ========================= */}
 
       {blogs.length === 0 ? (
         <Card className="p-12 text-center">

@@ -1,809 +1,522 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+﻿
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
+  Palette,
+  PenTool,
+  Code2,
+  Server,
+  Workflow,
+  BarChart3,
+  ShieldCheck,
+  Wrench,
+  Layers,
+  FlaskConical,
+  Brain,
+  Database,
+  Gauge,
+  Accessibility,
+  Languages,
+  Bot,
+  Blocks,
+  Smartphone,
   Search,
-  BookOpen,
-  Users,
-  Clock3,
-  Star,
   ArrowRight,
-  Award,
-  LockKeyhole,
-  ShoppingCart,
+  BookOpen,
+  LoaderCircle,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import {
-  Card,
-  Button,
-  Loader,
-  Pagination,
-  SectionTitle,
-} from "../components/common";
-import { SearchBar } from "../components/layout";
-import { CTA } from "../components/home";
-import {
-  getCourses,
-  enrollCourse,
-  initializePaystackCoursePayment,
-} from "../services";
-import { FaMoneyBill } from "react-icons/fa";
+import { getLearningPaths } from "../api/courseApi";
 
-const PER_PAGE = 9;
+const categories = [
+  {
+    name: "Graphics Design",
+    description: "Create professional visual designs.",
+    aliases: ["graphicsdesign", "graphicdesign"],
+    icon: Palette,
+  },
+  {
+    name: "UI/UX",
+    description: "Design intuitive digital experiences.",
+    aliases: ["uiux", "userexperience", "userinterfacedesign"],
+    icon: PenTool,
+  },
+  {
+    name: "Frontend",
+    description: "Build modern web applications.",
+    aliases: ["frontend", "webfrontend"],
+    icon: Code2,
+  },
+  {
+    name: "Backend",
+    description: "Build powerful server-side systems.",
+    aliases: ["backend", "serverdevelopment"],
+    icon: Server,
+  },
+  {
+    name: "DevOps",
+    description: "Automate and deploy applications.",
+    aliases: ["devops"],
+    icon: Workflow,
+  },
+  {
+    name: "Data Science",
+    description: "Discover insights using data.",
+    aliases: ["datascience"],
+    icon: BarChart3,
+  },
+  {
+    name: "Data Analysis",
+    description: "Transform data into insights.",
+    aliases: ["dataanalysis"],
+    icon: BarChart3,
+  },
+  {
+    name: "Security",
+    description: "Protect systems and applications.",
+    aliases: ["security", "cybersecurity"],
+    icon: ShieldCheck,
+  },
+  {
+    name: "Tools",
+    description: "Master essential industry tools.",
+    aliases: ["tools", "developertools"],
+    icon: Wrench,
+  },
+  {
+    name: "Architecture",
+    description: "Design scalable software systems.",
+    aliases: ["architecture", "softwarearchitecture"],
+    icon: Layers,
+  },
+  {
+    name: "Testing",
+    description: "Build reliable software.",
+    aliases: ["testing", "softwaretesting", "qualityassurance"],
+    icon: FlaskConical,
+  },
+  {
+    name: "AI/ML",
+    description: "Build intelligent machine learning systems.",
+    aliases: ["aiml", "machinelearning"],
+    icon: Brain,
+  },
+  {
+    name: "Design",
+    description: "Master digital and creative design.",
+    aliases: ["design", "digitaldesign", "creativedesign"],
+    icon: Palette,
+  },
+  {
+    name: "Database",
+    description: "Manage and optimize data systems.",
+    aliases: ["database", "databases"],
+    icon: Database,
+  },
+  {
+    name: "Performance",
+    description: "Optimize software performance.",
+    aliases: ["performance", "performanceoptimization"],
+    icon: Gauge,
+  },
+  {
+    name: "Accessibility",
+    description: "Build inclusive digital products.",
+    aliases: ["accessibility", "a11y"],
+    icon: Accessibility,
+  },
+  {
+    name: "Localization",
+    description: "Create multilingual applications.",
+    aliases: ["localization", "internationalization", "i18n"],
+    icon: Languages,
+  },
+  {
+    name: "AI",
+    description: "Build practical AI-powered solutions.",
+    aliases: ["ai", "artificialintelligence"],
+    icon: Bot,
+  },
+  {
+    name: "Blockchain",
+    description: "Explore Web3 and decentralized systems.",
+    aliases: ["blockchain", "web3"],
+    icon: Blocks,
+  },
+  {
+    name: "Mobile",
+    description: "Develop modern mobile applications.",
+    aliases: ["mobile", "mobiledevelopment", "appdevelopment"],
+    icon: Smartphone,
+  },
+];
 
-const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
+const normalize = (value = "") =>
+  String(value).toLowerCase().replace(/[^a-z0-9]/g, "");
 
-const COURSE_IMAGE_FALLBACK =
-  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80";
+function getCategoryPaths(category, paths) {
+  const aliases = category.aliases.map(normalize);
 
-function getCourseImage(course) {
-  return course?.image || course?.thumbnail || COURSE_IMAGE_FALLBACK;
-}
+  return paths.filter((path) => {
+    const backendCategory = normalize(path.category);
+    const backendTitle = normalize(path.title);
+    const backendSlug = normalize(path.slug);
 
-function getApiMessage(error, fallback = "Something went wrong.") {
-  return (
-    error?.response?.data?.message ||
-    error?.response?.data?.error ||
-    error?.message ||
-    fallback
-  );
-}
+    // Prefer an exact category match.
+    if (aliases.includes(backendCategory)) return true;
 
-function formatPrice(course) {
-  if (!course?.premium) return "Free";
-
-  const price = Number(course?.price || 0);
-
-  if (!price) return "Premium";
-
-  const currency = course?.currency || "NGN";
-
-  if (currency === "NGN") {
-    return `₦${price.toLocaleString("en-NG")}`;
-  }
-
-  return `${currency} ${price.toLocaleString()}`;
-}
-
-function isPremiumCourse(course) {
-  return Boolean(course?.premium);
+    // Fall back to matching pathway titles and slugs.
+    return [backendTitle, backendSlug].some((candidate) =>
+      aliases.some((alias) =>
+        alias.length >= 4 && candidate.startsWith(alias)
+      )
+    );
+  });
 }
 
 export default function Courses() {
   const navigate = useNavigate();
 
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  const [learningPaths, setLearningPaths] = useState([]);
   const [search, setSearch] = useState("");
-  const [difficulty, setDifficulty] = useState("All");
-  const [page, setPage] = useState(1);
-
-  const [enrollingId, setEnrollingId] = useState(null);
-  const [purchasingId, setPurchasingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
-    async function loadCourses() {
+    let active = true;
+
+    async function loadLearningPaths() {
       try {
-        const res = await getCourses();
+        const response = await getLearningPaths();
 
-        setCourses(res?.data || []);
+        if (active) {
+          setLearningPaths(
+            Array.isArray(response?.data) ? response.data : []
+          );
+          setLoadError(false);
+        }
       } catch (error) {
-        console.error("Failed to load courses:", error);
+        console.error("Failed to load learning pathways:", error);
 
-        toast.error(getApiMessage(error, "Unable to load courses right now."));
+        if (active) {
+          setLoadError(true);
+          toast.error("Unable to load pathway information.");
+        }
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
 
-    loadCourses();
+    loadLearningPaths();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const filteredCourses = useMemo(() => {
-    return courses.filter((course) => {
-      const searchTerm = search.trim().toLowerCase();
+  const filteredCategories = useMemo(() => {
+    const term = search.trim().toLowerCase();
 
-      const matchesSearch =
-        !searchTerm ||
-        course.title?.toLowerCase().includes(searchTerm) ||
-        course.description?.toLowerCase().includes(searchTerm) ||
-        course.instructor?.toLowerCase().includes(searchTerm) ||
-        course.category?.toLowerCase().includes(searchTerm) ||
-        course.level?.toLowerCase().includes(searchTerm);
+    if (!term) return categories;
 
-      const matchesDifficulty =
-        difficulty === "All" || course.level === difficulty;
-
-      return matchesSearch && matchesDifficulty;
-    });
-  }, [courses, search, difficulty]);
-
-  const featuredCourse = useMemo(() => {
-    return (
-      filteredCourses.find((course) => course.featured) ||
-      filteredCourses[0] ||
-      null
+    return categories.filter(
+      (category) =>
+        category.name.toLowerCase().includes(term) ||
+        category.description.toLowerCase().includes(term)
     );
-  }, [filteredCourses]);
+  }, [search]);
 
-  const catalogCourses = useMemo(() => {
-    if (!featuredCourse) return [];
+  const handleExplorePathway = (category) => {
+    const matchingPaths = getCategoryPaths(category, learningPaths);
 
-    return filteredCourses.filter(
-      (course) => course._id !== featuredCourse._id,
-    );
-  }, [filteredCourses, featuredCourse]);
-
-  const totalPages = Math.ceil(catalogCourses.length / PER_PAGE);
-
-  const currentCourses = catalogCourses.slice(
-    (page - 1) * PER_PAGE,
-    page * PER_PAGE,
-  );
-
-  /* ==========================================
-     FREE COURSE ENROLLMENT
-  ========================================== */
-
-  const handleEnroll = async (course) => {
-    if (!course?._id || enrollingId || purchasingId) return;
-
-    if (isPremiumCourse(course)) {
-      return handleBuyCourse(course);
+    if (!matchingPaths.length) {
+      toast("This learning pathway is being prepared. Check back soon!");
+      return;
     }
 
-    setEnrollingId(course._id);
+    // Backend results are already ordered by displayOrder.
+    const selectedPath = matchingPaths[0];
 
-    try {
-      await enrollCourse(course._id);
-
-      toast.success("Enrollment successful! Your course is now unlocked.");
-
-      navigate(`/courses/${course._id}`);
-    } catch (error) {
-      console.error("Enrollment failed:", error);
-
-      const status = error?.response?.status;
-
-      if (status === 401) {
-        toast.error("Please log in to enroll in this course.");
-
-        navigate("/login", {
-          state: {
-            from: `/courses/${course._id}`,
-          },
-        });
-
-        return;
-      }
-
-      if (status === 409) {
-        toast.success("You are already enrolled in this course.");
-
-        navigate(`/courses/${course._id}`);
-
-        return;
-      }
-
-      if (status === 402) {
-        toast.error(
-          "This is a premium course. Please complete payment before enrolling.",
-        );
-
-        return;
-      }
-
-      toast.error(
-        getApiMessage(
-          error,
-          "Unable to enroll in this course. Please try again.",
-        ),
-      );
-    } finally {
-      setEnrollingId(null);
-    }
+    navigate(`/courses/pathways/${selectedPath.slug}`);
   };
-
-  /* ==========================================
-     PREMIUM COURSE PAYSTACK CHECKOUT
-  ========================================== */
-
-  const handleBuyCourse = async (course) => {
-    if (!course?._id || purchasingId || enrollingId) return;
-
-    setPurchasingId(course._id);
-
-    try {
-      const response = await initializePaystackCoursePayment(course._id);
-
-      const authorizationUrl = response?.data?.paystack?.authorization_url;
-
-      if (!authorizationUrl) {
-        throw new Error(
-          "Payment checkout could not be initialized. Please try again.",
-        );
-      }
-      window.location.assign(authorizationUrl);
-    } catch (error) {
-      console.error("Course payment initialization failed:", error);
-
-      const status = error?.response?.status;
-
-      if (status === 401) {
-        toast.error("Please log in to purchase this course.");
-
-        navigate("/login", {
-          state: {
-            from: `/courses/${course._id}`,
-          },
-        });
-
-        return;
-      }
-
-      if (status === 409) {
-        toast.success("You already have access to this course.");
-
-        navigate(`/courses/${course._id}`);
-
-        return;
-      }
-
-      toast.error(
-        getApiMessage(error, "Unable to start payment. Please try again."),
-      );
-    } finally {
-      setPurchasingId(null);
-    }
-  };
-
-  const resetFilters = () => {
-    setSearch("");
-    setDifficulty("All");
-    setPage(1);
-  };
-
-  if (loading) {
-    return (
-      <section className="flex min-h-[70vh] items-center justify-center">
-        <Loader />
-      </section>
-    );
-  }
 
   return (
-    <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8 text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
 
-        <div className="relative px-6 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 25 }}
+      {/* HERO */}
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 px-6 py-20 text-white sm:py-28">
+
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:45px_45px]" />
+
+        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
+
+        <div className="pointer-events-none absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-yellow-400/10 blur-3xl" />
+
+        <div className="relative mx-auto max-w-5xl text-center">
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-5 py-2 text-sm font-medium text-blue-400"
+            className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-5 py-2 text-sm font-semibold text-blue-300"
           >
-            <BookOpen size={16} />
-            Learn Without Limits
-          </motion.span>
+            <BookOpen size={17} />
+            KANUORIETECH LEARNING HUB
+          </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 35 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="mt-8 text-5xl font-black leading-tight lg:text-7xl"
+            transition={{ delay: 0.1 }}
+            className="mt-8 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-7xl"
           >
-            Explore Our
-            <span className="text-blue-400"> Professional</span>
-            <br />
-            Technology Courses
+            Explore Professional
+            <span className="block bg-gradient-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
+              Learning Pathways
+            </span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-slate-300"
+            transition={{ delay: 0.2 }}
+            className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg"
           >
-            Master modern software development through practical, project-based
-            learning designed to help you become job-ready and industry
-            confident.
+            Choose your career path. Master practical skills. Earn
+            professional certifications.
           </motion.p>
+
+          {/* SEARCH */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mx-auto mt-10 max-w-2xl"
+          >
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white px-5 py-4 shadow-2xl shadow-black/20">
+
+              <Search className="shrink-0 text-slate-400" size={21} />
+
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search learning categories..."
+                aria-label="Search learning categories"
+                className="w-full border-0 bg-transparent text-slate-900 outline-none placeholder:text-slate-400 focus:ring-0"
+              />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="text-sm font-semibold text-blue-600 hover:text-blue-800"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
-      {/* ==========================================
-          COURSE CATALOG
-      ========================================== */}
+      {/* CATEGORY GRID */}
+      <section className="px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
 
-      <section className="bg-slate-200 py-10 text-slate-900 dark:bg-slate-900 dark:text-white lg:py-20">
-        <div className="px-6">
-          <SectionTitle
-            title="Browse All Courses"
-            subtitle={`${filteredCourses.length} course${
-              filteredCourses.length !== 1 ? "s" : ""
-            } available`}
-          />
+        <div className="mx-auto max-w-7xl">
 
-          {/* Filters */}
-          <section className="bg-slate-200 py-1 dark:bg-slate-900">
-            <div className="px-6">
-              <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
-                <SearchBar
-                  value={search}
-                  onChange={(value) => {
-                    setSearch(value);
-                    setPage(1);
-                  }}
-                  placeholder="Search courses..."
-                />
+          <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
-                <div className="flex flex-wrap gap-3">
-                  {difficulties.map((level) => (
-                    <button
-                      key={level}
-                      onClick={() => {
-                        setDifficulty(level);
-                        setPage(1);
-                      }}
-                      className={`rounded-full px-5 py-2 transition ${
-                        difficulty === level
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-                      }`}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ==========================================
-              FEATURED COURSE
-          ========================================== */}
-
-          {featuredCourse && (
-            <section className="mt-16">
-              <SectionTitle
-                title="Featured Course"
-                subtitle="Explore this featured learning experience"
-              />
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="overflow-hidden p-0">
-                  <div className="grid lg:grid-cols-[1.15fr_.85fr]">
-                    {/* Image */}
-                    <div className="relative min-h-[320px]">
-                      <img
-                        src={getCourseImage(featuredCourse)}
-                        alt={featuredCourse.title}
-                        className="h-full min-h-[320px] w-full object-cover"
-                        onError={(event) => {
-                          event.currentTarget.onerror = null;
-                          event.currentTarget.src = COURSE_IMAGE_FALLBACK;
-                        }}
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-
-                      {featuredCourse.featured && (
-                        <div className="absolute left-5 top-5 rounded-full bg-yellow-400 px-4 py-2 text-xs font-bold text-slate-950 shadow-lg">
-                          Featured Course
-                        </div>
-                      )}
-
-                      <div className="absolute right-5 top-5">
-                        <span
-                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold shadow-lg ${
-                            isPremiumCourse(featuredCourse)
-                              ? "bg-blue-600 text-white"
-                              : "bg-emerald-500 text-white"
-                          }`}
-                        >
-                          {isPremiumCourse(featuredCourse) ? (
-                            <>
-                              <LockKeyhole size={14} />
-                              Premium
-                            </>
-                          ) : (
-                            "Free"
-                          )}
-                        </span>
-                      </div>
-
-                      <div className="absolute bottom-6 left-6 right-6 text-white">
-                        <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold">
-                          {featuredCourse.level || "Beginner"}
-                        </span>
-
-                        <h3 className="mt-4 text-3xl font-black sm:text-4xl">
-                          {featuredCourse.title}
-                        </h3>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="space-y-6 p-6 sm:p-8">
-                      <div>
-                        <p className="leading-7 text-slate-600 dark:text-slate-300">
-                          {featuredCourse.description}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
-                          <Clock3 size={20} className="text-blue-600" />
-
-                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                            Duration
-                          </p>
-
-                          <strong className="text-slate-900 dark:text-slate-100">
-                            {featuredCourse.duration || "8 Weeks"}
-                          </strong>
-                        </div>
-
-                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
-                          <Star
-                            size={20}
-                            className="text-yellow-500"
-                            fill="currentColor"
-                          />
-
-                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                            Rating
-                          </p>
-
-                          <strong className="text-slate-900 dark:text-slate-100">
-                            {featuredCourse.rating || "5.0"}
-                          </strong>
-                        </div>
-
-                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
-                          <FaMoneyBill
-                            size={20}
-                            className="text-yellow-500"
-                            fill="currentColor"
-                          />
-
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Course Access
-                          </p>
-
-                          <span className="text-2xl font-black text-blue-600">
-                            {isPremiumCourse(featuredCourse)
-                              ? "Premium"
-                              : "Free"}
-                          </span>
-                        </div>
-
-                        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
-                          <Award size={20} className="text-yellow-500" />
-
-                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                            Certificate
-                          </p>
-
-                          <strong className="text-slate-900 dark:text-slate-100">
-                            Available
-                          </strong>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-2xl font-black text-slate-900 dark:text-slate-100">
-                          {formatPrice(featuredCourse)}
-                        </span>
-                      </div>
-
-                      <div className="space-y-3">
-                        {isPremiumCourse(featuredCourse) ? (
-                          <Button
-                            fullWidth
-                            loading={purchasingId === featuredCourse._id}
-                            disabled={
-                              Boolean(enrollingId) || Boolean(purchasingId)
-                            }
-                            onClick={() => handleBuyCourse(featuredCourse)}
-                          >
-                            {purchasingId === featuredCourse._id ? (
-                              "Opening Checkout..."
-                            ) : (
-                              <>
-                                <ShoppingCart size={18} />
-                                Buy Course
-                              </>
-                            )}
-                          </Button>
-                        ) : (
-                          <Button
-                            fullWidth
-                            loading={enrollingId === featuredCourse._id}
-                            disabled={
-                              Boolean(enrollingId) || Boolean(purchasingId)
-                            }
-                            onClick={() => handleEnroll(featuredCourse)}
-                          >
-                            {enrollingId === featuredCourse._id
-                              ? "Enrolling..."
-                              : "Enroll Now"}
-                          </Button>
-                        )}
-
-                        <Link
-                          to={`/courses/${featuredCourse._id}`}
-                          className="block"
-                        >
-                          <Button
-                            fullWidth
-                            variant="outline"
-                            disabled={
-                              Boolean(enrollingId) || Boolean(purchasingId)
-                            }
-                          >
-                            <ArrowRight size={18} />
-                            View Course
-                          </Button>
-                        </Link>
-                      </div>
-
-                      {isPremiumCourse(featuredCourse) && (
-                        <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                          <LockKeyhole
-                            size={18}
-                            className="mt-0.5 shrink-0 text-blue-600"
-                          />
-
-                          <p className="text-sm leading-6 text-slate-900 dark:text-slate-900">
-                            This is a premium course. Complete payment through
-                            Paystack to unlock enrollment and access the
-                            curriculum.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            </section>
-          )}
-
-          {/* ==========================================
-              COURSE CARDS
-          ========================================== */}
-
-          {catalogCourses.length > 0 ? (
-            currentCourses.length > 0 ? (
-              <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-                {currentCourses.map((course, index) => (
-                  <motion.div
-                    key={course._id}
-                    initial={{
-                      opacity: 0,
-                      y: 40,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.5,
-                      delay: index * 0.08,
-                    }}
-                  >
-                    <Card hover className="overflow-hidden p-0">
-                      {/* Image */}
-                      <div className="relative">
-                        <img
-                          src={getCourseImage(course)}
-                          alt={course.title}
-                          className="h-60 w-full object-cover transition duration-500 hover:scale-105"
-                          onError={(event) => {
-                            event.currentTarget.onerror = null;
-                            event.currentTarget.src = COURSE_IMAGE_FALLBACK;
-                          }}
-                        />
-
-                        <span className="absolute left-4 top-4 rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
-                          {course.level || "Beginner"}
-                        </span>
-
-                        {course.featured && (
-                          <span className="absolute right-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-slate-950">
-                            Featured
-                          </span>
-                        )}
-
-                        <span
-                          className={`absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold shadow-lg ${
-                            isPremiumCourse(course)
-                              ? "bg-slate-950/90 text-white"
-                              : "bg-emerald-500 text-white"
-                          }`}
-                        >
-                          {isPremiumCourse(course) && <LockKeyhole size={13} />}
-
-                          {isPremiumCourse(course) ? "Premium" : "Free"}
-                        </span>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6">
-                        <div className="mb-5 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-                          <span className="flex items-center gap-2">
-                            <Clock3 size={16} />
-                            {course.duration || "8 Weeks"}
-                          </span>
-
-                          <span className="flex items-center gap-1 text-yellow-500">
-                            <Star size={16} fill="currentColor" />
-                            {course.rating || "5.0"}
-                          </span>
-                        </div>
-
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                          {course.title}
-                        </h3>
-
-                        <p className="mt-4 line-clamp-3 leading-7 text-slate-600 dark:text-slate-300">
-                          {course.description}
-                        </p>
-
-                        <div className="mt-6 flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                            <Users size={18} />
-
-                            <span>
-                              {course.students || course.enrollments || 0}{" "}
-                              Students
-                            </span>
-                          </div>
-
-                          <span className="text-lg font-bold text-blue-600">
-                            {formatPrice(course)}
-                          </span>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                          {isPremiumCourse(course) ? (
-                            <Button
-                              fullWidth
-                              loading={purchasingId === course._id}
-                              disabled={
-                                Boolean(enrollingId) || Boolean(purchasingId)
-                              }
-                              onClick={() => handleBuyCourse(course)}
-                            >
-                              {purchasingId === course._id ? (
-                                "Checkout..."
-                              ) : (
-                                <>
-                                  <ShoppingCart size={17} />
-                                  Buy Course
-                                </>
-                              )}
-                            </Button>
-                          ) : (
-                            <Button
-                              fullWidth
-                              loading={enrollingId === course._id}
-                              disabled={
-                                Boolean(enrollingId) || Boolean(purchasingId)
-                              }
-                              onClick={() => handleEnroll(course)}
-                            >
-                              {enrollingId === course._id
-                                ? "Enrolling..."
-                                : "Enroll Now"}
-                            </Button>
-                          )}
-
-                          <Link to={`/courses/${course._id}`} className="block">
-                            <Button
-                              fullWidth
-                              variant="outline"
-                              disabled={
-                                Boolean(enrollingId) || Boolean(purchasingId)
-                              }
-                            >
-                              View Course
-                              <ArrowRight size={18} className="ml-2" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            ) : null
-          ) : filteredCourses.length === 0 ? (
-            <Card className="mt-16 py-10 text-center">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
-                <Search className="text-blue-600" size={36} />
-              </div>
-
-              <h3 className="mt-8 text-3xl font-bold text-slate-900 dark:text-slate-100">
-                No Courses Found
-              </h3>
-
-              <p className="mx-auto mt-4 max-w-lg leading-8 text-slate-600 dark:text-slate-300">
-                We couldn't find any courses matching your search. Try another
-                keyword or change the selected difficulty.
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+                Find your direction
               </p>
 
-              <Button className="mt-8" onClick={resetFilters}>
-                Reset Filters
-              </Button>
-            </Card>
-          ) : null}
+              <h2 className="mt-3 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl">
+                Explore Learning Categories
+              </h2>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-20 flex justify-center">
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                onPageChange={setPage}
-              />
+              <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
+                Discover structured learning experiences designed to
+                help you build practical skills and grow professionally.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+              {filteredCategories.length} of {categories.length} categories
+            </div>
+
+          </div>
+
+          {loadError && (
+            <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
+              Pathway information could not be loaded. Categories remain
+              available, but pathway details may be temporarily unavailable.
             </div>
           )}
-        </div>
-      </section>
 
-      <section className="bg-slate-50 py-10 dark:bg-slate-950 lg:py-20">
-        <div className="px-6">
-          <SectionTitle
-            title="Why Learn With KanuorieTech?"
-            subtitle="More than just video courses"
-          />
+          {filteredCategories.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                title: "Project-Based Learning",
-                description: "Build real-world applications while learning.",
-              },
-              {
-                title: "Expert Instructors",
-                description: "Learn from experienced software engineers.",
-              },
-              {
-                title: "Certificates",
-                description: "Earn certificates after completing courses.",
-              },
-              {
-                title: "Career Ready",
-                description: "Gain practical skills employers are looking for.",
-              },
-            ].map((item) => (
-              <Card
-                key={item.title}
-                hover
-                className="text-center text-slate-900 dark:text-slate-100"
+              {filteredCategories.map((category, index) => {
+                const Icon = category.icon;
+                const matchingPaths = getCategoryPaths(
+                  category,
+                  learningPaths
+                );
+
+                const courseCount = matchingPaths.reduce(
+                  (total, path) =>
+                    total +
+                    Number(
+                      path.publishedCourseCount ?? path.count ?? 0
+                    ),
+                  0
+                );
+
+                const hasPathway = matchingPaths.length > 0;
+
+                return (
+                  <motion.article
+                    key={category.name}
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.15 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: (index % 4) * 0.06,
+                    }}
+                    className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700"
+                  >
+
+                    <div className="flex items-start justify-between gap-3">
+
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white dark:bg-blue-950/60 dark:text-blue-400 dark:group-hover:bg-blue-600 dark:group-hover:text-white">
+                        <Icon size={27} strokeWidth={1.8} />
+                      </div>
+
+                      {loading ? (
+                        <LoaderCircle
+                          size={17}
+                          className="animate-spin text-slate-400"
+                        />
+                      ) : hasPathway ? (
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
+                          Available
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                          Coming soon
+                        </span>
+                      )}
+
+                    </div>
+
+                    <h3 className="mt-6 text-xl font-extrabold text-slate-900 dark:text-white">
+                      {category.name}
+                    </h3>
+
+                    <p className="mt-3 min-h-12 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                      {category.description}
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+
+                      <span>
+                        {matchingPaths.length}{" "}
+                        {matchingPaths.length === 1
+                          ? "pathway"
+                          : "pathways"}
+                      </span>
+
+                      <span>
+                        {courseCount}{" "}
+                        {courseCount === 1 ? "course" : "courses"}
+                      </span>
+
+                    </div>
+
+                    <div className="mt-auto pt-6">
+
+                      <button
+                        type="button"
+                        onClick={() => handleExplorePathway(category)}
+                        disabled={!hasPathway || loading}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+                      >
+                        Explore pathway
+                        <ArrowRight
+                          size={17}
+                          className="transition-transform group-hover:translate-x-1"
+                        />
+                      </button>
+
+                    </div>
+
+                  </motion.article>
+                );
+              })}
+
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center dark:border-slate-800 dark:bg-slate-900">
+
+              <Search className="mx-auto text-slate-400" size={40} />
+
+              <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+                No learning categories found
+              </h3>
+
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                Try searching with a different category name.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="mt-6 font-semibold text-blue-600 hover:text-blue-700"
               >
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
-                  <BookOpen className="text-blue-600" size={28} />
-                </div>
+                Clear search
+              </button>
 
-                <h3 className="mt-6 text-xl font-bold">{item.title}</h3>
+            </div>
+          )}
 
-                <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
-                  {item.description}
-                </p>
-              </Card>
-            ))}
-          </div>
         </div>
       </section>
-    </>
+
+      {/* BOTTOM CTA */}
+      <section className="px-5 pb-16 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-slate-950 px-6 py-12 text-center text-white sm:px-12 sm:py-16">
+
+          <h2 className="text-3xl font-black sm:text-4xl">
+            Your Next Career Chapter Starts Here.
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
+            Choose a learning pathway, develop practical skills, complete
+            real-world projects, and work towards professional recognition.
+          </p>
+
+          <a
+            href="#learning-categories"
+            onClick={(event) => {
+              event.preventDefault();
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-yellow-400 px-7 py-3.5 font-bold text-slate-950 transition hover:bg-yellow-300"
+          >
+            Explore Categories
+            <ArrowRight size={18} />
+          </a>
+
+        </div>
+      </section>
+
+    </main>
   );
 }

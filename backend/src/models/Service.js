@@ -40,6 +40,11 @@ const serviceSchema = new mongoose.Schema(
       default: "",
     },
 
+    gallery: {
+      type: [String],
+      default: [],
+    },
+
     featured: {
       type: Boolean,
       default: false,

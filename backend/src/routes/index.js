@@ -8,6 +8,7 @@ router.use("/users", require("./userRoutes"));
 router.use("/learning", require("./learningRoutes"));
 
 router.use("/courses", require("./courseRoutes"));
+router.use("/learning-paths", require("./learningPathRoutes"));
 router.use("/progress", require("./progressRoutes"));
 router.use("/products", require("./productRoutes"));
 router.use("/projects", require("./projectRoutes"));

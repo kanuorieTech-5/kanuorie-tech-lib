@@ -1260,10 +1260,6 @@ export default function CourseDetails() {
         </div>
       </section>
 
-      {/* ==================================================
-          REQUIREMENTS
-      ================================================== */}
-
       <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
         <div className=" px-6">
           <SectionTitle
@@ -1312,10 +1308,6 @@ export default function CourseDetails() {
           )}
         </div>
       </section>
-
-      {/* ==================================================
-          WHAT YOU'LL LEARN
-      ================================================== */}
 
       <section className="py-10 sm:py-10">
         <div className="mx-auto px-6">
@@ -2434,10 +2426,6 @@ export default function CourseDetails() {
         </section>
       )}
 
-      {/* ==================================================
-          INSTRUCTOR
-      ================================================== */}
-
       <section className="py-10 sm:py-24">
         <div className="mx-auto px-6">
           <SectionTitle
@@ -2467,10 +2455,6 @@ export default function CourseDetails() {
           </Card>
         </div>
       </section>
-
-      {/* ==================================================
-          RELATED COURSES
-      ================================================== */}
 
       {relatedCourses.length > 0 && (
         <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">

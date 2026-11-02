@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-
 import { Card, SectionTitle } from "../common";
 
 const features = [
@@ -75,12 +74,6 @@ export default function Features() {
 
   const [visibleCards, setVisibleCards] = useState(getVisibleCards);
 
-  /*
-  ==========================================
-  RESPONSIVE SLIDER
-  ==========================================
-  */
-
   useEffect(() => {
     const handleResize = () => {
       setVisibleCards(getVisibleCards());
@@ -95,31 +88,13 @@ export default function Features() {
 
   const maxIndex = Math.max(features.length - visibleCards, 0);
 
-  /*
-  ==========================================
-  NEXT
-  ==========================================
-  */
-
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
-  /*
-  ==========================================
-  PREVIOUS
-  ==========================================
-  */
-
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   };
-
-  /*
-  ==========================================
-  AUTO SLIDE
-  ==========================================
-  */
 
   useEffect(() => {
     if (isPaused || features.length <= visibleCards) {
@@ -135,12 +110,6 @@ export default function Features() {
     };
   }, [isPaused, maxIndex, visibleCards]);
 
-  /*
-  ==========================================
-  KEEP INDEX VALID
-  ==========================================
-  */
-
   useEffect(() => {
     if (currentIndex > maxIndex) {
       setCurrentIndex(0);
@@ -148,8 +117,8 @@ export default function Features() {
   }, [currentIndex, maxIndex]);
 
   return (
-    <section className="bg-slate-900 py-10 text-white">
-      <div className="px-6 text-center text-white">
+    <section className="bg-transparent py-10 text-white">
+      <div className="rounded-3xl bg-white/5 p-3 lg:p-16">
         <SectionTitle
           center
           Badge="Why Choose Us"

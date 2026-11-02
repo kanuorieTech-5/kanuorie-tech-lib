@@ -48,12 +48,17 @@ const audiences = [
 
 export default function AboutPreview() {
   return (
-    <section className="relative overflow-hidden bg-gray-900 py-10 text-white sm:py-10 lg:py-20">
+    <section className="relative overflow-hidden bg-transparent py-3 text-white sm:py-5 lg:py-6">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="relative mx-auto px-5"
+      > 
       {/* Background accents */}
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
-
-      <div className="relative mx-auto px-6 lg:px-8">
+      <div className="rounded-3xl bg-white/5 p-3 lg:p-6">
         {/* Section heading */}
         <SectionTitle
           Badge="About KanuorieTech"
@@ -117,7 +122,7 @@ export default function AboutPreview() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300">
+            <span className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-400">
               Innovation • Technology • Education • Growth
             </span>
 
@@ -215,6 +220,7 @@ export default function AboutPreview() {
           </div>
         </motion.div>
       </div>
+      </motion.div>
     </section>
   );
 }

@@ -15,6 +15,7 @@ import TechStack from "../components/home/TechStack";
 import TeamPreview from "../components/home/TeamPreview";
 import Newsletter from "../components/home/Newsletter";
 import CTA from "../components/home/CTA";
+import HomebgImage from "../assets/logo.jpeg";
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -27,7 +28,23 @@ const reveal = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+    <main className="relative min-h-screen bg-gray-300 text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+
+      {/* Homepage background */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 bg-cover bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to bottom right,
+              rgba(2, 6, 23, 0.65),
+              rgba(30, 58, 138, 0.45),
+              rgba(2, 6, 23, 0.65)
+            ),
+            url(${HomebgImage})
+          `,
+        }}
+      />
       <CTA />
       <AboutPreview />
       <Features />
@@ -38,9 +55,9 @@ export default function Home() {
       <BooksPreview />
       <ProductsPreview />
       <BlogPreview />
-      <Testimonials />
       <TechStack />
       <TeamPreview />
+      <Testimonials />
       <section className="">
         <motion.div
           initial="hidden"

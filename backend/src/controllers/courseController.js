@@ -6,13 +6,28 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const { enrollUserInCourse } = require("../services/courseEnrollmentService");
 const certificateService = require("../services/certificateService");
+const LearningPath = require("../models/LearningPath");
+
+const validatePathPlacement = async (payload) => {
+  if (!payload.learningPath) return;
+  const path = await LearningPath.findById(payload.learningPath);
+  if (!path) throw new ApiError(400, "Learning pathway not found.");
+  const stageNumber = Number(payload.learningStage);
+  if (!path.stages.some((stage) => stage.number === stageNumber)) {
+    throw new ApiError(400, "Learning stage must exist in the selected pathway.");
+  }
+  payload.learningStage = stageNumber;
+  payload.courseOrder = Math.max(1, Number(payload.courseOrder) || 1);
+};
 /* ==========================================
    CREATE COURSE
 ========================================== */
 
 const saveCourse = asyncHandler(async (req, res) => {
+  const payload = { ...req.body };
+  await validatePathPlacement(payload);
   const course = await Course.create({
-    ...req.body,
+    ...payload,
     createdBy: req.user._id,
   });
 
@@ -34,7 +49,7 @@ const getCourses = asyncHandler(async (req, res) => {
   const limit = Number(req.query.limit) || 12;
   const skip = (page - 1) * limit;
 
-  const filter = {};
+  const filter = { published: true };
 
   if (req.query.category) {
     filter.category = req.query.category;
@@ -51,6 +66,9 @@ const getCourses = asyncHandler(async (req, res) => {
   if (req.query.level) {
     filter.level = req.query.level;
   }
+
+  if (req.query.learningPath) filter.learningPath = req.query.learningPath;
+  if (req.query.learningStage) filter.learningStage = Number(req.query.learningStage);
 
   if (req.query.search) {
     filter.$or = [
@@ -271,6 +289,12 @@ const updateCourse = asyncHandler(async (req, res) => {
     "tags",
     "prerequisites",
     "outcomes",
+    "learningPath",
+    "learningStage",
+    "courseOrder",
+    "estimatedDuration",
+    "learningObjectives",
+    "skillsAcquired",
     "modules",
   ];
 
@@ -281,6 +305,8 @@ const updateCourse = asyncHandler(async (req, res) => {
       updateData[field] = req.body[field];
     }
   }
+
+  await validatePathPlacement(updateData);
 
   /*
    * IMPORTANT:

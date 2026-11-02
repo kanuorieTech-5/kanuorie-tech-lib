@@ -1,5 +1,13 @@
 ﻿import API from "./axiosApi";
 
+export const getLearningPaths = async () => (await API.get("/learning-paths")).data;
+export const getLearningPath = async (slug) => (await API.get(`/learning-paths/${slug}`)).data;
+export const getAdminLearningPaths = async () => (await API.get("/learning-paths/admin")).data;
+export const createLearningPath = async (payload) => (await API.post("/learning-paths", payload)).data;
+export const updateLearningPath = async (id, payload) => (await API.put(`/learning-paths/${id}`, payload)).data;
+export const deleteLearningPath = async (id) => (await API.delete(`/learning-paths/${id}`)).data;
+export const assignCourseToPath = async (courseId, payload) => (await API.put(`/learning-paths/courses/${courseId}`, payload)).data;
+
 /* ==========================================
    COURSES
 ========================================== */
@@ -128,6 +136,13 @@ export const updateCourseNotes = async (id, notes) => {
 };
 
 export default {
+  getLearningPaths,
+  getLearningPath,
+  getAdminLearningPaths,
+  createLearningPath,
+  updateLearningPath,
+  deleteLearningPath,
+  assignCourseToPath,
   getCourses,
   getAdminCourses,
   getCourse,

@@ -149,7 +149,7 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="bg-slate-900 py-10 text-white dark:bg-slate-900 dark:text-white">
+    <section className="bg-transparent py-10 text-white dark:bg-slate-900 dark:text-white">
       <div className="mx-auto px-6 text-center">
         <SectionTitle
           title="What Our Clients Say"
