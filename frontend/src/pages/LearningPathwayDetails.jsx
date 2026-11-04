@@ -149,12 +149,17 @@ const LearningPathwayDetails = () => {
       : 0;
 
   // The backend returns progress as a number, not an object.
+  const hasBackendProgress =
+    path?.progress !== null &&
+    path?.progress !== undefined &&
+    path?.progress !== "";
+
   const progress = Math.min(
     100,
     Math.max(
       0,
-      Number.isFinite(Number(path?.progress))
-        ? Number(path?.progress)
+      hasBackendProgress
+        ? Number(path.progress) || 0
         : calculatedProgress
     )
   );
@@ -561,7 +566,7 @@ const LearningPathwayDetails = () => {
                                     key={courseId}
                                     className="flex flex-col gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50 sm:flex-row sm:items-center"
                                   >
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm dark:bg-gray-900 dark:text-blue-400">
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
                                       {status === "completed" ? (
                                         <CheckCircle2 size={22} />
                                       ) : status === "in-progress" ? (

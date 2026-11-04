@@ -59,13 +59,13 @@ export default function ImageSlider() {
     return () => clearInterval(timer);
   }, [paused]);
   return (
-    <section className="py-10 bg-transparent dark:bg-slate-900 ">
-      <div className="px-6 text-center text-white">
+    <section className="py-10 bg-transparent sm:py-16 lg:py-24 bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10 dark:bg-gradient-to-r dark:from-blue-500/10 dark:via-transparent dark:to-cyan-500/10">
+      <div className="px-6 text-center text-white md:px-12 lg:px-24 dark:text-white">
         <div className="mb-12 text-center">
           <span className="rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-cyan-400">
             The KanuorieTech Experience
           </span>
-          <h2 className="mt-6 text-4xl font-bold text-white">
+          <h2 className="mt-6 text-4xl font-bold text-black dark:text-white sm:text-5xl md:text-6xl">
             Learn. Build. Innovate.
           </h2>
           <p className="mt-4 text-slate-400">

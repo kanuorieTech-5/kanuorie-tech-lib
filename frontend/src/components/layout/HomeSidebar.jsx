@@ -7,7 +7,7 @@ export default function HomeSidebar() {
   const links = primaryNavLinks.filter((item) => !item.requiresAuth || user);
 
   return (
-    <aside className="hidden w-60 shrink-0 border-l border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 lg:block">
+    <aside className="hidden w-60 shrink-0 border-l border-slate-200 bg-white z-1 dark:border-slate-800 dark:bg-slate-950 lg:block">
       <div className="sticky top-16 flex max-h-[calc(100vh-4rem)] flex-col overflow-y-auto px-4 py-6">
         <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
           Explore

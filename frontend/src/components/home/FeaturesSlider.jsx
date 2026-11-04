@@ -84,10 +84,6 @@ export default function FeaturesSlider() {
   const [visibleCards, setVisibleCards] = useState(1);
   const [activeImage, setActiveImage] = useState(null);
 
-  /* ==========================================
-     RESPONSIVE CARD COUNT
-  ========================================== */
-
   useEffect(() => {
     const updateVisibleCards = () => {
       if (window.innerWidth >= 1024) {
@@ -164,7 +160,7 @@ export default function FeaturesSlider() {
   }, [activeImage]);
 
   return (
-    <section className="overflow-hidden bg-transparent py-10">
+    <section className="overflow-hidden  py-10">
       <div className="rounded-3xl bg-white/5 p-3 lg:p-16">
 
         <div className="text-center">
@@ -172,7 +168,7 @@ export default function FeaturesSlider() {
             Platform Features
           </span>
 
-          <h2 className="mt-6 text-4xl font-bold text-white">
+          <h2 className="mt-6 text-4xl font-bold">
             Everything You Need In One Platform
           </h2>
 
@@ -238,7 +234,7 @@ export default function FeaturesSlider() {
             type="button"
             onClick={prevSlide}
             aria-label="Previous feature"
-            className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
+            className="rounded-full border border-white/20 px-5 py-2 text-whit transition hover:bg-white/10"
           >
             ←
           </button>
@@ -247,7 +243,7 @@ export default function FeaturesSlider() {
             type="button"
             onClick={nextSlide}
             aria-label="Next feature"
-            className="rounded-full border border-white/20 px-5 py-2 text-white transition hover:bg-white/10"
+            className="rounded-full border border-white/20 px-5 py-2 text-whit transition hover:bg-white/10"
           >
             →
           </button>

@@ -190,7 +190,7 @@ export default function ServicesPreview() {
   }
 
   return (
-    <section className="bg-transparent py-10 text-white">
+    <section className="bg-slate-950 py-10 text-white">
       <div className="px-6 text-center">
         <SectionTitle
           Badge="Our Services"

@@ -1,0 +1,750 @@
+﻿import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  BookOpen,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Clock3,
+  GraduationCap,
+  Layers3,
+  PlayCircle,
+  Target,
+  Trophy,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
+
+import { getLearningPath } from "../api/courseApi";
+
+const getErrorMessage = (error) =>
+  error?.response?.data?.message ||
+  error?.message ||
+  "Unable to load this learning pathway. Please try again.";
+
+const getCourseStatus = (course) => {
+  const progress = course?.progress;
+
+  if (
+    progress?.completed === true ||
+    progress?.status === "completed" ||
+    Number(progress?.percentage) >= 100
+  ) {
+    return "completed";
+  }
+
+  if (
+    progress?.status === "in_progress" ||
+    Number(progress?.percentage) > 0
+  ) {
+    return "in-progress";
+  }
+
+  return "not-started";
+};
+
+const getCourseLink = (course) => {
+  const identifier = course?.slug || course?._id;
+
+  return identifier ? `/courses/${identifier}` : "/courses";
+};
+
+const LearningPathwayDetails = () => {
+  const { slug } = useParams();
+
+  const [path, setPath] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [openStages, setOpenStages] = useState({});
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadPathway = async () => {
+      setLoading(true);
+      setError("");
+      setPath(null);
+      setOpenStages({});
+
+      try {
+        if (!slug) {
+          throw new Error("Learning pathway was not specified.");
+        }
+
+        const response = await getLearningPath(slug);
+
+        if (!active) return;
+
+        // ApiResponse.success returns the payload under data.
+        const responseBody = response?.data;
+        const data =
+          responseBody?.data ??
+          responseBody?.learningPath ??
+          responseBody;
+
+        if (!data || !data._id) {
+          throw new Error("Learning pathway not found.");
+        }
+
+        const normalizedStages = Array.isArray(data.stages)
+          ? data.stages.map((stage) => ({
+              ...stage,
+              courses: Array.isArray(stage.courses)
+                ? stage.courses
+                : [],
+              learningObjectives: Array.isArray(
+                stage.learningObjectives
+              )
+                ? stage.learningObjectives
+                : [],
+            }))
+          : [];
+
+        setPath({
+          ...data,
+          stages: normalizedStages,
+        });
+
+        if (normalizedStages.length > 0) {
+          const firstStageId =
+            normalizedStages[0]._id || "stage-0";
+
+          setOpenStages({ [firstStageId]: true });
+        }
+      } catch (err) {
+        if (!active) return;
+        setError(getErrorMessage(err));
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    loadPathway();
+
+    return () => {
+      active = false;
+    };
+  }, [slug, retryCount]);
+
+  const stages = path?.stages || [];
+
+  const allCourses = useMemo(
+    () => stages.flatMap((stage) => stage.courses || []),
+    [stages]
+  );
+
+  const completedCourses = allCourses.filter(
+    (course) => getCourseStatus(course) === "completed"
+  ).length;
+
+  const calculatedProgress =
+    allCourses.length > 0
+      ? Math.round(
+          (completedCourses / allCourses.length) * 100
+        )
+      : 0;
+
+  // The backend returns progress as a number, not an object.
+  const progress = Math.min(
+    100,
+    Math.max(
+      0,
+      Number.isFinite(Number(path?.progress))
+        ? Number(path?.progress)
+        : calculatedProgress
+    )
+  );
+
+  const totalStages =
+    path?.totalStages ?? stages.length;
+
+  const totalCourses =
+    path?.totalCourses ?? allCourses.length;
+
+  // Course.duration is stored in hours in the Course model.
+  const totalDurationHours =
+    Number(path?.totalDurationHours) || 0;
+
+  const objectives = Array.isArray(path?.learningObjectives)
+    ? path.learningObjectives
+    : [];
+
+  const skills = Array.isArray(path?.skillsAcquired)
+    ? path.skillsAcquired
+    : [];
+
+  const toggleStage = (stageId) => {
+    setOpenStages((previous) => ({
+      ...previous,
+      [stageId]: !previous[stageId],
+    }));
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[55vh] flex-col items-center justify-center gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <p className="text-sm text-gray-500">
+          Loading learning pathway...
+        </p>
+      </div>
+    );
+  }
+
+  if (error || !path) {
+    return (
+      <div className="mx-auto flex min-h-[55vh] max-w-xl flex-col items-center justify-center px-5 text-center">
+        <div className="mb-5 rounded-full bg-red-100 p-4 text-red-600">
+          <AlertCircle size={32} />
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Unable to load pathway
+        </h2>
+
+        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+          {error || "This learning pathway could not be found."}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => setRetryCount((count) => count + 1)}
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
+        >
+          <RefreshCw size={17} />
+          Try again
+        </button>
+
+        <Link
+          to="/courses"
+          className="mt-4 text-sm font-medium text-blue-600 hover:underline"
+        >
+          Back to courses
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-gray-50 pb-16 dark:bg-gray-950">
+      {/* Back navigation */}
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <Link
+          to="/courses"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-blue-600 dark:text-gray-400"
+        >
+          <ArrowLeft size={17} />
+          Back to learning hub
+        </Link>
+      </div>
+
+      {/* Hero */}
+      <section className="mx-auto mt-6 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 p-6 text-white shadow-xl sm:p-10 lg:p-12">
+          <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
+
+          <div className="pointer-events-none absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-indigo-400/20 blur-3xl" />
+
+          <div className="relative z-10 max-w-3xl">
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              {path.category && (
+                <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
+                  {path.category}
+                </span>
+              )}
+
+              {path.difficulty && (
+                <span className="rounded-full bg-blue-500/20 px-4 py-1.5 text-xs font-semibold text-blue-200">
+                  {path.difficulty}
+                </span>
+              )}
+            </div>
+
+            <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
+              {path.title}
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-blue-100 sm:text-base">
+              {path.description ||
+                "Follow this structured learning pathway to develop practical skills and advance your career."}
+            </p>
+
+            {/* Statistics */}
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
+                <Layers3
+                  size={20}
+                  className="mb-3 text-blue-300"
+                />
+                <p className="text-2xl font-bold">
+                  {totalStages}
+                </p>
+                <p className="mt-1 text-xs text-blue-200">
+                  Learning stages
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
+                <BookOpen
+                  size={20}
+                  className="mb-3 text-blue-300"
+                />
+                <p className="text-2xl font-bold">
+                  {totalCourses}
+                </p>
+                <p className="mt-1 text-xs text-blue-200">
+                  Courses
+                </p>
+              </div>
+
+              <div className="col-span-2 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm sm:col-span-1">
+                <Clock3
+                  size={20}
+                  className="mb-3 text-blue-300"
+                />
+                <p className="text-2xl font-bold">
+                  {totalDurationHours}
+                </p>
+                <p className="mt-1 text-xs text-blue-200">
+                  Estimated hours
+                </p>
+              </div>
+            </div>
+
+            {/* Learning progress */}
+            <div className="mt-8 max-w-xl">
+              <div className="mb-3 flex items-center justify-between text-sm">
+                <span className="font-medium text-blue-100">
+                  Your learning progress
+                </span>
+                <span className="font-bold">
+                  {progress}%
+                </span>
+              </div>
+
+              <div
+                className="h-2.5 overflow-hidden rounded-full bg-white/20"
+                role="progressbar"
+                aria-label="Learning pathway progress"
+                aria-valuenow={progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div
+                  className="h-full rounded-full bg-blue-400 transition-all duration-700"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+
+              <p className="mt-2 text-xs text-blue-200">
+                {completedCourses} of {allCourses.length} courses completed
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main content */}
+      <section className="mx-auto mt-10 grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
+        <div className="space-y-8 lg:col-span-2">
+          {/* Learning objectives */}
+          {objectives.length > 0 && (
+            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                  <Target size={22} />
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Learning objectives
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    What you will achieve
+                  </p>
+                </div>
+              </div>
+
+              <ul className="space-y-3">
+                {objectives.map((objective, index) => (
+                  <li
+                    key={`${index}-${objective}`}
+                    className="flex items-start gap-3 text-sm leading-6 text-gray-700 dark:text-gray-300"
+                  >
+                    <CheckCircle2
+                      size={18}
+                      className="mt-1 shrink-0 text-green-500"
+                    />
+                    <span>{objective}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Skills acquired */}
+          {skills.length > 0 && (
+            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
+                  <GraduationCap size={22} />
+                </div>
+
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Skills you will develop
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill, index) => (
+                  <span
+                    key={`${index}-${skill}`}
+                    className="rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Learning roadmap */}
+          <section>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Your learning roadmap
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Complete the courses in each stage to progress through your professional learning journey.
+              </p>
+            </div>
+
+            {stages.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
+                <BookOpen
+                  size={36}
+                  className="mx-auto mb-4 text-gray-400"
+                />
+
+                <h3 className="font-bold text-gray-900 dark:text-white">
+                  No learning stages available yet
+                </h3>
+
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  This learning pathway is being prepared.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                {stages.map((stage, index) => {
+                  const stageId = stage._id || `stage-${index}`;
+                  const stageCourses = stage.courses || [];
+                  const isOpen = Boolean(openStages[stageId]);
+
+                  const stageCompleted =
+                    stageCourses.length > 0 &&
+                    stageCourses.every(
+                      (course) =>
+                        getCourseStatus(course) === "completed"
+                    );
+
+                  return (
+                    <article
+                      key={stageId}
+                      className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleStage(stageId)}
+                        aria-expanded={isOpen}
+                        className="flex w-full items-center gap-4 p-5 text-left transition hover:bg-gray-50 dark:hover:bg-gray-800/60 sm:p-6"
+                      >
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                          {stageCompleted ? (
+                            <CheckCircle2 size={23} />
+                          ) : (
+                            stage.number || index + 1
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-1 flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                              Stage {stage.number || index + 1}
+                            </span>
+
+                            {stageCompleted && (
+                              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                                Completed
+                              </span>
+                            )}
+                          </div>
+
+                          <h3 className="text-base font-bold text-gray-900 dark:text-white sm:text-lg">
+                            {stage.title}
+                          </h3>
+
+                          {stage.description && (
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                              {stage.description}
+                            </p>
+                          )}
+
+                          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            {stageCourses.length}{" "}
+                            {stageCourses.length === 1
+                              ? "course"
+                              : "courses"}
+                          </p>
+                        </div>
+
+                        {isOpen ? (
+                          <ChevronUp
+                            size={21}
+                            className="shrink-0 text-gray-500"
+                          />
+                        ) : (
+                          <ChevronDown
+                            size={21}
+                            className="shrink-0 text-gray-500"
+                          />
+                        )}
+                      </button>
+
+                      {isOpen && (
+                        <div className="border-t border-gray-100 px-5 py-5 dark:border-gray-800 sm:px-6">
+                          {stage.learningObjectives.length > 0 && (
+                            <div className="mb-5 rounded-xl bg-blue-50 p-4 dark:bg-blue-500/10">
+                              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+                                Stage objectives
+                              </p>
+
+                              <ul className="space-y-2">
+                                {stage.learningObjectives.map(
+                                  (objective, objectiveIndex) => (
+                                    <li
+                                      key={objectiveIndex}
+                                      className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
+                                    >
+                                      <CheckCircle2
+                                        size={15}
+                                        className="mt-1 shrink-0 text-blue-600"
+                                      />
+                                      {objective}
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </div>
+                          )}
+
+                          {stageCourses.length === 0 ? (
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              No courses have been assigned to this stage yet.
+                            </p>
+                          ) : (
+                            <div className="space-y-4">
+                              {stageCourses.map((course, courseIndex) => {
+                                const status = getCourseStatus(course);
+                                const courseId =
+                                  course._id ||
+                                  course.slug ||
+                                  courseIndex;
+
+                                return (
+                                  <div
+                                    key={courseId}
+                                    className="flex flex-col gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50 sm:flex-row sm:items-center"
+                                  >
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm dark:bg-gray-900 dark:text-blue-400">
+                                      {status === "completed" ? (
+                                        <CheckCircle2 size={22} />
+                                      ) : status === "in-progress" ? (
+                                        <PlayCircle size={22} />
+                                      ) : (
+                                        <BookOpen size={22} />
+                                      )}
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                      <h4 className="font-semibold text-gray-900 dark:text-white">
+                                        {course.title}
+                                      </h4>
+
+                                      {course.description && (
+                                        <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                                          {course.description}
+                                        </p>
+                                      )}
+
+                                      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                                        {Number(course.duration) > 0 && (
+                                          <span className="flex items-center gap-1">
+                                            <Clock3 size={13} />
+                                            {course.duration} hours
+                                          </span>
+                                        )}
+
+                                        <span>
+                                          {status === "completed"
+                                            ? "Completed"
+                                            : status === "in-progress"
+                                              ? "In progress"
+                                              : "Not started"}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <Link
+                                      to={getCourseLink(course)}
+                                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                                    >
+                                      {status === "completed"
+                                        ? "Review course"
+                                        : status === "in-progress"
+                                          ? "Continue"
+                                          : "Start course"}
+                                      <ArrowRight size={15} />
+                                    </Link>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Sidebar */}
+        <aside className="space-y-6">
+          {/* Certification information */}
+          <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6 text-white">
+              <div className="mb-4 inline-flex rounded-xl bg-white/20 p-3">
+                <Award size={28} />
+              </div>
+
+              <h2 className="text-xl font-bold">
+                Professional Certification
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-amber-50">
+                Your goal is to complete this structured learning journey and meet the requirements for professional certification.
+              </p>
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-bold text-gray-900 dark:text-white">
+                Pathway Completion
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                Complete the required courses and assessments. Certification requirements and issuance will be managed by the platform.
+              </p>
+
+              <div className="mt-5 rounded-xl bg-amber-50 p-4 dark:bg-amber-500/10">
+                <p className="text-xs leading-5 text-amber-800 dark:text-amber-300">
+                  Completing this pathway does not automatically issue a certificate. Your eligibility must be verified by the certification system.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Progress summary */}
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                <Trophy size={21} />
+              </div>
+
+              <h2 className="font-bold text-gray-900 dark:text-white">
+                Your progress
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Completed courses
+                </span>
+                <span className="font-bold text-gray-900 dark:text-white">
+                  {completedCourses}/{allCourses.length}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Completed stages
+                </span>
+                <span className="font-bold text-gray-900 dark:text-white">
+                  {stages.filter(
+                    (stage) =>
+                      stage.courses.length > 0 &&
+                      stage.courses.every(
+                        (course) =>
+                          getCourseStatus(course) === "completed"
+                      )
+                  ).length}
+                  /{stages.length}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Overall progress
+                </span>
+                <span className="font-bold text-blue-600 dark:text-blue-400">
+                  {progress}%
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                Keep learning!
+              </p>
+
+              <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                Every completed course brings you closer to achieving your learning goals.
+              </p>
+            </div>
+          </section>
+
+          {/* Explore courses */}
+          <Link
+            to="/courses"
+            className="flex items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 p-5 transition hover:border-blue-300 dark:border-blue-900/50 dark:bg-blue-950/30"
+          >
+            <div>
+              <h3 className="font-bold text-blue-900 dark:text-blue-200">
+                Explore more courses
+              </h3>
+
+              <p className="mt-1 text-xs text-blue-700 dark:text-blue-300">
+                Discover more learning opportunities
+              </p>
+            </div>
+
+            <ArrowRight
+              size={20}
+              className="text-blue-600 dark:text-blue-400"
+            />
+          </Link>
+        </aside>
+      </section>
+    </main>
+  );
+};
+
+export default LearningPathwayDetails;

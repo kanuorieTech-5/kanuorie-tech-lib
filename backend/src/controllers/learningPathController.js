@@ -23,10 +23,17 @@ const getPath = asyncHandler(async (req, res) => {
   const progressMap = new Map(progress.map((item) => [String(item.course), item]));
   const stages = path.stages.slice().sort((a, b) => a.number - b.number).map((stage) => ({ ...stage.toObject(), courses: courses.filter((course) => course.learningStage === stage.number).map((course) => ({ ...course, progress: progressMap.get(String(course._id)) || null })) }));
   const courseCount = courses.length;
-  const completed = courses.filter((course) => progressMap.get(String(course._id))?.status === "completed").length;
-  const totalDurationHours = courses.reduce((total, course) => total + (Number(course.duration) || 0), 0);
-  return ApiResponse.success(res, { ...path.toObject(), stages, totalStages: stages.length, totalCourses: courseCount, totalDurationHours, progress: courseCount ? Math.round((completed / courseCount) * 100) : 0 }, "Learning pathway retrieved successfully.");
-});
+  const completed = courses.filter((course) => {
+    const record = progressMap.get(String(course._id));
+
+    return (
+      record?.completed === true ||
+      record?.status === "completed" ||
+      Number(record?.percentage) >= 100
+    );
+  }).length;  const totalDurationHours = courses.reduce((total, course) => total + (Number(course.duration) || 0), 0);
+    return ApiResponse.success(res, { ...path.toObject(), stages, totalStages: stages.length, totalCourses: courseCount, totalDurationHours, progress: courseCount ? Math.round((completed / courseCount) * 100) : 0 }, "Learning pathway retrieved successfully.");
+  });
 
 const listAdmin = asyncHandler(async (_req, res) => ApiResponse.success(res, await LearningPath.find().sort({ displayOrder: 1, title: 1 }), "Learning pathways retrieved successfully."));
 const createPath = asyncHandler(async (req, res) => ApiResponse.success(res, await LearningPath.create(req.body), "Learning pathway created successfully.", 201));

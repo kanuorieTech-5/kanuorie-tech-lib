@@ -28,22 +28,22 @@ const reveal = {
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-gray-300 text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+    <main className="relative min-h-screen text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
 
       {/* Homepage background */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 bg-cover bg-cover bg-no-repeat"
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              to bottom right,
-              rgba(2, 6, 23, 0.65),
-              rgba(30, 58, 138, 0.45),
-              rgba(2, 6, 23, 0.65)
-            ),
-            url(${HomebgImage})
-          `,
-        }}
+        className="pointer-events-none fixed inset-0 z-0 bg-cover bg-cover bg-no-repeat"
+        // style={{
+        //   backgroundImage: `
+        //     linear-gradient(
+        //       to bottom right,
+        //       rgba(2, 6, 23, 0.65),
+        //       rgba(30, 58, 138, 0.45),
+        //       rgba(2, 6, 23, 0.65)
+        //     ),
+        //     url(${HomebgImage})
+        //   `,
+        // }}
       />
       <CTA />
       <AboutPreview />
@@ -98,8 +98,8 @@ export default function Home() {
           FINAL CTA
       ========================================= */}
 
-      <section className="bg-slate-950">
-        <div className="mx-auto px-6 py-16 text-center lg:px-8">
+      <section className="bg-slate-950 ">
+        <div className="mx-auto px-6 py-16 text-center lg:px-8 z-1">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400">
             <UserPlus className="h-7 w-7" />
           </div>

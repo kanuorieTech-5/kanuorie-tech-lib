@@ -219,7 +219,7 @@ export default function CoursesPreview() {
   */
 
   return (
-    <section className="relative overflow-hidden bg-transparent py-15 text-white sm:py-24 dark:bg-slate-900 dark:text-white">
+    <section className="relative overflow-hidden bg-slate-950 py-15 text-white sm:py-24 dark:bg-slate-900 dark:text-white">
       {/* Decorative background */}
       <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
 

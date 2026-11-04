@@ -37,19 +37,19 @@ const categories = [
     icon: Palette,
   },
   {
-    name: "UI/UX",
+    name: "UI/UX Design",
     description: "Design intuitive digital experiences.",
     aliases: ["uiux", "userexperience", "userinterfacedesign"],
     icon: PenTool,
   },
   {
-    name: "Frontend",
+    name: "Frontend Development",
     description: "Build modern web applications.",
     aliases: ["frontend", "webfrontend"],
     icon: Code2,
   },
   {
-    name: "Backend",
+    name: "Backend Development",
     description: "Build powerful server-side systems.",
     aliases: ["backend", "serverdevelopment"],
     icon: Server,
@@ -73,7 +73,7 @@ const categories = [
     icon: BarChart3,
   },
   {
-    name: "Security",
+    name: "Cyber Security",
     description: "Protect systems and applications.",
     aliases: ["security", "cybersecurity"],
     icon: ShieldCheck,
@@ -115,7 +115,7 @@ const categories = [
     icon: Database,
   },
   {
-    name: "Performance",
+    name: "Performance Optimization",
     description: "Optimize software performance.",
     aliases: ["performance", "performanceoptimization"],
     icon: Gauge,
@@ -145,7 +145,7 @@ const categories = [
     icon: Blocks,
   },
   {
-    name: "Mobile",
+    name: "Mobile App Development",
     description: "Develop modern mobile applications.",
     aliases: ["mobile", "mobiledevelopment", "appdevelopment"],
     icon: Smartphone,
@@ -158,21 +158,37 @@ const normalize = (value = "") =>
 function getCategoryPaths(category, paths) {
   const aliases = category.aliases.map(normalize);
 
-  return paths.filter((path) => {
-    const backendCategory = normalize(path.category);
-    const backendTitle = normalize(path.title);
-    const backendSlug = normalize(path.slug);
+  return paths
+    .map((path) => {
+      const backendCategory = normalize(path.category);
+      const backendTitle = normalize(path.title);
+      const backendSlug = normalize(path.slug);
 
-    // Prefer an exact category match.
-    if (aliases.includes(backendCategory)) return true;
+      let score = 0;
 
-    // Fall back to matching pathway titles and slugs.
-    return [backendTitle, backendSlug].some((candidate) =>
-      aliases.some((alias) =>
-        alias.length >= 4 && candidate.startsWith(alias)
-      )
-    );
-  });
+      if (aliases.includes(backendCategory)) {
+        score = 100;
+      } else if (
+        aliases.includes(backendTitle) ||
+        aliases.includes(backendSlug)
+      ) {
+        score = 80;
+      } else if (
+        aliases.some(
+          (alias) =>
+            alias.length >= 4 &&
+            (backendTitle.startsWith(alias) ||
+              backendSlug.startsWith(alias))
+        )
+      ) {
+        score = 50;
+      }
+
+      return { path, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((item) => item.path);
 }
 
 export default function Courses() {
@@ -324,7 +340,7 @@ export default function Courses() {
       {/* CATEGORY GRID */}
       <section className="px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
 
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto">
 
           <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
@@ -376,7 +392,7 @@ export default function Courses() {
                 );
 
                 const hasPathway = matchingPaths.length > 0;
-
+                const canExplore = !loading && !loadError && hasPathway;
                 return (
                   <motion.article
                     key={category.name}
@@ -401,6 +417,10 @@ export default function Courses() {
                           size={17}
                           className="animate-spin text-slate-400"
                         />
+                      ) : loadError ? (
+                        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-950/50 dark:text-amber-400">
+                          Unavailable
+                        </span>
                       ) : hasPathway ? (
                         <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
                           Available
@@ -442,14 +462,11 @@ export default function Courses() {
                       <button
                         type="button"
                         onClick={() => handleExplorePathway(category)}
-                        disabled={!hasPathway || loading}
+                        disabled={!canExplore}
                         className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
                       >
                         Explore pathway
-                        <ArrowRight
-                          size={17}
-                          className="transition-transform group-hover:translate-x-1"
-                        />
+                        <ArrowRight size={17} />
                       </button>
 
                     </div>
@@ -487,7 +504,10 @@ export default function Courses() {
       </section>
 
       {/* BOTTOM CTA */}
-      <section className="px-5 pb-16 sm:px-8 lg:px-12">
+        <section
+          id="learning-categories"
+          className="px-5 py-14 sm:px-8 sm:py-20 lg:px-12"
+        >        
         <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-slate-950 px-6 py-12 text-center text-white sm:px-12 sm:py-16">
 
           <h2 className="text-3xl font-black sm:text-4xl">
@@ -501,13 +521,6 @@ export default function Courses() {
 
           <a
             href="#learning-categories"
-            onClick={(event) => {
-              event.preventDefault();
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
-            }}
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-yellow-400 px-7 py-3.5 font-bold text-slate-950 transition hover:bg-yellow-300"
           >
             Explore Categories

@@ -11,6 +11,15 @@ import {
   SiGithub,
 } from "react-icons/si";
 
+const reveal = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
 const technologies = [
   {
     name: "React",
@@ -71,11 +80,11 @@ export default function TechStack() {
       <div className="relative px-6">
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-14 text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={reveal}
+          className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14"
         >
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">
             Our Technology Stack
@@ -117,26 +126,7 @@ export default function TechStack() {
                 whileHover={{
                   y: -8,
                 }}
-                className="
-                  group
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-white/10
-                  bg-white/5
-                  px-4
-                  py-7
-                  backdrop-blur-xl
-                  transition-all
-                  duration-300
-                  hover:border-white/20
-                  hover:bg-white/10
-                  hover:shadow-xl
-                  hover:shadow-cyan-500/10
-                "
+                className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14"
               >
                 <Icon
                   className={`

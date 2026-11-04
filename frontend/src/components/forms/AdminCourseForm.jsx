@@ -193,7 +193,7 @@ export default function AdminCourseForm(props) {
       <FormSection
         title="Course Metadata"
         description="Use comma-separated values."
-      >
+       >
         <Field
           label="Tags"
           value={form.tags.join(", ")}
@@ -216,16 +216,82 @@ export default function AdminCourseForm(props) {
         />
       </FormSection>
 
-      <FormSection title="Learning Path Placement" description="Assign this course explicitly to a pathway stage and sequence. Leaving it unassigned keeps it in the general catalogue.">
-        <div className="grid gap-4 md:grid-cols-2">
-          <SelectField label="Learning pathway" value={form.learningPath || ""} onChange={(value) => updateField("learningPath", value)} options={[{ value: "", label: "Not assigned" }, ...learningPaths.map((path) => ({ value: path._id, label: path.title }))]} />
-          {form.learningPath && <>
-            <SelectField label="Stage" value={String(form.learningStage || 1)} onChange={(value) => updateField("learningStage", Number(value))} options={(learningPaths.find((path) => path._id === form.learningPath)?.stages || []).slice().sort((a,b) => a.number-b.number).map((stage) => ({ value: String(stage.number), label: `Stage ${stage.number}: ${stage.title}` }))} />
-            <Field label="Course order" type="number" value={form.courseOrder || 1} onChange={(value) => updateField("courseOrder", Number(value))} />
-            <Field label="Estimated duration" value={form.estimatedDuration || ""} onChange={(value) => updateField("estimatedDuration", value)} placeholder="e.g. 2 weeks" />
-          </>}
-        </div>
-      </FormSection>
+      {/* LEARNING PATH PLACEMENT */}
+
+<FormSection
+  title="Learning Path Placement"
+  description="Assign this course to a pathway stage and define its sequence. Leaving it unassigned keeps it in the general catalogue."
+>
+  <div className="grid gap-4 md:grid-cols-2">
+    <SelectField
+      label="Learning Pathway"
+      value={form.learningPath || ""}
+      onChange={(value) => {
+        updateField("learningPath", value);
+        updateField("learningStage", 1);
+        updateField("courseOrder", 1);
+      }}
+      options={[
+        { value: "", label: "Not assigned" },
+        ...learningPaths.map((path) => ({
+          value: path._id,
+          label: path.title,
+        })),
+      ]}
+    />
+
+    {form.learningPath && (() => {
+      const selectedPath = learningPaths.find(
+        (path) => path._id === form.learningPath
+      );
+
+      const stages = (selectedPath?.stages || [])
+        .slice()
+        .sort((a, b) => a.number - b.number);
+
+      return (
+        <>
+          <SelectField
+            label="Pathway Stage"
+            value={String(form.learningStage || 1)}
+            onChange={(value) =>
+              updateField("learningStage", Number(value))
+            }
+            options={stages.map((stage) => ({
+              value: String(stage.number),
+              label: `Stage ${stage.number}: ${stage.title}`,
+            }))}
+          />
+
+          <Field
+            label="Course Order"
+            type="number"
+            value={form.courseOrder || 1}
+            onChange={(value) =>
+              updateField("courseOrder", Math.max(1, Number(value) || 1))
+            }
+          />
+
+          <Field
+            label="Estimated Duration"
+            value={form.estimatedDuration || ""}
+            onChange={(value) =>
+              updateField("estimatedDuration", value)
+            }
+            placeholder="e.g. 2 weeks"
+          />
+        </>
+      );
+    })()}
+  </div>
+
+  {form.learningPath && (
+    <p className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700">
+      This course will appear inside the selected learning pathway,
+      under the chosen stage and course sequence.
+    </p>
+  )}
+</FormSection>
 
       {/* CURRICULUM */}
 

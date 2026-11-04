@@ -117,7 +117,7 @@ export default function Features() {
   }, [currentIndex, maxIndex]);
 
   return (
-    <section className="bg-transparent py-10 text-white">
+    <section className="bg-slate-950 py-10 text-white">
       <div className="rounded-3xl bg-white/5 p-3 lg:p-16">
         <SectionTitle
           center

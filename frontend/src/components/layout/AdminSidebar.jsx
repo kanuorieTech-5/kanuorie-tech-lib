@@ -64,6 +64,11 @@ const adminLinks = [
     icon: GraduationCap,
   },
   {
+    name: "Learning Paths",
+    path: "/admin/learning-paths",
+    icon: GraduationCap,
+  },
+  {
     name: "Products",
     path: "/admin/products",
     icon: Package,

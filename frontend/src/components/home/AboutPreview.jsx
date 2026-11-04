@@ -18,6 +18,14 @@ const highlights = [
   "Professional IT & Digital Consulting",
   "Innovation, Automation & Emerging Technology",
 ];
+const reveal = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
 
 const audiences = [
   {
@@ -50,11 +58,12 @@ export default function AboutPreview() {
   return (
     <section className="relative overflow-hidden bg-transparent py-3 text-white sm:py-5 lg:py-6">
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="relative mx-auto px-5"
-      > 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={reveal}
+        className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14"
+      >
       {/* Background accents */}
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />

@@ -78,7 +78,7 @@ export default function libraryPreview() {
   }, []);
 
   return (
-    <section className="bg-transparent py-15 dark:bg-slate-900">
+    <section className="bg-transparent z-1 py-15 dark:bg-slate-900">
       <div className="px-6 text-center text-white">
         <SectionTitle
           Badge="Digital Library"

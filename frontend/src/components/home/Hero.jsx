@@ -96,34 +96,34 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-4 max-w-2xl text-lg leading-8 text-slate-300"
+            className="mt-4 max-w-2xl text-[17px] leading-8 text-slate-100 font-medium sm:text-lg sm:leading-9"
           >
             KanuorieTech is a technology company building useful solution and
             empowering people all over the world.
-            <p>
+            <p className="text-slate-100 font-semibold">
               For business owners, we build custom digital solution - websites,
               apps and business tools that solve real problems and drive growth,
               our goal is to become the technology brand that powers business
               growth in emerging markets.
             </p>
-            <p>
+            <p className="text-slate-100 font-semibold">
               For students and future developers, we provide industry-focused
               training through practical courses, books, real-world projects,
               and career resources to help you learn faster and become
               job-ready.
             </p>
-            <p>
+            <p className="text-slate-100 font-semibold">
               For investors and collaborators, we're building a scalable
               ecosystem where products, education, and innovation create lasting
               value.
             </p>
-            <p>Join us today!</p>
+            <p className="text-slate-100 font-semibold">Join us today!</p>
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="mt-5 flex flex-wrap gap-5"
+            className="mt-5 flex flex-wrap gap-5 sm:mt-8"
           >
             <Link to="/profile">
               <Button size="lg">Get Started</Button>

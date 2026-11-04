@@ -9,13 +9,35 @@ const certificateService = require("../services/certificateService");
 const LearningPath = require("../models/LearningPath");
 
 const validatePathPlacement = async (payload) => {
-  if (!payload.learningPath) return;
-  const path = await LearningPath.findById(payload.learningPath);
-  if (!path) throw new ApiError(400, "Learning pathway not found.");
-  const stageNumber = Number(payload.learningStage);
-  if (!path.stages.some((stage) => stage.number === stageNumber)) {
-    throw new ApiError(400, "Learning stage must exist in the selected pathway.");
+  const hasLearningPath = Object.prototype.hasOwnProperty.call(
+    payload,
+    "learningPath"
+  );
+
+  if (!payload.learningPath) {
+    if (hasLearningPath) {
+      payload.learningPath = null;
+      payload.learningStage = null;
+      payload.courseOrder = null;
+    }
+    return;
   }
+
+  const path = await LearningPath.findById(payload.learningPath);
+
+  if (!path) {
+    throw new ApiError(400, "Learning pathway not found.");
+  }
+
+  const stageNumber = Number(payload.learningStage);
+
+  if (!path.stages.some((stage) => stage.number === stageNumber)) {
+    throw new ApiError(
+      400,
+      "Learning stage must exist in the selected pathway."
+    );
+  }
+
   payload.learningStage = stageNumber;
   payload.courseOrder = Math.max(1, Number(payload.courseOrder) || 1);
 };
