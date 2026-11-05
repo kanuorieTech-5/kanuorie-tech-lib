@@ -9,11 +9,33 @@ const stageSchema = new mongoose.Schema({
 }, { _id: true });
 
 const learningPathSchema = new mongoose.Schema({
-  title: { type: String, required: true, trim: true },
-  slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  description: { type: String, default: "", trim: true },
-  category: { type: String, default: "Software Development", trim: true },
-  difficulty: { type: String, enum: ["Beginner", "Intermediate", "Advanced", "All levels"], default: "Beginner" },
+  title: { 
+    type: String, 
+    required: true, 
+    trim: true 
+  },
+  slug: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    lowercase: true, 
+    trim: true 
+  },
+  description: { 
+    type: String, 
+    default: "", 
+    trim: true 
+  },
+  category: { 
+    type: String, 
+    default: "Software Development", 
+    trim: true 
+  },
+  difficulty: {
+    type: String,
+    enum: ["Beginner", "Intermediate", "Advanced", "All Levels"],
+    default: "Beginner"
+  },  
   featuredImage: { type: String, default: "" },
   published: { type: Boolean, default: false },
   displayOrder: { type: Number, default: 0 },

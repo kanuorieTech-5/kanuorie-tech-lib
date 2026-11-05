@@ -159,10 +159,6 @@ export default function CourseDetails() {
   const [lessonNotes, setLessonNotes] = useState({});
   const currentLessonRef = useRef(null);
 
-  /* =======================================================
-     LOAD COURSE
-  ======================================================= */
-
   useEffect(() => {
     let isMounted = true;
 
@@ -1188,7 +1184,7 @@ export default function CourseDetails() {
           COURSE INFORMATION
       ================================================== */}
 
-      <section className="py-10 sm:py-10">
+      <section className="py-10 sm:py-10 bg-slate-50 dark:bg-slate-950">
         <div className="mx-auto max-w-5xl px-6">
           <Card>
             <div className="grid gap-8 sm:grid-cols-2">
@@ -1309,7 +1305,7 @@ export default function CourseDetails() {
         </div>
       </section>
 
-      <section className="py-10 sm:py-10">
+      <section className="py-10 sm:py-10 bg-slate-50 dark:bg-slate-950">
         <div className="mx-auto px-6">
           <SectionTitle
             title="What You'll Learn"
@@ -1345,10 +1341,6 @@ export default function CourseDetails() {
           )}
         </div>
       </section>
-
-      {/* ==================================================
-          COURSE CURRICULUM
-      ================================================== */}
 
       {isEnrolled && (
         <section className="bg-slate-50 dark:bg-slate-950 py-10 sm:py-24">
@@ -2342,7 +2334,7 @@ export default function CourseDetails() {
                       variant="outline"
                       disabled={!previousLesson}
                       onClick={handlePreviousLesson}
-                      className="w-full sm:w-auto"
+                      className="w-full sm:w-auto text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                     >
                       <ArrowLeft className="mr-2" size={18} />
                       <span>
@@ -2394,7 +2386,7 @@ export default function CourseDetails() {
       ================================================== */}
 
       {isEnrolled && (
-        <section className="py-10 sm:py-24">
+        <section className="py-10 sm:py-24 bg-slate-50 dark:bg-slate-950">
           <div className="mx-auto max-w-5xl px-6">
             <Card className="text-center">
               <Award className="mx-auto text-yellow-500" size={60} />
@@ -2426,7 +2418,7 @@ export default function CourseDetails() {
         </section>
       )}
 
-      <section className="py-10 sm:py-24">
+      <section className="py-10 sm:py-24 bg-slate-50 dark:bg-slate-950">
         <div className="mx-auto px-6">
           <SectionTitle
             title="Meet Your Instructor"
@@ -2524,8 +2516,6 @@ export default function CourseDetails() {
           </div>
         </section>
       )}
-      <Newsletter />
-      <CTA />
     </>
   );
 }
