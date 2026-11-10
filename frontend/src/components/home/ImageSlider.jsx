@@ -65,7 +65,7 @@ export default function ImageSlider() {
           <span className="rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-cyan-400">
             The KanuorieTech Experience
           </span>
-          <h2 className="mt-6 text-4xl font-bold text-black dark:text-white sm:text-5xl md:text-6xl">
+          <h2 className="mt-6 text-4xl font-bold text-blue-400 dark:text-blue-400 sm:text-5xl md:text-6xl">
             Learn. Build. Innovate.
           </h2>
           <p className="mt-4 text-slate-400">

@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 import Button from "../common/Button";
-import heroImage from "../../assets/WhatsApp Image 2026-08-06 at 12.35.26 PM (1).jpeg";
 
 const stats = [
   {
@@ -45,15 +44,8 @@ export default function Hero() {
   return (
     <section
       className="relative bg-cover bg-center bg-no-repeat text-white"
-      style={{
-        backgroundImage: `linear-gradient(
-          to bottom right,
-          rgba(2, 6, 23, 0.45),
-          rgba(15, 23, 42, 0.35),
-          rgba(30, 58, 138, 0.30)
-        ), url("${heroImage}")`,
-      }}
-    >
+      
+     >
       {/* Background */}
 
       <div className="absolute inset-0">
@@ -100,24 +92,24 @@ export default function Hero() {
           >
             KanuorieTech is a technology company building useful solution and
             empowering people all over the world.
-            <p className="text-slate-100 font-semibold">
+            <p className="text-slate-100 md:font-semibold">
               For business owners, we build custom digital solution - websites,
               apps and business tools that solve real problems and drive growth,
               our goal is to become the technology brand that powers business
               growth in emerging markets.
             </p>
-            <p className="text-slate-100 font-semibold">
+            <p className="text-slate-100 md:font-semibold">
               For students and future developers, we provide industry-focused
               training through practical courses, books, real-world projects,
               and career resources to help you learn faster and become
               job-ready.
             </p>
-            <p className="text-slate-100 font-semibold">
+            <p className="text-slate-100 md:font-semibold">
               For investors and collaborators, we're building a scalable
               ecosystem where products, education, and innovation create lasting
               value.
             </p>
-            <p className="text-slate-100 font-semibold">Join us today!</p>
+            <p className="text-slate-100 md:font-semibold">Join us today!</p>
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}

@@ -31,6 +31,12 @@ import { getLearningPaths } from "../api/courseApi";
 
 const categories = [
   {
+    name: "General Computer Science",
+    description: "Learn the fundamentals of computing.",
+    aliases: ["computerscience", "generalcs", "cs"],
+    icon: Code2,
+  },
+  {
     name: "Graphics Design",
     description: "Create professional visual designs.",
     aliases: ["graphicsdesign", "graphicdesign"],
@@ -103,12 +109,6 @@ const categories = [
     icon: Brain,
   },
   {
-    name: "Design",
-    description: "Master digital and creative design.",
-    aliases: ["design", "digitaldesign", "creativedesign"],
-    icon: Palette,
-  },
-  {
     name: "Database",
     description: "Manage and optimize data systems.",
     aliases: ["database", "databases"],
@@ -149,6 +149,12 @@ const categories = [
     description: "Develop modern mobile applications.",
     aliases: ["mobile", "mobiledevelopment", "appdevelopment"],
     icon: Smartphone,
+  },
+  {
+    name: "fullstack development",
+    description: "Build complete web applications.",
+    aliases: ["fullstack", "fullstackdevelopment"],
+    icon: Code2,
   },
 ];
 
