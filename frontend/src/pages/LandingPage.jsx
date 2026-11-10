@@ -15,7 +15,8 @@ export default function Home() {
       }}
     >
       <Hero />
-      <ImageSlider />
+      <ImageSlider
+      className="py-50" />
     </main>
   );
 }

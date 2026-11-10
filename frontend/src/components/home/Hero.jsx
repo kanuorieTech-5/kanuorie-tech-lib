@@ -73,7 +73,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="mt-4 text-5xl font-black leading-tight lg:text-7xl"
+            className="mt-4 text-4xl font-black leading-tight lg:text-7xl"
           >
             Build
             <span className="text-blue-400"> Smarter.</span>
@@ -88,7 +88,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-4 max-w-2xl text-[17px] leading-8 text-slate-100 font-medium sm:text-lg sm:leading-9"
+            className="mt-4 max-w-2xl leading-8 text-slate-100 font-medium sm:text-lg sm:leading-9"
           >
             KanuorieTech is a technology company building useful solution and
             empowering people all over the world.
