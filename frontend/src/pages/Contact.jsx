@@ -228,7 +228,7 @@ export default function Contact() {
         <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-indigo-500/20 blur-[100px]" />
 
         <div className="relative px-5 pb-10 pt-8 sm:px-8 sm:pb-10 lg:px-8">
-          <div className="mx-auto mt-12 text-center sm:mt-16">
+          <div className="mx-auto text-center lg:mt-10 lg:max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-400/10 px-4 py-2 text-sm font-medium text-blue-200">
               <MessageCircle className="h-4 w-4" />
               Let&apos;s start a conversation
@@ -476,62 +476,13 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-            <section className="px-5 py-12 sm:px-8 lg:px-12">
-              <div className="mx-auto">
-                <div className="mx-auto max-w-2xl text-center">
-                  <span className="inline-flex items-center rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-500">
-                    Stay Connected
-                  </span>
-
-                  <h2
-                    className={`mt-5 text-2xl font-bold sm:text-3xl ${
-                      darkMode ? "text-white" : "text-slate-900"
-                    }`}
-                  >
-                    Connect with KanuorieTech
-                  </h2>
-
-                  <p className={`mx-auto mt-4 max-w-2xl ${muted}`}>
-                    Follow us for technology insights, learning resources,
-                    company updates, development tips, and new opportunities.
-                  </p>
-
-                  <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                    {socialLinks.map((social) => {
-                      const Icon = social.icon;
-
-                      return (
-                        <a
-                          key={social.name}
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Visit KanuorieTech on ${social.name}`}
-                          title={social.name}
-                          className={`flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition-all duration-300 hover:-translate-y-1 hover:text-white ${social.color}`}
-                        >
-                          <Icon className="h-5 w-5" />
-                        </a>
-                      );
-                    })}
-                  </div>
-
-                  <p className={`mt-6 text-sm ${muted}`}>
-                    Let’s learn, build, and grow together.
-                  </p>
-                </div>
-              </div>
-            </section>
           </div>
         </div>
       </section>
 
       {/* COMPLAINTS, COMPLIANCE & FEEDBACK CENTRE */}
-      <section className="px-5 pb-16 sm:px-8 lg:px-12">
-        <div className="relative mx-auto overflow-hidden rounded-3xl px-6 py-14 text-center shadow-2xl sm:px-12 sm:py-16">
-          {/* <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" /> */}
-          {/* <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl" /> */}
-
+      <section className="px-2 pb-16 sm:px-8 lg:px-2">
+        <div className="relative mx-auto overflow-hidden rounded-3xl px-6 py-4 bg-slate-100 text-center shadow-2xl sm:px-2 sm:py-6">
           <div className="relative">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/150 bg-white/10 px-4 py-2 text-sm font-medium text-blue-400">
               <ShieldCheck className="h-4 w-4" />
@@ -632,6 +583,52 @@ export default function Contact() {
           })}
         </div>
       </div>
+      <section className="px-5 py-12 sm:px-8 lg:px-12 bg-slate-100">
+        <div className="mx-auto">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-flex items-center rounded-full bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-500">
+              Stay Connected
+            </span>
+
+            <h2
+              className={`mt-5 text-2xl font-bold sm:text-3xl ${
+                darkMode ? "text-white" : "text-slate-900"
+              }`}
+            >
+              Connect with KanuorieTech
+            </h2>
+
+            <p className={`mx-auto mt-4 max-w-2xl ${muted}`}>
+              Follow us for technology insights, learning resources,
+              company updates, development tips, and new opportunities.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit KanuorieTech on ${social.name}`}
+                    title={social.name}
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition-all duration-300 hover:-translate-y-1 hover:text-white ${social.color}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
+            </div>
+
+            <p className={`mt-6 text-sm ${muted}`}>
+              Let’s learn, build, and grow together.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* COMPLAINT / COMPLIANCE / FEEDBACK MODAL */}
       {reportOpen && (
@@ -850,8 +847,6 @@ export default function Contact() {
           </div>
         </div>
       )}
-
-      <Newsletter />
     </main>
   );
 }

@@ -173,10 +173,19 @@ export default function Affiliate() {
     loadDashboard();
   }, [loadDashboard]);
 
-  const affiliate = dashboard?.affiliate;
-  const overview = dashboard?.overview || {};
-  const referralLink = affiliate?.referralLink || "";
-  const currency = overview.currency || "USD";
+ const affiliate = dashboard?.affiliate;
+const overview = dashboard?.overview || {};
+
+const PRODUCTION_FRONTEND_URL =
+  "https://kanuorie-tech-lib-ne15.vercel.app";
+
+const referralLink = affiliate?.referralCode
+  ? `${PRODUCTION_FRONTEND_URL}/register?ref=${encodeURIComponent(
+      affiliate.referralCode
+    )}`
+  : "";
+
+const currency = overview.currency || "USD";
 
   const stats = [
     {

@@ -5,7 +5,7 @@ export default function StatCard({ title, description, icon: Icon }) {
     <Card className="flex items-center justify-between">
       <div>
         {Icon && (
-          <div className="rounded-xl p-4 text-white bg-">
+          <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
             <Icon size={28} />
           </div>
         )}

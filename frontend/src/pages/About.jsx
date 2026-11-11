@@ -12,7 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import { Stats, CTA, Newsletter, TeamPreview } from "../components/home";
+import { Stats,} from "../components/home";
 
 const values = [
   {
@@ -95,10 +95,10 @@ export default function About() {
       {/* =====================================================
           HERO
       ===================================================== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-28 text-white">
+      <section className="relative h-half overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-8 text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:45px_45px]" />
 
-        <div className="relative mx-auto max-w-6xl px-6 text-center lg:px-8">
+        <div className="relative mx-auto max-w-6xl px-3 text-center lg:px-3">
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,18 +119,6 @@ export default function About() {
             <span className="block text-blue-400">Creating Opportunities.</span>
             Empowering People.
           </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl"
-          >
-            KanuorieTech is a technology-driven digital ecosystem focused on
-            building practical digital solutions, providing technology services,
-            creating educational resources, and helping individuals and
-            organizations grow through technology.
-          </motion.p>
         </div>
       </section>
 
@@ -138,7 +126,7 @@ export default function About() {
           COMPANY OVERVIEW
       ===================================================== */}
       <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-3 lg:px-3">
           <div className="mb-16 text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
               Company Documentation
@@ -367,7 +355,7 @@ export default function About() {
       {/* =====================================================
           WHAT WE DO
       ===================================================== */}
-      <section className="bg-slate-50 py-4 dark:bg-slate-900">
+      <section className="hidden bg-slate-50 py-4 dark:bg-slate-900">
         <div className="mx-auto px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
@@ -401,7 +389,6 @@ export default function About() {
                     once: true,
                     amount: 0.2,
                   }}
-                  className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-slate-800"
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                     <Icon size={28} />
@@ -424,7 +411,7 @@ export default function About() {
       {/* =====================================================
           MISSION & VISION
       ===================================================== */}
-      <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
+      <section className="hidden bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
         <div className="mx-auto px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
@@ -486,8 +473,8 @@ export default function About() {
       {/* =====================================================
           CORE VALUES
       ===================================================== */}
-      <section className="bg-slate-950 py-10 text-white dark:bg-slate-900 dark:text-white">
-        <div className="mx-auto px-6 lg:px-8">
+      <section className=" bg-slate-950 py-10 text-white dark:bg-slate-900 dark:text-white">
+        <div className="mx-auto px-2 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
               What Guides Us
@@ -535,14 +522,28 @@ export default function About() {
           </div>
         </div>
       </section>
-      <Stats />
+      <div className=" bg-slate-950 text-white dark:bg-slate-900 dark:text-white py-10">
+        <div className="mx-auto px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+              Our Impact
+            </p>
+            <p className="mt-6 text-lg leading-8 text-slate-400">
+              The measurable results of our technology, services, educational
+              resources, and digital solutions.
+            </p>
+          </div>
+        </div>
+        <Stats />
+      </div>
+      
       {/* =====================================================
           FUTURE
       ===================================================== */}
       <section className="bg-white py-10 text-slate-900 dark:bg-slate-900 dark:text-white">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-2 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
+            <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
               <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                 Looking Ahead
               </p>
@@ -568,7 +569,6 @@ export default function About() {
 
             <div className="rounded-3xl bg-slate-950 p-8 text-white md:p-10">
               <h3 className="text-2xl font-bold">Our Long-Term Focus</h3>
-
               <div className="mt-8 space-y-5">
                 {futureGoals.map((goal) => (
                   <div key={goal} className="flex items-start gap-4">
@@ -576,7 +576,6 @@ export default function About() {
                       size={22}
                       className="mt-1 shrink-0 text-blue-400"
                     />
-
                     <span className="leading-7 text-slate-300">{goal}</span>
                   </div>
                 ))}
@@ -585,8 +584,6 @@ export default function About() {
           </div>
         </div>
       </section>
-      <TeamPreview />
-      <CTA />
     </>
   );
 }

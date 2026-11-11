@@ -9,7 +9,6 @@ import {
   SectionTitle,
 } from "../components/common";
 import { SearchBar } from "../components/layout";
-import { Newsletter, CTA } from "../components/home";
 import { getBlogs } from "../services";
 
 const POSTS_PER_PAGE = 9;
@@ -498,8 +497,6 @@ export default function Blog() {
           </div>
         </section>
       )}
-      <Newsletter />
-      <CTA />
     </>
   );
 }
