@@ -160,7 +160,7 @@ export default function FeaturesSlider() {
   }, [activeImage]);
 
   return (
-    <section className="overflow-hidden  py-10">
+    <section className="overflow-hidden bg-slate-950 py-10">
       <div className="rounded-3xl bg-white/5 p-3 lg:p-16">
 
         <div className="text-center">
@@ -168,7 +168,7 @@ export default function FeaturesSlider() {
             Platform Features
           </span>
 
-          <h2 className="mt-6 text-4xl font-bold">
+          <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
             Everything You Need In One Platform
           </h2>
 

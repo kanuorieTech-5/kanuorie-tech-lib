@@ -307,7 +307,7 @@ export default function Careers() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                to="careerDetails"
+                to="opportunities"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
               >
                 Explore Open Opportunities
@@ -323,73 +323,13 @@ export default function Careers() {
           </motion.div>
         </div>
       </section>
-
-      {/* =========================================
-          WHY JOIN
-      ========================================= */}
-      <section className="mx-auto px-6 py-16 lg:px-8">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          variants={fadeUp}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
-            Why KanuorieTech
-          </p>
-
-          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-            Grow while building meaningful technology
-          </h2>
-
-          <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
-            We're creating an environment where technology professionals,
-            educators, creators, and learners can contribute, collaborate, and
-            keep developing their skills.
-          </p>
-        </motion.div>
-
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map((benefit, index) => {
-            const Icon = benefit.icon;
-
-            return (
-              <motion.div
-                key={benefit.title}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.15 }}
-                variants={fadeUp}
-                transition={{ delay: index * 0.05 }}
-                className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                  <Icon className="h-5 w-5" />
-                </div>
-
-                <h3 className="mt-5 text-lg font-bold">{benefit.title}</h3>
-
-                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                  {benefit.description}
-                </p>
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* =========================================
-          OPEN OPPORTUNITIES
-      ========================================= */}
-
       <section
         id="open-opportunities"
         className="border-y border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
-      >
-        <div className="mx-auto px-6 py-16 lg:px-8">
+       >
+        <div className="mx-auto px-6 py-6 lg:px-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
+            <div className="pb-5">
               <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
                 Opportunities
               </p>
@@ -404,7 +344,7 @@ export default function Careers() {
               </p>
             </div>
 
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 shadow-sm">
               <span
                 className={`h-2 w-2 rounded-full ${
                   opportunitiesLoading
@@ -578,7 +518,7 @@ export default function Careers() {
                       viewport={{ once: true, amount: 0.1 }}
                       variants={fadeUp}
                       transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                      className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-6 transition duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg sm:p-7"
+                      className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-6 transition duration-300 hover:border-blue-200 sm:p-7"
                     >
                       {/* Opportunity heading */}
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -656,108 +596,7 @@ export default function Careers() {
                           : "Explore this opportunity and its application requirements."}
                       </p>
 
-                      {/* Expandable Details Toggle */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setExpandedOpportunities((prev) => ({
-                            ...prev,
-                            [opportunity._id ||
-                            opportunity.id ||
-                            opportunity.slug]:
-                              !prev[
-                                opportunity._id ||
-                                  opportunity.id ||
-                                  opportunity.slug
-                              ],
-                          }))
-                        }
-                        className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-800"
-                      >
-                        {expandedOpportunities[
-                          opportunity._id || opportunity.id || opportunity.slug
-                        ]
-                          ? "Show Less"
-                          : "View More"}
-
-                        <ArrowRight
-                          className={`h-4 w-4 transition-transform ${
-                            expandedOpportunities[
-                              opportunity._id ||
-                                opportunity.id ||
-                                opportunity.slug
-                            ]
-                              ? "rotate-90"
-                              : ""
-                          }`}
-                        />
-                      </button>
-
-                      {/* Expanded Content */}
-                      {expandedOpportunities[
-                        opportunity._id || opportunity.id || opportunity.slug
-                      ] && (
-                        <div className="mt-5 space-y-6 border-t border-slate-200 dark:border-slate-700 pt-5">
-                          {/* Full Description */}
-                          <div>
-                            <h4 className="mb-2 text-sm font-bold text-slate-900 dark:text-slate-100">
-                              Full Description
-                            </h4>
-                            <p className="whitespace-pre-line text-sm leading-7 text-slate-600 dark:text-slate-400">
-                              {opportunity.description ||
-                                "No additional description provided."}
-                            </p>
-                          </div>
-
-                          {/* Requirements */}
-                          {Array.isArray(opportunity.requirements) &&
-                            opportunity.requirements.length > 0 && (
-                              <div>
-                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100">
-                                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                                  Requirements
-                                </h4>
-
-                                <ul className="space-y-2.5">
-                                  {opportunity.requirements.map(
-                                    (requirement, i) => (
-                                      <li
-                                        key={`requirement-${i}`}
-                                        className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
-                                      >
-                                        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-blue-500" />
-                                        <span>{requirement}</span>
-                                      </li>
-                                    ),
-                                  )}
-                                </ul>
-                              </div>
-                            )}
-
-                          {/* Benefits */}
-                          {Array.isArray(opportunity.benefits) &&
-                            opportunity.benefits.length > 0 && (
-                              <div>
-                                <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100">
-                                  <GraduationCap className="h-5 w-5 text-emerald-600" />
-                                  What You'll Gain
-                                </h4>
-
-                                <ul className="space-y-2.5">
-                                  {opportunity.benefits.map((benefit, i) => (
-                                    <li
-                                      key={`benefit-${i}`}
-                                      className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-400"
-                                    >
-                                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-500" />
-                                      <span>{benefit}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                        </div>
-                      )}
+                      
 
                       {/* Tags */}
                       {Array.isArray(opportunity.tags) &&
@@ -821,11 +660,12 @@ export default function Careers() {
               </div>
             )}
         </div>
+        <Link to="opportunities"
+          className="inline-flex items-center gap-2 text-sm font-bold text-blue-600  ml-6 py-4">
+          See all opportunities
+        </Link>
       </section>
-
-      {/* =========================================
-          EARLY CAREER + COLLABORATION
-      ========================================= */}
+      
       <section className="mx-auto px-6 py-16 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div
@@ -899,7 +739,12 @@ export default function Careers() {
 
       <section className="border-y border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
         <div className="mx-auto px-6 py-16 lg:px-8">
-          <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-7 shadow-sm sm:p-9">
             <div>
               <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
                 Teach with us
@@ -925,7 +770,7 @@ export default function Careers() {
               Become an Instructor
               <ArrowRight className="h-4 w-4" />
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -944,7 +789,7 @@ export default function Careers() {
           </h2>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 gap-5 md:grid-cols-2 lg:grid-cols-4">
           {process.map((step, index) => (
             <motion.div
               key={step.number}
@@ -953,7 +798,7 @@ export default function Careers() {
               viewport={{ once: true }}
               variants={fadeUp}
               transition={{ delay: index * 0.05 }}
-              className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              className=" border-b"
             >
               <span className="text-sm font-black text-blue-600">
                 {step.number}

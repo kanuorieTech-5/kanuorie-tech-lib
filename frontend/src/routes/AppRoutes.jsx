@@ -33,6 +33,8 @@ const Blog = lazy(() => import("../pages/Blog"));
 const BlogDetails = lazy(() => import("../pages/BlogDetails"));
 const Careers = lazy(() => import("../pages/Careers"));
 const CareerDetail = lazy(() => import("../pages/CareerDetails"));
+const Opportunities = lazy(() => import("../pages/Opportunities"));
+const OpportunityDetails = lazy(() => import("../pages/OpportunityDetails"));
 const SavedResources = lazy(() => import("../pages/SavedResources"));
 const Team = lazy(() => import("../pages/Team"));
 const FAQ = lazy(() => import("../pages/FAQ"));
@@ -110,6 +112,19 @@ export default function AppRoutes() {
           <Route path="blog/:id" element={<BlogDetails />} />
           <Route path="careers" element={<Careers />} />
           <Route path="careers/:id" element={<CareerDetail />} />
+          <Route path="opportunities" element={<Opportunities />} />
+          <Route path="opportunities/:id" element={<OpportunityDetails />} />
+          <Route path="learning" element={<Learning />} />
+          <Route path="learning/:id" element={<LearningDetails />} />
+          <Route path="community" element={<Community />} />
+          <Route path="affiliate" element={<Affiliate />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="payments/paystack/callback" element={<PaystackCallback />} />
+          <Route path="saved-resources" element={<SavedResources />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="certificates" element={<Certificates />} />
           <Route path="team" element={<Team />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="testimonials" element={<Testimonials />} />

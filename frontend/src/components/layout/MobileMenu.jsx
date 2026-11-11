@@ -41,6 +41,7 @@ const navigationLinks = [
   { path: "/community", label: "Community", icon: Users },
   { path: "/affiliate", label: "Referral Program", icon: Handshake },
   { path: "/payments", label: "Accounts & Payments", icon: WalletCards },
+  { path: "/opportunities", label: "Opportunities", icon: BriefcaseBusiness },
 ];
 export default function MobileMenu({ open, onClose, side = "left" }) {
   const navigate = useNavigate();

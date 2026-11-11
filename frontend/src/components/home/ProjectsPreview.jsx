@@ -142,7 +142,7 @@ export default function ProjectsPreview() {
   ======================================== */
   if (!projects.length) {
     return (
-      <section className="bg-transparent py-10 text-white">
+      <section className="bg-slate-950 py-10 text-white">
         <div className="px-6">
           <SectionTitle
             Badge="Our Portfolio"
@@ -164,7 +164,7 @@ export default function ProjectsPreview() {
   }
 
   return (
-    <section className="bg-transparent py-10 text-white">
+    <section className="bg-slate-950 py-10 text-white">
       <div className="px-6 text-center">
         <SectionTitle
           Badge="Our Portfolio"
