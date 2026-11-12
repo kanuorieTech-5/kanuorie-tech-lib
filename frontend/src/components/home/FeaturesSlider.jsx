@@ -10,7 +10,7 @@ const featuresData = [
   {
     title: "Learning Progress & Certificates",
     desc: "Track your enrolled courses, monitor progress and access certificates when you complete eligible learning.",
-    img: "/images/courses.png",
+    img: "/images/certificates.png",
   },
   {
     title: "Digital Library",
@@ -23,9 +23,9 @@ const featuresData = [
     img: "/images/resources.png",
   },
   {
-    title: "Learner Community",
+    title: "Learners Community",
     desc: "Connect with other learners, share updates and engage with posts through likes, comments and saves.",
-    img: "/images/profile.png",
+    img: "/images/community.png",
   },
   {
     title: "Personalized User Profiles",
@@ -35,37 +35,37 @@ const featuresData = [
   {
     title: "Business & Service Requests",
     desc: "Businesses can share what they need and request digital services tailored to their goals.",
-    img: "/images/admin.png",
+    img: "/images/business.png",
   },
   {
     title: "Digital Products",
     desc: "Discover digital products and helpful tools built to support your work and learning.",
-    img: "/images/resources.png",
+    img: "/images/products.png",
   },
   {
     title: "Project Portfolio",
     desc: "Explore delivered projects and examples of our design, development and technology work.",
-    img: "/images/library.png",
+    img: "/images/portfolio.png",
   },
   {
     title: "Professional Services",
     desc: "Review our technology services, view design examples and send an enquiry when you are ready.",
-    img: "/images/admin.png",
+    img: "/images/services.png",
   },
   {
     title: "Career Opportunities",
     desc: "Find published opportunities and view their details to learn how to take the next step.",
-    img: "/images/profile.png",
+    img: "/images/career.png",
   },
   {
     title: "Articles & Updates",
     desc: "Read platform news, insights and educational articles from the KanuorieTech team.",
-    img: "/images/library.png",
+    img: "/images/blog.png",
   },
   {
     title: "Secure Payments",
     desc: "Manage billing information and make payments for services, courses and other offerings.",
-    img: "/images/security.png",
+    img: "/images/payments.png",
   },
   {
     title: "Administration Dashboard",
@@ -73,9 +73,9 @@ const featuresData = [
     img: "/images/admin.png",
   },
   {
-    title: "Protected Accounts",
-    desc: "Account authentication and role-based access help keep personal and administrative areas protected.",
-    img: "/images/resources.png",
+    title: "Affiliate & Referral Program",
+    desc: "Earn rewards by referring others to the platform and sharing your unique affiliate link.",
+    img: "/images/affiliate.png",
   },
 ];
 
@@ -234,7 +234,7 @@ export default function FeaturesSlider() {
             type="button"
             onClick={prevSlide}
             aria-label="Previous feature"
-            className="rounded-full border border-white/20 px-5 py-2 text-whit transition hover:bg-white/10"
+            className="rounded-full border border-white/20 px-5 py-2 bg-cyan-500 text-white transition hover:bg-cyan-600"
           >
             ←
           </button>
@@ -243,7 +243,7 @@ export default function FeaturesSlider() {
             type="button"
             onClick={nextSlide}
             aria-label="Next feature"
-            className="rounded-full border border-white/20 px-5 py-2 text-whit transition hover:bg-white/10"
+            className="rounded-full border border-white/20 px-5 bg-cyan-500 py-2 text-white transition hover:bg-cyan-600"
           >
             →
           </button>
@@ -288,7 +288,7 @@ export default function FeaturesSlider() {
               type="button"
               onClick={() => setActiveImage(null)}
               aria-label="Close image viewer"
-              className="absolute -right-2 -top-12 rounded-full bg-white/10 px-4 py-2 text-2xl text-white transition hover:bg-white/20 sm:right-0"
+              className="absolute -right-2 -top-12 rounded-full bg-white/10 px-4 py-2 bg-cyan-500 text-2xl text-white transition hover:bg-cyan-600 sm:right-0"
             >
               &times;
             </button>

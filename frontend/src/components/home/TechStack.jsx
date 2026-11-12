@@ -71,7 +71,7 @@ const technologies = [
 
 export default function TechStack() {
   return (
-    <section className="relative overflow-hidden bg-transparent py-10 text-white dark:bg-slate-900 dark:text-white">
+    <section className="relative overflow-hidden bg-slate-950 py-10 text-white dark:bg-slate-900 dark:text-white">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
@@ -91,7 +91,7 @@ export default function TechStack() {
           </p>
 
           <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Built With Modern Technology
+           We Build With Modern Technology
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">
@@ -101,7 +101,7 @@ export default function TechStack() {
         </motion.div>
 
         {/* Technology cards */}
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-8 mt-4">
           {technologies.map((technology, index) => {
             const Icon = technology.icon;
 
@@ -126,7 +126,7 @@ export default function TechStack() {
                 whileHover={{
                   y: -8,
                 }}
-                className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14"
+                className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 px-6 py-10 text-white sm:px-10 sm:py-14 lg:px-14 rounded-lg text-center transition-transform duration-300 group"
               >
                 <Icon
                   className={`

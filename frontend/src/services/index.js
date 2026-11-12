@@ -21,3 +21,4 @@ export * from "./community.service";
 export * from "./certificates.service";
 export * from "./payment.service";
 export * from "./affiliate.service";
+export * from "./opportunity.service";
